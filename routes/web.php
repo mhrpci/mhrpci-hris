@@ -110,6 +110,8 @@ use App\Http\Controllers\TaskController;
     });
 
     Route::get('/employees/{id}/status', [EmployeeController::class, 'getStatus']);
-    Route::get('/tasks/my-tasks', [TaskController::class, 'checkUserAndShowTasks'])->name('tasks.myTasks');
+    Route::get('/tasks', [TaskController::class, 'checkUserAndShowTasks'])->name('checkUserAndShowTasks');
+    Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
+    Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
 
 Auth::routes();

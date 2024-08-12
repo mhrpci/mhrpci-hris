@@ -13,6 +13,9 @@
     @if($tasks->isEmpty())
         <p>No tasks assigned to you.</p>
     @else
+    @if ($message = Session::get('success'))
+                        <div class="alert alert-success">{{ $message }}</div>
+                    @endif
         <table id="tasksTable" class="table table-bordered">
             <thead>
                 <tr>

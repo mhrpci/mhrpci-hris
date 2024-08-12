@@ -1,25 +1,67 @@
 @extends('adminlte::page')
 
-@section('preloader')
-    <i class="fas fa-4x fa-spin fa-spinner text-secondary"></i>
-    <h4 class="mt-4 text-dark">Loading</h4>
-@stop
+@section('title', 'Task Details')
 
-@section('preloader')
-    <i class="fas fa-4x fa-spin fa-spinner text-secondary"></i>
-    <h4 class="mt-4 text-dark">Loading</h4>
+@section('content_header')
+    <h1 class="m-0 text-dark">Task Details</h1>
 @stop
 
 @section('content')
-    <h1>{{ $task->title }}</h1>
-    <p><strong>Description:</strong> {{ $task->description }}</p>
-    <p><strong>Employee:</strong> {{ $task->employee->company_id }} {{ $task->employee->last_name }}, {{ $task->employee->first_name }} {{ $task->employee->middle_name }}</p>
-    <p><strong>Status:</strong> {{ $task->status }}</p>
-    
-    <a href="{{ route('tasks.edit', $task) }}" class="btn btn-warning">Edit</a>
-    @if(Auth::user()->hasRole('Employee'))
-        <a href="{{ route('tasks.myTasks') }}" class="btn btn-secondary">Back to My Tasks</a>
-    @else
-        <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Back to Tasks</a>
-    @endif
-@endsection
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">{{ $task->title }}</h2>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-info"><i class="far fa-user"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Assigned To</span>
+                                    <span class="info-box-number">{{ $task->employee->company_id }} {{ $task->employee->last_name }}, {{ $task->employee->first_name }} {{ $task->employee->middle_name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-warning"><i class="fas fa-tasks"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Status</span>
+                                    <span class="info-box-number">{{ $task->status }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h5>Description</h5>
+                        <p>{{ $task->description }}</p>
+                    </div>
+                    <div class="mt-4">
+                        @if(Auth::user()->hasRole('Employee'))
+                            <a href="{{ route('myTasks') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to My Tasks
+                            </a>
+                        @else
+                            <a href="{{ route('tasks.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Tasks
+                            </a>
+                        @endif
+                        <a href="{{ route('tasks.edit', $task) }}" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Task
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@stop
+
+@section('css')
+    <link rel="stylesheet" href="/css/admin_custom.css">
+@stop
+
+@section('js')
+    <script>
+        console.log('Hi!');
+    </script>
+@stop
