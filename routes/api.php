@@ -24,10 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/attendance', [AttendanceController::class, 'store']);
-Route::post('/attendances/check', [AttendanceController::class, 'checkAttendanceStatus']);
 Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendOtp']);
 Route::post('/auth/send-reset-otp', [ForgotPasswordController::class, 'sendResetOtp']);
 Route::post('/auth/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
-Route::middleware('auth:sanctum')->get('/current-user', [UserController::class, 'getCurrentUser']);
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getCurrentUser']);

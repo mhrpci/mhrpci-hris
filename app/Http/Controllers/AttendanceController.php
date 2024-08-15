@@ -60,11 +60,9 @@ class AttendanceController extends Controller
     if ($existingAttendance) {
         if ($existingAttendance->time_out && $existingAttendance->time_stamp2) {
             if ($user->hasRole('Super Admin') || $user->hasRole('Admin')) {
-                return redirect()->route('attendances.create')
-                                ->with('error', 'Attendance for this employee on this date already has time out and time stamp.');
+                return response()->json(['error' => 'Attendance for this employee on this date already has time out and time stamp.'], 400);
             } else {
-                return redirect()->route('attendances.create')
-                                ->with('error', 'Your attendance on this date already has time out and time stamp.');
+                return response()->json(['error' => 'Your attendance on this date already has time out and time stamp.'], 400);
             }
         }
 
@@ -94,13 +92,9 @@ class AttendanceController extends Controller
         $successMessage = 'You have successfully timed in.';
     }
 
-    // Redirect based on user role
-    if ($user->hasRole('Super Admin') || $user->hasRole('Admin')) {
-        return redirect()->route('attendances.index')->with('success', 'Attendance saved successfully.');
-    } else {
-        return redirect()->route('attendances.create')->with('success', $successMessage);
-    }
+    return response()->json(['message' => $successMessage], 200);
 }
+
 
     // Method to check if attendance exists (for AJAX call)
     public function checkAttendance(Request $request)
@@ -271,5 +265,19 @@ class AttendanceController extends Controller
 
     return response()->json(['status' => 'not_found'], 200);
 }
- 
+public function getEmployeeInfo(Request $request)
+{
+    // Replace this with actual logic to get authenticated employee info
+    $user = Auth::user();
+
+    if (!$user) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    return response()->json([
+        'id' => $user->id,
+        'first_name' => $user->first_name,
+    ]);
+}
+
 }

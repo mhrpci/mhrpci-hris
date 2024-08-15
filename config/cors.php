@@ -15,9 +15,9 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['*'], // Change this to your frontend origin in production
+    'allowed_origins' => ['*'], // You can specify your Flutter app's origin instead of '*'
     'allowed_headers' => ['*'],
     'exposed_headers' => [],
     'max_age' => 0,
