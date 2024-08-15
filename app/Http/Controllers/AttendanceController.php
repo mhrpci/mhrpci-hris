@@ -243,4 +243,33 @@ class AttendanceController extends Controller
             return $this->myTimesheet();
         }
     }
+
+    public function checkAttendanceStatus(Request $request)
+{
+    // Validate the incoming request
+    $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'date_attended' => 'required|date',
+    ]);
+
+    $employeeId = $request->input('employee_id');
+    $dateAttended = $request->input('date_attended');
+
+    // Retrieve the attendance record for the employee and date
+    $attendance = Attendance::where('employee_id', $employeeId)
+                            ->where('date_attended', $dateAttended)
+                            ->first();
+
+    // Check if attendance exists and has a time_in value
+    if ($attendance) {
+        return response()->json([
+            'status' => 'exists',
+            'time_in' => $attendance->time_in,
+            'time_out' => $attendance->time_out, // You may also include time_out if needed
+        ], 200);
+    }
+
+    return response()->json(['status' => 'not_found'], 200);
+}
+ 
 }

@@ -195,4 +195,14 @@ class Attendance extends Model
             $model->calculateRemarksAndHoursWorked();
         });
     }
+    private function calculateHoursWorked($timeIn, $timeOut)
+{
+    if ($timeIn && $timeOut) {
+        $start = \Carbon\Carbon::createFromFormat('H:i', $timeIn);
+        $end = \Carbon\Carbon::createFromFormat('H:i', $timeOut);
+        return $end->diffInHours($start);
+    }
+    return null;
+}
+
 }

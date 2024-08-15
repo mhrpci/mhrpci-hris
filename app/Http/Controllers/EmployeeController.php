@@ -333,5 +333,37 @@ public function getStatus($id)
         'employment_status' => $employee->employment_status,
     ]);
 }
+public function viewOwnProfile(Request $request)
+{
+    $user = $request->user();
+    $employee = Employee::where('first_name', $user->first_name)->first();
 
+    if ($employee) {
+        // Load related data
+        $employee->load('position', 'department');
+        
+        // Get employment status
+        $employee->employment_status = $employee->employmentStatus();
+
+        // Prepare the response data
+        $responseData = [
+            'id' => $employee->id,
+            'first_name' => $employee->first_name,
+            'last_name' => $employee->last_name,
+            'email_address' => $employee->email_address,
+            'position' => [
+                'name' => $employee->position->name,
+            ],
+            'department' => [
+                'name' => $employee->department->name,
+            ],
+            'employment_status' => $employee->employment_status,
+            // Add any other fields you want to include
+        ];
+
+        return response()->json($responseData);
+    } else {
+        return response()->json(['message' => 'Employee profile not found'], 404);
+    }
+}
 }
