@@ -27,7 +27,6 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\MessageController;
 
 
 
@@ -115,10 +114,4 @@ use App\Http\Controllers\MessageController;
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
 
-
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/chat', [MessageController::class, 'index'])->name('chat.index');
-        Route::get('/chat/lobby/{user}', [MessageController::class, 'lobby'])->name('chat.lobby');
-        Route::post('/chat', [MessageController::class, 'store'])->name('chat.store');
-    });
 Auth::routes();
