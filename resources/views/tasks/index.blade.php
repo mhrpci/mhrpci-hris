@@ -6,11 +6,14 @@
 @stop
 
 @section('content')
+<br>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Task List</h3>
             <div class="card-tools">
-                <a href="{{ route('tasks.create') }}" class="btn btn-primary">Create New Task</a>
+            <a href="{{ route('tasks.create') }}" class="btn btn-success btn-sm rounded-pill">
+                            Add Task <i class="fas fa-plus-circle"></i>
+                        </a>
             </div>
         </div>
         <div class="card-body">

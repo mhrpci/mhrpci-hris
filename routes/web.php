@@ -27,6 +27,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\MessageController;
 
 
 
@@ -111,6 +112,7 @@ use App\Http\Controllers\TaskController;
 
     Route::get('/employees/{id}/status', [EmployeeController::class, 'getStatus']);
     Route::get('/tasks', [TaskController::class, 'checkUserAndShowTasks'])->name('checkUserAndShowTasks');
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
 
