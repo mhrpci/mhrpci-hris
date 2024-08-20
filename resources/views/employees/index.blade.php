@@ -25,6 +25,10 @@
                             <button class="btn btn-primary btn-sm rounded-pill mr-2 mb-2" data-toggle="modal" data-target="#importModal">
                                 Import Employees <i class="fas fa-file-import"></i>
                             </button>
+                            <form action="{{ route('employees.export') }}" method="POST" target="_blank">
+                                @csrf
+                                <button type="submit" class="btn btn-secondary btn-sm rounded-pill mr-2 mb-2">Export Employees <i class="fas fa-file-export"></i></button>
+                            </form>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -35,6 +39,7 @@
                         @if ($message = Session::get('error'))
                             <div class="alert alert-danger">{{ $message }}</div>
                         @endif
+                        
                         <table id="employees-table" class="table table-bordered table-hover">
                             <thead>
                                 <tr>

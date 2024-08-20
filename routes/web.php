@@ -80,6 +80,7 @@ use App\Http\Controllers\MessageController;
     Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
     Route::get('/notifications/all', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
+    Route::post('/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
     
     Route::resource('sss', SssController::class);
     Route::resource('loansss', SssLoanController::class);

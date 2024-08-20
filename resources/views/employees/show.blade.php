@@ -33,17 +33,18 @@
                         <div class="col-md-9">
                             <h4 class="text-primary">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }} {{ $employee->suffix }}</h4>
                             <p><strong>Email:</strong> {{ $employee->email_address }}</p>
+                            <p><strong>Contact No.:</strong> {{ $employee->contact_no }}</p>
                             <p><strong>Gender:</strong> {{ $employee->gender->name }}</p>
                             <p><strong>Position:</strong> {{ $employee->position->name }}</p>
                             <p><strong>Employment Status:</strong> {{ $employee->employment_status }}</p>
                             <p>
-    <strong>Place of Birth:</strong> 
-    {{ $employee->birth_place_barangay || $employee->birth_place_city || $employee->birth_place_province ? 
-        ($employee->birth_place_barangay ?? 'N/A') . ', ' . 
-        ($employee->birth_place_city ?? 'N/A') . ', ' . 
-        ($employee->birth_place_province ?? 'N/A') : 
-        'N/A' }}
-</p>
+                                <strong>Place of Birth:</strong> 
+                                {{ $employee->birth_place_barangay || $employee->birth_place_city || $employee->birth_place_province ? 
+                                    ($employee->birth_place_barangay ?? 'N/A') . ', ' . 
+                                    ($employee->birth_place_city ?? 'N/A') . ', ' . 
+                                    ($employee->birth_place_province ?? 'N/A') : 
+                                    'N/A' }}
+                            </p>
 
                         </div>
                     </div>

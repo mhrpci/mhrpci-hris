@@ -6,8 +6,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\UserController;
-;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +26,3 @@ Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendOtp'
 Route::post('/auth/send-reset-otp', [ForgotPasswordController::class, 'sendResetOtp']);
 Route::post('/auth/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
-Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getCurrentUser']);

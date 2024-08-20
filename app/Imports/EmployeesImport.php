@@ -6,7 +6,6 @@ use App\Models\Employee;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Illuminate\Support\Facades\Hash;
 
 class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
 {
@@ -19,13 +18,14 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
     {
         return new Employee([
             'company_id'     => $row['company_id'],
+            'profile'     => $row['profile'],
             'first_name'     => $row['first_name'],
             'middle_name'    => $row['middle_name'] ?? null,
             'last_name'      => $row['last_name'],
             'suffix'         => $row['suffix'] ?? null,
             'email_address'  => $row['email_address'],
             'contact_no'     => $row['contact_no'],
-            'birth_date'     => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['birth_date'])->format('Y-m-d'),
+            'birth_date'     => isset($row['birth_date']) ? \Carbon\Carbon::parse($row['birth_date'])->format('Y-m-d') : null,
             'birth_place_province' => $row['birth_place_province'] ?? null,
             'birth_place_city' => $row['birth_place_city'] ?? null,
             'birth_place_barangay' => $row['birth_place_barangay'] ?? null,
@@ -37,7 +37,7 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
             'department_id'  => $row['department_id'],
             'salary'         => $row['salary'],
             'zip_code'       => $row['zip_code'] ?? null,
-            'date_hired'     => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_hired'])->format('Y-m-d'),
+            'date_hired'     => isset($row['date_hired']) ? \Carbon\Carbon::parse($row['date_hired'])->format('Y-m-d') : null,
             'sss_no'         => $row['sss_no'] ?? null,
             'pagibig_no'     => $row['pagibig_no'] ?? null,
             'tin_no'         => $row['tin_no'] ?? null,
@@ -67,9 +67,9 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
             'department_id' => 'required',
             'gender_id' => 'required',
             'contact_no' => 'required',
-            'birth_date' => 'required',
+            'birth_date' => 'nullable|date',
             'salary' => 'required|numeric',
-            'date_hired' => 'required',
+            'date_hired' => 'nullable|date',
             'emergency_name' => 'required',
             'emergency_no' => 'required|numeric',
         ];

@@ -18,6 +18,7 @@ use Spatie\Permission\Models\Role;
 use App\Notifications\EmployeeAccountActivated;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\EmployeesImport;
+use App\Exports\EmployeesExport;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BirthdayGreeting;
 
@@ -277,7 +278,7 @@ public function store(Request $request): RedirectResponse
                          ->with('success', 'User created successfully for the employee.'); // Ensure the message is about user creation
     }
     
-/**
+    /**
      * Import employees from an Excel file.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -288,14 +289,21 @@ public function store(Request $request): RedirectResponse
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv'
         ]);
-
+    
         try {
             Excel::import(new EmployeesImport, $request->file('file'));
+    
             return redirect()->route('employees.index')->with('success', 'Employees imported successfully.');
         } catch (\Exception $e) {
             return redirect()->route('employees.index')->with('error', 'Error importing employees: ' . $e->getMessage());
         }
     }
+    
+    public function export()
+    {
+        return Excel::download(new EmployeesExport, 'employees.xlsx');
+    }
+
 public function birthdays()
 {
     $employees = Employee::all();
