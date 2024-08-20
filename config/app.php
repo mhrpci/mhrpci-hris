@@ -5,6 +5,12 @@ use Illuminate\Support\ServiceProvider;
 
 return [
 
+    'company_name' => 'MHR HEALTH CARE, INC.',
+    'company_address' => 'MHR Building Jose L. Briones St.',
+    'company_city' => 'North Reclamation Area, Cebu City',
+    'company_zip' => '6000',
+    'company_phone' => '(032) 238-1887',
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -170,7 +176,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
     ])->toArray(),
 
     /*

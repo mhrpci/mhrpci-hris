@@ -20,9 +20,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\EmployeesImport;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BirthdayGreeting;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
-use Twilio\Rest\Client;
 
 class EmployeeController extends Controller
 {
