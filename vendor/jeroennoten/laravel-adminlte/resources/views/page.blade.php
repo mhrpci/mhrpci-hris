@@ -56,9 +56,3 @@
     @stack('js')
     @yield('js')
 @stop
-@push('js')
-<script>
-    window.adminNotificationConfig = @json(config('admin.navbar.notifications'));
-</script>
-<script src="{{ asset('js/admin-notifications.js') }}"></script>
-@endpush

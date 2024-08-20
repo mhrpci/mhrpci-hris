@@ -34,7 +34,8 @@ class AttendanceController extends Controller
     }
 
     // Store a new attendance record
-    public function store(Request $request)
+    // Store a new attendance record
+public function store(Request $request)
 {
     $request->validate([
         'employee_id' => 'required|exists:employees,id',
@@ -60,22 +61,22 @@ class AttendanceController extends Controller
     if ($existingAttendance) {
         if ($existingAttendance->time_out && $existingAttendance->time_stamp2) {
             if ($user->hasRole('Super Admin') || $user->hasRole('Admin')) {
-                return response()->json(['error' => 'Attendance for this employee on this date already has time out and time stamp.'], 400);
+                $successMessage = 'Attendance for this employee on this date already has time out and time stamp.';
             } else {
-                return response()->json(['error' => 'Your attendance on this date already has time out and time stamp.'], 400);
+                $successMessage = 'Your attendance on this date already has time out and time stamp.';
             }
-        }
+        } else {
+            // Update existing attendance with time_out if time_in exists and time_out doesn't
+            $existingAttendance->time_out = $request->time_out;
+            if ($request->hasFile('time_stamp2')) {
+                $existingAttendance->time_stamp2 = $request->file('time_stamp2')->store('time_stamps', 'public');
+            }
+            $existingAttendance->remarks = $request->remarks;
+            $existingAttendance->hours_worked = $request->hours_worked;
+            $existingAttendance->save();
 
-        // Update existing attendance with time_out if time_in exists and time_out doesn't
-        $existingAttendance->time_out = $request->time_out;
-        if ($request->hasFile('time_stamp2')) {
-            $existingAttendance->time_stamp2 = $request->file('time_stamp2')->store('time_stamps', 'public');
+            $successMessage = 'You have successfully timed out.';
         }
-        $existingAttendance->remarks = $request->remarks;
-        $existingAttendance->hours_worked = $request->hours_worked;
-        $existingAttendance->save();
-
-        $successMessage = 'You have successfully timed out.';
     } else {
         // Create new attendance record with time_in
         $newAttendance = new Attendance;
@@ -92,10 +93,14 @@ class AttendanceController extends Controller
         $successMessage = 'You have successfully timed in.';
     }
 
-    return response()->json(['message' => $successMessage], 200);
+    // Check user role and return appropriate view
+    if ($user->hasRole('Employee')) {
+        $employees = Employee::all(); // Fetch employees to pass to the view
+        return view('attendances.create', compact('employees'))->with('successMessage', $successMessage);
+    } else {
+        return redirect()->route('attendances.index')->with('success', $successMessage);
+    }
 }
-
-
     // Method to check if attendance exists (for AJAX call)
     public function checkAttendance(Request $request)
 {
@@ -277,6 +282,29 @@ public function getEmployeeInfo(Request $request)
     return response()->json([
         'id' => $user->id,
         'first_name' => $user->first_name,
+    ]);
+}
+public function printAttendance(Request $request)
+{
+    $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'date_attended' => 'required|date',
+    ]);
+
+    $employeeId = $request->input('employee_id');
+    $dateAttended = $request->input('date_attended');
+
+    $attendance = Attendance::where('employee_id', $employeeId)
+                            ->where('date_attended', $dateAttended)
+                            ->first();
+
+    if (!$attendance) {
+        return redirect()->back()->withErrors(['error' => 'Attendance record not found.']);
+    }
+
+    // Pass the attendance data to the print view
+    return view('attendances.print', [
+        'attendance' => $attendance
     ]);
 }
 

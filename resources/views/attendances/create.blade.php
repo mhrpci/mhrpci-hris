@@ -29,9 +29,9 @@
                                 </ul>
                             </div>
                         @endif
-                        @if(session('success'))
+                        @if(session('successMessage'))
                             <div class="alert alert-success">
-                                {{ session('success') }}
+                                {{ session('successMessage') }}
                             </div>
                         @endif
                         @if(session('error'))

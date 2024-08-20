@@ -105,6 +105,7 @@ use App\Http\Controllers\MessageController;
     Route::get('/leave-balance/{employeeId}', [LeaveController::class, 'showLeaveBalance'])->name('leaves.balance');
     Route::get('/check-attendance', [AttendanceController::class, 'checkAttendance']);
     Route::get('/fetch-leaves', [HomeController::class, 'fetchLeavesByAuthUserFirstName']);
+    Route::get('/attendances/print', [AttendanceController::class, 'printAttendance'])->name('attendances.print');
 
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
@@ -115,5 +116,6 @@ use App\Http\Controllers\MessageController;
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
+    
 
 Auth::routes();

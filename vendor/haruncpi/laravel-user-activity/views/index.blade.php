@@ -437,7 +437,7 @@
                 <div id="user_list" ng-show="userList.length && filter.user_id">
                     <!---->
                     <div class="single_user" ng-repeat="user in userList" ng-click="onUserSelect(user)">
-                        <p>@{{ user.first_name }} <br>
+                        <p>@{{ user.name }} <br>
                             <span class="text_light">@{{ user.email }}</span>
                         </p>
                     </div>
@@ -521,7 +521,7 @@
                     </td>
 
                     <td>
-                        <strong>@{{ log.user.first_name }}</strong><br>
+                        <strong>@{{ log.user.name }}</strong><br>
                         <span class="text_light">@{{ log.user.email }}</span>
                     </td>
                     <td class="action_column text_right">
@@ -587,7 +587,7 @@
                     </tr>
                     <tr>
                         <td class="field_cell">Done by</td>
-                        <td>@{{ selected.user.first_name }} - <span class="text_light">@{{ selected.user.email }}</span></td>
+                        <td>@{{ selected.user.name }} - <span class="text_light">@{{ selected.user.email }}</span></td>
                     </tr>
                 </table>
 
@@ -631,7 +631,7 @@
 
                         <tr ng-repeat="h in editHistory">
                             <td>@{{ h.dateHumanize }}</td>
-                            <td>@{{ h.user.first_name }}</td>
+                            <td>@{{ h.user.name }}</td>
                             <td style="overflow: hidden">@{{ h.data }}</td>
                         </tr>
                         </tbody>
