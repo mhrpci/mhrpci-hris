@@ -304,71 +304,71 @@ public function store(Request $request): RedirectResponse
         return Excel::download(new EmployeesExport, 'employees.xlsx');
     }
 
-public function birthdays()
-{
-    $employees = Employee::all();
-    $birthdays = [];
+    public function birthdays()
+    {
+        $employees = Employee::all();
+        $birthdays = [];
 
-    // Initialize the $birthdays array with all months
-    $months = [
-        'January', 'February', 'March', 'April',
-        'May', 'June', 'July', 'August',
-        'September', 'October', 'November', 'December'
-    ];
-
-    foreach ($months as $month) {
-        $birthdays[$month] = []; // Set each month to an empty array initially
-    }
-
-    foreach ($employees as $employee) {
-        $birthMonth = date('F', strtotime($employee->birth_date)); // Get the month name
-        $birthdays[$birthMonth][] = [
-            'name' => $employee->first_name . ' ' . $employee->last_name,
-            'date' => date('j', strtotime($employee->birth_date)), // Get the day of the month
+        // Initialize the $birthdays array with all months
+        $months = [
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'
         ];
+
+        foreach ($months as $month) {
+            $birthdays[$month] = []; // Set each month to an empty array initially
+        }
+
+        foreach ($employees as $employee) {
+            $birthMonth = date('F', strtotime($employee->birth_date)); // Get the month name
+            $birthdays[$birthMonth][] = [
+                'name' => $employee->first_name . ' ' . $employee->last_name,
+                'date' => date('j', strtotime($employee->birth_date)), // Get the day of the month
+            ];
+        }
+
+        return view('employees.birthdays', compact('birthdays', 'months'));
     }
 
-    return view('employees.birthdays', compact('birthdays', 'months'));
-}
-
-public function getStatus($id)
-{
-    $employee = Employee::findOrFail($id);
-    return response()->json([
-        'employment_status' => $employee->employment_status,
-    ]);
-}
-public function viewOwnProfile(Request $request)
-{
-    $user = $request->user();
-    $employee = Employee::where('first_name', $user->first_name)->first();
-
-    if ($employee) {
-        // Load related data
-        $employee->load('position', 'department');
-        
-        // Get employment status
-        $employee->employment_status = $employee->employmentStatus();
-
-        // Prepare the response data
-        $responseData = [
-            'id' => $employee->id,
-            'first_name' => $employee->first_name,
-            'last_name' => $employee->last_name,
-            'email_address' => $employee->email_address,
-            'position' => [
-                'name' => $employee->position->name,
-            ],
-            'department' => [
-                'name' => $employee->department->name,
-            ],
+    public function getStatus($id)
+    {
+        $employee = Employee::findOrFail($id);
+        return response()->json([
             'employment_status' => $employee->employment_status,
-            // Add any other fields you want to include
-        ];
-
-        return response()->json($responseData);
-    } else {
-        return response()->json(['message' => 'Employee profile not found'], 404);
+        ]);
     }
-}
+    public function viewOwnProfile(Request $request)
+    {
+        $user = $request->user();
+        $employee = Employee::where('first_name', $user->first_name)->first();
+
+        if ($employee) {
+            // Load related data
+            $employee->load('position', 'department');
+            
+            // Get employment status
+            $employee->employment_status = $employee->employmentStatus();
+
+            // Prepare the response data
+            $responseData = [
+                'id' => $employee->id,
+                'first_name' => $employee->first_name,
+                'last_name' => $employee->last_name,
+                'email_address' => $employee->email_address,
+                'position' => [
+                    'name' => $employee->position->name,
+                ],
+                'department' => [
+                    'name' => $employee->department->name,
+                ],
+                'employment_status' => $employee->employment_status,
+                // Add any other fields you want to include
+            ];
+
+            return response()->json($responseData);
+        } else {
+            return response()->json(['message' => 'Employee profile not found'], 404);
+        }
+    }
 }
