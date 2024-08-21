@@ -5,67 +5,39 @@
     <h4 class="mt-4 text-dark">Loading</h4>
 @stop
 
-@section('content_header')
-    <h1>All Notifications</h1>
-@stop
-
 @section('content')
-<div class="container">
+<br>
+<div class="container-fluid">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white">
             <h3 class="card-title">Notifications</h3>
         </div>
         <div class="card-body">
-            @if(isset($allNotifications) && count($allNotifications) > 0)
-                @foreach($allNotifications as $category => $notifications)
+            @if(isset($allNotifications) && is_array($allNotifications))
+                @foreach($allNotifications as $category => $count)
                     @if($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin']))
-                        <h4 class="mt-4"><i class="fas fa-bell mr-2"></i>{{ ucfirst(str_replace('_', ' ', $category)) }}</h4>
-                        @if(is_array($notifications) && isset($notifications['today']))
-                            <h5 class="mt-3"><i class="fas fa-calendar-day mr-2"></i>Today</h5>
-                            @if(count($notifications['today']) > 0)
-                                @foreach($notifications['today'] as $notification)
-                                    @include('partials.notification-item', ['notification' => $notification])
-                                @endforeach
-                            @else
-                                <p class="text-muted">
-                                    @if($category === 'birthdays')
-                                        No birthdays today.
-                                    @elseif($category === 'holidays')
-                                        No holidays today.
-                                    @elseif($category === 'leave_requests')
-                                        No leave requests today.
-                                    @elseif($category === 'posts')
-                                        No posts today.
-                                    @endif
-                                </p>
-                            @endif
-
-                            @if(isset($notifications['upcoming']) && count($notifications['upcoming']) > 0)
-                                <h5 class="mt-3"><i class="fas fa-calendar-alt mr-2"></i>Upcoming</h5>
-                                @foreach($notifications['upcoming'] as $notification)
-                                    @include('partials.notification-item', ['notification' => $notification])
-                                @endforeach
-                            @endif
-                        @else
-                            @if(count($notifications) > 0)
-                                @foreach($notifications as $notification)
-                                    @include('partials.notification-item', ['notification' => $notification])
-                                @endforeach
-                            @else
-                                <p class="text-muted">
-                                    @if($category === 'birthdays')
-                                        No birthdays.
-                                    @elseif($category === 'holidays')
-                                        No holidays.
-                                    @elseif($category === 'leave_requests')
-                                        No leave requests.
-                                    @elseif($category === 'posts')
-                                        No posts.
-                                    @endif
-                                </p>
-                            @endif
-                        @endif
-                        <hr class="my-4">
+                        <div class="notification-item">
+                            <h4 class="mt-4">
+                                @if($category === 'birthdays')
+                                    <i class="fas fa-birthday-cake mr-2"></i>
+                                @elseif($category === 'posts')
+                                    <i class="fas fa-bullhorn mr-2"></i>
+                                @elseif($category === 'holidays')
+                                    <i class="fas fa-calendar-day mr-2"></i>
+                                @elseif($category === 'leave_requests')
+                                    <i class="fas fa-calendar-times mr-2"></i>
+                                @endif
+                                {{ ucfirst(str_replace('_', ' ', $category)) }}
+                            </h4>
+                            <p class="mt-2">
+                                @if($count > 0)
+                                    You have {{ $count }} {{ str_replace('_', ' ', $category) }}.
+                                @else
+                                    No {{ str_replace('_', ' ', $category) }}.
+                                @endif
+                            </p>
+                            <hr class="my-4">
+                        </div>
                     @endif
                 @endforeach
             @else
@@ -75,3 +47,37 @@
     </div>
 </div>
 @endsection
+
+@push('css')
+<style>
+    .notification-item h4 {
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+
+    .notification-item p {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .card {
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    @media (max-width: 768px) {
+        .card-header h3 {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .container-fluid {
+            max-width: 100%;
+        }
+    }
+</style>
+@endpush

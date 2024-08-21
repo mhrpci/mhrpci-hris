@@ -67,8 +67,8 @@
                                 <tr>
                                     <td>{{ $attendance->employee->company_id }} {{ $attendance->employee->last_name }} {{ $attendance->employee->first_name }},{{ $attendance->employee->middle_name}}</td>
                                     <td data-sort="{{ date('Y-m-d', strtotime($attendance->date_attended)) }}">
-    {{ date('F d, Y', strtotime($attendance->date_attended)) }}
-</td>
+                                        {{ date('F d, Y', strtotime($attendance->date_attended)) }}
+                                    </td>
                                     <td>{{ $attendance->time_in ? date('h:i A', strtotime($attendance->time_in)) : '--:-- --' }}</td>
                                     <td>
                                         {{ $attendance->time_out ? date('h:i A', strtotime($attendance->time_out)) : '--:-- --' }}

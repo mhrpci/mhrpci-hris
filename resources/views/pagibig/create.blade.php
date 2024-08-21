@@ -87,7 +87,22 @@
     </div>
     <!-- /.container-fluid -->
 @endsection
-
+@section('css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+@stop
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for all select elements
+            $('select').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+        });
+    </script>
+@stop
 @section('js')
 <script>
     $(document).ready(function() {

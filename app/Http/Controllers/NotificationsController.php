@@ -8,26 +8,27 @@ use App\Models\Post;
 use App\Models\Holiday;
 use App\Models\Leave;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotificationEmail;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
-
 
 class NotificationsController extends Controller
 {
-    private $notificationCategories = [
-        'birthdays' => ['today' => [], 'upcoming' => []],
-        'posts' => [],
-        'holidays' => ['today' => [], 'upcoming' => []],
-        'leave_requests' => []
+    // Initialize notification counts for each category
+    private $notificationCounts = [
+        'birthdays' => 0,
+        'posts' => 0,
+        'holidays' => 0,
+        'leave_requests' => 0
     ];
 
+    // Method to fetch notifications data
     public function getNotificationsData(Request $request)
     {
+        // Generate notifications and update counts
         $this->generateNotifications();
         
+        // Get the total number of notifications
         $totalNotifications = $this->countTotalNotifications();
+        // Generate HTML for dropdown notifications
         $dropdownHtml = $this->generateDropdownHtml();
 
         return [
@@ -38,112 +39,96 @@ class NotificationsController extends Controller
         ];
     }
 
+    // Generate all types of notifications
     private function generateNotifications()
     {
+        // Generate notifications for each category
         $this->generateBirthdayNotifications();
         $this->generatePostNotifications();
         $this->generateHolidayNotifications();
         $this->generateLeaveRequestNotifications();
     }
 
+    // Generate birthday notifications
     private function generateBirthdayNotifications()
-    {
-        $today = Carbon::today();
-        $currentMonth = $today->month;
+{
+    $today = Carbon::today();
+    $currentMonth = $today->month;
 
-        $upcomingBirthdays = Employee::whereMonth('birth_date', $currentMonth)->get();
-        
-        foreach ($upcomingBirthdays as $employee) {
-            $birthDate = Carbon::parse($employee->birth_date);
-            $notification = [
-                'icon' => 'fas fa-fw fa-birthday-cake',
-                'text' => "{$employee->first_name} {$employee->last_name}'s birthday",
-                'time' => $birthDate->format('F d'),
-            ];
+    // Fetch employees with birthdays in the current month
+    $upcomingBirthdays = Employee::whereMonth('birth_date', $currentMonth)->get();
 
-            if ($birthDate->isSameDay($today)) {
-                $notification['icon'] .= ' text-warning';
-                $notification['text'] = "Today is " . $notification['text'] . "!";
-                $notification['time'] = 'Today';
-                $this->notificationCategories['birthdays']['today'][] = $notification;
-            } else {
-                $notification['icon'] .= ' text-info';
-                $this->notificationCategories['birthdays']['upcoming'][] = $notification;
-            }
+    foreach ($upcomingBirthdays as $employee) {
+        $birthDate = Carbon::parse($employee->birth_date);
+        $notification = [
+            'icon' => 'fas fa-fw fa-birthday-cake', // Update the icon
+            'text' => "{$employee->first_name} {$employee->last_name}'s birthday",
+            'time' => $birthDate->format('F d'),
+        ];
+
+        // Check if the birthday is today
+        if ($birthDate->isSameDay($today)) {
+            $notification['icon'] .= ' text-warning'; // Highlight icon for today
+            $notification['text'] = "Today is " . $notification['text'] . "!";
+            $notification['time'] = 'Today';
+            $this->notificationCounts['birthdays']++; // Increment count for today's birthdays
+        } else {
+            $notification['icon'] .= ' text-info'; // Default icon color for upcoming birthdays
+            $this->notificationCounts['birthdays']++; // Increment count for upcoming birthdays
         }
     }
+}
 
-    private function generatePostNotifications()
-    {
-        $last24Hours = Carbon::now()->subDay();
-        $latestPosts = Post::with('user')
-            ->where('created_at', '>=', $last24Hours)
-            ->orderBy('created_at', 'desc')
-            ->get();
+private function generatePostNotifications()
+{
+    $last24Hours = Carbon::now()->subDay();
+    $latestPosts = Post::with('user')
+        ->where('created_at', '>=', $last24Hours)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        foreach ($latestPosts as $post) {
-            $this->notificationCategories['posts'][] = [
-                'icon' => 'fas fa-fw fa-newspaper text-primary',
-                'text' => "New post by {$post->user->first_name}: {$post->title}",
-                'time' => $post->created_at->diffForHumans(),
-            ];
-        }
+    foreach ($latestPosts as $post) {
+        $this->notificationCounts['posts']++; // Increment count for new posts
+    }
+}
+
+private function generateHolidayNotifications()
+{
+    $today = Carbon::today();
+    $tomorrow = Carbon::tomorrow();
+    $holidays = Holiday::orderBy('date', 'asc')->get();
+
+    // Check for today's holidays
+    $todaysHoliday = $holidays->firstWhere('date', $today->format('Y-m-d'));
+    if ($todaysHoliday) {
+        $this->notificationCounts['holidays']++; // Increment count for today's holiday
     }
 
-    private function generateHolidayNotifications()
-    {
-        $today = Carbon::today();
-        $tomorrow = Carbon::tomorrow();
-        $holidays = Holiday::orderBy('date', 'asc')->get();
+    // Check for tomorrow's holidays
+    $tomorrowsHolidays = $holidays->where('date', $tomorrow->format('Y-m-d'));
+    foreach ($tomorrowsHolidays as $holiday) {
+        $this->notificationCounts['holidays']++; // Increment count for tomorrow's holidays
+    }
+}
 
-        $todaysHoliday = $holidays->firstWhere('date', $today->format('Y-m-d'));
-        if ($todaysHoliday) {
-            $this->notificationCategories['holidays']['today'][] = [
-                'icon' => 'fas fa-fw fa-calendar-day text-success',
-                'text' => "Today's Holiday: {$todaysHoliday->title}",
-                'time' => 'Today',
-            ];
-        }
-
-        $tomorrowsHolidays = $holidays->where('date', $tomorrow->format('Y-m-d'));
-        foreach ($tomorrowsHolidays as $holiday) {
-            $this->notificationCategories['holidays']['upcoming'][] = [
-                'icon' => 'fas fa-fw fa-calendar-alt text-success',
-                'text' => "Tomorrow's holiday: {$holiday->title}",
-                'time' => 'Tomorrow',
-            ];
+private function generateLeaveRequestNotifications()
+{
+    if (Auth::user()->hasRole(['Super Admin', 'Admin'])) {
+        $pendingLeaves = Leave::where('status', 'pending')->get();
+        foreach ($pendingLeaves as $leave) {
+            $this->notificationCounts['leave_requests']++; // Increment count for pending leave requests
         }
     }
+}
 
-    private function generateLeaveRequestNotifications()
-    {
-        if (Auth::user()->hasRole(['Super Admin', 'Admin'])) {
-            $pendingLeaves = Leave::where('status', 'pending')->get();
-            foreach ($pendingLeaves as $leave) {
-                $this->notificationCategories['leave_requests'][] = [
-                    'icon' => 'fas fa-fw fa-clock text-info',
-                    'text' => "Pending leave request from {$leave->employee->first_name} {$leave->employee->last_name}",
-                    'time' => $leave->created_at->diffForHumans(),
-                ];
-            }
-        }
-    }
 
+    // Count the total number of notifications
     private function countTotalNotifications()
     {
-        $total = 0;
-        foreach ($this->notificationCategories as $category) {
-            if (is_array($category)) {
-                foreach ($category as $subcategory) {
-                    $total += count($subcategory);
-                }
-            } else {
-                $total += count($category);
-            }
-        }
-        return $total;
+        return array_sum($this->notificationCounts); // Sum all counts from notificationCounts
     }
 
+    // Generate HTML for dropdown notifications
     private function generateDropdownHtml()
     {
         $dropdownHtml = '';
@@ -161,23 +146,28 @@ class NotificationsController extends Controller
         return $dropdownHtml;
     }
 
+    // Flatten the notifications for dropdown HTML generation
     private function flattenNotifications()
     {
+        // Return an array of notifications with their counts
         $flattened = [];
-        foreach ($this->notificationCategories as $category => $notifications) {
-            if (is_array($notifications) && isset($notifications['today'])) {
-                $flattened = array_merge($flattened, $notifications['today']);
-                $flattened = array_merge($flattened, $notifications['upcoming']);
-            } else {
-                $flattened = array_merge($flattened, $notifications);
+        foreach ($this->notificationCounts as $category => $count) {
+            // Generate dummy notifications for each count
+            for ($i = 0; $i < $count; $i++) {
+                $flattened[] = [
+                    'icon' => 'fas fa-fw fa-bell',
+                    'text' => ucfirst($category) . " notification " . ($i + 1),
+                    'time' => 'Just now',
+                ];
             }
         }
         return $flattened;
     }
 
+    // Show all notifications in a view
     public function showAllNotifications(Request $request)
     {
         $this->generateNotifications();
-        return view('all-notifications', ['allNotifications' => $this->notificationCategories]);
+        return view('all-notifications', ['allNotifications' => $this->notificationCounts]);
     }
 }

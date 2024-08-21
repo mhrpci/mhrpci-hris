@@ -7,7 +7,7 @@
 
 @section('content')
 <br>
-<div class="container">
+<div class="container-fluid">
     <h1>Employee Timesheet</h1>
     
     <!-- Filter and Search Card -->
@@ -37,61 +37,81 @@
 
     <!-- List of Employees Card -->
     <div class="card">
-        <ul class="list-group list-group-flush" id="employee-list">
-            @foreach ($employees as $employee)
-                <li class="list-group-item" data-department-id="{{ $employee->department_id }}" data-employee-name="{{ $employee->last_name }} {{ $employee->first_name }} {{ $employee->middle_name }}" data-company-id="{{ $employee->company_id }}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            {{ $employee->company_id }}-{{ $employee->last_name }}, {{ $employee->first_name }} {{ $employee->middle_name }}
-                        </div>
-                        @if (count($timesheets[$employee->id]) > 0)
-                        <a href="{{ route('employee.attendance', ['employee_id' => $employee->id]) }}" class="btn btn-primary float-right toggle-attendance" data-employee-id="{{ $employee->id }}"><i class="fas fa-file-alt"></i> Timesheet</a>
-                        @else
-                         <p>No record</p>
-                        @endif
-                    </div>
-                </li>
-            @endforeach
-        </ul>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Company ID</th>
+                        <th>Name</th>
+                        <th>Timesheet</th>
+                    </tr>
+                </thead>
+                <tbody id="employee-list">
+                    @foreach ($employees as $employee)
+                        <tr class="employee-row" data-department-id="{{ $employee->department_id }}" data-employee-name="{{ $employee->last_name }} {{ $employee->first_name }} {{ $employee->middle_name }}" data-company-id="{{ $employee->company_id }}">
+                            <td>{{ $employee->company_id }}</td>
+                            <td>{{ $employee->last_name }}, {{ $employee->first_name }} {{ $employee->middle_name }}</td>
+                            <td>
+                                @if (count($timesheets[$employee->id]) > 0)
+                                    <a href="{{ route('employee.attendance', ['employee_id' => $employee->id]) }}" class="btn btn-primary toggle-attendance" data-employee-id="{{ $employee->id }}"><i class="fas fa-file-alt"></i> Timesheet</a>
+                                @else
+                                    No record
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
         <div id="no-employees" class="text-center p-4" style="display: none;">
             No employees found.
         </div>
     </div>
 </div>
 
+@section('css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+@stop
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for all select elements
+            $('select').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+        });
+    </script>
+@stop
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
         function filterAndSearch() {
             var departmentId = $('#filter').val();
             var searchQuery = $('#search').val().toLowerCase();
-            var anyVisible = false;
 
-            console.log('Department ID:', departmentId); // Debugging log
-            console.log('Search Query:', searchQuery); // Debugging log
+            $('.employee-row').show();
 
-            $('#employee-list .list-group-item').each(function() {
-                var employeeName = $(this).data('employee-name').toLowerCase();
-                var companyId = $(this).data('company-id').toString().toLowerCase();
-                var itemDepartmentId = $(this).data('department-id').toString();
+            if (departmentId !== 'all') {
+                $('.employee-row').filter(function() {
+                    return $(this).data('department-id') !== departmentId;
+                }).hide();
+            }
 
-                console.log('Employee:', employeeName, companyId, itemDepartmentId); // Debugging log
-                
-                var matchesSearch = employeeName.includes(searchQuery) || companyId.includes(searchQuery);
-                var matchesDepartment = (departmentId === 'all') || (departmentId === itemDepartmentId);
+            if (searchQuery.length > 0) {
+                $('.employee-row').filter(function() {
+                    var employeeName = $(this).data('employee-name').toLowerCase();
+                    var companyId = $(this).data('company-id').toString().toLowerCase();
+                    return !(employeeName.includes(searchQuery) || companyId.includes(searchQuery));
+                }).hide();
+            }
 
-                if (matchesSearch && matchesDepartment) {
-                    $(this).show();
-                    anyVisible = true;
-                } else {
-                    $(this).hide();
-                }
-            });
-
-            if (anyVisible) {
-                $('#no-employees').hide();
-            } else {
+            if ($('.employee-row:visible').length === 0) {
                 $('#no-employees').show();
+            } else {
+                $('#no-employees').hide();
             }
         }
 
