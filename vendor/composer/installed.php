@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '38fd8ba2b08649659dd8b206e011ac4f5b192e6e',
+        'reference' => '58d67ab39eba33a5af939ab5b98eb383ce5eaf2c',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -478,15 +478,6 @@
                 0 => '*',
             ),
         ),
-        'laravel-notification-channels/webpush' => array(
-            'pretty_version' => '9.0.0',
-            'version' => '9.0.0.0',
-            'reference' => '9ed37971f230f99e8e45b5ba00282c608a458fb8',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../laravel-notification-channels/webpush',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'laravel/framework' => array(
             'pretty_version' => 'v10.48.20',
             'version' => '10.48.20.0',
@@ -499,7 +490,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '38fd8ba2b08649659dd8b206e011ac4f5b192e6e',
+            'reference' => '58d67ab39eba33a5af939ab5b98eb383ce5eaf2c',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

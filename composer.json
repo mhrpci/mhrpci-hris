@@ -13,7 +13,6 @@
         "haruncpi/laravel-user-activity": "^1.0",
         "intervention/image": "2.7",
         "jeroennoten/laravel-adminlte": "^3.11",
-        "laravel-notification-channels/webpush": "^9.0",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
