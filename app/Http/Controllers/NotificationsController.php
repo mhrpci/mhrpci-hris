@@ -25,7 +25,7 @@ class NotificationsController extends Controller
     {
         // Generate notifications and update counts
         $this->generateNotifications();
-        
+
         // Get the total number of notifications
         $totalNotifications = $this->countTotalNotifications();
         // Generate HTML for dropdown notifications
