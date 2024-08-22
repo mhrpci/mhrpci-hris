@@ -7,10 +7,6 @@ use App\Models\User;
 use App\Models\Employee;
 use App\Models\Attendance;
 use App\Models\Leave;
-use App\Models\Sss;
-use App\Models\Pagibig;
-use App\Models\Tin;
-use App\Models\Philhealth;
 use App\Models\Post;
 use App\Models\Holiday;
 use Carbon\Carbon;
@@ -191,39 +187,7 @@ $employeesByDepartment = $this->countEmployeesByDepartment();
         $approvedLeavesCount = $this->countLeavesByStatus('approved');
         $rejectedLeavesCount = $this->countLeavesByStatus('rejected');
         $leaveCount = Leave::count();
-        // Calculate sum of sss_contribution
-        $sssContributionSum = Sss::sum('sss_contribution');
 
-        // Fetch monthly contributions
-        $sssMonthlyContributions = [];
-        for ($month = 1; $month <= 12; $month++) {
-            $sssMonthlyContributions[] = Sss::whereMonth('date', $month)->sum('sss_contribution');
-        }
-
-        $pagibigContributionSum = Pagibig::sum('pagibig_contribution');
-
-        // Fetch monthly contributions
-        $pagibigMonthlyContributions = [];
-        for ($month = 1; $month <= 12; $month++) {
-            $pagibigMonthlyContributions[] = Pagibig::whereMonth('date', $month)->sum('pagibig_contribution');
-        }
-
-        // Calculate sum of tin_contribution
-        $tinContributionSum = Tin::sum('tin_contribution');
-
-        // Fetch monthly contributions
-        $tinMonthlyContributions = [];
-        for ($month = 1; $month <= 12; $month++) {
-            $tinMonthlyContributions[] = Tin::whereMonth('date', $month)->sum('tin_contribution');
-        }
-
-        $philhealthContributionSum = Philhealth::sum('philhealth_contribution');
-
-        // Fetch monthly contributions
-        $philhealthMonthlyContributions = [];
-        for ($month = 1; $month <= 12; $month++) {
-            $philhealthMonthlyContributions[] = Philhealth::whereMonth('date', $month)->sum('philhealth_contribution');
-        }
 
         // Delete posts where date_end is equal to today
     Post::whereDate('date_end', '=', Carbon::today())->delete();
@@ -250,14 +214,6 @@ $employeesByDepartment = $this->countEmployeesByDepartment();
             'pendingLeavesCount',
             'approvedLeavesCount',
             'rejectedLeavesCount',
-            'sssContributionSum',
-            'sssMonthlyContributions',
-            'pagibigContributionSum',
-            'pagibigMonthlyContributions',
-            'tinContributionSum',
-            'tinMonthlyContributions',
-            'philhealthContributionSum',
-            'philhealthMonthlyContributions',
             'latestPosts',
             'todayPosts',
             'leaveDetails',
