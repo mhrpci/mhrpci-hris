@@ -30,6 +30,7 @@ class Attendance extends Model
         return self::REMARKS;
     }
 
+
     protected $fillable = [
         'employee_id',
         'date_attended',

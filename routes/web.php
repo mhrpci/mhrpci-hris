@@ -28,6 +28,7 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PayrollController;
 
 
 
@@ -118,5 +119,8 @@ use App\Http\Controllers\MessageController;
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
 
+    Route::resource('payrolls', PayrollController::class);
+    Route::get('payrolls/{payroll}/payslip', [PayrollController::class, 'generatePayslip'])->name('payrolls.payslip');
+    Route::get('generate-all-payrolls', [PayrollController::class, 'generateAllPayrolls'])->name('payrolls.generate-all');
 
 Auth::routes();

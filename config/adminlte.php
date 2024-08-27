@@ -324,7 +324,7 @@ return [
                 'period' => 30,                       // The update period for get new data (in seconds, optional).
             ],
         ],
-        
+
         [
             'type' => 'sidebar-menu-search',
             'text' => 'Search...',
@@ -332,7 +332,7 @@ return [
         [
             'text' => ' Dashboard',
             'url' => 'home',
-            'icon' => 'fas fa-chart-line', 
+            'icon' => 'fas fa-chart-line',
         ],
         [
             'text' => ' Employee Management',
@@ -370,13 +370,13 @@ return [
                     'icon' => 'fas fa-file-alt',
                     'active' => ['/timesheets*', 'regex:/employee\/attendance\/[0-9]+/'],
                     'can' => 'admin', 'super-admin',
-                ],   
+                ],
                 [
                     'text' => 'My Timesheet',
                     'url' => '/my-timesheet',
                     'icon' => 'fas fa-file-alt',
                     'can' => 'normal-employee',
-                ],                 
+                ],
             ],
         ],
         [
@@ -388,7 +388,7 @@ return [
                     'url' => 'leaves',
                     'icon' => 'fas fa-list',
                     'can' => 'admin', 'super-admin',
-                ],                
+                ],
                 [
                     'text' => 'Apply Leave',
                     'url' => 'leaves/create',
@@ -410,7 +410,7 @@ return [
                     'active' => ['leaves-report', 'regex:/leaves-report\/[0-9]+\/leaves/'],
                     'can' => ['admin', 'super-admin'],
                 ],
-                
+
             ],
         ],
         [

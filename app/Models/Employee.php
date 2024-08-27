@@ -61,7 +61,10 @@ class Employee extends Model
     {
         return $this->email_address;
     }
-
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class);
+    }
     public function tasks()
     {
         return $this->hasMany(Task::class);
@@ -124,7 +127,14 @@ class Employee extends Model
     {
         return $this->hasOne(User::class);
     }
-
+    public function cashAdvance(): HasMany
+    {
+        return $this->hasMany(CashAdvance::class);
+    }
+    public function pagibigLoan(): HasMany
+    {
+        return $this->hasMany(PagibigLoan::class);
+    }
     public function employmentStatus(): string
 {
     $hiredDate = \Carbon\Carbon::parse($this->date_hired);

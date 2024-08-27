@@ -511,6 +511,66 @@
             line-height: 1;
             padding: 0 5px;
         }
+        @media screen and (max-width: 768px) {
+    .container {
+        width: 90%;
+        min-height: auto;
+        flex-direction: column;
+    }
+
+    .form-container, .overlay-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        left: 0;
+    }
+
+    .overlay-container {
+        display: none;
+    }
+
+    .sign-in-container {
+        z-index: 2;
+    }
+
+    form {
+        padding: 30px 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    input, button {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    input, button {
+        font-size: 14px;
+    }
+}
+
+/* Ensure form elements don't overflow on very small screens */
+@media screen and (max-width: 320px) {
+    input, button {
+        width: 90%;
+    }
+}
+
+/* Adjust container height for smaller screens */
+@media screen and (max-height: 600px) {
+    .container {
+        height: auto;
+        min-height: 100vh;
+    }
+}
     </style>
 </head>
 <body>
