@@ -11,7 +11,7 @@ use Carbon\Carbon;
 class Attendance extends Model
 {
     use HasFactory, Loggable;
-    
+
     protected const REMARKS = [
         'SUNDAY' => 'Sunday',
         'SATURDAY' => 'Saturday',
@@ -110,7 +110,7 @@ class Attendance extends Model
     private function setLeaveAttendance($leave)
     {
         $leavePaymentStatus = $leave->getLeavePaymentStatus();
-        
+
         if ($leavePaymentStatus === 'With Pay') {
             $this->time_in = '08:00:00';
             $this->time_out = '17:00:00';
@@ -120,7 +120,7 @@ class Attendance extends Model
             $this->time_out = null;
             $this->hours_worked = '00:00:00';
         }
-        
+
         $this->remarks = 'On Leave';
         $this->leave_payment_status = $leavePaymentStatus;
     }
@@ -203,6 +203,15 @@ class Attendance extends Model
         return $end->diffInHours($start);
     }
     return null;
+}
+
+public function getAttendancePoints(): float
+{
+    // Assuming 'PRESENT' status gets 0.5 points
+    if ($this->remarks === 'Present' && $this->leave_payment_status === 'With Pay') {
+        return 0.5;
+    }
+    return 0;
 }
 
 }

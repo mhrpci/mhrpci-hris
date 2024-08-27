@@ -81,7 +81,7 @@ use App\Http\Controllers\MessageController;
     Route::get('/notifications/all', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
     Route::post('/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
-    
+
     Route::resource('sss', SssController::class);
     Route::resource('loansss', SssLoanController::class);
     Route::resource('pagibig', PagibigController::class);
@@ -117,6 +117,6 @@ use App\Http\Controllers\MessageController;
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
-    
+
 
 Auth::routes();

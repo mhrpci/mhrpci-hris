@@ -1,8 +1,79 @@
 @extends('adminlte::page')
 
 @section('preloader')
-    <i class="fas fa-4x fa-spin fa-spinner text-secondary"></i>
-    <h4 class="mt-4 text-dark">Loading</h4>
+<div id="loader" class="loader">
+    <div class="loader-content">
+        <div class="wave-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <h4 class="mt-4 text-dark">Loading...</h4>
+    </div>
+</div>
+<style>
+    /* Loader */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+/* Wave Loader */
+.wave-loader {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 50px;
+}
+
+.wave-loader > div {
+    width: 10px;
+    height: 50px;
+    margin: 0 5px;
+    background-color: #8e44ad; /* Purple color */
+    animation: wave 1s ease-in-out infinite;
+}
+
+.wave-loader > div:nth-child(2) {
+    animation-delay: -0.9s;
+}
+
+.wave-loader > div:nth-child(3) {
+    animation-delay: -0.8s;
+}
+
+.wave-loader > div:nth-child(4) {
+    animation-delay: -0.7s;
+}
+
+.wave-loader > div:nth-child(5) {
+    animation-delay: -0.6s;
+}
+
+@keyframes wave {
+    0%, 100% {
+        transform: scaleY(0.5);
+    }
+    50% {
+        transform: scaleY(1);
+    }
+}
+</style>
 @stop
 
 @section('content')
@@ -10,7 +81,7 @@
     <form action="{{ route('tasks.update', $task) }}" method="POST">
         @csrf
         @method('PUT')
-        
+
         @if(auth()->user()->hasRole(['Super Admin', 'Admin']))
             <div class="form-group">
                 <label for="title">Title</label>
@@ -44,7 +115,7 @@
                 <input type="text" class="form-control" value="{{ $task->employee->company_id }} {{ $task->employee->last_name }}, {{ $task->employee->first_name }} {{ $task->employee->middle_name }}" readonly>
             </div>
         @endif
-        
+
         <div class="form-group">
             <label for="status">Status</label>
             <select name="status" id="status" class="form-control" required>
@@ -53,7 +124,7 @@
                 @endforeach
             </select>
         </div>
-        
+
         <button type="submit" class="btn btn-primary">Update Task</button>
     </form>
 @endsection

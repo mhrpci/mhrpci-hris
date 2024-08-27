@@ -66,7 +66,7 @@ class Employee extends Model
     {
         return $this->hasMany(Task::class);
     }
-    
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
