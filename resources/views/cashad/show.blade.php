@@ -101,11 +101,11 @@
                     </div>
                     <div class="form-group">
                         <label for="amount">Amount:</label>
-                        <p>&#8369;{{ number_format($cashad->cash_advance, 2) }}</p>
+                        <p>&#8369;{{ number_format($cashad->amount, 2) }}</p>
                     </div>
                     <div class="form-group">
                         <label for="date">Date:</label>
-                        <p>{{ $cashad->date_repayment }}</p>
+                        <p>{{ $cashad->date }}</p>
                     </div>
                     <a href="{{ route('cashad.index') }}" class="btn btn-primary">Back to List</a>
                 </div>

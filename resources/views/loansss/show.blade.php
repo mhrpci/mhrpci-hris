@@ -105,11 +105,11 @@
                     </div>
                     <div class="form-group">
                         <label for="amount">Amount:</label>
-                        <p>&#8369;{{ number_format($loansss->sss_loan, 2) }}</p>
+                        <p>&#8369;{{ number_format($loansss->amount, 2) }}</p>
                     </div>
                     <div class="form-group">
                         <label for="date">Date:</label>
-                        <p>{{ $loansss->date_repayment }}</p>
+                        <p>{{ $loansss->date }}</p>
                     </div>
                     <a href="{{ route('loansss.index') }}" class="btn btn-primary">Back to List</a>
                 </div>

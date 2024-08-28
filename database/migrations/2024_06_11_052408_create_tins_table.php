@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('employee_id')->constrained()->cascadeOnDelete();
             $table->string('employee_tin_id')->constrained()->cascadeOnDelete();
             $table->date('date');
-            $table->float('tin_contribution');
+            $table->float('amount');
             $table->timestamps();
         });
     }

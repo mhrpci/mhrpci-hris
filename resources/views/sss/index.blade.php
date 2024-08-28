@@ -113,7 +113,7 @@
                                         <td>{{ $sss->employee->sss_no }}</td>
                                         <td>{{ $sss->employee->company_id }} {{ $sss->employee->last_name }} {{ $sss->employee->first_name }}, {{ $sss->employee->middle_name }}</td>
                                         <td>{{ \Carbon\Carbon::parse($sss->date)->format('F j, Y') }}</td>
-                                        <td>&#8369;{{  number_format($sss->sss_contribution, 2)}}</td>
+                                        <td>&#8369;{{  number_format($sss->amount, 2)}}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

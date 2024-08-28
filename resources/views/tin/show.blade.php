@@ -105,7 +105,7 @@
                     </div>
                     <div class="form-group">
                         <label for="amount">Amount:</label>
-                        <p>&#8369;{{  number_format($tin->tin_contribution, 2)}}</p>
+                        <p>&#8369;{{  number_format($tin->amount, 2)}}</p>
                     </div>
                     <div class="form-group">
                         <label for="date">Date:</label>

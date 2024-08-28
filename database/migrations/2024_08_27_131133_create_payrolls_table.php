@@ -13,21 +13,20 @@ return new class extends Migration
     {
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');
-            $table->decimal('basic_salary', 10, 2);
-            $table->decimal('gross_salary', 10, 2);
-            $table->decimal('net_salary', 10, 2);
-            $table->decimal('sss_contribution', 10, 2);
-            $table->decimal('pagibig_contribution', 10, 2);
-            $table->decimal('philhealth_contribution', 10, 2);
-            $table->decimal('sss_loan_deduction', 10, 2);
-            $table->decimal('pagibig_loan_deduction', 10, 2);
-            $table->decimal('cash_advance_deduction', 10, 2);
-            $table->decimal('overtime_pay', 10, 2);
-            $table->decimal('attendance_deduction', 10, 2);
-            $table->decimal('total_deductions', 10, 2);
+            $table->decimal('gross_pay', 10, 2);
+            $table->decimal('net_pay', 10, 2);
+            $table->integer('days_worked');
+            $table->decimal('overtime_hours', 5, 2);
+            $table->decimal('overtime_pay', 8, 2);
+            $table->foreignId('sss_id')->constrained();
+            $table->foreignId('philhealth_id')->constrained();
+            $table->foreignId('pagibig_id')->constrained();
+            $table->foreignId('sss_loan_id')->nullable()->constrained();
+            $table->foreignId('pagibig_loan_id')->nullable()->constrained();
+            $table->foreignId('cash_advance_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

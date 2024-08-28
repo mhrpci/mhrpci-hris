@@ -111,7 +111,7 @@
                                     <td>{{ $tin->employee->tin_no }}</td>
                                     <td>{{ $tin->employee->company_id }} {{ $tin->employee->last_name }} {{ $tin->employee->first_name }}, {{ $tin->employee->middle_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($tin->date)->format('F j, Y') }}</td>
-                                    <td>&#8369;{{ number_format($tin->tin_contribution, 2) }}</td>
+                                    <td>&#8369;{{ number_format($tin->amount, 2) }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <div class="dropdown">

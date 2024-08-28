@@ -16,9 +16,9 @@ class Tin extends Model
         'employee_id',
         'employee_tin_id',
         'date',
-        'tin_contribution',
+        'amount',
     ];
-    
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

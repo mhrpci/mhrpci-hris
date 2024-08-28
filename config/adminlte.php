@@ -420,18 +420,18 @@ return [
             'submenu' => [
                 [
                     'text' => 'Payroll',
-                    'url' => 'payroll',
+                    'url' => 'payrolls',
                     'icon' => 'fas fa-money-bill-wave',
                     'active' => ['payroll*', 'regex'],
                     'can' => 'admin', 'super-admin',
                 ],
-                [
-                    'text' => ' Generate Pay Slip',
-                    'url' => 'generate',
-                    'icon' => 'fas fa-print',
-                    'active' => ['generate*', 'regex'],
-                    'can' => 'admin', 'super-admin',
-                ],
+                // [
+                //     'text' => ' Generate Pay Slip',
+                //     'url' => 'generate',
+                //     'icon' => 'fas fa-print',
+                //     'active' => ['generate*', 'regex'],
+                //     'can' => 'admin', 'super-admin',
+                // ],
             ],
         ],
         [

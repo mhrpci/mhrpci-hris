@@ -116,15 +116,15 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="date_repayment">Date<span class="text-danger">*</span></label>
-                                        <input type="date" id="date_repayment" name="date_repayment" class="form-control" required>
+                                        <label for="date">Date<span class="text-danger">*</span></label>
+                                        <input type="date" id="date" name="date" class="form-control" required>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="cash_advance">Amount<span class="text-danger">*</span></label>
-                                        <input type="number" id="cash_advance" name="cash_advance" class="form-control" step="0.01" required>
+                                        <label for="amount">Amount<span class="text-danger">*</span></label>
+                                        <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
                                     </div>
                                 </div>
                                 <!-- Add more fields as needed -->

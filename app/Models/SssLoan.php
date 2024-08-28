@@ -14,10 +14,10 @@ class SssLoan extends Model
 
     protected $fillable = [
         'employee_id',
-        'date_repayment',
-        'sss_loan',
+        'date',
+        'amount',
     ];
-    
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

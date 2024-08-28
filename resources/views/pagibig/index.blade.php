@@ -113,7 +113,7 @@
                                     <td>{{ $pagibigItem->employee->pagibig_no }}</td>
                                     <td>{{ $pagibigItem->employee->company_id }} {{ $pagibigItem->employee->last_name }} {{ $pagibigItem->employee->first_name }}, {{ $pagibigItem->employee->middle_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($pagibigItem->date)->format('F j, Y') }}</td>
-                                    <td>&#8369;{{  number_format($pagibigItem->pagibig_contribution, 2)}}</td>
+                                    <td>&#8369;{{  number_format($pagibigItem->amount, 2)}}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-sm" type="button" id="dropdownMenuButton_{{ $pagibigItem->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

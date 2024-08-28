@@ -16,9 +16,9 @@ class Pagibig extends Model
         'employee_id',
         'employee_pagibig_id',
         'date',
-        'pagibig_contribution',
+        'amount',
     ];
-    
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

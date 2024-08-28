@@ -132,8 +132,8 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="pagibig_contribution">Amount Contributed<span class="text-danger">*</span></label>
-                                        <input type="number" id="pagibig_contribution" name="pagibig_contribution" class="form-control" step="0.01" required value="{{ $pagibig->pagibig_contribution }}">
+                                        <label for="amount">Amount Contributed<span class="text-danger">*</span></label>
+                                        <input type="number" id="amount" name="amount" class="form-control" step="0.01" required value="{{ $pagibig->amount }}">
                                     </div>
                                 </div>
                                 <!-- Add more fields as needed -->

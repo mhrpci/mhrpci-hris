@@ -120,7 +120,6 @@ use App\Http\Controllers\PayrollController;
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
 
     Route::resource('payrolls', PayrollController::class);
-    Route::get('payrolls/{payroll}/payslip', [PayrollController::class, 'generatePayslip'])->name('payrolls.payslip');
-    Route::get('generate-all-payrolls', [PayrollController::class, 'generateAllPayrolls'])->name('payrolls.generate-all');
+
 
 Auth::routes();

@@ -118,15 +118,15 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="date_repayment">Date<span class="text-danger">*</span></label>
-                                        <input type="date" id="date_repayment" name="date_repayment" class="form-control" required value="{{ $loansss->date_repayment }}">
+                                        <label for="date">Date<span class="text-danger">*</span></label>
+                                        <input type="date" id="date" name="date" class="form-control" required value="{{ $loansss->date }}">
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="sss_loan">Amount<span class="text-danger">*</span></label>
-                                        <input type="number" id="sss_loan" name="sss_loan" class="form-control" step="0.01" required value="{{ $loansss->sss_loan }}">
+                                        <label for="amount">Amount<span class="text-danger">*</span></label>
+                                        <input type="number" id="amount" name="amount" class="form-control" step="0.01" required value="{{ $loansss->amount }}">
                                     </div>
                                 </div>
                                 <!-- Add more fields as needed -->

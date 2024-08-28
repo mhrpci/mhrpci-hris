@@ -16,9 +16,9 @@ class Philhealth extends Model
         'employee_id',
         'employee_philhealth_id',
         'date',
-        'philhealth_contribution',
+        'amount',
     ];
-    
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

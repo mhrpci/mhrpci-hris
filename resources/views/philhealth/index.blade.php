@@ -114,7 +114,7 @@
                                     <td>{{ $philhealth->employee->philhealth_no }}</td>
                                     <td>{{ $philhealth->employee->company_id }} {{ $philhealth->employee->last_name }} {{ $philhealth->employee->first_name }}, {{ $philhealth->employee->middle_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($philhealth->date)->format('F j, Y') }}</td>
-                                    <td>&#8369;{{  number_format($philhealth->philhealth_contribution, 2)}}</td>
+                                    <td>&#8369;{{  number_format($philhealth->amount, 2)}}</td>
                                     <!-- Replace the existing 'Action' column in the table with dropdown buttons -->
                                     <td>
                                         <div class="dropdown">

@@ -105,7 +105,7 @@
                     </div>
                     <div class="form-group">
                         <label for="amount">Amount:</label>
-                        <p>&#8369;{{  number_format($sss->sss_contribution, 2)}}</p>
+                        <p>&#8369;{{  number_format($sss->amount, 2)}}</p>
                     </div>
                     <div class="form-group">
                         <label for="date">Date:</label>

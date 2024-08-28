@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cash_advances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->float('cash_advance');
-            $table->date('date_repayment');
+            $table->float('amount');
+            $table->date('date');
             $table->timestamps();
         });
     }

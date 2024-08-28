@@ -115,6 +115,12 @@ class Employee extends Model
     {
         return $this->hasMany(Philhealth::class);
     }
+
+    public function pagibig(): HasMany
+    {
+        return $this->hasMany(Pagibig::class);
+    }
+
     public function leave(): HasMany
     {
         return $this->hasMany(Leave::class);

@@ -16,9 +16,9 @@ class Sss extends Model
         'employee_id',
         'employee_sss_id',
         'date',
-        'sss_contribution',
+        'amount',
     ];
-    
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

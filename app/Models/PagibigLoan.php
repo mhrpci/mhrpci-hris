@@ -14,10 +14,10 @@ class PagibigLoan extends Model
 
     protected $fillable = [
         'employee_id',
-        'date_repayment',
-        'pagibig_loan',
+        'date',
+        'amount',
     ];
-    
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

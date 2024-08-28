@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('sss_loans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->float('sss_loan');
-            $table->date('date_repayment');
+            $table->float('amount');
+            $table->date('date');
             $table->timestamps();
         });
     }

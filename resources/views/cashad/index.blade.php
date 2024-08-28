@@ -109,8 +109,8 @@
                                 @foreach ($cashad as $cashad)
                                     <tr>
                                         <td>{{ $cashad->employee->company_id }} {{ $cashad->employee->last_name }} {{ $cashad->employee->first_name }}, {{ $cashad->employee->middle_name }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($cashad->date_repayment)->format('F j, Y') }}</td>
-                                        <td>&#8369;{{ number_format($cashad->cash_advance, 2) }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($cashad->date)->format('F j, Y') }}</td>
+                                        <td>&#8369;{{ number_format($cashad->amount, 2) }}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -110,8 +110,8 @@
                                 @foreach ($loanpagibig as $loanpagibig)
                                     <tr>
                                         <td>{{ $loanpagibig->employee->company_id }} {{ $loanpagibig->employee->last_name }} {{ $loanpagibig->employee->first_name }}, {{ $loanpagibig->employee->middle_name }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($loanpagibig->date_repayment)->format('F j, Y') }}</td>
-                                        <td>&#8369;{{ number_format($loanpagibig->pagibig_loan, 2) }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($loanpagibig->date)->format('F j, Y') }}</td>
+                                        <td>&#8369;{{ number_format($loanpagibig->amount, 2) }}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

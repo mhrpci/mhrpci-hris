@@ -131,8 +131,8 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="tin_contribution">Amount Contributed<span class="text-danger">*</span></label>
-                                        <input type="number" id="tin_contribution" name="tin_contribution" class="form-control" required>
+                                        <label for="amount">Amount Contributed<span class="text-danger">*</span></label>
+                                        <input type="number" id="amount" name="amount" class="form-control" required>
                                     </div>
                                 </div>
                                 <!-- Add more fields as needed -->
