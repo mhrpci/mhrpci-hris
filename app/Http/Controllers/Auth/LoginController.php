@@ -20,6 +20,12 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
     }
 
+    /**
+     * Handle an authentication attempt.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -29,7 +35,20 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        // Check if the credentials are valid
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            // Check if the user's status is disabled
+            if ($user->status === 'disabled') {
+                Auth::logout(); // Log out the user if status is disabled
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account is disabled.',
+                    'field' => 'email'
+                ]);
+            }
+
             // Authentication passed
             return response()->json(['success' => true, 'redirect' => '/home']);
         }
@@ -52,5 +71,4 @@ class LoginController extends Controller
             'field' => 'password'
         ]);
     }
-    
 }

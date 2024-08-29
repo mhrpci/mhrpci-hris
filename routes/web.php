@@ -82,6 +82,9 @@ use App\Http\Controllers\PayrollController;
     Route::get('/notifications/all', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
     Route::post('/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
+    Route::get('/employees/filter', [EmployeeController::class, 'filter'])->name('employees.filter');
+    Route::post('employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
+    Route::patch('employees/{employee}/disable', [EmployeeController::class, 'disable'])->name('employees.disable');
 
     Route::resource('sss', SssController::class);
     Route::resource('loansss', SssLoanController::class);

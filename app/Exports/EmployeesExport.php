@@ -140,7 +140,7 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping, With
         if (!$date) {
             return '';
         }
-        
+
         try {
             return Carbon::parse($date)->format('Y-m-d');
         } catch (\Exception $e) {

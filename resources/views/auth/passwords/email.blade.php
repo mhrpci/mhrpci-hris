@@ -101,51 +101,62 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Add form submission handler
-            const resetPasswordForm = document.getElementById('reset-password-form');
-            resetPasswordForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+    // Add form submission handler
+    const resetPasswordForm = document.getElementById('reset-password-form');
+    resetPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-                try {
-                    const response = await fetch(resetPasswordForm.action, {
-                        method: 'POST',
-                        body: new FormData(resetPasswordForm),
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
+        try {
+            const response = await fetch(resetPasswordForm.action, {
+                method: 'POST',
+                body: new FormData(resetPasswordForm),
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
 
-                    const data = await response.json();
+            const data = await response.json();
 
-                    if (response.ok) {
-                        // Success message
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: 'Password reset link has been sent to your email.',
-                            confirmButtonColor: '#6a1b9a'
-                        });
-                    } else {
-                        // Error message
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: data.message || 'Failed to send password reset link. Please try again.',
-                            confirmButtonColor: '#6a1b9a'
-                        });
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
+            if (response.ok) {
+                if (data.status === 'disabled') {
+                    // User is disabled, show error
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong. Please try again later.',
+                        title: 'Account Disabled',
+                        text: 'Your account is disabled. Please contact support.',
+                        confirmButtonColor: '#6a1b9a'
+                    });
+                } else {
+                    // Success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Password reset link has been sent to your email.',
                         confirmButtonColor: '#6a1b9a'
                     });
                 }
+            } else {
+                // Error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.message || 'Failed to send password reset link. Please try again.',
+                    confirmButtonColor: '#6a1b9a'
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong. Please try again later.',
+                confirmButtonColor: '#6a1b9a'
             });
-        });
+        }
+    });
+});
+
     </script>
 </body>
 </html>

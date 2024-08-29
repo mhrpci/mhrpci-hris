@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-    
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-   
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -53,7 +53,7 @@ class UserController extends Controller
             'profile_image' => 'nullable',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
         ]);
 
         $input = $request->all();
@@ -72,19 +72,19 @@ class UserController extends Controller
         return redirect()->route('users.index')
             ->with('success', 'User created successfully');
     }
-    
+
     public function show($id)
     {
         $user = User::find($id);
         return view('users.show',compact('user'));
     }
-    
+
     public function edit($id)
     {
         $user = User::find($id);
         $roles = Role::pluck('name','name')->all();
         $userRole = $user->roles->pluck('name','name')->all();
-    
+
         return view('users.edit',compact('user','roles','userRole'));
     }
 
@@ -100,7 +100,7 @@ class UserController extends Controller
             'profile_image' => 'nullable',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
         ]);
 
         $input = $request->all();
@@ -126,7 +126,7 @@ class UserController extends Controller
         return redirect()->route('users.index')
             ->with('success', 'User updated successfully');
     }
-    
+
     public function destroy($id)
     {
         User::find($id)->delete();

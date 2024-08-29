@@ -38,7 +38,7 @@ class ResetPasswordController extends Controller
 
         // Find the user by email
         $user = User::where('email', $request->input('email'))->first();
-        
+
         if ($user) {
             // Update the user's password
             $user->password = Hash::make($request->input('password'));

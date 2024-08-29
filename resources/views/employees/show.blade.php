@@ -73,6 +73,23 @@
         transform: scaleY(1);
     }
 }
+.status-active {
+    color: rgb(255, 255, 255);
+    border: 1px solid green;
+    background-color: green;
+    padding: 2px 4px;
+    border-radius: 5px;
+}
+
+.status-inactive {
+    color: rgb(255, 255, 255);
+    border: 1px solid red;
+    background-color: red;
+    padding: 2px 4px;
+    border-radius: 5px;
+}
+
+
 </style>
 @stop
 @section('content')
@@ -107,6 +124,13 @@
                             <p><strong>Gender:</strong> {{ $employee->gender->name }}</p>
                             <p><strong>Position:</strong> {{ $employee->position->name }}</p>
                             <p><strong>Employment Status:</strong> {{ $employee->employment_status }}</p>
+                            <p>
+                                <strong>Employee Status:</strong>
+                                <span class="{{ $employee->employee_status === 'Active' ? 'status-active' : 'status-inactive' }}">
+                                    {{ $employee->employee_status }}
+                                </span>
+                            </p>
+
                             <p>
                                 <strong>Place of Birth:</strong>
                                 {{ $employee->birth_place_barangay || $employee->birth_place_city || $employee->birth_place_province ?
@@ -177,6 +201,7 @@
                     </div>
                     <div class="text-right">
                     <a href="{{ route('employees.index') }}" class="btn btn-primary btn-sm ml-auto"><i class="fas fa-list"></i> Back to List</a>
+                    @if($employee->employee_status !== 'Resigned')
                         <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>
                             Leave Balance
                         </button>
@@ -186,6 +211,7 @@
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-trash"></i> Delete</button>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>

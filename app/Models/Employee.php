@@ -46,6 +46,7 @@ class Employee extends Model
         'emergency_name',
         'emergency_no',
         'employment_status',
+        'employee_status',
     ];
     public function saveEmploymentStatus()
     {

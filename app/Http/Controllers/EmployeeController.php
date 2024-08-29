@@ -21,6 +21,8 @@ use App\Imports\EmployeesImport;
 use App\Exports\EmployeesExport;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BirthdayGreeting;
+use App\Mail\EmployeeResignationNotification;
+use App\Mail\UserAccountDisabledNotification;
 
 class EmployeeController extends Controller
 {
@@ -156,7 +158,7 @@ public function store(Request $request): RedirectResponse
         $departments = Department::all();
         return view('employees.edit', compact('employee','genders','provinces','city', 'barangay', 'positions', 'departments'));
     }
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -199,6 +201,7 @@ public function store(Request $request): RedirectResponse
             'tertiary' => 'nullable',
             'emergency_name' => 'required',
             'emergency_no' => 'required|numeric',
+            'employee_status' => 'required|in:active,resigned',
         ]);
 
         // Update the employee with the request data
@@ -210,7 +213,7 @@ public function store(Request $request): RedirectResponse
             $filename = $image->store('profiles', 'public');
             $employee->profile = $filename;
         }
-
+        $employee->employment_status = $request->input('employee_status');
         $employee->save();
 
         // Save employment status
@@ -231,22 +234,22 @@ public function store(Request $request): RedirectResponse
         return redirect()->route('employees.index')
                          ->with('success', 'Employee deleted successfully');
     }
-    
+
 
 
     public function createUser(Request $request, Employee $employee): RedirectResponse
     {
         // Check if the user already exists
         $existingUser = User::where('email', $employee->email_address)->first();
-    
+
         if ($existingUser) {
             return redirect()->route('employees.index')
                              ->with('error', 'User already exists for this employee.');
         }
-    
+
         // Get the Employee role
         $employeeRole = Role::where('name', 'Employee')->first();
-    
+
         // Create a user for the employee
         $userData = [
             'company_id' => $employee->company_id,
@@ -258,26 +261,27 @@ public function store(Request $request): RedirectResponse
             'password' => Hash::make($employee->company_id), // Set the default password as the company_id
             'bio' => $employee->position->name,
             'profile_image' => $employee->profile,
+            'contact_no' => $employee->contact_no,
         ];
-    
+
         if ($request->hasFile('profile_image')) {
             $image = $request->file('profile_image');
             $filename = $image->store('profile_images', 'public');
             $userData['profile_image'] = $filename;
         }
-    
+
         $user = User::create($userData);
-    
+
         // Assign the Employee role to the user
         $user->assignRole($employeeRole);
-    
+
         // Send notification email to the employee
         $user->notify(new EmployeeAccountActivated($employee));
-    
+
         return redirect()->route('employees.index')
                          ->with('success', 'User created successfully for the employee.'); // Ensure the message is about user creation
     }
-    
+
     /**
      * Import employees from an Excel file.
      *
@@ -289,16 +293,16 @@ public function store(Request $request): RedirectResponse
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv'
         ]);
-    
+
         try {
             Excel::import(new EmployeesImport, $request->file('file'));
-    
+
             return redirect()->route('employees.index')->with('success', 'Employees imported successfully.');
         } catch (\Exception $e) {
             return redirect()->route('employees.index')->with('error', 'Error importing employees: ' . $e->getMessage());
         }
     }
-    
+
     public function export()
     {
         return Excel::download(new EmployeesExport, 'employees.xlsx');
@@ -346,7 +350,7 @@ public function store(Request $request): RedirectResponse
         if ($employee) {
             // Load related data
             $employee->load('position', 'department');
-            
+
             // Get employment status
             $employee->employment_status = $employee->employmentStatus();
 
@@ -370,5 +374,27 @@ public function store(Request $request): RedirectResponse
         } else {
             return response()->json(['message' => 'Employee profile not found'], 404);
         }
+    }
+    public function disable(Employee $employee)
+    {
+        // Update the employee's status to 'Disabled'
+        $employee->update(['employee_status' => 'Resigned']);
+
+        // Find the user associated with the employee
+        $user = User::where('email', $employee->email_address)->first();
+
+        if ($user) {
+            // Disable the user by setting a field or using a specific status
+            $user->update(['status' => 'disabled']); // Assuming you have a status field for disabling users
+
+            // Alternatively, you can use Laravel's built-in `delete` method if you want to remove the user
+            // $user->delete();
+
+            // Send notification emails
+            Mail::to($employee->email_address)->send(new EmployeeResignationNotification($employee));
+            Mail::to($user->email)->send(new UserAccountDisabledNotification($user));
+        }
+
+        return redirect()->route('employees.index')->with('success', 'Employee disabled successfully.');
     }
 }

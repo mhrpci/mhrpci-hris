@@ -637,7 +637,14 @@
                         window.location.href = data.redirect;
                     }, 1500); // Show notification for 1.5 seconds
                 } else {
-                    let errorMessage = data.field === 'email' ? 'Invalid email address' : 'Invalid password';
+                    let errorMessage;
+                    if (data.message === 'Your account is disabled.') {
+                        errorMessage = 'Your account is disabled.';
+                    } else if (data.field === 'email') {
+                        errorMessage = 'Invalid email address';
+                    } else {
+                        errorMessage = 'Invalid password';
+                    }
                     notification.className = 'notification error';
                     notification.innerHTML = `
                         <span>${errorMessage}</span>
