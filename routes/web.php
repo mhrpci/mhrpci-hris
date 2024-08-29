@@ -12,22 +12,17 @@ use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\SssController;
-use App\Http\Controllers\SssLoanController;
-use App\Http\Controllers\PagibigController;
-use App\Http\Controllers\PagibigLoanController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\TypeController;
-use App\Http\Controllers\TinController;
-use App\Http\Controllers\PhilhealthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\HolidayController;
-use App\Http\Controllers\CashAdvanceController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ContributionController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PayrollController;
 
 
@@ -71,6 +66,8 @@ use App\Http\Controllers\PayrollController;
     Route::resource('employees', EmployeeController::class);
     Route::resource('attendances', AttendanceController::class);
     Route::resource('leaves', LeaveController::class);
+    Route::resource('contributions', ContributionController::class);
+    Route::resource('loans', LoanController::class);
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
     Route::get('/leaves/print', [LeaveController::class, 'print'])->name('leaves.print');
@@ -86,16 +83,8 @@ use App\Http\Controllers\PayrollController;
     Route::post('employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
     Route::patch('employees/{employee}/disable', [EmployeeController::class, 'disable'])->name('employees.disable');
 
-    Route::resource('sss', SssController::class);
-    Route::resource('loansss', SssLoanController::class);
-    Route::resource('pagibig', PagibigController::class);
-    Route::resource('loanpagibig', PagibigLoanController::class);
-    Route::resource('types', TypeController::class);
-    Route::resource('tin', TinController::class);
-    Route::resource('philhealth', PhilhealthController::class);
     Route::resource('posts', PostController::class);
     Route::resource('holidays', HolidayController::class);
-    Route::resource('cashad', CashAdvanceController::class);
     Route::resource('tasks', TaskController::class);
     });
     Route::get(
@@ -122,7 +111,8 @@ use App\Http\Controllers\PayrollController;
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
 
-    Route::resource('payrolls', PayrollController::class);
+    // Route::resource('payrolls', PayrollController::class);
 
+    Route::get('/employee-contributions/{employee_id}', [ContributionController::class, 'employeeContributions'])->name('employee.contributions');
 
 Auth::routes();

@@ -254,9 +254,9 @@
                                     </div>
                                 </div>
 
-</div>
-<!-- End Of Contact and Gender-->
-<!-- Start Of Birth Place-->
+                            </div>
+                            <!-- End Of Contact and Gender-->
+                            <!-- Start Of Birth Place-->
                             <p>Birth Place</p>
                             <div class="row">
                             <div class="col-md-6">

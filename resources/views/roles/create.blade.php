@@ -15,71 +15,72 @@
 </div>
 <style>
     /* Loader */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-out;
-}
-
-.loader-content {
-    text-align: center;
-}
-
-/* Wave Loader */
-.wave-loader {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 50px;
-}
-
-.wave-loader > div {
-    width: 10px;
-    height: 50px;
-    margin: 0 5px;
-    background-color: #8e44ad; /* Purple color */
-    animation: wave 1s ease-in-out infinite;
-}
-
-.wave-loader > div:nth-child(2) {
-    animation-delay: -0.9s;
-}
-
-.wave-loader > div:nth-child(3) {
-    animation-delay: -0.8s;
-}
-
-.wave-loader > div:nth-child(4) {
-    animation-delay: -0.7s;
-}
-
-.wave-loader > div:nth-child(5) {
-    animation-delay: -0.6s;
-}
-
-@keyframes wave {
-    0%, 100% {
-        transform: scaleY(0.5);
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
     }
-    50% {
-        transform: scaleY(1);
+
+    .loader-content {
+        text-align: center;
     }
-}
+
+    /* Wave Loader */
+    .wave-loader {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 50px;
+    }
+
+    .wave-loader > div {
+        width: 10px;
+        height: 50px;
+        margin: 0 5px;
+        background-color: #8e44ad; /* Purple color */
+        animation: wave 1s ease-in-out infinite;
+    }
+
+    .wave-loader > div:nth-child(2) {
+        animation-delay: -0.9s;
+    }
+
+    .wave-loader > div:nth-child(3) {
+        animation-delay: -0.8s;
+    }
+
+    .wave-loader > div:nth-child(4) {
+        animation-delay: -0.7s;
+    }
+
+    .wave-loader > div:nth-child(5) {
+        animation-delay: -0.6s;
+    }
+
+    @keyframes wave {
+        0%, 100% {
+            transform: scaleY(0.5);
+        }
+        50% {
+            transform: scaleY(1);
+        }
+    }
 </style>
 @stop
+
 @section('content')
 <br>
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-8">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Add New Role</h3>
@@ -88,7 +89,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('roles.store') }}" method="post">
+                    <form action="{{ route('roles.store') }}" method="POST">
                         @csrf
 
                         <div class="mb-3">
@@ -103,7 +104,7 @@
                             <label class="form-label">Permissions</label>
                             <div class="row">
                                 @forelse ($permissions as $permission)
-                                    <div class="col-md-2">
+                                    <div class="col-md-3 mb-2">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permission->id }}" id="permission_{{ $permission->id }}" {{ in_array($permission->id, old('permissions') ?? []) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="permission_{{ $permission->id }}">
@@ -112,7 +113,9 @@
                                         </div>
                                     </div>
                                 @empty
-                                    <span>No permissions available</span>
+                                    <div class="col-12">
+                                        <span>No permissions available</span>
+                                    </div>
                                 @endforelse
                                 @error('permissions')
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -121,13 +124,13 @@
                         </div>
 
                         <div class="row">
-    <div class="mb-3">
-        <div class="btn-group" role="group" aria-label="Button group">
-            <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
-            <a href="{{ route('users.index') }}" class="btn btn-info">Back</a>
-        </div>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <div class="btn-group" role="group" aria-label="Button group">
+                                    <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
+                                    <a href="{{ route('roles.index') }}" class="btn btn-info">Back</a>
+                                </div>
+                            </div>
+                        </div>
 
                     </form>
                 </div>
@@ -135,5 +138,4 @@
         </div>
     </div>
 </div>
-
 @endsection

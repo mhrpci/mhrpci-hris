@@ -99,27 +99,9 @@ class Employee extends Model
     {
         return $this->hasMany(Attendance::class);
     }
-    public function sss(): HasMany
+    public function contributions()
     {
-        return $this->hasMany(Sss::class);
-    }
-    public function sssLoan(): HasMany
-    {
-        return $this->hasMany(SssLoan::class);
-    }
-    public function tin(): HasMany
-    {
-        return $this->hasMany(Tin::class);
-    }
-
-    public function philhealth(): HasMany
-    {
-        return $this->hasMany(Philhealth::class);
-    }
-
-    public function pagibig(): HasMany
-    {
-        return $this->hasMany(Pagibig::class);
+        return $this->hasMany(Contribution::class);
     }
 
     public function leave(): HasMany
@@ -133,14 +115,6 @@ class Employee extends Model
     public function user()
     {
         return $this->hasOne(User::class);
-    }
-    public function cashAdvance(): HasMany
-    {
-        return $this->hasMany(CashAdvance::class);
-    }
-    public function pagibigLoan(): HasMany
-    {
-        return $this->hasMany(PagibigLoan::class);
     }
     public function employmentStatus(): string
 {
