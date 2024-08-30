@@ -74,27 +74,39 @@ class ForgotPasswordController extends Controller
         }
     }
 
-    public function resendOtp($email)
-    {
+    public function resendOtp(Request $request)
+{
+    try {
+        // Validate the incoming request
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $email = $request->input('email');
+
         // Generate a new OTP
         $otp = random_int(100000, 999999);
 
-        // Update the OTP in the database
+        // Update or insert the OTP in the database
         DB::table('otp_records')->updateOrInsert(
             ['email' => $email],
             [
                 'otp' => $otp,
                 'created_at' => now(),
-                'expires_at' => now()->addMinutes(5) // Set expiration time
+                'expires_at' => now()->addMinutes(5)
             ]
         );
 
-        // Send the new OTP via email
+        // Send the OTP via email
         Mail::raw("Your new OTP is: $otp", function ($message) use ($email) {
             $message->to($email)
                     ->subject('Your Password Reset OTP');
         });
 
         return response()->json(['message' => 'New OTP sent to your email.'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to resend OTP.', 'error' => $e->getMessage()], 500);
     }
+}
+
 }
