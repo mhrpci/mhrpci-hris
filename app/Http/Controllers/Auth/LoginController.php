@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -35,7 +37,7 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // Check if the credentials are valid
+        // Attempt to authenticate the user
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
@@ -49,12 +51,20 @@ class LoginController extends Controller
                 ]);
             }
 
+            // Generate a token (if using token-based authentication)
+            $token = $user->createToken('YourAppName')->plainTextToken;
+
             // Authentication passed
-            return response()->json(['success' => true, 'redirect' => '/home']);
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'user' => $user,
+                'redirect' => $this->redirectTo
+            ]);
         }
 
         // Check if the email exists
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             return response()->json([

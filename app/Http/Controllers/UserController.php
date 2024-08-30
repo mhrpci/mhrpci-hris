@@ -146,15 +146,4 @@ class UserController extends Controller
     return response()->json(['message' => 'Notification preference updated successfully.']);
 }
 
-public function getCurrentUser()
-{
-    $user = auth()->user();
-    return response()->json([
-        'first_name' => $user->first_name,
-        'last_name' => $user->last_name,
-        'email' => $user->email,
-    ]);
-}
-
-
 }

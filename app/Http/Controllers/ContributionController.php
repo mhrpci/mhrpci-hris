@@ -133,7 +133,7 @@ class ContributionController extends Controller
         return redirect()->route('contributions.index')->with('success', 'Contribution deleted successfully.');
     }
 
-     /**
+    /**
      * Display contributions for a specific employee with date filtering and totals.
      */
     public function employeeContributions(Request $request, $employee_id)
@@ -149,6 +149,7 @@ class ContributionController extends Controller
 
         $contributions = $query->orderBy('date')->get();
 
+        // Calculate overall totals
         $totals = [
             'sss' => $contributions->sum('sss_contribution'),
             'philhealth' => $contributions->sum('philhealth_contribution'),
@@ -156,8 +157,19 @@ class ContributionController extends Controller
             'tin' => $contributions->sum('tin_contribution')
         ];
 
-        return view('contributions.employee-contributions', compact('employee', 'contributions', 'totals'));
-    }
+        // Calculate totals for each contribution type, respecting the date filter
+        $contributionTotals = $contributions->groupBy(function ($contribution) {
+            return Carbon::parse($contribution->date)->format('Y-m');
+        })->map(function ($monthContributions) {
+            return [
+                'sss' => $monthContributions->sum('sss_contribution'),
+                'philhealth' => $monthContributions->sum('philhealth_contribution'),
+                'pagibig' => $monthContributions->sum('pagibig_contribution'),
+                'tin' => $monthContributions->sum('tin_contribution'),
+            ];
+        });
 
+        return view('contributions.employee-contributions', compact('employee', 'contributions', 'totals', 'contributionTotals'));
+    }
 
 }

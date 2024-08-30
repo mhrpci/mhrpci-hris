@@ -62,15 +62,39 @@ class ForgotPasswordController extends Controller
         if ($record && $record->otp == $otp) {
             // Check if the OTP has expired
             if (Carbon::now()->lessThanOrEqualTo($record->expires_at)) {
-                // OTP is valid, you can perform the next step (e.g., password reset)
+                // OTP is valid
                 return response()->json(['message' => 'OTP verified successfully.'], 200);
             } else {
-                // OTP has expired
-                return response()->json(['message' => 'OTP has expired. Please request a new OTP.'], 400);
+                // OTP has expired, generate and resend a new OTP
+                return $this->resendOtp($email);
             }
+        } else {
+            // OTP is invalid, generate and resend a new OTP
+            return $this->resendOtp($email);
         }
+    }
 
-        // OTP is invalid
-        return response()->json(['message' => 'Invalid OTP. Please try again.'], 400);
+    public function resendOtp($email)
+    {
+        // Generate a new OTP
+        $otp = random_int(100000, 999999);
+
+        // Update the OTP in the database
+        DB::table('otp_records')->updateOrInsert(
+            ['email' => $email],
+            [
+                'otp' => $otp,
+                'created_at' => now(),
+                'expires_at' => now()->addMinutes(5) // Set expiration time
+            ]
+        );
+
+        // Send the new OTP via email
+        Mail::raw("Your new OTP is: $otp", function ($message) use ($email) {
+            $message->to($email)
+                    ->subject('Your Password Reset OTP');
+        });
+
+        return response()->json(['message' => 'New OTP sent to your email.'], 200);
     }
 }
