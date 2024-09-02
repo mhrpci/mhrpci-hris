@@ -137,7 +137,6 @@
                                                         <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this contribution?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
                                                     </form>
                                                 @endcan
-                                                <a class="dropdown-item" href="{{ route('employee.contributions', $contribution->employee_id) }}"><i class="fas fa-coins"></i>&nbsp;Contributions</a>
                                             </div>
                                         </div>
                                     </td>

@@ -81,6 +81,13 @@
     <h1 class="mb-4">Contributions for {{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h1>
     <div class="card mb-4">
         <div class="card-header d-flex align-items-center">
+            <a href="{{ route('contributions.employees-list') }}" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <!-- Print Button -->
+            <button id="printButton" class="btn btn-info btn-sm ml-2">
+                <i class="fas fa-print"></i> Print
+            </button>
             <!-- Month Filter -->
             <div class="dropdown ml-auto">
                 <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="monthFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -98,6 +105,7 @@
         </div>
         <div class="card-body">
             <div class="row mb-4">
+                <!-- Info Boxes -->
                 <div class="col-sm-6 col-lg-3 mb-4">
                     <div class="info-box bg-primary">
                         <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
@@ -159,17 +167,22 @@
                         </tr>
                     </thead>
                     <tbody id="contributionTableBody">
-                        @foreach($contributions as $contribution)
-                            <tr data-date="{{ $contribution->date }}">
-                                <td>{{ $contribution->date }}</td>
-                                <td>{{ number_format($contribution->sss_contribution, 2) }}</td>
-                                <td>{{ number_format($contribution->philhealth_contribution, 2) }}</td>
-                                <td>{{ number_format($contribution->pagibig_contribution, 2) }}</td>
-                                <td>{{ number_format($contribution->tin_contribution, 2) }}</td>
-                            </tr>
-                        @endforeach
+                        @forelse($contributions as $contribution)
+                        <tr data-date="{{ $contribution->date }}">
+                            <td>{{ $contribution->date }}</td>
+                            <td>{{ number_format($contribution->sss_contribution, 2) }}</td>
+                            <td>{{ number_format($contribution->philhealth_contribution, 2) }}</td>
+                            <td>{{ number_format($contribution->pagibig_contribution, 2) }}</td>
+                            <td>{{ number_format($contribution->tin_contribution, 2) }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center">No Data Available</td>
+                        </tr>
+                    @endforelse
                     </tbody>
                 </table>
+                <div id="no-data-message" class="text-center" style="display: none;">No data available for the selected month.</div>
             </div>
         </div>
     </div>
@@ -228,138 +241,47 @@
         right: 5px;
         width: 50px;
         height: 50px;
-        opacity: 0.2;
-        pointer-events: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .info-box-overlay img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
-
-    .table-responsive {
-        margin-top: 1rem;
-    }
-
-    .table {
-        width: 100%;
-        max-width: 100%;
-        margin-bottom: 1rem;
-    }
-
-    .table th,
-    .table td {
-        padding: 0.75rem;
-        vertical-align: top;
-        border-top: 1px solid #dee2e6;
-    }
-
-    .thead-dark th {
-        background-color: #343a40;
-        color: #fff;
-    }
-
-    /* Loader Override */
-    .loader {
-        display: none;
-    }
-
-    /* Dropdown Styles */
-    .dropdown-menu-right {
-        right: 0;
-        left: auto;
-    }
-
-    .dropdown-toggle {
-        font-size: 0.8rem; /* Smaller button */
-        padding: 0.5rem 0.75rem; /* Adjust padding */
-    }
-
-    .dropdown-item {
-        font-size: 0.8rem; /* Smaller text */
-    }
-
-    @media (min-width: 992px) {
-        .info-box {
-            height: 140px;
-        }
-
-        .info-box-icon {
-            font-size: 3rem;
-        }
-
-        .info-box-text {
-            font-size: 1.1rem;
-        }
-
-        .info-box-number {
-            font-size: 1.8rem;
-        }
-
-        .info-box-overlay {
-            width: 70px;
-            height: 70px;
-        }
-    }
-
-    @media (max-width: 767px) {
-        .container-fluid {
-            padding: 10px;
-        }
-
-        .info-box {
-            height: 100px;
-        }
-
-        .info-box-icon {
-            font-size: 2rem;
-        }
-
-        .info-box-text {
-            font-size: 0.9rem;
-        }
-
-        .info-box-number {
-            font-size: 1.3rem;
-        }
-
-        .info-box-overlay {
-            width: 40px;
-            height: 40px;
-        }
+        opacity: 0.5;
     }
 </style>
 @endpush
 
 @push('js')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const monthFilterItems = document.querySelectorAll('.dropdown-item');
-        const tableBody = document.getElementById('contributionTableBody');
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('printButton').addEventListener('click', function() {
+            window.print();
+        });
 
-        monthFilterItems.forEach(item => {
-            item.addEventListener('click', function () {
-                const selectedMonth = this.dataset.month;
-
-                monthFilterItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-
-                Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
-                    const date = new Date(row.dataset.date);
-                    const rowMonth = date.getMonth() + 1;
-
-                    if (selectedMonth === '' || rowMonth === parseInt(selectedMonth)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
+        const monthFilterLinks = document.querySelectorAll('.dropdown-menu .dropdown-item[data-month]');
+        monthFilterLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const month = this.getAttribute('data-month');
+                filterByMonth(month);
             });
         });
+
+        function filterByMonth(month) {
+            const rows = document.querySelectorAll('#contributionTableBody tr');
+            rows.forEach(row => {
+                const date = new Date(row.getAttribute('data-date'));
+                const rowMonth = date.getMonth() + 1; // Months are zero-indexed
+                if (month === "" || rowMonth == month) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            checkNoData();
+        }
+
+        function checkNoData() {
+            const rows = document.querySelectorAll('#contributionTableBody tr');
+            const noDataMessage = document.getElementById('no-data-message');
+            const hasData = Array.from(rows).some(row => row.style.display !== 'none');
+            noDataMessage.style.display = hasData ? 'none' : 'block';
+        }
     });
 </script>
 @endpush

@@ -113,6 +113,8 @@ use App\Http\Controllers\PayrollController;
 
     // Route::resource('payrolls', PayrollController::class);
 
-    Route::get('/employee-contributions/{employee_id}', [ContributionController::class, 'employeeContributions'])->name('employee.contributions');
+    Route::get('/contributions-employee/{employee_id}', [ContributionController::class, 'employeeContributions'])->name('contributions.employee');
+    Route::get('/contributions-employees-list', [ContributionController::class, 'allEmployeesContribution'])->name('contributions.employees-list');
+    Route::resource('payroll', PayrollController::class);
 
 Auth::routes();

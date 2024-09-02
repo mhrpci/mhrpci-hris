@@ -436,10 +436,25 @@ return [
         ],
         [
             'text' => ' Contributions',
-            'url' => 'contributions',
             'icon' => 'fas fa-hands-helping',
             'can' => 'admin', 'super-admin',
             'active' => ['contributions*', 'regex'],
+            'submenu' => [
+                [
+                    'text' => ' Contribution List',
+                    'url' => 'contributions',
+                    'icon' => 'fas fa-list',
+                    'can' => 'admin', 'super-admin',
+                    'active' => ['contributions', 'regex'],
+                ],
+                [
+                    'text' => ' Contributor',
+                    'url' => '/contributions-employees-list',
+                    'icon' => 'fas fa-users',
+                    'can' => 'admin', 'super-admin',
+                    'active' => ['contributions-employees-list', 'regex:/contributions-employees-list\/[0-9]+\/leaves/'],
+                ],
+            ],
         ],
         [
             'text' => ' Loans and CA',

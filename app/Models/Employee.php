@@ -142,5 +142,10 @@ class Employee extends Model
     }
 }
 
+public function dailySalary()
+{
+    // Assuming the monthly salary is stored in 'salary' field
+    return $this->salary / 26;
+}
 
 }

@@ -166,6 +166,18 @@ public function employeeContributions(Request $request, $employee_id)
 
     return view('contributions.employee-contributions', compact('employee', 'contributions', 'totals', 'contributionTotals'));
 }
+        /**
+         * Display a listing of all employees with their time sheet data.
+         */
+        public function allEmployeesContribution()
+        {
+            // Retrieve all employees
+            $employees = Employee::all();
 
+            // If there's additional time sheet data you want to include, add the logic here
+            // For example, if there's a TimeSheet model related to Employee:
+            // $employees = Employee::with('timeSheets')->get();
 
+            return view('contributions.employees-list', compact('employees'));
+        }
 }
