@@ -23,7 +23,7 @@
                         <div class="col-md-6 mb-3">
                             <div class="form-group">
                                 <label for="employee_id">Employee:</label>
-                                <p class="font-weight-bold">{{ $attendance->employee->company_id }} {{ $attendance->employee->last_name }}, {{ $attendance->employee->first_name }} {{ $attendance->employee->middle_name }}</p>
+                                <p class="font-weight-bold">{{ $attendance->employee->company_id }} {{ $attendance->employee->last_name }} {{ $attendance->employee->first_name }}, {{ $attendnace->employee->middle_name?? ' ' }} {{ $attendance->employee->suffix ?? ' ' }}</p>
                             </div>
                         </div>
 

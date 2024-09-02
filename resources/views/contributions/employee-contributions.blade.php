@@ -1,28 +1,100 @@
 @extends('adminlte::page')
 
+@section('preloader')
+<div id="loader" class="loader">
+    <div class="loader-content">
+        <div class="wave-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <h4 class="mt-4 text-dark">Loading...</h4>
+    </div>
+</div>
+<style>
+    /* Loader */
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .loader-content {
+        text-align: center;
+    }
+
+    /* Wave Loader */
+    .wave-loader {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 50px;
+    }
+
+    .wave-loader > div {
+        width: 10px;
+        height: 50px;
+        margin: 0 5px;
+        background-color: #8e44ad; /* Purple color */
+        animation: wave 1s ease-in-out infinite;
+    }
+
+    .wave-loader > div:nth-child(2) {
+        animation-delay: -0.9s;
+    }
+
+    .wave-loader > div:nth-child(3) {
+        animation-delay: -0.8s;
+    }
+
+    .wave-loader > div:nth-child(4) {
+        animation-delay: -0.7s;
+    }
+
+    .wave-loader > div:nth-child(5) {
+        animation-delay: -0.6s;
+    }
+
+    @keyframes wave {
+        0%, 100% {
+            transform: scaleY(0.5);
+        }
+        50% {
+            transform: scaleY(1);
+        }
+    }
+</style>
+@stop
+
 @section('content')
 <div class="container-fluid">
-    <h1 class="mb-4">Contributions for {{ $employee->company_id }}</h1>
-
-    <form action="{{ route('employee.contributions', $employee->id) }}" method="GET" class="mb-4">
-        <div class="row">
-            <div class="col-md-4 col-lg-3 mb-3">
-                <label for="start_date">Start Date:</label>
-                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
-            </div>
-            <div class="col-md-4 col-lg-3 mb-3">
-                <label for="end_date">End Date:</label>
-                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
-            </div>
-            <div class="col-md-4 col-lg-3 mb-3 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
-            </div>
-        </div>
-    </form>
-
+    <h1 class="mb-4">Contributions for {{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h1>
     <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="mb-0">Contribution Records</h2>
+        <div class="card-header d-flex align-items-center">
+            <!-- Month Filter -->
+            <div class="dropdown ml-auto">
+                <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="monthFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filter by Month
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="monthFilterDropdown">
+                    <a class="dropdown-item" href="#" data-month="">All Months</a>
+                    @foreach(range(1, 12) as $month)
+                        <a class="dropdown-item" href="#" data-month="{{ $month }}">
+                            {{ DateTime::createFromFormat('!m', $month)->format('F') }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="row mb-4">
@@ -86,9 +158,9 @@
                             <th>TIN</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="contributionTableBody">
                         @foreach($contributions as $contribution)
-                            <tr>
+                            <tr data-date="{{ $contribution->date }}">
                                 <td>{{ $contribution->date }}</td>
                                 <td>{{ number_format($contribution->sss_contribution, 2) }}</td>
                                 <td>{{ number_format($contribution->philhealth_contribution, 2) }}</td>
@@ -187,9 +259,28 @@
     }
 
     .thead-dark th {
-        color: #fff;
         background-color: #343a40;
-        border-color: #454d55;
+        color: #fff;
+    }
+
+    /* Loader Override */
+    .loader {
+        display: none;
+    }
+
+    /* Dropdown Styles */
+    .dropdown-menu-right {
+        right: 0;
+        left: auto;
+    }
+
+    .dropdown-toggle {
+        font-size: 0.8rem; /* Smaller button */
+        padding: 0.5rem 0.75rem; /* Adjust padding */
+    }
+
+    .dropdown-item {
+        font-size: 0.8rem; /* Smaller text */
     }
 
     @media (min-width: 992px) {
@@ -242,4 +333,33 @@
         }
     }
 </style>
+@endpush
+
+@push('js')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const monthFilterItems = document.querySelectorAll('.dropdown-item');
+        const tableBody = document.getElementById('contributionTableBody');
+
+        monthFilterItems.forEach(item => {
+            item.addEventListener('click', function () {
+                const selectedMonth = this.dataset.month;
+
+                monthFilterItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
+                    const date = new Date(row.dataset.date);
+                    const rowMonth = date.getMonth() + 1;
+
+                    if (selectedMonth === '' || rowMonth === parseInt(selectedMonth)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endpush

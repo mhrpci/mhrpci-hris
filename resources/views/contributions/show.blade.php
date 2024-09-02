@@ -138,7 +138,7 @@
                                 <span class="info-box-icon"><i class="far fa-id-card"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Employee</span>
-                                    <span class="info-box-number">{{ $contribution->employee->company_id }} {{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }} {{ $contribution->employee->middle_name ?? ' '}}</span>
+                                    <span class="info-box-number">{{ $contribution->employee->company_id }} {{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' '}} {{ $contribution->employee->suffix ?? ' '}}</span>
                                 </div>
                             </div>
                         </div>

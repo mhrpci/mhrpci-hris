@@ -16,7 +16,7 @@
                 @else
                 Employee Timesheet
                 @endif
-                 - {{ $employee->company_id }} - {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }}</h3>
+                 - {{ $employee->company_id }} - {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h3>
             </div>
             <div class="col-md-6 col-12 text-md-right text-center">
                 <button class="btn btn-primary mb-2" onclick="printAttendance()"><i class="fas fa-print"></i> Print</button>
@@ -77,7 +77,7 @@
             </table>
         </div>
     </div>
-    
+
     <script>
 function printAttendance() {
     var printWindow = window.open('', '', 'height=600,width=800');
@@ -102,14 +102,14 @@ function printAttendance() {
     rowsArray.sort((a, b) => a.date - b.date);
 
     // Get the current date and time for the footer
-    var currentDateTime = new Date().toLocaleString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        hour12: true 
+    var currentDateTime = new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
     });
 
     // Create the print content
@@ -250,8 +250,8 @@ function printAttendance() {
                     "render": function(data, type, row) {
                         // Convert the date to YYYY-MM-DD format for sorting and filtering
                         var date = new Date(data);
-                        return date.getFullYear() + '-' + 
-                               ('0' + (date.getMonth() + 1)).slice(-2) + '-' + 
+                        return date.getFullYear() + '-' +
+                               ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
                                ('0' + date.getDate()).slice(-2);
                     }
                 }

@@ -84,7 +84,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Create New contribution Contribution</h3>
+                        <h3 class="card-title">Create New Contribution</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -108,8 +108,12 @@
                                         <select id="employee_id" name="employee_id" class="form-control" required>
                                             <option value="">Select Employee</option>
                                             @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}">
-                                                    {{ $employee->company_id }}  {{ $employee->last_name }}  {{ $employee->first_name }}, {{ $employee->middle_name }}
+                                                <option value="{{ $employee->id }}"
+                                                        data-sss-no="{{ $employee->sss_no }}"
+                                                        data-pagibig-no="{{ $employee->pagibig_no }}"
+                                                        data-philhealth-no="{{ $employee->philhealth_no }}"
+                                                        data-tin-no="{{ $employee->tin_no }}">
+                                                    {{ $employee->company_id }}  {{ $employee->last_name }}  {{ $employee->first_name }}, {{ $employee->middle_name ?? ' ' }} {{ $employee->suffix ?? ' ' }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -126,37 +130,37 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="sss_contribution">SSS Contribution</label>
-                                        <input type="number" id="sss_contribution" name="sss_contribution" class="form-control" step="0.1">
+                                        <input type="number" id="sss_contribution" name="sss_contribution" class="form-control" step="0.1" readonly placeholder="No SSS Number">
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="pagibig_contribution">PAGIBIG Contribution</label>
-                                        <input type="number" id="pagibig_contribution" name="pagibig_contribution" class="form-control" step="0.1">
+                                        <input type="number" id="pagibig_contribution" name="pagibig_contribution" class="form-control" step="0.1" readonly placeholder="No PAGIBIG Number">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="philhealth_contribution">PHILHEALTH Contribution</label>
-                                        <input type="number" id="philhealth_contribution" name="philhealth_contribution" class="form-control" step="0.1">
+                                        <input type="number" id="philhealth_contribution" name="philhealth_contribution" class="form-control" step="0.1" readonly placeholder="No PHILHEALTH Number">
                                     </div>
                                 </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="tin_contribution">TIN Contribution</label>
-                                    <input type="number" id="tin_contribution" name="tin_contribution" class="form-control" step="0.1">
-                                </div>
-                            </div>
-
-                            <div class="row">
                                 <div class="col-md-6">
-                                    <div class="btn-group" role="group" aria-label="Button group">
-                                        <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
-                                        <a href="{{ route('contributions.index') }}" class="btn btn-info">Back</a>
+                                    <div class="form-group">
+                                        <label for="tin_contribution">TIN Contribution</label>
+                                        <input type="number" id="tin_contribution" name="tin_contribution" class="form-control" step="0.1" readonly placeholder="No TIN Number">
                                     </div>
                                 </div>
-                            </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="btn-group" role="group" aria-label="Button group">
+                                            <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
+                                            <a href="{{ route('contributions.index') }}" class="btn btn-info">Back</a>
+                                        </div>
+                                    </div>
+                                </div>
                         </form>
                     </div>
                     <!-- /.card-body -->
@@ -181,6 +185,42 @@
             $('select').select2({
                 theme: 'bootstrap4',
                 width: '100%'
+            });
+
+            $('#employee_id').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                var sssNo = selectedOption.data('sss-no');
+                var pagibigNo = selectedOption.data('pagibig-no');
+                var philhealthNo = selectedOption.data('philhealth-no');
+                var tinNo = selectedOption.data('tin-no');
+
+                // Handle SSS Contribution Field
+                if (sssNo) {
+                    $('#sss_contribution').removeAttr('readonly').attr('placeholder', '');
+                } else {
+                    $('#sss_contribution').attr('readonly', true).attr('placeholder', 'No SSS Number');
+                }
+
+                // Handle PAGIBIG Contribution Field
+                if (pagibigNo) {
+                    $('#pagibig_contribution').removeAttr('readonly').attr('placeholder', '');
+                } else {
+                    $('#pagibig_contribution').attr('readonly', true).attr('placeholder', 'No PAGIBIG Number');
+                }
+
+                // Handle PHILHEALTH Contribution Field
+                if (philhealthNo) {
+                    $('#philhealth_contribution').removeAttr('readonly').attr('placeholder', '');
+                } else {
+                    $('#philhealth_contribution').attr('readonly', true).attr('placeholder', 'No PHILHEALTH Number');
+                }
+
+                // Handle TIN Contribution Field
+                if (tinNo) {
+                    $('#tin_contribution').removeAttr('readonly').attr('placeholder', '');
+                } else {
+                    $('#tin_contribution').attr('readonly', true).attr('placeholder', 'No TIN Number');
+                }
             });
         });
     </script>

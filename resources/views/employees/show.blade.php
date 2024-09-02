@@ -118,7 +118,7 @@
                             @endif
                         </div>
                         <div class="col-md-9">
-                            <h4 class="text-primary">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }} {{ $employee->suffix }}</h4>
+                            <h4 class="text-primary">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h4>
                             <p><strong>Email:</strong> {{ $employee->email_address }}</p>
                             <p><strong>Contact No.:</strong> {{ $employee->contact_no }}</p>
                             <p><strong>Gender:</strong> {{ $employee->gender->name }}</p>

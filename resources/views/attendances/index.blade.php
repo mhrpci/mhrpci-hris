@@ -26,7 +26,7 @@
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success">{{ $message }}</div>
                     @endif
-                    
+
                     <!-- Date range filter form -->
                     <form id="date-range-form" class="mb-3">
                         <div class="row">
@@ -65,7 +65,7 @@
                         <tbody>
                             @foreach ($attendances as $attendance)
                                 <tr>
-                                    <td>{{ $attendance->employee->company_id }} {{ $attendance->employee->last_name }} {{ $attendance->employee->first_name }},{{ $attendance->employee->middle_name}}</td>
+                                    <td>{{ $attendance->employee->company_id }} {{ $attendance->employee->last_name }} {{ $attendance->employee->first_name }}, {{ $attendance->employee->middle_name ?? ' '}} {{ $attendance->employee->suffix ?? ' '}}</td>
                                     <td data-sort="{{ date('Y-m-d', strtotime($attendance->date_attended)) }}">
                                         {{ date('F d, Y', strtotime($attendance->date_attended)) }}
                                     </td>
@@ -121,8 +121,8 @@
                     "render": function(data, type, row) {
                         // Convert the date to YYYY-MM-DD format for sorting and filtering
                         var date = new Date(data);
-                        return date.getFullYear() + '-' + 
-                               ('0' + (date.getMonth() + 1)).slice(-2) + '-' + 
+                        return date.getFullYear() + '-' +
+                               ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
                                ('0' + date.getDate()).slice(-2);
                     }
                 }

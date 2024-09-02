@@ -114,7 +114,7 @@
                             <tbody>
                                 @foreach ($contributions as $contribution)
                                 <tr>
-                                    <td>{{ $contribution->employee->company_id }}  {{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name }}</td>
+                                    <td>{{ $contribution->employee->company_id }}  {{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
                                     <td>{{ \Carbon\Carbon::parse($contribution->date)->format('F j, Y') }}</td>
                                     <td>&#8369;{{  number_format($contribution->sss_contribution, 2)}}</td>
                                     <td>&#8369;{{  number_format($contribution->pagibig_contribution, 2)}}</td>
