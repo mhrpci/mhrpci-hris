@@ -68,6 +68,7 @@ use App\Http\Controllers\PayrollController;
     Route::resource('leaves', LeaveController::class);
     Route::resource('contributions', ContributionController::class);
     Route::resource('loans', LoanController::class);
+    Route::resource('types', TypeController::class);
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
     Route::get('/leaves/print', [LeaveController::class, 'print'])->name('leaves.print');

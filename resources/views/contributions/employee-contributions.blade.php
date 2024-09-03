@@ -196,53 +196,63 @@
     }
 
     .info-box {
-        position: relative;
-        overflow: hidden;
-        height: 120px;
-        border-radius: .25rem;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        transition: all 0.3s ease;
-    }
+    position: relative;
+    overflow: hidden;
+    height: 120px;
+    border-radius: .25rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f4f6f9;
+}
 
-    .info-box:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
-    .info-box-icon {
-        font-size: 2.5rem;
-        color: #fff;
-        margin-right: 1rem;
-    }
+.info-box-icon {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-right: 1rem;
+}
 
-    .info-box-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+.info-box-content {
+    position: relative; /* Added to ensure content overlays on top of the background */
+    z-index: 1; /* Ensure content is above the overlay */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-    .info-box-text {
-        font-size: 1rem;
-        font-weight: bold;
-    }
+.info-box-text {
+    font-size: 1rem;
+    font-weight: bold;
+}
 
-    .info-box-number {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
+.info-box-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 
-    .info-box-overlay {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        width: 50px;
-        height: 50px;
-        opacity: 0.5;
-    }
+.info-box-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px; /* Adjusted size for better visibility */
+    height: auto; /* Auto height to maintain aspect ratio */
+    opacity: 0.15; /* Slightly increased opacity for subtle effect */
+    z-index: 0; /* Positioned behind the content */
+}
+
+.info-box-overlay img {
+    width: 100%; /* Ensure the image takes the full width of the container */
+    height: auto; /* Maintain aspect ratio */
+}
+
 </style>
 @endpush
 

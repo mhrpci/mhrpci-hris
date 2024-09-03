@@ -94,7 +94,7 @@
                 <tbody>
                     @foreach ($employees as $employee)
                         <tr>
-                            <td>{{ $employee->company_id }}</td>
+                            <td>{{ $employee->company_id }} </td>
                             <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
                             <td>
                                 <a href="{{ route('contributions.employee', ['employee_id' => $employee->id]) }}" class="btn btn-sm btn-primary">
