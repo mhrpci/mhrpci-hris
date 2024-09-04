@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('attendance:store')->dailyAt('20:00');
         $schedule->command('holidays:fetch')->daily();
-        $schedule->command('payroll:generate')->monthlyOn(10, '00:00');
+        $schedule->command('leaves:reset')->yearly()->at('00:00');
 
     }
 

@@ -403,13 +403,13 @@ return [
                     'active' => ['leaves-employees', 'regex:/leaves-employees\/[0-9]+\/leaves/'],
                     'can' => ['admin', 'super-admin'],
                 ],
-                [
-                    'text' => 'Leave Report',
-                    'url' => '/leaves-report',
-                    'icon' => 'fas fa-print',
-                    'active' => ['leaves-report', 'regex:/leaves-report\/[0-9]+\/leaves/'],
-                    'can' => ['admin', 'super-admin'],
-                ],
+                // [
+                //     'text' => 'Leave Report',
+                //     'url' => '/leaves-report',
+                //     'icon' => 'fas fa-print',
+                //     'active' => ['leaves-report', 'regex:/leaves-report\/[0-9]+\/leaves/'],
+                //     'can' => ['admin', 'super-admin'],
+                // ],
 
             ],
         ],
@@ -420,7 +420,7 @@ return [
             'submenu' => [
                 [
                     'text' => 'Payroll',
-                    'url' => 'payrolls',
+                    'url' => 'payroll',
                     'icon' => 'fas fa-money-bill-wave',
                     'active' => ['payroll*', 'regex'],
                     'can' => 'admin', 'super-admin',
@@ -462,6 +462,27 @@ return [
             'icon' => 'fas fa-money-bill-alt',
             'can' => 'admin', 'super-admin',
             'active' => ['loans*', 'regex'],
+        ],
+                [
+            'text' => ' Others',
+            'icon' => 'fas fa-cogs',
+            'can' => 'admin', 'super-admin',
+            'submenu' => [
+                [
+                    'text' => ' Apply Overtime',
+                    'url' => 'overtime',
+                    'icon' => 'fas fa-clock',
+                    'can' => 'admin', 'super-admin',
+                    'active' => ['overtime', 'regex'],
+                ],
+                // [
+                //     'text' => ' Contributor',
+                //     'url' => '/contributions-employees-list',
+                //     'icon' => 'fas fa-users',
+                //     'can' => 'admin', 'super-admin',
+                //     'active' => ['contributions-employees-list', 'regex:/contributions-employees-list\/[0-9]+\/leaves/'],
+                // ],
+            ],
         ],
         [
             'text' => '',

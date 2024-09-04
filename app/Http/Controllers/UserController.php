@@ -22,17 +22,17 @@ class UserController extends Controller
         $this->middleware('permission:user-delete', ['only' => ['destroy']]);
     }
     public function index(Request $request)
-{
-    // Get all users
-    $data = User::all();
-    $date = User::orderBy('last_seen', 'DESC')->get();
-    // Filter out users with role "Super Admin"
-    $data = $data->reject(function ($user) {
-        return $user->hasRole('Super Admin');
-    });
+    {
+        // Get all users
+        $data = User::all();
+        $date = User::orderBy('last_seen', 'DESC')->get();
+        // Filter out users with role "Super Admin"
+        $data = $data->reject(function ($user) {
+            return $user->hasRole('Super Admin');
+        });
 
-    return view('users.index', compact('data'));
-}
+        return view('users.index', compact('data'));
+    }
 
 
     public function create()
@@ -134,16 +134,16 @@ class UserController extends Controller
                         ->with('success','User deleted successfully');
     }
     public function updateNotificationPreference(Request $request)
-{
-    $request->validate([
-        'notifications_enabled' => 'required|boolean',
-    ]);
+    {
+        $request->validate([
+            'notifications_enabled' => 'required|boolean',
+        ]);
 
-    $user = auth()->user();
-    $user->notifications_enabled = $request->input('notifications_enabled');
-    $user->save();
+        $user = auth()->user();
+        $user->notifications_enabled = $request->input('notifications_enabled');
+        $user->save();
 
-    return response()->json(['message' => 'Notification preference updated successfully.']);
-}
+        return response()->json(['message' => 'Notification preference updated successfully.']);
+    }
 
 }

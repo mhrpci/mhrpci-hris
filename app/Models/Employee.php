@@ -103,6 +103,15 @@ class Employee extends Model
     {
         return $this->hasMany(Contribution::class);
     }
+    public function overtime()
+    {
+        return $this->hasMany(OvertimePay::class);
+    }
+
+    public function payroll()
+    {
+        return $this->hasMany(Payroll::class);
+    }
 
     public function leave(): HasMany
     {
@@ -117,35 +126,35 @@ class Employee extends Model
         return $this->hasOne(User::class);
     }
     public function employmentStatus(): string
-{
-    $hiredDate = \Carbon\Carbon::parse($this->date_hired);
-    $now = \Carbon\Carbon::now();
-    $diffInDays = $hiredDate->diffInDays($now);
-    $diffInMonths = $hiredDate->diffInMonths($now);
+    {
+        $hiredDate = \Carbon\Carbon::parse($this->date_hired);
+        $now = \Carbon\Carbon::now();
+        $diffInDays = $hiredDate->diffInDays($now);
+        $diffInMonths = $hiredDate->diffInMonths($now);
 
-    // Check if the employee belongs to the MHRHCI department
-    if ($this->department && $this->department->name === 'MHRHCI') {
-        if ($diffInDays <= 18) {
-            return 'TRAINEE';
-        } elseif ($diffInDays >= 19 && $diffInMonths < 4) {
+        // Check if the employee belongs to the MHRHCI department
+        if ($this->department && $this->department->name === 'MHRHCI') {
+            if ($diffInDays <= 18) {
+                return 'TRAINEE';
+            } elseif ($diffInDays >= 19 && $diffInMonths < 4) {
+                return 'PROBITIONARY';
+            } else {
+                return 'REGULAR EMPLOYEE';
+            }
+        }
+
+        // Default employment status for other departments
+        if ($diffInMonths >= 0 && $diffInMonths < 5) {
             return 'PROBITIONARY';
         } else {
-            return 'REGULAR EMPLOYEE';
+            return 'REGULAR';
         }
     }
 
-    // Default employment status for other departments
-    if ($diffInMonths >= 0 && $diffInMonths < 5) {
-        return 'PROBITIONARY';
-    } else {
-        return 'REGULAR';
+    public function dailySalary()
+    {
+        // Assuming the monthly salary is stored in 'salary' field
+        return $this->salary / 26;
     }
-}
-
-public function dailySalary()
-{
-    // Assuming the monthly salary is stored in 'salary' field
-    return $this->salary / 26;
-}
 
 }

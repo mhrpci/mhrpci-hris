@@ -23,6 +23,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\OverTimePayController;
 use App\Http\Controllers\PayrollController;
 
 
@@ -69,6 +70,7 @@ use App\Http\Controllers\PayrollController;
     Route::resource('contributions', ContributionController::class);
     Route::resource('loans', LoanController::class);
     Route::resource('types', TypeController::class);
+    Route::resource('overtime', OverTimePayController::class);
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
     Route::get('/leaves/print', [LeaveController::class, 'print'])->name('leaves.print');
@@ -112,10 +114,12 @@ use App\Http\Controllers\PayrollController;
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.myTasks');
     Route::post('/my-tasks', [TaskController::class, 'myTasks'])->name('myTasks');
 
-    // Route::resource('payrolls', PayrollController::class);
-
     Route::get('/contributions-employee/{employee_id}', [ContributionController::class, 'employeeContributions'])->name('contributions.employee');
     Route::get('/contributions-employees-list', [ContributionController::class, 'allEmployeesContribution'])->name('contributions.employees-list');
-    Route::resource('payroll', PayrollController::class);
+    // Payroll routes
+    Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
+    Route::get('/payroll/create', [PayrollController::class, 'create'])->name('payroll.create');
+    Route::post('/payroll', [PayrollController::class, 'store'])->name('payroll.store');
+    Route::get('/payroll/{id}', [PayrollController::class, 'show'])->name('payroll.show');
 
 Auth::routes();
