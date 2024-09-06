@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Payroll;
 use Carbon\Carbon;
 use App\Models\Employee;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PayrollController extends Controller
 {
@@ -57,4 +58,34 @@ class PayrollController extends Controller
         $payrolls = Payroll::all();
         return view('payroll.index', compact('payrolls'));
     }
+
+
+    public function employeesWithPayroll()
+    {
+        $employees = Employee::whereHas('payrolls')->get();
+        return view('payroll.employees_with_payroll', compact('employees'));
+    }
+
+    public function payslips($employee_id)
+    {
+        $employee = Employee::with('payrolls')->findOrFail($employee_id);
+
+        // Ensure dates are Carbon instances
+        foreach ($employee->payrolls as $payroll) {
+            $payroll->start_date = Carbon::parse($payroll->start_date);
+            $payroll->end_date = Carbon::parse($payroll->end_date);
+        }
+
+        return view('payroll.payslips', compact('employee'));
+    }
+
+    public function downloadPdf($id)
+    {
+        $payroll = Payroll::findOrFail($id);
+        $pdf = PDF::loadView('payroll.payroll.pdf', compact('payroll'));
+        return $pdf->download('payslip.pdf');
+    }
+
+
+
 }

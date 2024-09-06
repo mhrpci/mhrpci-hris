@@ -87,7 +87,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Contribution List</h3>
                         <div class="card-tools">
-                            @can('contributions-create')
+                            @can('contribution-create')
                             <a href="{{ route('contributions.create') }}" class="btn btn-success btn-sm rounded-pill">
                                 Add contributions <i class="fas fa-plus-circle"></i>
                             </a>
@@ -127,10 +127,10 @@
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <a class="dropdown-item" href="{{ route('contributions.show', $contribution->id) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
-                                                @can('contributions-edit')
+                                                @can('contribution-edit')
                                                     <a class="dropdown-item" href="{{ route('contributions.edit', $contribution->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
                                                 @endcan
-                                                @can('contributions-delete')
+                                                @can('contribution-delete')
                                                     <form action="{{ route('contributions.destroy', $contribution->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')

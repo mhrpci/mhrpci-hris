@@ -1,5 +1,4 @@
 <li class="nav-item">
-
     {{-- Search toggle button --}}
     <a class="nav-link" data-widget="navbar-search" href="#" role="button">
         <i class="fas fa-search"></i>
@@ -7,17 +6,26 @@
 
     {{-- Search bar --}}
     <div class="navbar-search-block">
-        <form class="form-inline" action="{{ $item['href'] }}" method="{{ $item['method'] }}">
+        <form class="form-inline" action="{{ route('search') }}" method="GET">
             {{ csrf_field() }}
 
             <div class="input-group">
 
+                {{-- Search type dropdown --}}
+                <select class="form-control form-control-navbar" name="type">
+                    <option value="users">Users</option>
+                    <option value="employees">Employees</option>
+                    <option value="attendances">Attendances</option>
+                    <option value="leaves">Leaves</option>
+                    <option value="payrolls">Payrolls</option>
+                </select>
+
                 {{-- Search input --}}
                 <input class="form-control form-control-navbar" type="search"
-                    @isset($item['id']) id="{{ $item['id'] }}" @endisset
-                    name="{{ $item['input_name'] }}"
-                    placeholder="{{ $item['text'] }}"
-                    aria-label="{{ $item['text'] }}">
+                    id="search-input"
+                    name="query"
+                    placeholder="Search..."
+                    aria-label="Search">
 
                 {{-- Search buttons --}}
                 <div class="input-group-append">
@@ -32,5 +40,4 @@
             </div>
         </form>
     </div>
-
 </li>

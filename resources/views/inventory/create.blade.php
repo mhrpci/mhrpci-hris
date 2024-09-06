@@ -83,8 +83,9 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Create Payroll</h3>
+                        <h3 class="card-title">Create New Inventory</h3>
                     </div>
+                    <!-- /.card-header -->
                     <div class="card-body">
                         @if (count($errors) > 0)
                             <div class="alert alert-danger">
@@ -97,34 +98,20 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('payroll.store') }}" method="POST">
+                        <form action="{{ route('inventory.store') }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="employee_id">Employee<span class="text-danger">*</span></label>
-                                        <select id="employee_id" name="employee_id" class="form-control" required>
-                                            <option value="">Select Employee</option>
-                                            @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}">
-                                                    {{ $employee->company_id }}  {{ $employee->last_name }}  {{ $employee->first_name }}, {{ $employee->middle_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <label for="name">Name<span class="text-danger">*</span></label>
+                                        <input type="text" id="name" name="name" class="form-control" placeholder="Enter inventory name" required>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="start_date">Start Date<span class="text-danger">*</span></label>
-                                        <input type="date" name="start_date" id="start_date" class="form-control" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="end_date">End Date<span class="text-danger">*</span></label>
-                                        <input type="date" name="end_date" id="end_date" class="form-control" required readonly>
+                                        <label for="description">Description<span class="text-danger">*</span></label>
+                                        <textarea type="text" id="description" name="description" class="form-control" required></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -132,24 +119,27 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="btn-group" role="group" aria-label="Button group">
-                                        <button type="submit" class="btn btn-primary">Generate Payroll</button>&nbsp;&nbsp;
-                                        <a href="{{ route('payroll.index') }}" class="btn btn-info">Back</a>
+                                        <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
+                                        <a href="{{ route('inventory.index') }}" class="btn btn-info">Back</a>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
+                    <!-- /.card-body -->
                 </div>
+                <!-- /.card -->
             </div>
+            <!-- /.col-md-12 -->
         </div>
+        <!-- /.row -->
     </div>
+    <!-- /.container-fluid -->
 @endsection
-
 @section('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 @stop
-
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
@@ -158,27 +148,6 @@
             $('select').select2({
                 theme: 'bootstrap4',
                 width: '100%'
-            });
-
-            // Automatically set the end date based on start date selection
-            $('#start_date').change(function() {
-                var startDate = new Date($(this).val());
-                var endDate = new Date(startDate);
-
-                if (startDate.getDate() >= 11 && startDate.getDate() <= 25) {
-                    // Set end date to 25th of the same month
-                    endDate.setDate(25);
-                } else if (startDate.getDate() >= 26 || startDate.getDate() <= 10) {
-                    // Set end date to 10th of the next month
-                    if (startDate.getDate() >= 26) {
-                        endDate.setMonth(startDate.getMonth() + 1);
-                    }
-                    endDate.setDate(10);
-                }
-
-                // Format the end date to YYYY-MM-DD and set the value
-                var formattedEndDate = endDate.toISOString().split('T')[0];
-                $('#end_date').val(formattedEndDate);
             });
         });
     </script>

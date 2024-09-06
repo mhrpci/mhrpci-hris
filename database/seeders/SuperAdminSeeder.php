@@ -16,7 +16,7 @@ class SuperAdminSeeder extends Seeder
     {
         // Creating Super Admin User
         $superAdmin = User::create([
-            'first_name' => 'System', 
+            'first_name' => 'System',
             'middle_name' => ' ',
             'last_name' => 'Admin',
             'suffix' => ' ',
@@ -29,7 +29,7 @@ class SuperAdminSeeder extends Seeder
 
         // Creating Admin User
         $admin = User::create([
-            'first_name' => 'Admin', 
+            'first_name' => 'Admin',
             'middle_name' => ' ',
             'last_name' => 'Assistant',
             'suffix' => ' ',
@@ -40,5 +40,31 @@ class SuperAdminSeeder extends Seeder
         ]);
         $admin->assignRole('Admin');
 
+
+         // Creating HR Compliance User
+         $hrcompliance = User::create([
+            'first_name' => 'HR',
+            'middle_name' => ' ',
+            'last_name' => 'Compliance',
+            'suffix' => ' ',
+            'email' => 'hr@compliance.com',
+            'bio' => 'HR Compliance',
+            'password' => Hash::make('HrCompliance@2024'),
+            'profile_image' => ' ',
+        ]);
+        $hrcompliance->assignRole('HR  Compliance');
+
+         // Creating HR ComBen User
+         $hrcomben = User::create([
+            'first_name' => 'HR',
+            'middle_name' => ' ',
+            'last_name' => 'ComBen',
+            'suffix' => ' ',
+            'email' => 'hr@comben.com',
+            'bio' => 'HR ComBen',
+            'password' => Hash::make('HrComben@2024'),
+            'profile_image' => ' ',
+        ]);
+        $hrcomben->assignRole('HR ComBen');
     }
 }

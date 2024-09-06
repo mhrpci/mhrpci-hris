@@ -389,7 +389,7 @@
     });
 </script>
 <hr>
-@canany(['super-admin', 'admin'])
+@canany(['super-admin', 'admin','hrcomben', 'hrcompliance'])
     <div class="row">
         <div class="col">
             <div class="card bg-info text-white">

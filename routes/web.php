@@ -25,8 +25,7 @@ use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\OverTimePayController;
 use App\Http\Controllers\PayrollController;
-
-
+use App\Http\Controllers\ItInventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +37,6 @@ use App\Http\Controllers\PayrollController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
     Route::get('/', function () {
     notify()->success('Good Day!');
     return view('welcome');
@@ -70,7 +68,12 @@ use App\Http\Controllers\PayrollController;
     Route::resource('contributions', ContributionController::class);
     Route::resource('loans', LoanController::class);
     Route::resource('types', TypeController::class);
+    Route::resource('inventory', ItInventoryController::class);
     Route::resource('overtime', OverTimePayController::class);
+    Route::resource('posts', PostController::class);
+    Route::resource('holidays', HolidayController::class);
+    Route::resource('tasks', TaskController::class);
+
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
     Route::get('/leaves/print', [LeaveController::class, 'print'])->name('leaves.print');
@@ -85,10 +88,6 @@ use App\Http\Controllers\PayrollController;
     Route::get('/employees/filter', [EmployeeController::class, 'filter'])->name('employees.filter');
     Route::post('employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
     Route::patch('employees/{employee}/disable', [EmployeeController::class, 'disable'])->name('employees.disable');
-
-    Route::resource('posts', PostController::class);
-    Route::resource('holidays', HolidayController::class);
-    Route::resource('tasks', TaskController::class);
     });
     Route::get(
     'notifications/get',
@@ -103,6 +102,10 @@ use App\Http\Controllers\PayrollController;
     Route::get('/check-attendance', [AttendanceController::class, 'checkAttendance']);
     Route::get('/fetch-leaves', [HomeController::class, 'fetchLeavesByAuthUserFirstName']);
     Route::get('/attendances/print', [AttendanceController::class, 'printAttendance'])->name('attendances.print');
+    Route::get('attendances/import', [AttendanceController::class, 'showImportForm'])->name('attendances.import.form');
+    Route::post('attendances/import', [AttendanceController::class, 'import'])->name('attendances.import');
+    Route::get('attendances/export', [AttendanceController::class, 'export'])->name('attendances.export');
+    route::get('/payroll/{id}/download-pdf', [PayrollController::class, 'downloadPdf'])->name('payroll.download-pdf');
 
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
@@ -121,5 +124,11 @@ use App\Http\Controllers\PayrollController;
     Route::get('/payroll/create', [PayrollController::class, 'create'])->name('payroll.create');
     Route::post('/payroll', [PayrollController::class, 'store'])->name('payroll.store');
     Route::get('/payroll/{id}', [PayrollController::class, 'show'])->name('payroll.show');
+    Route::post('inventory/import', [ItInventoryController::class, 'import'])->name('inventory.import');
+
+    Route::get('/payroll-employees-with-payroll', [PayrollController::class, 'employeesWithPayroll'])->name('payroll.employeesWithPayroll');
+    Route::get('/payroll/payslips/{employee_id}', [PayrollController::class, 'payslips'])->name('payroll.payslips');
+
+
 
 Auth::routes();

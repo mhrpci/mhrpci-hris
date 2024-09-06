@@ -236,7 +236,7 @@ return [
     |
     */
 
-    'right_sidebar' => false,
+    'right_sidebar' => true,
     'right_sidebar_icon' => 'fas fa-cogs',
     'right_sidebar_theme' => 'dark',
     'right_sidebar_slide' => true,
@@ -339,7 +339,7 @@ return [
             'url' => 'employees',
             'icon' => 'fas fa-user-tie',
             'active' => ['employees*', 'regex'],
-            'can' => 'admin', 'super-admin',
+            'can' => ['admin', 'super-admin','hrcompliance'],
 
         ],
         [
@@ -357,19 +357,20 @@ return [
                     'text' => 'Attendance',
                     'url' => 'attendances',
                     'icon' => 'fas fa-sign-in-alt',
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin','hrcomben'],
                 ],
                 [
                     'text' => 'Time In/ Time Out',
                     'url' => 'attendances/create',
                     'icon' => 'fas fa-clock',
+                    'can' => ['normal-employee'],
                 ],
                 [
                     'text' => 'Timesheet',
                     'url' => '/timesheets',
                     'icon' => 'fas fa-file-alt',
                     'active' => ['/timesheets*', 'regex:/employee\/attendance\/[0-9]+/'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin','hrcomben'],
                 ],
                 [
                     'text' => 'My Timesheet',
@@ -387,21 +388,21 @@ return [
                     'text' => 'Leave List',
                     'url' => 'leaves',
                     'icon' => 'fas fa-list',
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin','hrcomben'],
                 ],
                 [
                     'text' => 'Apply Leave',
                     'url' => 'leaves/create',
                     'icon' => 'fas fa-calendar-check',
                     'active' => ['leaves/create', 'regex'],
-                    'can' => 'normal-employee', 'super-admin',
+                    'can' => ['normal-employee', 'super-admin'],
                 ],
                 [
                     'text' => 'Leave Sheet',
                     'url' => '/leaves-employees',
                     'icon' => 'fas fa-file',
                     'active' => ['leaves-employees', 'regex:/leaves-employees\/[0-9]+\/leaves/'],
-                    'can' => ['admin', 'super-admin'],
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
                 ],
                 // [
                 //     'text' => 'Leave Report',
@@ -416,14 +417,14 @@ return [
         [
             'text' => ' Payroll Management',
             'icon' => 'fas fa-coins',
-            'can' => 'admin', 'super-admin',
+            'can' => ['admin', 'super-admin', 'hrcomben'],
             'submenu' => [
                 [
                     'text' => 'Payroll',
                     'url' => 'payroll',
                     'icon' => 'fas fa-money-bill-wave',
                     'active' => ['payroll*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
                 ],
                 // [
                 //     'text' => ' Generate Pay Slip',
@@ -437,43 +438,63 @@ return [
         [
             'text' => ' Contributions',
             'icon' => 'fas fa-hands-helping',
-            'can' => 'admin', 'super-admin',
+            'can' => ['admin', 'super-admin', 'hrcomben','normal-employee'],
             'active' => ['contributions*', 'regex'],
             'submenu' => [
                 [
                     'text' => ' Contribution List',
                     'url' => 'contributions',
                     'icon' => 'fas fa-list',
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
                     'active' => ['contributions', 'regex'],
                 ],
                 [
                     'text' => ' Contributor',
                     'url' => '/contributions-employees-list',
                     'icon' => 'fas fa-users',
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
                     'active' => ['contributions-employees-list', 'regex:/contributions-employees-list\/[0-9]+\/leaves/'],
                 ],
+                [
+                    'text' => 'My Contribution',
+                    'url' => '/my-contributions',
+                    'icon' => 'fas fa-solid fa-gift',
+                    'active' => ['/my-contributions', 'regex'],
+                ],
             ],
-        ],
-        [
-            'text' => ' Loans and CA',
-            'url' => 'loans',
-            'icon' => 'fas fa-money-bill-alt',
-            'can' => 'admin', 'super-admin',
-            'active' => ['loans*', 'regex'],
         ],
                 [
             'text' => ' Others',
             'icon' => 'fas fa-cogs',
-            'can' => 'admin', 'super-admin',
+            'can' => ['admin', 'super-admin', 'hrcomben'],
             'submenu' => [
                 [
-                    'text' => ' Apply Overtime',
+                    'text' => ' Overtime',
                     'url' => 'overtime',
-                    'icon' => 'fas fa-clock',
-                    'can' => 'admin', 'super-admin',
+                    'icon' => 'fas fa-hourglass-half',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
                     'active' => ['overtime', 'regex'],
+                ],
+                [
+                    'text' => ' Loans and CA',
+                    'url' => 'loans',
+                    'icon' => 'fas fa-money-bill-alt',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
+                    'active' => ['loans*', 'regex'],
+                ],
+                [
+                    'text' => '  Employee Accountability',
+                    'url' => 'accountability',
+                    'icon' => 'fas fa-check-circle ',
+                    'can' => 'hr-compliance',
+                    'active' => ['accountability*', 'regex'],
+                ],
+                [
+                    'text' => ' IT Inventory',
+                    'url' => 'inventory',
+                    'icon' => 'fas fa-cubes ',
+                    'can' => 'super-admin',
+                    'active' => ['inventory*', 'regex'],
                 ],
                 // [
                 //     'text' => ' Contributor',
@@ -488,21 +509,21 @@ return [
             'text' => '',
             'icon' => 'fas fa-cogs',
             'topnav_right' => true,
-            'can' => 'admin', 'super-admin',
+            'can' => ['admin', 'super-admin','hrcompliance'],
             'submenu' => [
                 [
                     'text' => ' Leave Type',
                     'url' => 'types',
                     'icon' => 'fas fa-folder',
                     'active' => ['types*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin'],
                 ],
                 [
                     'text' => ' Announcement',
                     'url' => 'posts',
                     'icon' => 'fas fa-bullhorn',
                     'active' => ['posts*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin','hrcompliance'],
                 ],
                 // [
                 //     'text' => ' Birthdays',
@@ -516,14 +537,14 @@ return [
                     'url' => 'tasks',
                     'icon' => 'fas fa-tasks',
                     'active' => ['tasks*', 'regex'],
-                    'can' => 'admin',
+                    'can' => ['admin'],
                 ],
                 [
                     'text' => ' Holiday',
                     'url' => 'holidays',
                     'icon' => 'fas fa-calendar-alt',
                     'active' => ['holidays*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin','hrcompliance'],
                 ],
                 // [
                 //     'text' => ' Province',
@@ -552,42 +573,42 @@ return [
             'text' => '',
             'icon' => 'fas fa-users',
             'topnav_right' => true,
-            'can' => 'admin', 'super-admin',
+            'can' => ['admin', 'super-admin','hrcompliance'],
             'submenu' => [
                 [
                     'text' => ' User',
                     'url' => 'users',
                     'icon' => 'fas fa-user',
                     'active' => ['users*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin'],
                 ],
                 [
                     'text' => ' Roles and Permission',
                     'url' => 'roles',
                     'icon' => 'fas fa-lock',
                     'active' => ['roles*', 'regex'],
-                    'can' => 'Super Admin'
+                    'can' => 'super-admin'
                 ],
                 [
                     'text' => ' Gender',
                     'url' => 'genders',
                     'icon' => 'fas fa-venus-mars',
                     'active' => ['genders*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin'],
                 ],
                 [
                     'text' => ' Position',
                     'url' => 'positions',
                     'icon' => 'fas fa-briefcase',
                     'active' => ['positions*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin','hrcompliance'],
                 ],
                 [
                     'text' => ' Department',
                     'url' => 'departments',
                     'icon' => 'fas fa-sitemap',
                     'active' => ['departments*', 'regex'],
-                    'can' => 'admin', 'super-admin',
+                    'can' => ['admin', 'super-admin','hrcompliance'],
                 ],
                 [
                     'text' => ' User Logs',

@@ -15,31 +15,37 @@ class PayrollService
     public function calculatePayroll($employee_id, $start_date, $end_date)
     {
         // Fetch employee data
-        $employee = Employee::find($employee_id);
-        if (!$employee) {
-            return null; // Employee not found
+    $employee = Employee::find($employee_id);
+    if (!$employee) {
+        return null; // Employee not found
+    }
+
+    // Initialize the start and end date
+    $start = Carbon::parse($start_date);
+    $end = Carbon::parse($end_date);
+
+    // Check if start date is the 26th and the month has 31 days
+    if ($start->day == 26 && $start->daysInMonth == 31) {
+        // Adjust the end date by subtracting one day
+        $end->subDay();
+    }
+
+    // Calculate Daily Salary
+    $daily_salary = $employee->salary / 26;
+
+    // Calculate Working Days Excluding Sundays
+    $working_days = 0;
+    $current_date = $start->copy();
+
+    while ($current_date->lte($end)) {
+        if (!$current_date->isSunday()) {
+            $working_days++;
         }
+        $current_date->addDay();
+    }
 
-        // Calculate Daily Salary
-        $daily_salary = $employee->salary / 26;
-
-        // Initialize the start and end date
-        $start = Carbon::parse($start_date);
-        $end = Carbon::parse($end_date);
-
-        // Calculate Working Days Excluding Sundays
-        $working_days = 0;
-        $current_date = $start->copy();
-
-        while ($current_date->lte($end)) {
-            if (!$current_date->isSunday()) {
-                $working_days++;
-            }
-            $current_date->addDay();
-        }
-
-        // Calculate Gross Salary (without Sunday Deduction)
-        $gross_salary = $daily_salary * $working_days;
+    // Calculate Gross Salary (without Sunday Deduction)
+    $gross_salary = $daily_salary * $working_days;
 
         // Fetch contributions and loans
         $contributions = Contribution::where('employee_id', $employee_id)
@@ -113,6 +119,10 @@ class PayrollService
             }
         }
 
+        // Check for dates with no attendance records
+        $total_no_attendance_days = $this->calculateNoAttendanceDays($employee_id, $start_date, $end_date);
+        $no_attendance_deduction = $total_no_attendance_days * $daily_salary;
+
         // Fetch Overtime Pay records and calculate total overtime pay
         $overtime_pay_records = OvertimePay::where('employee_id', $employee_id)
             ->whereBetween('date', [$start, $end])
@@ -122,8 +132,8 @@ class PayrollService
             $overtime_pay += $record->calculateOvertimePay();
         }
 
-        // Total deductions includes absent, late, and undertime deductions
-        $total_deductions = $absent_deduction + $late_deduction + $undertime_deduction;
+        // Total deductions include absent, late, undertime deductions, and no attendance deductions
+        $total_deductions = $absent_deduction + $late_deduction + $undertime_deduction + $no_attendance_deduction;
 
         // Deduct Contributions (if within payroll period)
         $contribution_deductions = 0;
@@ -155,6 +165,7 @@ class PayrollService
             'late_deduction' => $late_deduction,
             'undertime_deduction' => $undertime_deduction,
             'absent_deduction' => $absent_deduction,
+            'no_attendance_deduction' => $no_attendance_deduction,
             'sss_contribution' => $contributions->sss_contribution ?? 0,
             'pagibig_contribution' => $contributions->pagibig_contribution ?? 0,
             'philhealth_contribution' => $contributions->philhealth_contribution ?? 0,
@@ -166,5 +177,31 @@ class PayrollService
         ]);
 
         return $payroll;
+    }
+
+    private function calculateNoAttendanceDays($employee_id, $start_date, $end_date)
+    {
+        // Initialize the start and end date
+        $start = Carbon::parse($start_date);
+        $end = Carbon::parse($end_date);
+
+        // Get all attendance dates within the range
+        $attendance_dates = Attendance::where('employee_id', $employee_id)
+            ->whereBetween('date_attended', [$start, $end])
+            ->pluck('date_attended')
+            ->toArray();
+
+        $total_no_attendance_days = 0;
+        $current_date = $start->copy();
+
+        while ($current_date->lte($end)) {
+            // If the current date is not a Sunday and there's no attendance record, count it as a no attendance day
+            if (!$current_date->isSunday() && !in_array($current_date->toDateString(), $attendance_dates)) {
+                $total_no_attendance_days++;
+            }
+            $current_date->addDay();
+        }
+
+        return $total_no_attendance_days;
     }
 }

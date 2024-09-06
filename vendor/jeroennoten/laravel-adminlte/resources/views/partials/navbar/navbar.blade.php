@@ -7,11 +7,16 @@
         {{-- Left sidebar toggler link --}}
         @include('adminlte::partials.navbar.menu-item-left-sidebar-toggler')
 
-        {{-- Configured left links --}}
-        @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-left'), 'item')
-
         {{-- Custom left links --}}
         @yield('content_top_nav_left')
+
+        {{-- App Name --}}
+        <h4 class="nav-item" style="margin-top: 5px">
+                <span class="brand-text">MHR PROPERTY CONGLOMERATES, INC. HRIS</span>
+        </h4>
+
+        {{-- Configured left links --}}
+        @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-left'), 'item')
     </ul>
 
     {{-- Navbar right links --}}

@@ -7,6 +7,9 @@ use App\Models\Employee;
 use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use App\Events\AttendanceStored;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AttendanceExport;
+use App\Imports\AttendanceImport;
 
 class AttendanceController extends Controller
 {
@@ -306,4 +309,44 @@ public function printAttendance(Request $request)
         'attendance' => $attendance
     ]);
 }
+/**
+     * Show the form for importing attendance records.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showImportForm()
+    {
+        return view('attendances.import');
+    }
+
+    /**
+     * Handle the import of attendance records.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,csv',
+        ]);
+
+        try {
+            Excel::import(new AttendanceImport, $request->file('file'));
+
+            return redirect()->route('attendances.index')->with('success', 'Attendance records imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to import records: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Export attendance records to Excel.
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export()
+    {
+        return Excel::download(new AttendanceExport, 'attendances.xlsx');
+    }
 }
