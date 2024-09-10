@@ -466,7 +466,7 @@ return [
                 [
             'text' => ' Others',
             'icon' => 'fas fa-cogs',
-            'can' => ['admin', 'super-admin', 'hrcomben', 'it-staff'],
+            'can' => ['admin', 'super-admin', 'hrcomben' , 'hrcompliance', 'it-staff'],
             'submenu' => [
                 [
                     'text' => ' Overtime',
@@ -486,7 +486,7 @@ return [
                     'text' => '  Employee Accountability',
                     'url' => 'accountability',
                     'icon' => 'fas fa-check-circle ',
-                    'can' => 'hr-compliance',
+                    'can' => 'hrcompliance',
                     'active' => ['accountability*', 'regex'],
                 ],
                 [
