@@ -466,7 +466,7 @@ return [
                 [
             'text' => ' Others',
             'icon' => 'fas fa-cogs',
-            'can' => ['admin', 'super-admin', 'hrcomben'],
+            'can' => ['admin', 'super-admin', 'hrcomben', 'it-staff'],
             'submenu' => [
                 [
                     'text' => ' Overtime',
@@ -493,7 +493,7 @@ return [
                     'text' => ' IT Inventory',
                     'url' => 'inventory',
                     'icon' => 'fas fa-cubes ',
-                    'can' => 'super-admin',
+                    'can' => ['super-admin', 'it-staff'],
                     'active' => ['inventory*', 'regex'],
                 ],
                 // [

@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
         $hrcompliance = Role::create(['name' => 'HR  Compliance']);
         $hrcomben = Role::create(['name' => 'HR ComBen']);
         $employee = Role::create(['name' => 'Employee']);
+        $it = Role::create(['name' => 'IT Staff']);
 
         $admin->givePermissionTo([
             'user-list',
@@ -109,6 +110,14 @@ class RoleSeeder extends Seeder
             'loan-create',
             'loan-edit',
             'hrcomben',
+        ]);
+
+        $it->givePermissionTo([
+            'inventory-list',
+            'inventory-create',
+            'inventory-edit',
+            'inventory-delete',
+            'it-staff',
         ]);
 
         $employee->givePermissionTo([

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class Employee extends Model
 {
@@ -157,4 +158,20 @@ class Employee extends Model
         return $this->salary / 26;
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Automatically generate a unique slug when creating an employee
+        static::creating(function ($employee) {
+            // Capitalize first and last names
+            $firstName = ucwords($employee->first_name);
+            $lastName = ucwords($employee->last_name);
+            $middleName = ucwords($employee->middle_name ?? ''); // Handle nullable middle name
+            $suffix = ucwords($employee->suffix ?? ''); // Handle nullable suffix
+
+            // Combine company_id, last_name, first_name, middle_name, suffix, and random string
+            $employee->slug = $employee->company_id . '-' . Str::slug($lastName . '-' . $firstName . '-' . $middleName . '-' . $suffix) . '-' . Str::random(6);
+        });
+    }
 }

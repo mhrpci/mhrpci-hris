@@ -87,10 +87,15 @@ class PermissionSeeder extends Seeder
             'loan-create',
             'loan-edit',
             'loan-delete',
+            'inventory-list',
+            'inventory-create',
+            'inventory-edit',
+            'inventory-delete',
             'admin',
             'super-admin',
             'hrcomben',
             'hrcompliance',
+            'it-staff',
             'normal-employee',
          ];
 

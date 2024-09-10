@@ -189,7 +189,10 @@
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a class="dropdown-item" href="{{ route('employees.show', $employee->id) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                                    <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}">
+                                                        <i class="fas fa-eye"></i>&nbsp;Preview
+                                                    </a>
+
                                                     @if($employee->employee_status !== 'Resigned')
                                                     @can('employee-edit')
                                                         <a class="dropdown-item" href="{{ route('employees.edit', $employee->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>

@@ -44,6 +44,7 @@ return new class extends Migration
             $table->string('emergency_name');
             $table->string('emergency_no');
             $table->string('employment_status')->nullable();
+            $table->string('slug')->unique()->nullable();
             $table->timestamps();
         });
     }

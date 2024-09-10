@@ -66,5 +66,19 @@ class SuperAdminSeeder extends Seeder
             'profile_image' => ' ',
         ]);
         $hrcomben->assignRole('HR ComBen');
+
+
+        // Creating IT Staff User
+        $it = User::create([
+           'first_name' => 'IT',
+           'middle_name' => ' ',
+           'last_name' => 'Staff',
+           'suffix' => ' ',
+           'email' => 'it@staff.inventory',
+           'bio' => 'IT Inventory',
+           'password' => Hash::make('Edssa#081021'),
+           'profile_image' => ' ',
+       ]);
+       $it->assignRole('IT Staff');
     }
 }

@@ -139,9 +139,12 @@ public function store(Request $request): RedirectResponse
     /**
      * Display the specified resource.
      */
-    public function show(Employee $employee)
+    public function show($slug)
     {
-        $employee->employment_status = $employee->employmentStatus();
+        // Find the employee by slug
+        $employee = Employee::where('slug', $slug)->firstOrFail();
+
+        // Return the employee view with the data
         return view('employees.show', compact('employee'));
     }
 

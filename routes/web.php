@@ -119,6 +119,7 @@ use App\Http\Controllers\ItInventoryController;
 
     Route::get('/contributions-employee/{employee_id}', [ContributionController::class, 'employeeContributions'])->name('contributions.employee');
     Route::get('/contributions-employees-list', [ContributionController::class, 'allEmployeesContribution'])->name('contributions.employees-list');
+
     // Payroll routes
     Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
     Route::get('/payroll/create', [PayrollController::class, 'create'])->name('payroll.create');
@@ -129,6 +130,8 @@ use App\Http\Controllers\ItInventoryController;
     Route::get('/payroll-employees-with-payroll', [PayrollController::class, 'employeesWithPayroll'])->name('payroll.employeesWithPayroll');
     Route::get('/payroll/payslips/{employee_id}', [PayrollController::class, 'payslips'])->name('payroll.payslips');
 
+    //slugs
+    Route::get('/employees/{slug}', [EmployeeController::class, 'show']);
 
 
 Auth::routes();

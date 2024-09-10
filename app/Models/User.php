@@ -58,16 +58,42 @@ class User extends Authenticatable
 
 
     public function adminlte_image()
-{
-    if ($this->profile_image) {
-        return asset('storage/' . $this->profile_image);
-    } else {
-        // Default image URL if profile image is not uploaded
-        return 'https://picsum.photos/300/300';
+    {
+        if ($this->profile_image) {
+            return asset('storage/' . $this->profile_image);
+        } else {
+            return $this->generateInitialsAvatar();
+        }
     }
-}
 
+    private function generateInitialsAvatar()
+    {
+        $firstName = $this->first_name ?? '';
+        $lastName = $this->last_name ?? '';
+        $initials = strtoupper(substr($firstName, 0, 1) . substr($lastName, 0, 1));
 
+        if (empty($initials)) {
+            $initials = 'U';
+        }
+
+        $colors = [
+            '#00ACC1', // Cyan
+            '#FF5722', // Deep Orange
+            '#9C27B0', // Purple
+            '#4CAF50', // Green
+            '#F44336', // Red
+            '#3F51B5', // Indigo
+        ];
+
+        $backgroundColor = $colors[crc32($this->email) % count($colors)];
+
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="20" fill="' . $backgroundColor . '"/>
+                    <text x="20" y="20" font-size="16" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" font-family="Arial, Helvetica, sans-serif" font-weight="bold">' . $initials . '</text>
+                </svg>';
+
+        return 'data:image/svg+xml;base64,' . base64_encode($svg);
+    }
 
     public function adminlte_desc()
     {
@@ -75,35 +101,36 @@ class User extends Authenticatable
     }
 
     public function adminlte_profile_url()
-{
-    return route('profile.show', $this->id);
-}
+    {
+        return route('profile.show', $this->id);
+    }
 
-public function post(): HasMany
-{
-    return $this->hasMany(Post::class);
-}
+    public function post(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
 
-// User.php (User Model)
-public function employee()
-{
-    return $this->hasOne(Employee::class);
-}
+    // User.php (User Model)
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
 
 
-public function getIsEmployeeAttribute()
-{
-    // Example: assuming you have a column 'employee_type' in users table
-    return $this->employee_type === 'employee'; // Adjust this based on your actual implementation
-}
+    public function getIsEmployeeAttribute()
+    {
+        // Example: assuming you have a column 'employee_type' in users table
+        return $this->employee_type === 'employee'; // Adjust this based on your actual implementation
+    }
 
-public function conversations()
-{
-    return $this->belongsToMany(Conversation::class);
-}
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class);
+    }
 
-public function messages()
-{
-    return $this->hasMany(Message::class);
-}
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
 }
