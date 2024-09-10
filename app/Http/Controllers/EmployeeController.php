@@ -38,18 +38,29 @@ class EmployeeController extends Controller
         $this->middleware(['permission:employee-edit'], ['only' => ['edit', 'update']]);
         $this->middleware(['permission:employee-delete'], ['only' => ['destroy']]);
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Employee $employee)
-    {
-        $employees = employee::all();
-        // Determine employment status for each employee
-        foreach ($employees as $employee) {
-            $employee->employment_status = $employee->employmentStatus(); // Add employment status
-        }
-        return view('employees.index', compact('employees', 'employee'));
+/**
+ * Display a listing of the resource.
+ */
+public function index()
+{
+    // Get the authenticated user
+    $user = auth()->user();
+
+    // Check if the user has the Super Admin role
+    if ($user->hasRole('Super Admin')) {
+        $employees = Employee::all();
+    } else {
+        // If not Super Admin, only get employees with Rank File rank
+        $employees = Employee::where('rank', 'Rank File')->get();
     }
+
+    // Determine employment status for each employee
+    foreach ($employees as $employee) {
+        $employee->employment_status = $employee->employmentStatus();
+    }
+
+    return view('employees.index', compact('employees'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -131,8 +142,9 @@ public function store(Request $request): RedirectResponse
         // Save employment status
         $employee->saveEmploymentStatus();
 
-        return redirect()->route('employees.show', $employee)
-            ->with('success', 'Employee created successfully');
+        // Redirect to the employee's show page by slug
+        return redirect()->route('employees.show', $employee->slug)
+        ->with('success', 'Employee created successfully');
     }
 
 
@@ -151,80 +163,91 @@ public function store(Request $request): RedirectResponse
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employee $employee)
+    public function edit($slug)
     {
+        // Find the employee by slug
+        $employee = Employee::where('slug', $slug)->firstOrFail();
+
+        // Fetch related data
         $genders = Gender::all();
         $provinces = Province::all();
         $city = City::all();
         $barangay = Barangay::all();
         $positions = Position::all();
         $departments = Department::all();
-        return view('employees.edit', compact('employee','genders','provinces','city', 'barangay', 'positions', 'departments'));
+
+        // Return the edit view with the data
+        return view('employees.edit', compact('employee', 'genders', 'provinces', 'city', 'barangay', 'positions', 'departments'));
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Employee  $employee
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Employee $employee): RedirectResponse
-    {
-        // Validate the incoming request
-        $validator = Validator::make($request->all(), [
-            'company_id' => 'required',
-            'profile' => 'nullable|image',
-            'first_name' => 'required',
-            'middle_name' => 'nullable',
-            'last_name' => 'required',
-            'suffix' => 'nullable',
-            'email_address' => 'required|email',
-            'contact_no' => 'required',
-            'birth_date' => 'required|date_format:Y-m-d',
-            'birth_place_province' => 'nullable',
-            'birth_place_city' => 'nullable',
-            'birth_place_barangay' => 'nullable',
-            'province_id' => 'required',
-            'city_id' => 'required',
-            'barangay_id' => 'required',
-            'gender_id' => 'required',
-            'position_id' => 'required',
-            'department_id' => 'required',
-            'salary' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'zip_code' => 'required|numeric',
-            'date_hired' => 'required|date_format:Y-m-d',
-            'sss_no' => 'nullable|numeric',
-            'pagibig_no' => 'nullable|numeric',
-            'tin_no' => 'nullable|numeric',
-            'philhealth_no' => 'nullable|numeric',
-            'elementary' => 'nullable',
-            'secondary' => 'nullable',
-            'tertiary' => 'nullable',
-            'emergency_name' => 'required',
-            'emergency_no' => 'required|numeric',
-            'employee_status' => 'required|in:active,resigned',
-        ]);
+/**
+ * Update the specified resource in storage.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  \App\Models\Employee  $employee
+ * @return \Illuminate\Http\RedirectResponse
+ */
+public function update(Request $request, $slug): RedirectResponse
+{
+    // Find the employee by slug
+    $employee = Employee::where('slug', $slug)->firstOrFail();
 
-        // Update the employee with the request data
-        $employee->update($request->except(['profile']));
+    // Validate the incoming request
+    $validator = Validator::make($request->all(), [
+        'company_id' => 'required',
+        'profile' => 'nullable|image',
+        'first_name' => 'required',
+        'middle_name' => 'nullable',
+        'last_name' => 'required',
+        'suffix' => 'nullable',
+        'email_address' => 'required|email',
+        'contact_no' => 'required',
+        'birth_date' => 'required|date_format:Y-m-d',
+        'birth_place_province' => 'nullable',
+        'birth_place_city' => 'nullable',
+        'birth_place_barangay' => 'nullable',
+        'province_id' => 'required',
+        'city_id' => 'required',
+        'barangay_id' => 'required',
+        'gender_id' => 'required',
+        'position_id' => 'required',
+        'department_id' => 'required',
+        'salary' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+        'zip_code' => 'required|numeric',
+        'date_hired' => 'required|date_format:Y-m-d',
+        'sss_no' => 'nullable|numeric',
+        'pagibig_no' => 'nullable|numeric',
+        'tin_no' => 'nullable|numeric',
+        'philhealth_no' => 'nullable|numeric',
+        'elementary' => 'nullable',
+        'secondary' => 'nullable',
+        'tertiary' => 'nullable',
+        'emergency_name' => 'required',
+        'emergency_no' => 'required|numeric',
+        'employee_status' => 'required|in:active,resigned',
+        'rank' => 'required|in:Rank File,Managerial',
+    ]);
 
-        // Handle the profile image upload
-        if ($request->hasFile('profile')) {
-            $image = $request->file('profile');
-            $filename = $image->store('profiles', 'public');
-            $employee->profile = $filename;
-        }
-        $employee->employment_status = $request->input('employee_status');
-        $employee->save();
+    // Update the employee with the request data
+    $employee->update($request->except(['profile']));
 
-        // Save employment status
-        $employee->saveEmploymentStatus();
-
-        return redirect()->route('employees.show', $employee)
-            ->with('success', 'Employee updated successfully');
+    // Handle the profile image upload
+    if ($request->hasFile('profile')) {
+        $image = $request->file('profile');
+        $filename = $image->store('profiles', 'public');
+        $employee->profile = $filename;
     }
+    $employee->employment_status = $request->input('employee_status');
+    $employee->rank = $request->input('rank');
+    $employee->save();
+
+    // Save employment status
+    $employee->saveEmploymentStatus();
+
+    return redirect()->route('employees.show', $employee->slug)
+                     ->with('success', 'Employee updated successfully');
+}
 
 
 

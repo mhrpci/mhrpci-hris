@@ -215,4 +215,24 @@ public function getAttendancePoints(): float
     return 0;
 }
 
+public function getOvertimeDifferenceInDecimal(): float
+{
+    if ($this->remarks === 'Overtime' && $this->time_out) {
+        $standardTimeOut = Carbon::parse('17:00:00');
+        $actualTimeOut = Carbon::parse($this->time_out);
+
+        // Calculate the difference
+        $overtimeDuration = $actualTimeOut->diff($standardTimeOut);
+
+        // Convert the difference to decimal format
+        $hours = $overtimeDuration->h;
+        $minutes = $overtimeDuration->i;
+
+        return $hours + ($minutes / 60);
+    }
+
+    return 0.0;
+}
+
+
 }

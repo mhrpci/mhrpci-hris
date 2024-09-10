@@ -121,9 +121,9 @@
                                             <i class="fas fa-ellipsis-v"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                @can('overtime-edit')
+                                                {{-- @can('overtime-edit')
                                                     <a class="dropdown-item" href="{{ route('overtime.edit',$overtime->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                                @endcan
+                                                @endcan --}}
                                                 @can('overtime-delete')
                                                     <form action="{{ route('overtime.destroy', $overtime->id) }}" method="POST">
                                                         @csrf

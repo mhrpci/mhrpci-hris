@@ -15,91 +15,109 @@
 </div>
 <style>
     /* Loader */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-out;
-}
-
-.loader-content {
-    text-align: center;
-}
-
-/* Wave Loader */
-.wave-loader {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 50px;
-}
-
-.wave-loader > div {
-    width: 10px;
-    height: 50px;
-    margin: 0 5px;
-    background-color: #8e44ad; /* Purple color */
-    animation: wave 1s ease-in-out infinite;
-}
-
-.wave-loader > div:nth-child(2) {
-    animation-delay: -0.9s;
-}
-
-.wave-loader > div:nth-child(3) {
-    animation-delay: -0.8s;
-}
-
-.wave-loader > div:nth-child(4) {
-    animation-delay: -0.7s;
-}
-
-.wave-loader > div:nth-child(5) {
-    animation-delay: -0.6s;
-}
-
-@keyframes wave {
-    0%, 100% {
-        transform: scaleY(0.5);
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
     }
-    50% {
-        transform: scaleY(1);
+
+    .loader-content {
+        text-align: center;
     }
-}
-.status-active {
-    color: rgb(255, 255, 255);
-    border: 1px solid green;
-    background-color: green;
-    padding: 2px 4px;
-    border-radius: 5px;
-}
 
-.status-inactive {
-    color: rgb(255, 255, 255);
-    border: 1px solid red;
-    background-color: red;
-    padding: 2px 4px;
-    border-radius: 5px;
-}
+    /* Wave Loader */
+    .wave-loader {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 50px;
+    }
 
+    .wave-loader > div {
+        width: 10px;
+        height: 50px;
+        margin: 0 5px;
+        background-color: #8e44ad;
+        animation: wave 1s ease-in-out infinite;
+    }
+
+    .wave-loader > div:nth-child(2) {
+        animation-delay: -0.9s;
+    }
+
+    .wave-loader > div:nth-child(3) {
+        animation-delay: -0.8s;
+    }
+
+    .wave-loader > div:nth-child(4) {
+        animation-delay: -0.7s;
+    }
+
+    .wave-loader > div:nth-child(5) {
+        animation-delay: -0.6s;
+    }
+
+    @keyframes wave {
+        0%, 100% {
+            transform: scaleY(0.5);
+        }
+        50% {
+            transform: scaleY(1);
+        }
+    }
+
+    .status-active {
+        color: #fff;
+        border: 1px solid green;
+        background-color: green;
+        padding: 2px 4px;
+        border-radius: 5px;
+    }
+
+    .status-inactive {
+        color: #fff;
+        border: 1px solid red;
+        background-color: red;
+        padding: 2px 4px;
+        border-radius: 5px;
+    }
+
+    /* Profile Image Styling */
+    .profile-img {
+        border: 3px solid #8e44ad; /* Purple border for a professional look */
+        padding: 5px;
+        background-color: #fff;
+        object-fit: cover;
+        width: 200px;
+        height: 200px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-primary {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
 
 </style>
 @stop
+
 @section('content')
 <br>
 @if ($message = Session::get('success'))
-                            <div class="alert alert-success">{{ $message }}</div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @endif
+    <div class="alert alert-success">{{ $message }}</div>
+@endif
+@if ($message = Session::get('error'))
+    <div class="alert alert-danger">{{ $message }}</div>
+@endif
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
@@ -112,13 +130,13 @@
                     <div class="row mb-4">
                         <div class="col-md-3 text-center">
                             @if($employee->profile)
-                                <img src="{{ asset('storage/' . $employee->profile) }}" alt="Profile Image" class="profile-img img-fluid rounded-circle mb-3" style="height: 150px; width: 150px;">
+                                <img src="{{ asset('storage/' . $employee->profile) }}" alt="Profile Image" class="profile-img img-fluid mb-3">
                             @else
                                 <p>No profile image available</p>
                             @endif
                         </div>
                         <div class="col-md-9">
-                            <h4 class="text-primary">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h4>
+                            <h4 class="text-primary">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name ?? '' }} {{ $employee->suffix ?? '' }}</h4>
                             <p><strong>Email:</strong> {{ $employee->email_address }}</p>
                             <p><strong>Contact No.:</strong> {{ $employee->contact_no }}</p>
                             <p><strong>Gender:</strong> {{ $employee->gender->name }}</p>
@@ -130,7 +148,6 @@
                                     {{ $employee->employee_status }}
                                 </span>
                             </p>
-
                             <p>
                                 <strong>Place of Birth:</strong>
                                 {{ $employee->birth_place_barangay || $employee->birth_place_city || $employee->birth_place_province ?
@@ -139,7 +156,6 @@
                                     ($employee->birth_place_province ?? 'N/A') :
                                     'N/A' }}
                             </p>
-
                         </div>
                     </div>
                     <div class="row">
@@ -205,7 +221,7 @@
                         <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>
                             Leave Balance
                         </button>
-                        <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                        <a href="{{ route('employees.edit', $employee->slug) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</a>
                         <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')

@@ -124,6 +124,13 @@
                                             <a class="dropdown-item" href="{{ route('payroll.show', ['id' => $payroll->id]) }}">
                                                 <i class="fas fa-eye"></i>&nbsp;View
                                             </a>
+                                            @can('payroll-delete')
+                                            <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this payroll?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                            </form>
+                                        @endcan
                                         </div>
                                     </div>
                                 </td>

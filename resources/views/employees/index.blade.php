@@ -195,8 +195,10 @@
 
                                                     @if($employee->employee_status !== 'Resigned')
                                                     @can('employee-edit')
-                                                        <a class="dropdown-item" href="{{ route('employees.edit', $employee->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                                    @endcan
+                                                    <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}">
+                                                        <i class="fas fa-edit"></i>&nbsp;Edit
+                                                    </a>
+                                                @endcan
                                                     @can('user-create')
                                                         <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
                                                             @csrf
@@ -224,6 +226,30 @@
                                         </td>
 
                                     </tr>
+                                        <!-- Additional Details Modal -->
+                                    <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h5 class="modal-title" id="additionalDetailsModalLabel">Leave Balance</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="col-md-12">
+                                                        <div class="card border-secondary mb-3">
+                                                            <div class="card-body">
+                                                                <p><strong>Sick Leave:</strong> {{$employee->sick_leave}} Hours - is equivalent - {{($employee->sick_leave) / 24}} Day</p>
+                                                                <p><strong>Vacation Leave:</strong> {{$employee->vacation_leave}} Hours - is equivalent - {{($employee->vacation_leave) / 24}} Day</p>
+                                                                <p><strong>Emergency Leave:</strong> {{$employee->emergency_leave}} Hours - is equivalent - {{($employee->emergency_leave) / 24}} Day</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endforeach
                             </tbody>
                         </table>
@@ -276,30 +302,6 @@
         </div>
     </div>
 
-    <!-- Additional Details Modal -->
-    <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="additionalDetailsModalLabel">Leave Balance</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-md-12">
-                        <div class="card border-secondary mb-3">
-                            <div class="card-body">
-                                <p><strong>Sick Leave:</strong> {{$employee->sick_leave}} Hours - is equivalent - {{($employee->sick_leave) / 24}} Day</p>
-                                <p><strong>Vacation Leave:</strong> {{$employee->vacation_leave}} Hours - is equivalent - {{($employee->vacation_leave) / 24}} Day</p>
-                                <p><strong>Emergency Leave:</strong> {{$employee->emergency_leave}} Hours - is equivalent - {{($employee->emergency_leave) / 24}} Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
         <!-- Month Modal -->
 <div class="modal fade" id="monthModal" tabindex="-1" role="dialog" aria-labelledby="monthModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

@@ -106,6 +106,9 @@ use App\Http\Controllers\ItInventoryController;
     Route::post('attendances/import', [AttendanceController::class, 'import'])->name('attendances.import');
     Route::get('attendances/export', [AttendanceController::class, 'export'])->name('attendances.export');
     route::get('/payroll/{id}/download-pdf', [PayrollController::class, 'downloadPdf'])->name('payroll.download-pdf');
+    Route::delete('/payroll/{id}', [PayrollController::class, 'destroy'])->name('payroll.destroy');
+    // routes/web.php
+    Route::get('/overtime-hours/{employeeId}', [OvertimeController::class, 'getOvertimeHours'])->name('overtime.hours');
 
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
@@ -132,6 +135,8 @@ use App\Http\Controllers\ItInventoryController;
 
     //slugs
     Route::get('/employees/{slug}', [EmployeeController::class, 'show']);
+    Route::get('employees/{slug}/edit', [EmployeeController::class, 'edit']);
+
 
 
 Auth::routes();

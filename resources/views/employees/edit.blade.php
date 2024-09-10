@@ -97,7 +97,7 @@
                     </div>
                     @endif
 
-                    <form action="{{ route('employees.update', $employee->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('employees.update', $employee->slug) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <p>Basic Information</p>
@@ -472,7 +472,18 @@
                                     });
                                 </script>
                                 </div>
-</div>
+                                </div>
+                                <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="rank">Rank</label>
+                                        <select class="form-control" id="rank" name="rank">
+                                            <option value="Rank File" {{ old('rank', $employee->rank) == 'Rank File' ? 'selected' : '' }}>Rank File</option>
+                                            <option value="Managerial" {{ old('rank', $employee->rank) == 'Managerial' ? 'selected' : '' }}>Managerial</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                </div>
 <!-- End Of Identification Card Numbers-->
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                         <a href="{{ route('employees.index') }}" class="btn btn-info">Back</a>
@@ -540,3 +551,20 @@
     });
 </script>
 
+@section('css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+@stop
+
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for all select elements
+            $('select').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+        });
+    </script>
+@stop

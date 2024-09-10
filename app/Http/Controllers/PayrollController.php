@@ -18,12 +18,24 @@ class PayrollController extends Controller
         $this->payrollService = $payrollService;
     }
 
-    // Display a form to create payroll
-    public function create()
-    {
+/**
+ * Display a form to create payroll
+ */
+public function create()
+{
+    // Get the authenticated user
+    $user = auth()->user();
+
+    // Check if the user has the Super Admin role
+    if ($user->hasRole('Super Admin')) {
         $employees = Employee::all();
-        return view('payroll.create', compact('employees'));
+    } else {
+        // If not Super Admin, only get employees with Rank File rank
+        $employees = Employee::where('rank', 'Rank File')->get();
     }
+
+    return view('payroll.create', compact('employees'));
+}
 
     // Store the payroll record
     public function store(Request $request)
@@ -52,12 +64,37 @@ class PayrollController extends Controller
         return view('payroll.show', compact('payroll'));
     }
 
-    // List all payroll records
-    public function index()
-    {
-        $payrolls = Payroll::all();
-        return view('payroll.index', compact('payrolls'));
+/**
+ * List all payroll records
+ */
+public function index()
+{
+    // Get the authenticated user
+    $user = auth()->user();
+
+    // Check if the user has the Super Admin role
+    if ($user->hasRole('Super Admin')) {
+        $payrolls = Payroll::with('employee')->get();
+    } else {
+        // If not Super Admin, only get payrolls for employees with Rank File rank
+        $payrolls = Payroll::whereHas('employee', function ($query) {
+            $query->where('rank', 'Rank File');
+        })->with('employee')->get();
     }
+
+    return view('payroll.index', compact('payrolls'));
+}
+public function destroy($id)
+{
+    // Find the payroll record by ID
+    $payroll = Payroll::findOrFail($id);
+
+    // Delete the payroll record
+    $payroll->delete();
+
+    // Redirect to the payroll index with a success message
+    return redirect()->route('payroll.index')->with('success', 'Payroll record deleted successfully.');
+}
 
 
     public function employeesWithPayroll()
