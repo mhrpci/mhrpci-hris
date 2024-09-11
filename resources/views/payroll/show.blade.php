@@ -76,6 +76,7 @@
 </style>
 @stop
 @section('content')
+<br>
 <div class="container mt-4 mb-4">
     <div class="card">
         <div class="card-body p-0">
@@ -219,9 +220,15 @@
                 <a href="{{ route('payroll.download-pdf', $payroll->id) }}" class="btn btn-primary">
                     <i class="fas fa-download mr-2"></i>Download PDF
                 </a>
+                @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('HR ComBen'))
                 <a href="{{ route('payroll.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Payroll List
                 </a>
+                @else
+                <button onclick="showLoaderAndGoBack()" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left mr-2"></i>Back
+                </button>
+                @endif
             </div>
         </div>
     </div>
@@ -235,4 +242,14 @@
     }
     .table td, .table th { padding: 0.5rem; }
 </style>
+
+<script>
+function showLoaderAndGoBack() {
+    document.getElementById('loader').style.display = 'flex';
+    setTimeout(() => {
+        history.back();
+    }, 500); // Adjust the delay as needed
+}
+</script>
+
 @endsection

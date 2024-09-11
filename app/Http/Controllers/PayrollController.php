@@ -16,8 +16,13 @@ class PayrollController extends Controller
     public function __construct(PayrollService $payrollService)
     {
         $this->payrollService = $payrollService;
-    }
 
+        $this->middleware('auth');
+        $this->middleware('permission:payroll-list|payroll-create|payroll-edit|payroll-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:payroll-create', ['only' => ['create','store']]);
+        $this->middleware('permission:payroll-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:payroll-delete', ['only' => ['destroy']]);
+    }
 /**
  * Display a form to create payroll
  */
@@ -123,6 +128,20 @@ public function destroy($id)
         return $pdf->download('payslip.pdf');
     }
 
+    public function myPayrolls()
+    {
+        // Get the authenticated user
+        $user = auth()->user();
 
+        // Find the employee by email address
+        $employee = Employee::with('payrolls')->where('email_address', $user->email)->firstOrFail();
 
+        // Ensure dates are Carbon instances
+        foreach ($employee->payrolls as $payroll) {
+            $payroll->start_date = Carbon::parse($payroll->start_date);
+            $payroll->end_date = Carbon::parse($payroll->end_date);
+        }
+
+        return view('payroll.my_payrolls', compact('employee'));
+    }
 }

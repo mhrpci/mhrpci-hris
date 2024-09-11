@@ -85,14 +85,14 @@ class LeaveController extends Controller
         // Find the leave record
         $leave = Leave::findOrFail($id);
         $diff = $leave->diffdays;
-    
+
         // Load the user who approved the leave
         $approvedByUser = $leave->approvedByUser;
-    
+
         // Pass the leave and approved by user details to the view
         return view('leaves.show', compact('leave', 'approvedByUser','diff'));
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -185,13 +185,13 @@ public function detail($id)
     {
         $departmentId = $request->input('department_id');
         $departments = Department::all();
-    
+
         if ($departmentId) {
             $employees = Employee::where('department_id', $departmentId)->get();
         } else {
             $employees = Employee::all();
         }
-    
+
         return view('leaves.all_employees', compact('employees', 'departments', 'departmentId'));
     }
 
@@ -234,4 +234,19 @@ public function detail($id)
     return view('leaves.report', compact('leaves', 'departments', 'departmentId'));
 }
 
+    /**
+     * Display the leave sheet and balances for the authenticated employee.
+     */
+    public function myLeaveSheet()
+    {
+        $user = Auth::user();
+        $employee = Employee::where('email_address', $user->email)->firstOrFail();
+
+        $leaves = Leave::where('employee_id', $employee->id)->get();
+        $sickLeaveBalance = $employee->sick_leave;
+        $emergencyLeaveBalance = $employee->emergency_leave;
+        $vacationLeaveBalance = $employee->vacation_leave;
+
+        return view('leaves.my_leave_sheet', compact('employee', 'leaves', 'sickLeaveBalance', 'emergencyLeaveBalance', 'vacationLeaveBalance'));
+    }
 }

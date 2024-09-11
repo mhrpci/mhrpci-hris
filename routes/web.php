@@ -137,6 +137,9 @@ use App\Http\Controllers\ItInventoryController;
     Route::get('/employees/{slug}', [EmployeeController::class, 'show']);
     Route::get('employees/{slug}/edit', [EmployeeController::class, 'edit']);
 
+    Route::get('/my-payrolls', [PayrollController::class, 'myPayrolls'])->name('payroll.myPayrolls');
+    Route::get('payroll/download-pdf/{id}', [PayrollController::class, 'downloadPdf'])->name('payroll.downloadPdf');
 
+    Route::get('/my-leave-sheet', [LeaveController::class, 'myLeaveSheet'])->name('leaves.my_leave_sheet');
 
 Auth::routes();

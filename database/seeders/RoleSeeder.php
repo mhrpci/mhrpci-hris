@@ -123,6 +123,7 @@ class RoleSeeder extends Seeder
         $employee->givePermissionTo([
             'attendance-create',
             'leave-create',
+            'payroll-list',
             'normal-employee',
 
         ]);

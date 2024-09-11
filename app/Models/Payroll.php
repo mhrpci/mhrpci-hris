@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use Illuminate\Support\Str;
 
 class Payroll extends Model
 {
@@ -27,8 +27,18 @@ class Payroll extends Model
         'sss_loan',
         'pagibig_loan',
         'cash_advance',
-        'overtime_pay'
+        'overtime_pay',
+        'slug' // Add slug to fillable
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($payroll) {
+            $payroll->slug = Str::slug($payroll->employee_id . '-' . $payroll->start_date . '-' . $payroll->end_date);
+        });
+    }
 
     public function employee()
     {

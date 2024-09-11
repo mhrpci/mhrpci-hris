@@ -417,7 +417,7 @@ return [
         [
             'text' => ' Payroll Management',
             'icon' => 'fas fa-coins',
-            'can' => ['admin', 'super-admin', 'hrcomben'],
+            'can' => ['admin', 'super-admin', 'hrcomben','normal-employee'],
             'submenu' => [
                 [
                     'text' => 'Payroll',
@@ -426,13 +426,13 @@ return [
                     'active' => ['payroll*', 'regex'],
                     'can' => ['admin', 'super-admin', 'hrcomben'],
                 ],
-                // [
-                //     'text' => ' Generate Pay Slip',
-                //     'url' => 'generate',
-                //     'icon' => 'fas fa-print',
-                //     'active' => ['generate*', 'regex'],
-                //     'can' => 'admin', 'super-admin',
-                // ],
+                [
+                    'text' => ' My Payroll',
+                    'url' => '/my-payrolls',
+                    'icon' => 'fas fa-file-alt',
+                    'active' => ['/my-payrolls', 'regex:/payroll\/[0-9]+/'],
+                    'can' => ['normal-employee', 'super-admin'],
+                ],
             ],
         ],
         [
