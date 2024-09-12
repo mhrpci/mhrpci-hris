@@ -404,13 +404,13 @@ return [
                     'active' => ['leaves-employees', 'regex:/leaves-employees\/[0-9]+\/leaves/'],
                     'can' => ['admin', 'super-admin', 'hrcomben'],
                 ],
-                // [
-                //     'text' => 'Leave Report',
-                //     'url' => '/leaves-report',
-                //     'icon' => 'fas fa-print',
-                //     'active' => ['leaves-report', 'regex:/leaves-report\/[0-9]+\/leaves/'],
-                //     'can' => ['admin', 'super-admin'],
-                // ],
+                [
+                    'text' => 'My Leaves',
+                    'url' => '/my-leave-sheet',
+                    'icon' => 'fas fa-print',
+                    'active' => ['my-leave-sheet', 'regex:/my-leave-sheet\/[0-9]+\/leaves/'],
+                    'can' => 'normal-employee',
+                ],
 
             ],
         ],
@@ -484,10 +484,10 @@ return [
                 ],
                 [
                     'text' => '  Employee Accountability',
-                    'url' => 'accountability',
+                    'url' => 'accountabilities',
                     'icon' => 'fas fa-check-circle ',
                     'can' => 'hrcompliance',
-                    'active' => ['accountability*', 'regex'],
+                    'active' => ['accountabilities*', 'regex'],
                 ],
                 [
                     'text' => ' IT Inventory',

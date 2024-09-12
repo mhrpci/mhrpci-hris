@@ -20,6 +20,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\AccountabilityController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\LoanController;
@@ -73,6 +74,7 @@ use App\Http\Controllers\ItInventoryController;
     Route::resource('posts', PostController::class);
     Route::resource('holidays', HolidayController::class);
     Route::resource('tasks', TaskController::class);
+    // Route::resource('accountabilities', AccountabilityController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');

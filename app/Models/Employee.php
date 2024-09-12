@@ -122,6 +122,10 @@ class Employee extends Model
     {
         return $this->hasMany(Type::class);
     }
+    public function accountability(): HasMany
+    {
+        return $this->hasMany(Accountability::class);
+    }
     public function user()
     {
         return $this->hasOne(User::class);
