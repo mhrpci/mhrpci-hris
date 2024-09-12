@@ -75,6 +75,7 @@
 }
 </style>
 @stop
+
 @section('content')
 <br>
 <div class="container-fluid">
@@ -137,33 +138,35 @@
                                 <option value="Vacation Leave">Vacation</option>
                             </select>
                         </div>
-                        <!-- Removed status filter -->
                     </div>
-                    <table id="leaveTable" class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Date From</th>
-                                <th>Date To</th>
-                                <th>Reason</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($leaves as $leave)
-                            <tr>
-                                <td>{{ $leave->type->name }}</td>
-                                <td>{{ \Carbon\Carbon::parse($leave->date_from)->format('F j, Y h:i A') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($leave->date_to)->format('F j, Y h:i A') }}</td>
-                                <td>{{ $leave->reason_to_leave }}</td>
-                                <td>
-                                    <span class="badge badge-{{ $leave->status == 'Approved' ? 'success' : ($leave->status == 'Pending' ? 'warning' : 'danger') }}">
-                                        {{ $leave->status }}
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="leaveTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Date From</th>
+                                    <th>Date To</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($leaves as $leave)
+                                <tr>
+                                    <td>{{ $leave->type->name }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($leave->date_from)->format('F j, Y h:i A') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($leave->date_to)->format('F j, Y h:i A') }}</td>
+                                    <td>{{ $leave->reason_to_leave }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $leave->status == 'Approved' ? 'success' : ($leave->status == 'Pending' ? 'warning' : 'danger') }}">
+                                            {{ $leave->status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -176,6 +179,7 @@
 <style>
     .card-header { border-radius: 0; }
     .badge { font-size: 0.9em; }
+    .form-control, .table { margin-bottom: 1rem; }
 </style>
 @endsection
 

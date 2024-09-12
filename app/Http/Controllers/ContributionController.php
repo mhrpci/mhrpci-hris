@@ -6,6 +6,7 @@ use App\Models\Contribution;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ContributionController extends Controller
 {
@@ -180,4 +181,33 @@ public function employeeContributions(Request $request, $employee_id)
 
             return view('contributions.employees-list', compact('employees'));
         }
+
+    /**
+     * Display contributions for the authenticated employee.
+     */
+    public function myContributions()
+    {
+        $user = Auth::user();
+
+        // Ensure the user is authenticated and has the role 'Employee'
+        if ($user && $user->hasRole('Employee')) {
+            $employee = Employee::where('email_address', $user->email)->firstOrFail();
+
+            $contributions = Contribution::where('employee_id', $employee->id)
+                ->orderBy('date', 'desc')
+                ->get();
+
+            // Calculate totals
+            $totals = [
+                'sss' => $contributions->sum('sss_contribution'),
+                'philhealth' => $contributions->sum('philhealth_contribution'),
+                'pagibig' => $contributions->sum('pagibig_contribution'),
+                'tin' => $contributions->sum('tin_contribution')
+            ];
+
+            return view('contributions.my-contributions', compact('contributions', 'totals', 'employee'));
+        }
+
+        return redirect()->route('home')->with('error', 'Unauthorized access.');
+    }
 }

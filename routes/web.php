@@ -109,6 +109,7 @@ use App\Http\Controllers\ItInventoryController;
     Route::get('attendances/export', [AttendanceController::class, 'export'])->name('attendances.export');
     route::get('/payroll/{id}/download-pdf', [PayrollController::class, 'downloadPdf'])->name('payroll.download-pdf');
     Route::delete('/payroll/{id}', [PayrollController::class, 'destroy'])->name('payroll.destroy');
+    Route::get('/my-contributions', [ContributionController::class, 'myContributions'])->name('contributions.my');
     // routes/web.php
     Route::get('/overtime-hours/{employeeId}', [OvertimeController::class, 'getOvertimeHours'])->name('overtime.hours');
 
