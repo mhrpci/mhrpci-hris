@@ -7,18 +7,36 @@ use App\Http\Controllers\HolidayController;
 
 class FetchHolidays extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'holidays:fetch';
-    protected $description = 'Fetch holidays from Google Calendar';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Fetch holidays from Google Calendar and store them in the database';
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
     public function handle()
     {
-        $controller = new HolidayController();
-        $result = $controller->fetchHolidaysFromGoogleCalendar();
+        $holidayController = new HolidayController();
+        $result = $holidayController->fetchHolidaysFromGoogleCalendar();
 
         if ($result['success']) {
             $this->info($result['message']);
         } else {
             $this->error($result['message']);
         }
+
+        return 0;
     }
 }

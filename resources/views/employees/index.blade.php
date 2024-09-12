@@ -149,6 +149,7 @@
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#monthModal">Month</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#yearModal">Year</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#statusModal">Status</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a> <!-- New filter option -->
                                 </div>
                             </div>
                         </div>
@@ -167,6 +168,7 @@
                                 <tr>
                                     <th>Employee ID</th>
                                     <th>Employee Name</th>
+                                    <th>Department</th>
                                     <th>Position</th>
                                     <th>Employment Status</th>
                                     <th>Joined Date</th>
@@ -178,6 +180,7 @@
                                     <tr>
                                         <td>{{ $employee->company_id }}</td>
                                         <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }} {{ $employee->suffix }}</td>
+                                        <td>{{ $employee->department->name }}</td>
                                         <td>{{ $employee->position->name }}</td>
                                         <td align="center" style="color: {{ $employee->employee_status === 'Active' ? 'green' : 'red' }}; font-weight: bold;">
                                             {{ $employee->employee_status }}
@@ -384,6 +387,37 @@
     </div>
 </div>
 
+<!-- Department Modal -->
+<div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="departmentModalLabel">Filter by Department</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="departmentForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select class="form-control" id="department" name="department" required>
+                            <option value="">Select Department</option>
+                            @foreach ($departments as $department)
+                                <option value="{{ $department->name }}">{{ $department->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Apply Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('js')
@@ -392,7 +426,7 @@
     let table = $('#employees-table').DataTable({
         columnDefs: [
             {
-                targets: 4, // Targeting the "Date Hired" column
+                targets: 5, // Targeting the "Joined Date" column
                 type: 'date'
             }
         ]
@@ -469,11 +503,21 @@
         $(this).trigger('reset'); // Clear the filter form fields
     });
 
+    // Department Filter
+    $('#departmentForm').on('submit', function (e) {
+        e.preventDefault();
+        table.draw();
+        $('#departmentModal').modal('hide');
+        showToast('Department filter applied successfully!');
+        $(this).trigger('reset'); // Clear the filter form fields
+    });
+
     // Custom filtering function
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            let dateHiredStr = data[4]; // Get the "Date Hired" value from the 5th column
-            let employeeStatus = data[3];
+            let dateHiredStr = data[5]; // Get the "Joined Date" value from the 6th column
+            let employeeStatus = data[4]; // Get the "Employment Status" value from the 5th column
+            let department = data[2]; // Assuming department is in the 3rd column
             if (!dateHiredStr) return true; // If no date, include the row
 
             let dateHiredObj = new Date(dateHiredStr);
@@ -482,13 +526,14 @@
             let selectedMonth = $('#month').val();
             let selectedYear = $('#year').val();
             let selectedStatus = $('#employee_status').val();
+            let selectedDepartment = $('#department').val();
 
             // Convert selectedMonth to date object if it exists
             let filterMonth = selectedMonth ? new Date(selectedMonth) : null;
             let filterYear = selectedYear ? parseInt(selectedYear) : null;
 
-            // Date and status filter logic
-            if (filterMonth || filterYear || selectedStatus) {
+            // Date, status, and department filter logic
+            if (filterMonth || filterYear || selectedStatus || selectedDepartment) {
                 // Apply month and year filters if they exist
                 if (filterMonth && filterYear) {
                     if (dateHiredObj.getMonth() !== filterMonth.getMonth() || dateHiredObj.getFullYear() !== filterYear) {
@@ -506,6 +551,11 @@
 
                 // Apply employment status filter if it exists
                 if (selectedStatus && employeeStatus !== selectedStatus) {
+                    return false;
+                }
+
+                // Apply department filter if it exists
+                if (selectedDepartment && department !== selectedDepartment) {
                     return false;
                 }
             }

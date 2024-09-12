@@ -30,7 +30,6 @@ class Attendance extends Model
         return self::REMARKS;
     }
 
-
     protected $fillable = [
         'employee_id',
         'date_attended',
@@ -77,6 +76,11 @@ class Attendance extends Model
         }
 
         if ($isHoliday) {
+            $holiday = Holiday::whereDate('date', $dateAttended)->first();
+            if ($holiday->type !== 'Regular Holiday' && $holiday->type !== 'Special Non-Working Holiday') {
+                $this->setAbsentForNonRegularHoliday();
+                return;
+            }
             $this->setHolidayAttendance();
             return;
         }
@@ -196,43 +200,51 @@ class Attendance extends Model
             $model->calculateRemarksAndHoursWorked();
         });
     }
+
     private function calculateHoursWorked($timeIn, $timeOut)
-{
-    if ($timeIn && $timeOut) {
-        $start = \Carbon\Carbon::createFromFormat('H:i', $timeIn);
-        $end = \Carbon\Carbon::createFromFormat('H:i', $timeOut);
-        return $end->diffInHours($start);
-    }
-    return null;
-}
-
-public function getAttendancePoints(): float
-{
-    // Assuming 'PRESENT' status gets 0.5 points
-    if ($this->remarks === 'Present' && $this->leave_payment_status === 'With Pay') {
-        return 0.5;
-    }
-    return 0;
-}
-
-public function getOvertimeDifferenceInDecimal(): float
-{
-    if ($this->remarks === 'Overtime' && $this->time_out) {
-        $standardTimeOut = Carbon::parse('17:00:00');
-        $actualTimeOut = Carbon::parse($this->time_out);
-
-        // Calculate the difference
-        $overtimeDuration = $actualTimeOut->diff($standardTimeOut);
-
-        // Convert the difference to decimal format
-        $hours = $overtimeDuration->h;
-        $minutes = $overtimeDuration->i;
-
-        return $hours + ($minutes / 60);
+    {
+        if ($timeIn && $timeOut) {
+            $start = \Carbon\Carbon::createFromFormat('H:i', $timeIn);
+            $end = \Carbon\Carbon::createFromFormat('H:i', $timeOut);
+            return $end->diffInHours($start);
+        }
+        return null;
     }
 
-    return 0.0;
-}
+    public function getAttendancePoints(): float
+    {
+        // Assuming 'PRESENT' status gets 0.5 points
+        if ($this->remarks === 'Present' && $this->leave_payment_status === 'With Pay') {
+            return 0.5;
+        }
+        return 0;
+    }
 
+    public function getOvertimeDifferenceInDecimal(): float
+    {
+        if ($this->remarks === 'Overtime' && $this->time_out) {
+            $standardTimeOut = Carbon::parse('17:00:00');
+            $actualTimeOut = Carbon::parse($this->time_out);
 
+            // Calculate the difference
+            $overtimeDuration = $actualTimeOut->diff($standardTimeOut);
+
+            // Convert the difference to decimal format
+            $hours = $overtimeDuration->h;
+            $minutes = $overtimeDuration->i;
+
+            return $hours + ($minutes / 60);
+        }
+
+        return 0.0;
+    }
+
+    private function setAbsentForNonRegularHoliday()
+    {
+        $this->time_in = null;
+        $this->time_out = null;
+        $this->remarks = 'Absent';
+        $this->hours_worked = '00:00:00';
+        $this->leave_payment_status = null;
+    }
 }

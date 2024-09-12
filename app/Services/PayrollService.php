@@ -71,28 +71,6 @@ class PayrollService
         foreach ($attendances as $attendance) {
             $remarks = $attendance->remarks;
 
-            // Check for overtime
-            if ($remarks === 'Overtime') {
-                $standard_end = Carbon::parse('17:00:00'); // End of regular working hours
-                $time_out = Carbon::parse($attendance->time_out);
-
-                if ($time_out && $time_out->gt($standard_end)) {
-                    // Calculate overtime hours
-                    $overtime_hours = $time_out->diffInHours($standard_end);
-
-                    // Create an OvertimePay instance to calculate pay
-                    $overtime_record = OvertimePay::create([
-                        'employee_id' => $employee_id,
-                        'date' => $attendance->date_attended,
-                        'overtime_hours' => $overtime_hours,
-                        'overtime_rate' => 1, // Assuming the rate is 1 for simplicity, adjust if needed
-                    ]);
-
-                    // Add the calculated overtime pay
-                    $overtime_pay += $overtime_record->calculateOvertimePay();
-                }
-            }
-
             // Calculate late and undertime deductions
             if ($remarks === 'Late') {
                 $standard_start = Carbon::parse('08:00:00');

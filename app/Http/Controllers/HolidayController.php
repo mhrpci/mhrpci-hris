@@ -38,7 +38,7 @@ class HolidayController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'date' => 'required|date',
-            'type' => 'required|in:special holiday,regular holiday', // Validate the type
+            'type' => 'required|string', // Validate the type
         ]);
 
         Holiday::create($request->only('title', 'date', 'type')); // Include type in the creation
@@ -68,7 +68,7 @@ class HolidayController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'date' => 'required|date',
-            'type' => 'required|in:special holiday,regular holiday', // Validate the type
+            'type' => 'required|string', // Validate the type
         ]);
 
         $holiday->update($request->only('title', 'date', 'type')); // Include type in the update
@@ -86,71 +86,90 @@ class HolidayController extends Controller
     }
 
     public function fetchHolidaysFromGoogleCalendar()
-{
-    // URL of the public Google Calendar for Philippine Holidays
-    $icalUrl = 'https://calendar.google.com/calendar/ical/en.philippines%23holiday%40group.v.calendar.google.com/public/basic.ics';
+    {
+        // URL of the public Google Calendar for Philippine Holidays
+        $icalUrl = 'https://calendar.google.com/calendar/ical/en.philippines%23holiday%40group.v.calendar.google.com/public/basic.ics';
 
-    // Fetch the iCal feed
-    $icalData = file_get_contents($icalUrl);
+        try {
+            // Fetch the iCal feed
+            $icalData = file_get_contents($icalUrl);
 
-    if ($icalData !== false) {
-        // Split the data into lines
-        $lines = explode("\n", $icalData);
-        $holidays = [];
-        $event = null;
-        $currentYear = Carbon::now()->year;
+            if ($icalData === false) {
+                throw new \Exception('Failed to fetch iCal data.');
+            }
 
-        foreach ($lines as $line) {
-            $line = trim($line);
+            // Split the data into lines
+            $lines = explode("\n", $icalData);
+            $holidays = [];
+            $event = null;
+            $currentYear = Carbon::now()->year;
 
-            if ($line === 'BEGIN:VEVENT') {
-                $event = [];
-            } elseif ($line === 'END:VEVENT') {
-                if (!empty($event) && isset($event['title']) && isset($event['date'])) {
-                    // Only add the event if it belongs to the current year
-                    $eventDate = Carbon::parse($event['date']);
-                    if ($eventDate->year == $currentYear) {
-                        $holidays[] = $event;
+            foreach ($lines as $line) {
+                $line = trim($line);
+
+                if ($line === 'BEGIN:VEVENT') {
+                    $event = [];
+                } elseif ($line === 'END:VEVENT') {
+                    if (!empty($event) && isset($event['title']) && isset($event['date']) && isset($event['type'])) {
+                        // Only add the event if it belongs to the current year
+                        $eventDate = Carbon::parse($event['date']);
+                        if ($eventDate->year == $currentYear) {
+                            $holidays[] = $event;
+                        }
+                    }
+                    $event = null;
+                } elseif ($event !== null) {
+                    if (strpos($line, 'SUMMARY:') === 0) {
+                        $event['title'] = substr($line, 8);
+                    } elseif (strpos($line, 'DTSTART;VALUE=DATE:') === 0) {
+                        $dateStr = substr($line, 19);
+                        $event['date'] = Carbon::createFromFormat('Ymd', $dateStr)->toDateString();
+                    } elseif (strpos($line, 'DESCRIPTION:') === 0) {
+                        // Assuming the type is included in the description
+                        $description = substr($line, 12);
+                        if (strpos($description, 'Special Non-Working') !== false) {
+                            $event['type'] = 'Special Non-Working';
+                        } elseif (strpos($description, 'Regular Holiday') !== false) {
+                            $event['type'] = 'Regular Holiday';
+                        } elseif (strpos($description, 'Common Local') !== false) {
+                            $event['type'] = 'Common Local';
+                        } else {
+                            $event['type'] = 'Regular Holiday'; // Default type if not specified
+                        }
                     }
                 }
-                $event = null;
-            } elseif ($event !== null) {
-                if (strpos($line, 'SUMMARY:') === 0) {
-                    $event['title'] = substr($line, 8);
-                } elseif (strpos($line, 'DTSTART;VALUE=DATE:') === 0) {
-                    $dateStr = substr($line, 19);
-                    $event['date'] = Carbon::createFromFormat('Ymd', $dateStr)->toDateString();
+            }
+
+            // Store the holidays in the database
+            $storedCount = 0;
+            foreach ($holidays as $holiday) {
+                $result = Holiday::updateOrCreate(
+                    ['title' => $holiday['title'], 'date' => $holiday['date']],
+                    [
+                        'title' => $holiday['title'],
+                        'date' => $holiday['date'],
+                        'type' => $holiday['type'] // Store the type
+                    ]
+                );
+                if ($result->wasRecentlyCreated || $result->wasChanged()) {
+                    $storedCount++;
                 }
             }
-        }
 
-        // Store the holidays in the database
-        $storedCount = 0;
-        foreach ($holidays as $holiday) {
-            $result = Holiday::updateOrCreate(
-                ['title' => $holiday['title'], 'date' => $holiday['date']],
-                [
-                    'title' => $holiday['title'],
-                    'date' => $holiday['date'],
-                    'type' => 'regular holiday' // Default type, adjust as needed
-                ]
-            );
-            if ($result->wasRecentlyCreated || $result->wasChanged()) {
-                $storedCount++;
-            }
-        }
+            return [
+                'success' => true,
+                'message' => "Fetched and stored $storedCount holidays successfully.",
+                'count' => $storedCount
+            ];
+        } catch (\Exception $e) {
+            // Log the error message
+            \Log::error('Error fetching holidays from Google Calendar: ' . $e->getMessage());
 
-        return [
-            'success' => true,
-            'message' => "Fetched and stored $storedCount holidays successfully.",
-            'count' => $storedCount
-        ];
+            return [
+                'success' => false,
+                'message' => 'Failed to fetch holidays from Google Calendar.',
+                'count' => 0
+            ];
+        }
     }
-
-    return [
-        'success' => false,
-        'message' => 'Failed to fetch holidays from Google Calendar.',
-        'count' => 0
-    ];
-}
 }

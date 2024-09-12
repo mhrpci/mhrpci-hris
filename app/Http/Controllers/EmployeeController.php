@@ -45,7 +45,7 @@ public function index()
 {
     // Get the authenticated user
     $user = auth()->user();
-
+    $departments = Department::all();
     // Check if the user has the Super Admin role
     if ($user->hasRole('Super Admin')) {
         $employees = Employee::all();
@@ -59,7 +59,7 @@ public function index()
         $employee->employment_status = $employee->employmentStatus();
     }
 
-    return view('employees.index', compact('employees'));
+    return view('employees.index', compact('employees','departments'));
 }
 
     /**

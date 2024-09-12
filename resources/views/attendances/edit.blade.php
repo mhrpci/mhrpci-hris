@@ -98,7 +98,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('attendances.update', $attendance->id) }}" method="POST">
+                    <form action="{{ route('attendances.update', $attendance->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -141,14 +141,14 @@
                             <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="time_stamp1">Time Stamp (In)</label>
-                                        <input type="file" id="time_stamp1" name="time_stamp1"  value="{{ $attendance->time_stamp1 }}" class="form-control">
+                                        <input type="file" id="time_stamp1" name="time_stamp1" class="form-control">
                                     </div>
                                 </div>
 
                             <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="time_stamp2">Time Stamp (Out)</label>
-                                        <input type="file" id="time_stamp2" name="time_stamp2"  value="{{ $attendance->time_stamp2 }}" class="form-control">
+                                        <input type="file" id="time_stamp2" name="time_stamp2" class="form-control">
                                     </div>
                                 </div>
                         </div>

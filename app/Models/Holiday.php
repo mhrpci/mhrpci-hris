@@ -10,7 +10,7 @@ class Holiday extends Model
 {
     use HasFactory;
     use Loggable;
-    
+
     protected $fillable = [
         'title',
         'date',

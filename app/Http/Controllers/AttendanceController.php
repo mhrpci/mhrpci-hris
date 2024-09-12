@@ -32,7 +32,7 @@ class AttendanceController extends Controller
     // Show form for creating a new attendance record
     public function create()
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('attendances.create', compact('employees'));
     }
 
@@ -130,54 +130,49 @@ class AttendanceController extends Controller
     // Show form for editing an attendance record
     public function edit(Attendance $attendance)
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         $remarks = Attendance::getRemarks();
         return view('attendances.edit', compact('attendance', 'employees', 'remarks'));
     }
 
     // Update a specific attendance record
     public function update(Request $request, Attendance $attendance)
-{
-    $request->validate([
-        'employee_id' => 'required',
-        'date_attended' => 'required|date',
-        'time_stamp1' => 'nullable',
-        'time_stamp2' => 'nullable',
-        'time_in' => 'nullable',
-        'time_out' => 'nullable',
-        'remarks' => 'nullable',
-        'hours_worked' => 'nullable',
-    ]);
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'date_attended' => 'required|date',
+            'time_stamp1' => 'nullable|file',
+            'time_stamp2' => 'nullable|file',
+            'time_in' => 'nullable|date_format:H:i',
+            'time_out' => 'nullable|date_format:H:i',
+            'remarks' => 'nullable',
+            'hours_worked' => 'nullable',
+        ]);
 
-    // Check if attendance already exists for the given date_attended and employee_id
-    $existingAttendance = Attendance::where('employee_id', $attendance->employee_id)
-                                    ->where('date_attended', $attendance->date_attended)
-                                    ->first();
+        // Get the authenticated user
+        $user = Auth::user();
 
-    // Get the authenticated user
-    $user = Auth::user();
+        // Update attendance with provided data
+        $attendance->employee_id = $request->employee_id;
+        $attendance->date_attended = $request->date_attended;
+        $attendance->time_in = $request->time_in;
+        $attendance->time_out = $request->time_out;
+        $attendance->remarks = $request->remarks;
+        $attendance->hours_worked = $request->hours_worked;
 
-    if ($existingAttendance) {
-        if ($existingAttendance->time_out && $existingAttendance->time_stamp2) {
-            return redirect()->route('attendances.edit', $attendance->id)
-                             ->with('error', 'Attendance for this employee on this date already has time out and time stamp.');
+        if ($request->hasFile('time_stamp1')) {
+            $attendance->time_stamp1 = $request->file('time_stamp1')->store('time_stamps', 'public');
         }
 
-        // Update attendance with time_out and time_stamp2 if provided
         if ($request->hasFile('time_stamp2')) {
             $attendance->time_stamp2 = $request->file('time_stamp2')->store('time_stamps', 'public');
         }
-        $attendance->update($request->all());
-    } else {
-        // Handle as new attendance creation if not found (this scenario shouldn't normally occur in update)
+
+        $attendance->save();
+
         return redirect()->route('attendances.index')
-                         ->with('error', 'Attendance not found for update.');
+                         ->with('success', 'Attendance updated successfully.');
     }
-
-    return redirect()->route('attendances.index')
-                     ->with('success', 'Attendance updated successfully.');
-}
-
 
     // Delete a specific attendance record
     public function destroy(Attendance $attendance)

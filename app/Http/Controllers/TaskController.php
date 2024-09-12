@@ -19,7 +19,7 @@ class TaskController extends Controller
 
     public function create()
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('tasks.create', compact('employees'));
     }
 
@@ -46,7 +46,7 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('tasks.edit', compact('task', 'employees'));
     }
 
@@ -81,7 +81,7 @@ class TaskController extends Controller
     public function myTasks()
     {
         $user = Auth::user();
-        
+
         // Find the employee record corresponding to the logged-in user
         $employee = Employee::where('first_name', $user->first_name)->first();
 
@@ -94,7 +94,7 @@ class TaskController extends Controller
         $tasks = Task::with('employee')
             ->where('employee_id', $employee->id)
             ->get();
-        
+
         return view('tasks.my_tasks', compact('employee', 'tasks'));
     }
 
@@ -110,5 +110,5 @@ class TaskController extends Controller
             return $this->myTasks(); // Employees see their own tasks
         }
     }
-    
+
 }

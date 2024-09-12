@@ -36,7 +36,7 @@ class LoanController extends Controller
      */
     public function create()
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('loans.create',compact('employees'));
     }
 
@@ -78,7 +78,7 @@ class LoanController extends Controller
             $loan->date = Carbon::parse($loan->date)->format('Y-m-d');
         }
 
-        $employees = Employee::all(); // Fetch employees
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('loans.edit', compact('loan', 'employees'));
     }
     /**

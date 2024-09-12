@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('attendance:store')->dailyAt('20:00');
-        $schedule->command('holidays:fetch')->daily();
+        $schedule->command('holidays:fetch')->yearly()->at('00:00');
         $schedule->command('leaves:reset')->yearly()->at('00:00');
 
     }

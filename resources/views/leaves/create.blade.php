@@ -135,8 +135,7 @@
                                     <div class="form-group">
                                         <label for="leave_type">Leave Type<span class="text-danger">*</span></label>
                                         <select id="leave_type" name="leave_type" class="form-control" required onchange="toggleDateInputs()">
-                                            <option value="">Select Leave Type</option>
-                                            <option value="Leave">Leave</option>
+                                            <option value="Leave" selected>Leave</option>
                                             <option value="Undertime">Undertime</option>
                                         </select>
                                     </div>

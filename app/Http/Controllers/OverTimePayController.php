@@ -40,7 +40,7 @@ class OverTimePayController extends Controller
      */
     public function create()
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('overtime.create',compact('employees'));
     }
 

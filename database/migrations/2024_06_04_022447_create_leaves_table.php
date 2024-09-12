@@ -16,6 +16,7 @@ class CreateLeavesTable extends Migration
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->dateTime('date_from');
             $table->dateTime('date_to');
+            $table->string('leave_type')->default('Leave'); // Default value set to 'Leave'
             $table->foreignId('type_id')->nullable();
             $table->string('reason_to_leave');
             $table->string('approved_by')->nullable();

@@ -58,7 +58,7 @@ class ContributionController extends Controller
      */
     public function create()
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('contributions.create',compact('employees'));
     }
 
@@ -101,7 +101,7 @@ class ContributionController extends Controller
             $contribution->date = Carbon::parse($contribution->date)->format('Y-m-d');
         }
 
-        $employees = Employee::all(); // Fetch employees
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('contributions.edit', compact('contribution', 'employees'));
     }
     /**
@@ -172,7 +172,7 @@ public function employeeContributions(Request $request, $employee_id)
         public function allEmployeesContribution()
         {
             // Retrieve all employees
-            $employees = Employee::all();
+            $employees = Employee::where('employee_status', 'Active')->get();
 
             // If there's additional time sheet data you want to include, add the logic here
             // For example, if there's a TimeSheet model related to Employee:

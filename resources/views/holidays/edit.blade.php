@@ -120,10 +120,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="type">Holiday Type<span class="text-danger">*</span></label>
-                                        <select name="type" id="type" class="form-control" required>
-                                            <option value="special holiday" {{ (old('type', $holiday->type) == 'special holiday') ? 'selected' : '' }}>Special Holiday</option>
-                                            <option value="regular holiday" {{ (old('type', $holiday->type) == 'regular holiday') ? 'selected' : '' }}>Regular Holiday</option>
-                                        </select>
+                                        <input type="text" id="type" name="type" class="form-control" value="{{ $holiday->type }}" required>
                                     </div>
                                 </div>
                             </div>

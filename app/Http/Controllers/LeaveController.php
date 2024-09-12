@@ -41,9 +41,8 @@ class LeaveController extends Controller
      */
     public function create()
     {
-
-
-        $employees = Employee::all();
+        // Retrieve only active employees
+        $employees = Employee::where('employee_status', 'Active')->get();
         $types = Type::all();
         return view('leaves.create', compact('employees', 'types'));
     }
@@ -60,6 +59,7 @@ class LeaveController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'employee_id' => 'required|integer',
+            'leave_type' => 'required|string|in:Leave,Undertime', // Add leave_type validation
             'date_from' => 'required|date',
             'date_to' => 'required|date|after_or_equal:date_from',
             'type_id' => 'required',
@@ -101,7 +101,7 @@ class LeaveController extends Controller
     {
 
         $leave = Leave::findOrFail($id);
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
         $types = Type::all();
         return view('leaves.edit', compact('leave', 'employees', 'types'));
     }
@@ -116,6 +116,7 @@ class LeaveController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'employee_id' => 'required|integer',
+            'leave_type' => 'required|string|in:Leave,Undertime', // Add leave_type validation
             'date_from' => 'required|date',
             'date_to' => 'required|date|after_or_equal:date_from',
             'type_id' => 'required',

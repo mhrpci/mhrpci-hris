@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->date('date');
-            $table->enum('type', ['Special Holiday', 'Regular Holiday']); // Add enum column here
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }
