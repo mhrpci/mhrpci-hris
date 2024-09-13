@@ -119,9 +119,19 @@
         <div class="form-group">
             <label for="status">Status</label>
             <select name="status" id="status" class="form-control" required>
-                @foreach(['Pending', 'On Progress', 'Done', 'Abandoned'] as $status)
-                    <option value="{{ $status }}" {{ $task->status == $status ? 'selected' : '' }}>{{ $status }}</option>
-                @endforeach
+                @if($task->status == 'Pending')
+                    <option value="Pending" selected>Pending</option>
+                    <option value="On Progress">On Progress</option>
+                    <option value="Done">Done</option>
+                    <option value="Abandoned">Abandoned</option>
+                @elseif($task->status == 'On Progress')
+                    <option value="On Progress" selected>On Progress</option>
+                    <option value="Done">Done</option>
+                @elseif($task->status == 'Done')
+                    <option value="Done" selected>Done</option>
+                @elseif($task->status == 'Abandoned')
+                    <option value="Abandoned" selected>Abandoned</option>
+                @endif
             </select>
         </div>
 

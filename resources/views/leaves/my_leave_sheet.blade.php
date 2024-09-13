@@ -92,7 +92,7 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <th>Name:</th>
-                                    <td>{{ $employee->last_name }} {{ $employee->last_name }}, {{ $employee->middle_name ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
+                                    <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Email:</th>

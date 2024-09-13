@@ -323,12 +323,14 @@ return [
                 'url' => 'notifications/get',         // The url to periodically fetch new data (optional).
                 'period' => 30,                       // The update period for get new data (in seconds, optional).
             ],
+            'responsive' => true,                     // Make the notification responsive
+            'responsive_breakpoint' => 'md',          // Define the breakpoint for responsiveness
         ],
 
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'Search...',
-        ],
+        // [
+        //     'type' => 'sidebar-menu-search',
+        //     'text' => 'Search...',
+        // ],
         [
             'text' => ' Dashboard',
             'url' => 'home',

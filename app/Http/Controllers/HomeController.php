@@ -115,6 +115,9 @@ class HomeController extends Controller
         $currentMonth = Carbon::now()->month;
         $currentDay = Carbon::now()->day;
 
+        // Get the authenticated user
+        $authUser = auth()->user();
+
         // Get employees whose birthdays are in the current month
         $upcomingBirthdays = Employee::whereMonth('birth_date', $currentMonth)
             ->whereDay('birth_date', '>', $currentDay)
@@ -125,6 +128,12 @@ class HomeController extends Controller
             ->whereDay('birth_date', $currentDay)
             ->get();
 
+        // Check if today is the authenticated user's birthday
+        $isUserBirthday = $todaysBirthdays->contains('email_address', $authUser->email);
+
+        // Generate a greeting if it's the user's birthday
+        $greeting = $isUserBirthday ? "It's your birthday! Happy Birthday, {$authUser->name}!" : null;
+
         // Get the month name
         $currentMonthName = $this->monthName($currentMonth);
 
@@ -132,6 +141,7 @@ class HomeController extends Controller
             'upcomingBirthdays' => $upcomingBirthdays,
             'todaysBirthdays' => $todaysBirthdays,
             'currentMonthName' => $currentMonthName,
+            'greeting' => $greeting,
         ];
     }
 /**
@@ -175,6 +185,7 @@ $employeesByDepartment = $this->countEmployeesByDepartment();
         $upcomingBirthdays = $birthdaysData['upcomingBirthdays'];
         $todaysBirthdays = $birthdaysData['todaysBirthdays'];
         $currentMonthNameBirthdays = $birthdaysData['currentMonthName'];
+        $greeting = $birthdaysData['greeting'];
 
         // Get counts of models
         $userCount = User::count();
@@ -223,7 +234,8 @@ $employeesByDepartment = $this->countEmployeesByDepartment();
             'upcomingBirthdays',
             'todaysBirthdays',
             'currentMonthNameBirthdays',
-            'employeesByDepartment' // Include the department counts
+            'employeesByDepartment', // Include the department counts
+            'greeting' // Include the greeting
         ));
     }
 }

@@ -134,14 +134,18 @@ class PayrollController extends Controller
         $user = auth()->user();
 
         // Find the employee by email address
-        $employee = Employee::with('payrolls')->where('email_address', $user->email)->firstOrFail();
+        $employee = Employee::with('payrolls')->where('email_address', $user->email)->first();
 
-        // Ensure dates are Carbon instances
-        foreach ($employee->payrolls as $payroll) {
-            $payroll->start_date = Carbon::parse($payroll->start_date);
-            $payroll->end_date = Carbon::parse($payroll->end_date);
+        if ($employee) {
+            // Ensure dates are Carbon instances
+            foreach ($employee->payrolls as $payroll) {
+                $payroll->start_date = Carbon::parse($payroll->start_date);
+                $payroll->end_date = Carbon::parse($payroll->end_date);
+            }
+
+            return view('payroll.my_payrolls', compact('employee'));
+        } else {
+            return redirect()->route('payroll.index')->with('error', 'Employee not found.');
         }
-
-        return view('payroll.my_payrolls', compact('employee'));
     }
 }

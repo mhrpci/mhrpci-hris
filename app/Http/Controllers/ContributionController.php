@@ -208,6 +208,6 @@ public function employeeContributions(Request $request, $employee_id)
             return view('contributions.my-contributions', compact('contributions', 'totals', 'employee'));
         }
 
-        return redirect()->route('home')->with('error', 'Unauthorized access.');
+        return redirect()->route('contributions.index')->with('error', 'Unauthorized access.');
     }
 }

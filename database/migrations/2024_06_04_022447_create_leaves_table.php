@@ -21,6 +21,7 @@ class CreateLeavesTable extends Migration
             $table->string('reason_to_leave');
             $table->string('approved_by')->nullable();
             $table->string('status')->default('pending'); // Assuming 'pending' is the default status
+            $table->string('payment_status')->nullable();
             $table->timestamps();
         });
 

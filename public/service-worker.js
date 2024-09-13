@@ -1,11 +1,11 @@
 self.addEventListener('push', function (event) {
+    const data = event.data.json();
     const options = {
-        body: event.data ? event.data.text() : 'No payload',
-        icon: 'icon.png',
-        badge: 'badge.png'
+        body: data.body,
+        icon: data.icon,
+        badge: data.badge
     };
-
     event.waitUntil(
-        self.registration.showNotification('Notification Title', options)
+        self.registration.showNotification(data.title, options)
     );
 });

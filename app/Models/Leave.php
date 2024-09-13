@@ -21,6 +21,7 @@ class Leave extends Model
         'reason_to_leave',
         'approved_by',
         'status',
+        'payment_status',
     ];
 
     protected $primaryKey = 'id'; // This is already the default, but just to be explicit
@@ -34,70 +35,70 @@ class Leave extends Model
     {
         return $this->belongsTo(Type::class);
     }
-    
+
     public function approvedByUser()
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
 
     public function getDiffhoursAttribute()
-{
-    $dateFrom = Carbon::parse($this->date_from);
-    $dateTo = Carbon::parse($this->date_to);
-    $diffInMinutes = $dateFrom->diffInMinutes($dateTo); // Get difference in minutes
+    {
+        $dateFrom = Carbon::parse($this->date_from);
+        $dateTo = Carbon::parse($this->date_to);
+        $diffInMinutes = $dateFrom->diffInMinutes($dateTo); // Get difference in minutes
 
-    // Calculate hours and minutes
-    $hours = floor($diffInMinutes / 60);
-    $minutes = $diffInMinutes % 60;
+        // Calculate hours and minutes
+        $hours = floor($diffInMinutes / 60);
+        $minutes = $diffInMinutes % 60;
 
-    return compact('hours', 'minutes');
-}
-
-public function updateLeaveType()
-{
-    $employee = $this->employee;
-    $diffHours = $this->diffhours;
-
-    if ($this->status === 'approved') {
-        $totalHours = $diffHours['hours'] + ($diffHours['minutes'] / 60); // Convert minutes to fraction of hours
-
-        switch ($this->type->name) {
-            case 'Sick Leave':
-                $employee->sick_leave -= $totalHours;
-                break;
-            case 'Emergency Leave':
-                $employee->emergency_leave -= $totalHours;
-                break;
-            case 'Vacation Leave':
-                $employee->vacation_leave -= $totalHours;
-                break;
-            // Add cases for other leave types if needed
-        }
-        $employee->save();
-    }
-}
-
-protected static function booted()
-{
-    static::updated(function ($leave) {
-        // Check if status is updated
-        if ($leave->isDirty('status')) {
-            $leave->updateLeaveType();
-        }
-    });
-}
-
-public function getLeavePaymentStatus()
-{
-    $employmentStatus = $this->employee->employment_status;
-
-    if ($employmentStatus === 'REGULAR') {
-        return 'With Pay'; // Regular employees are entitled to paid leave
-    } elseif ($employmentStatus === 'PROBATIONARY' || $employmentStatus === 'TRAINEE') {
-        return 'Without Pay'; // Probationary and trainee employees are not entitled to paid leave
+        return compact('hours', 'minutes');
     }
 
-    return null; // In case of unexpected status
-}
+    public function updateLeaveType()
+    {
+        $employee = $this->employee;
+        $diffHours = $this->diffhours;
+
+        if ($this->status === 'approved') {
+            $totalHours = $diffHours['hours'] + ($diffHours['minutes'] / 60); // Convert minutes to fraction of hours
+
+            switch ($this->type->name) {
+                case 'Sick Leave':
+                    $employee->sick_leave -= $totalHours;
+                    break;
+                case 'Emergency Leave':
+                    $employee->emergency_leave -= $totalHours;
+                    break;
+                case 'Vacation Leave':
+                    $employee->vacation_leave -= $totalHours;
+                    break;
+                // Add cases for other leave types if needed
+            }
+            $employee->save();
+        }
+    }
+
+    protected static function booted()
+    {
+        static::updated(function ($leave) {
+            // Check if status is updated
+            if ($leave->isDirty('status')) {
+                $leave->updateLeaveType();
+            }
+        });
+    }
+
+    public function getLeavePaymentStatus()
+    {
+        $employmentStatus = $this->employee->employment_status;
+
+        if ($employmentStatus === 'REGULAR') {
+            return $this->payment_status === 'With Pay' ? 'With Pay' : 'Without Pay';
+        } elseif ($employmentStatus === 'PROBATIONARY' || $employmentStatus === 'TRAINEE') {
+            return $this->payment_status === 'Without Pay' ? 'Without Pay' : 'With Pay';
+        }
+
+        return null; // In case of unexpected status
+    }
 
 }

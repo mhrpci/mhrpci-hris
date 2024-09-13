@@ -1,215 +1,342 @@
 @extends('adminlte::page')
+
 @section('preloader')
-<div id="loader" class="loader">
-    <div class="loader-content">
-        <div class="wave-loader">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+    <div id="loader" class="loader">
+        <div class="loader-content">
+            <div class="wave-loader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <h4 class="mt-4 text-dark">Loading...</h4>
         </div>
-        <h4 class="mt-4 text-dark">Loading...</h4>
     </div>
-</div>
-<style>
-    /* Loader */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-out;
-}
-
-.loader-content {
-    text-align: center;
-}
-
-/* Wave Loader */
-.wave-loader {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 50px;
-}
-
-.wave-loader > div {
-    width: 10px;
-    height: 50px;
-    margin: 0 5px;
-    background-color: #8e44ad; /* Purple color */
-    animation: wave 1s ease-in-out infinite;
-}
-
-.wave-loader > div:nth-child(2) {
-    animation-delay: -0.9s;
-}
-
-.wave-loader > div:nth-child(3) {
-    animation-delay: -0.8s;
-}
-
-.wave-loader > div:nth-child(4) {
-    animation-delay: -0.7s;
-}
-
-.wave-loader > div:nth-child(5) {
-    animation-delay: -0.6s;
-}
-
-@keyframes wave {
-    0%, 100% {
-        transform: scaleY(0.5);
+    <style>
+        /* Loader */
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
     }
-    50% {
-        transform: scaleY(1);
+
+    .loader-content {
+        text-align: center;
     }
-}
+
+    /* Wave Loader */
+    .wave-loader {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 50px;
+    }
+
+    .wave-loader > div {
+        width: 10px;
+        height: 50px;
+        margin: 0 5px;
+        background-color: #8e44ad; /* Purple color */
+        animation: wave 1s ease-in-out infinite;
+    }
+
+    .wave-loader > div:nth-child(2) {
+        animation-delay: -0.9s;
+    }
+
+    .wave-loader > div:nth-child(3) {
+        animation-delay: -0.8s;
+    }
+
+    .wave-loader > div:nth-child(4) {
+        animation-delay: -0.7s;
+    }
+
+    .wave-loader > div:nth-child(5) {
+        animation-delay: -0.6s;
+    }
+
+    @keyframes wave {
+        0%, 100% {
+            transform: scaleY(0.5);
+        }
+        50% {
+            transform: scaleY(1);
+        }
+    }
+    /* Card and Modal */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .card-footer {
+        border-radius: 0 0 15px 15px;
+        padding: 20px;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .modal-header {
+        border-radius: 15px 15px 0 0;
+        padding: 20px;
+    }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .modal-footer {
+        border-radius: 0 0 15px 15px;
+        padding: 20px;
+    }
+
+    /* Typography */
+    .card-title {
+        font-weight: 600;
+    }
+
+    .font-weight-bold {
+        font-weight: 600;
+    }
+
+    /* Form elements */
+    .form-control {
+        border-radius: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+        border-radius: 10px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Status icons */
+    .status-icon {
+        font-size: 1.5rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
 </style>
 @stop
+
 @section('content')
-<br>
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="card-title">Leave Details</h3>
-                    </div>
-                    <div class="card-body">
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success">{{ $message }}</div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @endif
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">Employee:</label>
-                                    <p>{{ $leave->employee->company_id }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">From:</label>
-                                    <p>{{ \Carbon\Carbon::parse($leave->date_from)->format('F j, Y \a\t h:i A') }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">To:</label>
-                                    <p>{{ \Carbon\Carbon::parse($leave->date_to)->format('F j, Y \a\t h:i A') }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">Reason:</label>
-                                    <p>{{ $leave->reason_to_leave }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">Payment Status:</label>
-                                    @if($leave->employee->employment_status === 'REGULAR')
-                                        <p>With Pay</p>
-                                    @else
-                                        <p>Without Pay</p>
-                                    @endif
-                                </div>
+<div class="container-fluid py-4">
+    <div class="row justify-content-center fade-in">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Leave Details</h3>
+                </div>
+                <div class="card-body">
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ $message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                    @if ($message = Session::get('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ $message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">Employee:</label>
+                                <p class="lead">{{ $leave->employee->company_id }}</p>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">Type:</label>
-                                    <p>{{ $leave->type->name }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">Status:</label>
-                                    <br>
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">From:</label>
+                                <p class="lead">{{ \Carbon\Carbon::parse($leave->date_from)->format('F j, Y \a\t h:i A') }}</p>
+                            </div>
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">To:</label>
+                                <p class="lead">{{ \Carbon\Carbon::parse($leave->date_to)->format('F j, Y \a\t h:i A') }}</p>
+                            </div>
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">Reason:</label>
+                                <p class="lead">{{ $leave->reason_to_leave }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">Type:</label>
+                                <p class="lead">{{ $leave->type->name }}</p>
+                            </div>
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">Status:</label>
+                                <p class="lead">
                                     @if($leave->status == 'approved')
-                                        <i class="fas fa-check-circle text-success"></i>
+                                        <i class="fas fa-check-circle text-success status-icon"></i>
                                     @elseif($leave->status == 'rejected')
-                                        <i class="fas fa-times-circle text-danger"></i>
+                                        <i class="fas fa-times-circle text-danger status-icon"></i>
                                     @else
-                                        <i class="fas fa-redo-alt text-secondary"></i>
+                                        <i class="fas fa-clock text-warning status-icon"></i>
                                     @endif
                                     &nbsp;{{ ucfirst($leave->status) }}
-                                </div>
-                                <div class="mb-3">
+                                </p>
+                            </div>
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">
                                     @if($leave->status === 'approved')
-                                        <label class="font-weight-bold">Approved By:</label>
-                                        @if($approvedByUser)
-                                            <p> {{ $approvedByUser->first_name }} {{ $approvedByUser->last_name }}</p>
-                                        @endif
+                                        Approved By:
                                     @elseif($leave->status === 'rejected')
-                                        <label class="font-weight-bold">Rejected By:</label>
-                                        @if($approvedByUser)
-                                            <p> {{ $approvedByUser->first_name }} {{ $approvedByUser->last_name }}</p>
-                                        @endif
+                                        Rejected By:
                                     @else
-                                        <label class="font-weight-bold">Approved By:</label>
+                                        Pending Approval
                                     @endif
-                                </div>
-                                <div class="mb-3">
-                                    <label class="font-weight-bold">Number of Days:</label>
-                                    @if($leave->diffhours)
+                                </label>
+                                @if(($leave->status === 'approved' || $leave->status === 'rejected') && $approvedByUser)
+                                    <p class="lead">{{ $approvedByUser->first_name }} {{ $approvedByUser->last_name }}</p>
+                                @endif
+                            </div>
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">Duration:</label>
+                                @if($leave->diffhours)
+                                    <p class="lead">
                                         @if($leave->diffhours['hours'] > 0)
-                                            <p>{{ $leave->diffhours['hours'] }} hours</p>
+                                            {{ $leave->diffhours['hours'] }} hours
                                         @endif
                                         @if($leave->diffhours['minutes'] > 0)
                                             @if($leave->diffhours['hours'] > 0)
-                                                <p>{{ $leave->diffhours['minutes'] }} minutes</p>
+                                                {{ $leave->diffhours['minutes'] }} minutes
                                             @else
-                                                <p>{{ $leave->diffhours['minutes'] }} minutes</p>
+                                                {{ $leave->diffhours['minutes'] }} minutes
                                             @endif
                                         @endif
-                                    @endif
-                                </div>
+                                    </p>
+                                @endif
+                            </div>
+                            <div class="mb-4">
+                                <label class="font-weight-bold text-muted">Payment Status:</label>
+                                <p class="lead">
+                                    {{$leave->payment_status}}
+                                </p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="card-footer">
-                        <div class="btn-group">
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ route('leaves.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left mr-2"></i>Back
+                        </a>
+                        @if($leave->status == 'pending')
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateStatusModal-{{ $leave->id }}">
-                                Update Status
-                            </button> &nbsp;
-                            <a href="{{ route('leaves.index') }}" class="btn btn-secondary">Back</a>
-                        </div>
+                                <i class="fas fa-edit mr-2"></i>Update Status
+                            </button>
+                        @else
+                            <button type="button" class="btn btn-primary" disabled>
+                                <i class="fas fa-edit mr-2"></i>Update Status
+                            </button>
+                        @endif
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="updateStatusModal-{{ $leave->id }}" tabindex="-1" role="dialog" aria-labelledby="updateStatusModalLabel-{{ $leave->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="updateStatusModalLabel-{{ $leave->id }}">Update Status for {{ $leave->type->name }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+<!-- Modal -->
+<div class="modal fade" id="updateStatusModal-{{ $leave->id }}" tabindex="-1" role="dialog" aria-labelledby="updateStatusModalLabel-{{ $leave->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="updateStatusModalLabel-{{ $leave->id }}">Update Status for {{ $leave->type->name }}</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('leaves.updateStatus', $leave->id) }}" method="post">
+                @csrf
+                @method('PUT')
                 <div class="modal-body">
-                    <form action="{{ route('leaves.updateStatus', $leave->id) }}" method="post">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group">
-                            <label for="status" class="font-weight-bold">Status:</label>
-                            <select name="status" class="form-control" required>
-                                <option value="pending" {{ $leave->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="rejected" {{ $leave->status == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                <option value="approved" {{ $leave->status == 'approved' ? 'selected' : '' }}>Approved</option>
-                            </select>
-                        </div>
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-success">Update Status</button>
-                        </div>
-                    </form>
+                    <div class="form-group">
+                        <label for="status" class="font-weight-bold">Status:</label>
+                        <select name="status" class="form-control" required>
+                            <option value="pending" {{ $leave->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="rejected" {{ $leave->status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                            <option value="approved" {{ $leave->status == 'approved' ? 'selected' : '' }}>Approved</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Update Status</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
 @endsection
+
+@push('js')
+<script>
+    $(document).ready(function() {
+        // Fade out loader
+        $('#loader').fadeOut(500);
+
+        // Initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // Add smooth scrolling
+        $('a[href*="#"]').on('click', function(e) {
+            e.preventDefault();
+            $('html, body').animate(
+                {
+                    scrollTop: $($(this).attr('href')).offset().top,
+                },
+                500,
+                'linear'
+            );
+        });
+    });
+</script>
+@endpush

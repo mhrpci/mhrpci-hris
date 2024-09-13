@@ -44,6 +44,8 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping, With
         'tertiary',
         'emergency_name',
         'emergency_no',
+        'employment_status',  // Added employment_status
+        'employee_status',    // Added employee_status
     ];
 
     /**
@@ -94,6 +96,8 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping, With
             'tertiary',
             'emergency_name',
             'emergency_no',
+            'employment_status',  // Added employment_status
+            'employee_status',    // Added employee_status
         ];
     }
 

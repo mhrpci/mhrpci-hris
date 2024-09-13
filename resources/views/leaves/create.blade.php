@@ -135,7 +135,8 @@
                                     <div class="form-group">
                                         <label for="leave_type">Leave Type<span class="text-danger">*</span></label>
                                         <select id="leave_type" name="leave_type" class="form-control" required onchange="toggleDateInputs()">
-                                            <option value="Leave" selected>Leave</option>
+                                            <option value="">Select Leave Type</option>
+                                            <option value="Leave">Leave</option>
                                             <option value="Undertime">Undertime</option>
                                         </select>
                                     </div>
@@ -174,7 +175,7 @@
                                     </div>
                                 </div>
                             </div>
-                         <!-- Add the following after the "Reason" textarea -->
+                         {{-- <!-- Add the following after the "Reason" textarea -->
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -185,7 +186,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="row">
                                 <div class="col-md-6">
@@ -225,29 +226,29 @@
     </script>
 @stop
 <script>
-    document.getElementById('employee_id').addEventListener('change', function() {
-        const employeeId = this.value;
-        const paymentStatusCheckbox = document.getElementById('payment_status');
-        const paymentStatusLabel = document.getElementById('payment_status_label');
+    // document.getElementById('employee_id').addEventListener('change', function() {
+    //     const employeeId = this.value;
+    //     const paymentStatusCheckbox = document.getElementById('payment_status');
+    //     const paymentStatusLabel = document.getElementById('payment_status_label');
 
-        if (employeeId) {
-            fetch(`/employees/${employeeId}/status`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.employment_status === 'REGULAR') {
-                        paymentStatusCheckbox.checked = true;
-                        paymentStatusLabel.innerText = 'With Pay';
-                    } else {
-                        paymentStatusCheckbox.checked = false;
-                        paymentStatusLabel.innerText = 'Without Pay';
-                    }
-                })
-                .catch(error => console.error('Error fetching employee status:', error));
-        } else {
-            paymentStatusCheckbox.checked = false;
-            paymentStatusLabel.innerText = '';
-        }
-    });
+    //     if (employeeId) {
+    //         fetch(`/employees/${employeeId}/status`)
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 if (data.employment_status === 'REGULAR') {
+    //                     paymentStatusCheckbox.checked = true;
+    //                     paymentStatusLabel.innerText = 'With Pay';
+    //                 } else {
+    //                     paymentStatusCheckbox.checked = false;
+    //                     paymentStatusLabel.innerText = 'Without Pay';
+    //                 }
+    //             })
+    //             .catch(error => console.error('Error fetching employee status:', error));
+    //     } else {
+    //         paymentStatusCheckbox.checked = false;
+    //         paymentStatusLabel.innerText = '';
+    //     }
+    // });
 
     function toggleDateInputs() {
         const leaveType = document.getElementById('leave_type').value;

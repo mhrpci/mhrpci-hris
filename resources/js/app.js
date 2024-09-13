@@ -27,3 +27,42 @@ function urlBase64ToUint8Array(base64String) {
     }
     return outputArray;
 }
+
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    encrypted: true
+});
+
+window.Echo.channel('notifications')
+    .listen('NotificationsGenerated', (e) => {
+        console.log(e.notifications);
+        // Update your UI with the new notifications
+        updateNotificationsUI(e.notifications);
+    });
+
+function updateNotificationsUI(notifications) {
+    const notificationMenu = document.getElementById('notification-menu');
+    notificationMenu.innerHTML = ''; // Clear existing notifications
+
+    notifications.forEach(notification => {
+        const notificationItem = document.createElement('a');
+        notificationItem.href = '#';
+        notificationItem.classList.add('dropdown-item');
+        notificationItem.innerHTML = `
+            <i class="mr-2 ${notification.icon}"></i> ${notification.text}
+            <span class="float-right text-muted text-sm">${notification.time}</span>
+        `;
+        notificationMenu.appendChild(notificationItem);
+    });
+
+    // Update the notification count
+    const notificationCount = document.getElementById('notification-count');
+    notificationCount.textContent = notifications.length;
+}

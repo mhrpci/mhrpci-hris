@@ -67,6 +67,10 @@ class LeaveController extends Controller
             'approved_by' => 'nullable|integer',
         ]);
 
+        // Determine the payment status based on employee's employment status
+        $employee = Employee::findOrFail($validatedData['employee_id']);
+        $validatedData['payment_status'] = $employee->employment_status === 'REGULAR' ? 'With Pay' : 'Without Pay';
+
         // Create a new leave record using the validated data
         Leave::create($validatedData);
 
@@ -124,6 +128,10 @@ class LeaveController extends Controller
             'approved_by' => 'nullable|integer',
         ]);
 
+        // Determine the payment status based on employee's employment status
+        $employee = Employee::findOrFail($validatedData['employee_id']);
+        $validatedData['payment_status'] = $employee->employment_status === 'REGULAR' ? 'With Pay' : 'Without Pay';
+
         // Find the leave request and update it with the validated data
         $leave = Leave::findOrFail($id);
         $leave->update($validatedData);
@@ -152,6 +160,17 @@ class LeaveController extends Controller
 
     // Find the leave request
     $leave = Leave::findOrFail($id);
+
+    // Check the current status and apply the update rules
+    if ($leave->status == 'pending') {
+        // Pending can be updated to Approved or Rejected
+        if (!in_array($validatedData['status'], ['approved', 'rejected'])) {
+            return redirect()->route('leaves.show', $id)->with('error', 'Invalid status update.');
+        }
+    } elseif ($leave->status == 'approved' || $leave->status == 'rejected') {
+        // Approved or Rejected cannot be updated to any other status
+        return redirect()->route('leaves.show', $id)->with('error', 'Status cannot be updated.');
+    }
 
     // Update its status and approved_by field
     $leave->status = $validatedData['status'];
@@ -241,13 +260,17 @@ public function detail($id)
     public function myLeaveSheet()
     {
         $user = Auth::user();
-        $employee = Employee::where('email_address', $user->email)->firstOrFail();
+        $employee = Employee::where('email_address', $user->email)->first();
 
-        $leaves = Leave::where('employee_id', $employee->id)->get();
-        $sickLeaveBalance = $employee->sick_leave;
-        $emergencyLeaveBalance = $employee->emergency_leave;
-        $vacationLeaveBalance = $employee->vacation_leave;
+        if ($employee) {
+            $leaves = Leave::where('employee_id', $employee->id)->get();
+            $sickLeaveBalance = $employee->sick_leave;
+            $emergencyLeaveBalance = $employee->emergency_leave;
+            $vacationLeaveBalance = $employee->vacation_leave;
 
-        return view('leaves.my_leave_sheet', compact('employee', 'leaves', 'sickLeaveBalance', 'emergencyLeaveBalance', 'vacationLeaveBalance'));
+            return view('leaves.my_leave_sheet', compact('employee', 'leaves', 'sickLeaveBalance', 'emergencyLeaveBalance', 'vacationLeaveBalance'));
+        } else {
+            return redirect()->route('leaves.index')->with('error', 'Employee not found.');
+        }
     }
 }
