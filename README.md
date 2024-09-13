@@ -52,9 +52,13 @@ Our design focuses on simplicity and clarity, ensuring that HR professionals can
 
 ## Installation
 ```bash
-git clone https://github.com/yourusername/hris.git
+git clone https://github.com/mhrpci/hris.git
 cd hris
-npm install
+composer install
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan holidays:fetch
+php artisan serve
 ```
 
 ## Usage
