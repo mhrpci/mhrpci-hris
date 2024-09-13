@@ -249,10 +249,12 @@
 
                                 <!-- Modal for Today's Post -->
                                 <div class="modal fade" id="todayPostModal{{ $post->id }}" tabindex="-1" role="dialog" aria-labelledby="todayPostModalLabel{{ $post->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header bg-primary text-white">
-                                                <h5 class="modal-title" id="todayPostModalLabel{{ $post->id }}">{{ $post->title }}</h5>
+                                                <h5 class="modal-title" id="todayPostModalLabel{{ $post->id }}">
+                                                    <i class="fas fa-bullhorn"></i> {{ $post->title }}
+                                                </h5>
                                                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -261,8 +263,8 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-md-12">
-                                                            <h5>Content</h5>
-                                                            <p>{!! nl2br(e($post->content)) !!}</p>
+                                                            <h5 class="font-weight-bold">Content</h5>
+                                                            <p class="text-justify">{!! nl2br(e($post->content)) !!}</p>
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -277,7 +279,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>

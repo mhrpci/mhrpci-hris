@@ -55,8 +55,9 @@ class ItInventoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ItInventory $inventory)
+    public function edit($id)
     {
+        $inventory = ItInventory::findOrFail($id);
         return view('inventory.edit', compact('inventory'));
     }
 

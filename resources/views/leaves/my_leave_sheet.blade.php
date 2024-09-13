@@ -105,15 +105,15 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <th>Sick Leave:</th>
-                                    <td>{{ $sickLeaveBalance }}</td>
+                                    <td>{{ $sickLeaveBalance /24 }}</td>
                                 </tr>
                                 <tr>
                                     <th>Emergency Leave:</th>
-                                    <td>{{ $emergencyLeaveBalance }}</td>
+                                    <td>{{ $emergencyLeaveBalance /24 }}</td>
                                 </tr>
                                 <tr>
                                     <th>Vacation Leave:</th>
-                                    <td>{{ $vacationLeaveBalance }}</td>
+                                    <td>{{ $vacationLeaveBalance /24 }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -158,9 +158,13 @@
                                     <td>{{ \Carbon\Carbon::parse($leave->date_to)->format('F j, Y h:i A') }}</td>
                                     <td>{{ $leave->reason_to_leave }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $leave->status == 'Approved' ? 'success' : ($leave->status == 'Pending' ? 'warning' : 'danger') }}">
-                                            {{ $leave->status }}
-                                        </span>
+                                        @if($leave->status == 'approved')
+                                            <span class="text-success"><i class="fas fa-check-circle"></i> </span>Approved
+                                        @elseif($leave->status == 'rejected')
+                                            <span class="text-danger"><i class="fas fa-times-circle"></i> </span>Rejected
+                                        @else
+                                            <span class="text-secondary"><i class="fas fa-clock"></i> </span>Pending
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach

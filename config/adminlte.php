@@ -429,6 +429,13 @@ return [
                     'can' => ['admin', 'super-admin', 'hrcomben'],
                 ],
                 [
+                    'text' => ' Overtime',
+                    'url' => 'overtime',
+                    'icon' => 'fas fa-hourglass-half',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
+                    'active' => ['overtime', 'regex'],
+                ],
+                [
                     'text' => ' My Payroll',
                     'url' => '/my-payrolls',
                     'icon' => 'fas fa-file-alt',
@@ -471,13 +478,6 @@ return [
             'can' => ['admin', 'super-admin', 'hrcomben' , 'hrcompliance', 'it-staff'],
             'submenu' => [
                 [
-                    'text' => ' Overtime',
-                    'url' => 'overtime',
-                    'icon' => 'fas fa-hourglass-half',
-                    'can' => ['admin', 'super-admin', 'hrcomben'],
-                    'active' => ['overtime', 'regex'],
-                ],
-                [
                     'text' => ' Loans and CA',
                     'url' => 'loans',
                     'icon' => 'fas fa-money-bill-alt',
@@ -490,6 +490,20 @@ return [
                     'icon' => 'fas fa-check-circle ',
                     'can' => 'hrcompliance',
                     'active' => ['accountabilities*', 'regex'],
+                ],
+                [
+                    'text' => '  Contacts and Emails',
+                    'url' => 'accountabilities',
+                    'icon' => 'fas fa-phone ',
+                    'can' => 'hrpolicy',
+                    'active' => ['accountabilities*', 'regex'],
+                ],
+                [
+                    'text' => ' Hiring',
+                    'url' => 'hirings',
+                    'icon' => 'fas fa-briefcase',
+                    'can' => 'hrhiring',
+                    'active' => ['hirings*', 'regex'],
                 ],
                 [
                     'text' => ' IT Inventory',
