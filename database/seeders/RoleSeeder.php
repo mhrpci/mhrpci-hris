@@ -19,6 +19,8 @@ class RoleSeeder extends Seeder
         $hrcomben = Role::create(['name' => 'HR ComBen']);
         $employee = Role::create(['name' => 'Employee']);
         $it = Role::create(['name' => 'IT Staff']);
+        $hrpolicy = Role::create(['name' => 'HR Policy']);
+        $hrhiring = Role::create(['name' => 'HR Hiring']);
 
         $admin->givePermissionTo([
             'user-list',
@@ -69,6 +71,10 @@ class RoleSeeder extends Seeder
             'contribution-list',
             'contribution-create',
             'contribution-edit',
+            'loan-list',
+            'loan-create',
+            'loan-edit',
+            'loan-delete',
             'admin',
             'post-show',
 
@@ -118,6 +124,24 @@ class RoleSeeder extends Seeder
             'inventory-edit',
             'inventory-delete',
             'it-staff',
+        ]);
+        $hrpolicy->givePermissionTo([
+            'credential-list',
+            'credential-create',
+            'credential-edit',
+            'credential-delete',
+            'hrpolicy',
+        ]);
+        $hrhiring->givePermissionTo([
+            'hiring-list',
+            'hiring-create',
+            'hiring-edit',
+            'hiring-delete',
+            'career-list',
+            'career-create',
+            'career-edit',
+            'career-delete',
+            'hrhiring',
         ]);
 
         $employee->givePermissionTo([

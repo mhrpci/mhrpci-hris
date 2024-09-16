@@ -11,7 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <style>
-
     @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
     * {
@@ -34,7 +33,7 @@
 
     .container {
         background-color: #fff;
-        border-radius: 10px;
+        border-radius: 15px;
         box-shadow: 0 14px 28px rgba(0,0,0,0.25),
                     0 10px 10px rgba(0,0,0,0.22);
         position: relative;
@@ -84,11 +83,9 @@
         transition: transform 0.6s ease-in-out;
     }
 
-
     .form-container:hover {
         background-color: #f9f9f9; /* Change background color on hover */
     }
-
 
     h1 {
         font-weight: bold;
@@ -98,7 +95,6 @@
         padding: 20px 0; /* Add some padding */
         text-align: center; /* Centered text */
     }
-
 
     h2 {
         text-align: center;

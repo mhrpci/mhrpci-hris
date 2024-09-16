@@ -15,7 +15,7 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         DB::table('departments')->insert([
-            ['name' => 'Human Resources Department', 'head_name' => 'Sample'],
+            ['name' => 'Human Resources Department', 'head_name' => 'Nikkei Tingson'],
             ['name' => 'Finance and Accounting Department', 'head_name' => 'Cheryl Gasang'],
             ['name' => 'Admin Department', 'head_name' => 'Janet R. Refugio'],
             ['name' => 'MHRHCI', 'head_name' => 'Alayza Cali-at'],

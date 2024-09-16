@@ -19,7 +19,8 @@ class NotificationsController extends Controller
         'posts' => [],
         'holidays' => [],
         'leave_requests' => [],
-        'tasks' => [] // Add tasks to the notifications array
+        'tasks' => [],
+        'job_applications' => [] // Add job applications to the notifications array
     ];
 
     // Method to fetch notifications data
@@ -49,40 +50,30 @@ class NotificationsController extends Controller
         $this->generatePostNotifications();
         $this->generateHolidayNotifications();
         $this->generateLeaveRequestNotifications();
-        $this->generateTaskNotifications(); // Add task notifications generation
+        $this->generateTaskNotifications();
+        $this->generateJobApplicationNotifications(); // Add job application notifications generation
     }
 
     // Generate birthday notifications
     private function generateBirthdayNotifications()
     {
         $today = Carbon::today();
-        $currentMonth = $today->month;
         $authUserEmail = Auth::user()->email;
 
-        // Fetch employees with birthdays in the current month
-        $upcomingBirthdays = Employee::whereMonth('birth_date', $currentMonth)->get();
+        // Fetch employees with birthdays today
+        $todaysBirthdays = Employee::whereMonth('birth_date', $today->month)
+            ->whereDay('birth_date', $today->day)
+            ->get();
 
-        foreach ($upcomingBirthdays as $employee) {
-            $birthDate = Carbon::parse($employee->birth_date);
+        foreach ($todaysBirthdays as $employee) {
             $notification = [
-                'icon' => 'fas fa-fw fa-birthday-cake', // Update the icon
-                'text' => "{$employee->first_name} {$employee->last_name}'s birthday",
-                'time' => $birthDate->format('F d'),
-                'details' => "Birthday details for {$employee->first_name} {$employee->last_name}" // Add details
+                'icon' => 'fas fa-fw fa-birthday-cake text-warning',
+                'text' => $authUserEmail == $employee->email_address
+                    ? "Today is your birthday! Happy Birthday!"
+                    : "Today is {$employee->first_name} {$employee->last_name}'s birthday!",
+                'time' => 'Today',
+                'details' => "Birthday celebration for {$employee->first_name} {$employee->last_name}"
             ];
-
-            // Check if the birthday is today
-            if ($birthDate->isSameDay($today)) {
-                if ($authUserEmail == $employee->email_address) {
-                    $notification['text'] = "Today is your birthday! Happy Birthday!";
-                } else {
-                    $notification['text'] = "Today is " . $notification['text'] . "!";
-                }
-                $notification['icon'] .= ' text-warning'; // Highlight icon for today
-                $notification['time'] = 'Today';
-            } else {
-                $notification['icon'] .= ' text-info'; // Default icon color for upcoming birthdays
-            }
 
             $this->notifications['birthdays'][] = $notification;
         }
@@ -187,6 +178,28 @@ class NotificationsController extends Controller
                     'details' => "Task details: {$task->description}" // Add details
                 ];
                 $this->notifications['tasks'][] = $notification;
+            }
+        }
+    }
+
+    // Generate job application notifications for HR Hiring users
+    private function generateJobApplicationNotifications()
+    {
+        if (Auth::user()->hasRole('HR Hiring')) {
+            $last24Hours = Carbon::now()->subDay();
+            $newApplications = \App\Models\Career::where('created_at', '>=', $last24Hours)
+                ->where('is_read', false)  // Only fetch unread applications
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            foreach ($newApplications as $application) {
+                $notification = [
+                    'icon' => 'fas fa-fw fa-user-tie',
+                    'text' => "New job application received for {$application->position}",
+                    'time' => $application->created_at->diffForHumans(),
+                    'details' => "Applicant: {$application->name}, Email: {$application->email}"
+                ];
+                $this->notifications['job_applications'][] = $notification;
             }
         }
     }

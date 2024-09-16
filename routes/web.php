@@ -27,6 +27,9 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\OverTimePayController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ItInventoryController;
+use App\Http\Controllers\CredentialController;
+use App\Http\Controllers\CareerController;
+use App\Http\Controllers\HiringController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +77,8 @@ use App\Http\Controllers\ItInventoryController;
     Route::resource('posts', PostController::class);
     Route::resource('holidays', HolidayController::class);
     Route::resource('tasks', TaskController::class);
+    Route::resource('credentials', CredentialController::class);
+    Route::resource('hirings', HiringController::class);
     // Route::resource('accountabilities', AccountabilityController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
@@ -145,4 +150,14 @@ use App\Http\Controllers\ItInventoryController;
 
     Route::get('/my-leave-sheet', [LeaveController::class, 'myLeaveSheet'])->name('leaves.my_leave_sheet');
 
+    Route::get('/careers', [App\Http\Controllers\CareerController::class, 'index'])->name('careers');
+    Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
+    Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
+    Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
+    Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
+
 Auth::routes();
+
+
+
+

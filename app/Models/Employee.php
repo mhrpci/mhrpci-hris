@@ -130,6 +130,14 @@ class Employee extends Model
     {
         return $this->hasOne(User::class);
     }
+
+    public function credential(): HasMany
+    {
+        return $this->hasMany(Credentials::class);
+    }
+
+
+
     public function employmentStatus(): string
     {
         $hiredDate = \Carbon\Carbon::parse($this->date_hired);

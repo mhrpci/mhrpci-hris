@@ -192,119 +192,108 @@
             opacity: 1;
         }
     }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .welcome-heading {
+            font-size: 28px;
+        }
+        .welcome-subheading {
+            font-size: 24px;
+        }
+        .clock-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    }
+
+    /* Enhanced card styles */
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Improved list styles */
+    .custom-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    .custom-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .custom-list li:last-child {
+        border-bottom: none;
+    }
+
+    /* Enhanced icons */
+    .card-icon {
+        font-size: 2.5rem;
+        margin-right: 15px;
+    }
 </style>
 @section('content')
 <br>
-<div class="container-fluid">
+<div class="container-fluid py-4">
     <div class="row">
         <!-- Welcome section -->
-        <div class="col-md-6">
+        <div class="col-lg-6 mb-4">
             @auth <!-- Check if user is authenticated -->
-            <div class="welcome-message">
-                <h2 class="welcome-heading">Welcome, <span class="animated-text">{{ auth()->user()->first_name }}</span></h2>
-                <h4 class="welcome-subheading">{{ auth()->user()->last_name }}</h4>
+            <div class="welcome-message p-4 bg-white rounded shadow-sm">
+                <h2 class="welcome-heading mb-2">Welcome, <span class="animated-text text-primary">{{ auth()->user()->first_name }}</span></h2>
+                <h4 class="welcome-subheading text-muted">{{ auth()->user()->last_name }}</h4>
             </div>
         @endauth
         </div>
         <!-- Clock section -->
-        <div class="col-md-6">
-            <div class="clock-container">
-                <div class="analog-clock">
-                    <div class="hour-hand"></div>
-                    <div class="minute-hand"></div>
-                    <div class="second-hand"></div>
-                    <div class="center-dot"></div>
-                </div>
-                <div id="date" style="font-size: 1.5em;"></div>
-                <h1 id="clock" style="font-size: 3em;"></h1>
+        <div class="col-lg-6 mb-4">
+            <div class="clock-container p-4 bg-white rounded shadow-sm">
+                <div id="date" class="mb-2 text-muted"></div>
+                <h1 id="clock" class="display-4 font-weight-bold"></h1>
             </div>
         </div>
     </div>
 
     <!-- Posts section -->
     <div class="row">
-        <div class="col-md-6">
-            <div class="card bg-primary text-white">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <h2 class="card-title mb-0"><i class="fas fa-bullhorn"></i> Today's Announcement</h2>
-                    <span class="ml-auto" data-toggle="tooltip" data-placement="top" title="This field is for posts and announcements">
-                        <i class="fas fa-question-circle"></i>
-                    </span>
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-bullhorn mr-2"></i>Today's Announcement</h5>
                 </div>
-            </div>
-            <div class="card mt-3">
                 <div class="card-body">
                     <!-- Today's Posts -->
                     @if ($todayPosts && $todayPosts->count() > 0)
-                        @foreach ($todayPosts as $post)
-                            <div class="post-item">
-                                <h6>
-                                    <a href="#" data-toggle="modal" data-target="#todayPostModal{{ $post->id }}">
-                                        <i class="fas fa-circle" style="font-size: 5px;"></i> {{ $post->title }}
-                                    </a>
-                                </h6>
-                                <p class="card-text">{{ Str::limit($post->body, 100) }}</p>
-                                <p class="card-text"><small class="text-muted">{{ $post->created_at->format('M d, Y') }}</small></p>
-                                <hr>
-
-                                <!-- Modal for Today's Post -->
-                                <div class="modal fade" id="todayPostModal{{ $post->id }}" tabindex="-1" role="dialog" aria-labelledby="todayPostModalLabel{{ $post->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary text-white">
-                                                <h5 class="modal-title" id="todayPostModalLabel{{ $post->id }}">
-                                                    <i class="fas fa-bullhorn"></i> {{ $post->title }}
-                                                </h5>
-                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="container">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <h5 class="font-weight-bold">Content</h5>
-                                                            <p class="text-justify">{!! nl2br(e($post->content)) !!}</p>
-                                                        </div>
-                                                    </div>
-                                                    <hr>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($post->date)->format('F j, Y') }}</p>
-                                                        </div>
-                                                        <div class="col-md-6 text-right">
-                                                            <p><strong>Author:</strong> {{ $post->user->first_name }} {{ $post->user->last_name }}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End Modal -->
-                            </div>
-                        @endforeach
+                        <ul class="custom-list">
+                            @foreach ($todayPosts as $post)
+                                <li>
+                                    <h6>
+                                        <a href="#" data-toggle="modal" data-target="#todayPostModal{{ $post->id }}">
+                                            {{ $post->title }}
+                                        </a>
+                                    </h6>
+                                    <p class="text-muted mb-0">{{ Str::limit($post->body, 100) }}</p>
+                                    <small class="text-muted">{{ $post->created_at->format('M d, Y') }}</small>
+                                </li>
+                            @endforeach
+                        </ul>
                     @else
-                        <p>No Today's Posts Available</p>
+                        <p class="text-muted">No Today's Posts Available</p>
                     @endif
                 </div>
             </div>
         </div>
 
         <!-- Employee's Leave Count section -->
-        <div class="col-md-6">
-            <div class="card bg-primary text-white">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <h2 class="card-title mb-0">Count of Employee's Leave</h2>
-                    <span class="ml-auto" data-toggle="tooltip" data-placement="top" title="Regular leave count">
-                        <i class="fas fa-question-circle"></i>
-                    </span>
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-check mr-2"></i>Count of Employee's Leave</h5>
                 </div>
-            </div>
-            <div class="card mt-3">
                 <div class="card-body">
                     <p><strong>Sick Leave</strong> - 7 days</p>
                     <p><strong>Vacation Leave</strong> - 5 days</p>
@@ -317,23 +306,18 @@
     <!-- Remaining Leave Balance section -->
     @can('normal-employee')
         <div class="row">
-            <div class="col-md-6">
-                <div class="card bg-primary text-white">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <h2 class="card-title mb-0">Your Remaining Leave Balance</h2>
-                        <span class="ml-auto" data-toggle="tooltip" data-placement="top" title="Remaining leave balances">
-                            <i class="fas fa-question-circle"></i>
-                        </span>
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-calendar-alt mr-2"></i>Your Remaining Leave Balance</h5>
                     </div>
-                </div>
-                <div class="card mt-3">
                     <div class="card-body">
                         @if ($leaveDetails)
                             <p><strong>Sick Leave:</strong> {{ $leaveDetails['sick_leave'] }} Hours - is equivalent {{ $leaveDetails['sick_leave'] / 24 }} Days </p>
                             <p><strong>Vacation Leave:</strong> {{ $leaveDetails['vacation_leave'] }} Hours - is equivalent {{ $leaveDetails['vacation_leave'] / 24 }} Days</p>
                             <p><strong>Emergency Leave:</strong> {{ $leaveDetails['emergency_leave'] }} Hours - is equivalent {{ $leaveDetails['emergency_leave'] / 24 }} Days</p>
                         @else
-                            <p>No Leave Balance Available</p>
+                            <p class="text-muted">No Leave Balance Available</p>
                         @endif
                     </div>
                 </div>
@@ -343,16 +327,11 @@
 
     <!-- Announcements section -->
     <div class="row">
-        <div class="col-md-6">
-            <div class="card bg-primary text-white">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <h2 class="card-title mb-0"><i class="fas fa-birthday-cake"></i> Birthdays of this {{ $currentMonthNameBirthdays }}</h2>
-                    <span class="ml-auto" data-toggle="tooltip" data-placement="top" title="This field is for birthdays">
-                        <i class="fas fa-question-circle"></i>
-                    </span>
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-birthday-cake mr-2"></i>Birthdays of this {{ $currentMonthNameBirthdays }}</h5>
                 </div>
-            </div>
-            <div class="card mt-3">
                 <div class="card-body">
                     @if($greeting)
                         <h3 class="animated-greeting">{{ $greeting }}</h3>
@@ -375,33 +354,26 @@
                             @endforeach
                         </ul>
                     @else
-                        <p>No Upcoming Birthdays Available this {{ $currentMonthNameBirthdays }}</p>
+                        <p class="text-muted">No Upcoming Birthdays Available this {{ $currentMonthNameBirthdays }}</p>
                     @endif
                 </div>
             </div>
         </div>
 
         <!-- Holidays of the Month section -->
-        <div class="col-md-6">
-            <div class="card bg-primary text-white">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <h2 class="card-title mb-0">
-                        <i class="fas fa-calendar-alt"></i> Holidays of {{ $currentMonthName }}
-                    </h2>
-                    <span class="ml-auto" data-toggle="tooltip" data-placement="top" title="This field is for upcoming holidays">
-                        <i class="fas fa-question-circle"></i>
-                    </span>
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt mr-2"></i>Holidays of {{ $currentMonthName }}</h5>
                 </div>
-            </div>
-            <div class="card mt-3">
                 <div class="card-body">
                     @if ($todayHoliday)
                         <p>Today is <strong style="color:red">{{ $todayHoliday->title }}</strong>-{{ \Carbon\Carbon::parse($todayHoliday->date)->format('F j, Y') }}</p>
                     @endif
                     @if ($upcomingHolidays->isEmpty())
-                        <p>No upcoming holidays this {{ $currentMonthName }}</p>
+                        <p class="text-muted">No upcoming holidays this {{ $currentMonthName }}</p>
                     @else
-                        <ul>
+                        <ul class="custom-list">
                             @foreach ($upcomingHolidays as $holiday)
                                 <li><strong style="color:red">{{ $holiday->title }}</strong> at {{ \Carbon\Carbon::parse($holiday->date)->format('F j, Y') }}</li>
                             @endforeach
@@ -412,94 +384,58 @@
         </div>
     </div>
 
-    <!-- User IP Address section -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card bg-primary text-white">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <h2 class="card-title mb-0"><i class="fas fa-user"></i> Your IP Address</h2>
-                    <span class="ml-auto" data-toggle="tooltip" data-placement="top" title="This field is for recent login IP">
-                        <i class="fas fa-question-circle"></i>
-                    </span>
-                </div>
-            </div>
-            <div class="card mt-3">
-                <div class="card-body">
-                    <p id="userIp">Fetching IP...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Admin dashboard section -->
 @canany(['super-admin', 'admin','hrcomben', 'hrcompliance'])
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-info text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-users fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-users card-icon"></i>
                         <div>
-                            <h4 class="card-title">Users</h4>
-                            <h2 class="card-text">{{ $userCount }}</h2>
+                            <h6 class="card-title mb-0">Users</h6>
+                            <h2 class="card-text mb-0">{{ $userCount }}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-center">
-                </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-primary text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-user-tie fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-tie card-icon"></i>
                         <div>
-                            <h4 class="card-title">Employees</h4>
-                            <h2 class="card-text">{{ $employeeCount }}</h2>
+                            <h6 class="card-title mb-0">Employees</h6>
+                            <h2 class="card-text mb-0">{{ $employeeCount }}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-center">
-                </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-purple text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-calendar-check fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-check card-icon"></i>
                         <div>
-                            <h4 class="card-title">All Attended</h4>
-                            <h2 class="card-text">{{ $attendanceAllCount }}</h2>
+                            <h6 class="card-title mb-0">All Attended</h6>
+                            <h2 class="card-text mb-0">{{ $attendanceAllCount }}</h2>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer text-center">
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-success text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-calendar-check fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-check card-icon"></i>
                         <div>
-                            <h4 class="card-title">Attended Today</h4>
-                            <h2 class="card-text">{{ $attendanceCount }}</h2>
+                            <h6 class="card-title mb-0">Attended Today</h6>
+                            <h2 class="card-text mb-0">{{ $attendanceCount }}</h2>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer text-center">
                 </div>
             </div>
         </div>
@@ -507,71 +443,55 @@
 
     <!-- Leave section -->
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-primary text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-sign-out-alt fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-sign-out-alt card-icon"></i>
                         <div>
-                            <h4 class="card-title">All Leaves</h4>
-                            <h2 class="card-text">{{ $leaveCount }}</h2>
+                            <h6 class="card-title mb-0">All Leaves</h6>
+                            <h2 class="card-text mb-0">{{ $leaveCount }}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-center">
-                </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-success text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-check fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check card-icon"></i>
                         <div>
-                            <h4 class="card-title">Approved Leaves</h4>
-                            <h2 class="card-text">{{ $approvedLeavesCount }}</h2>
+                            <h6 class="card-title mb-0">Approved Leaves</h6>
+                            <h2 class="card-text mb-0">{{ $approvedLeavesCount }}</h2>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-center">
-                </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-warning text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-hourglass-half fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-hourglass-half card-icon"></i>
                         <div>
-                            <h4 class="card-title">Pending Leaves</h4>
-                            <h2 class="card-text">{{ $pendingLeavesCount }}</h2>
+                            <h6 class="card-title mb-0">Pending Leaves</h6>
+                            <h2 class="card-text mb-0">{{ $pendingLeavesCount }}</h2>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer text-center">
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-6 mb-4">
             <div class="card bg-danger text-white">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <i class="fas fa-times fa-3x"></i>
-                        </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-times card-icon"></i>
                         <div>
-                            <h4 class="card-title">Rejected Leaves</h4>
-                            <h2 class="card-text">{{ $rejectedLeavesCount }}</h2>
+                            <h6 class="card-title mb-0">Rejected Leaves</h6>
+                            <h2 class="card-text mb-0">{{ $rejectedLeavesCount }}</h2>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer text-center">
                 </div>
             </div>
         </div>

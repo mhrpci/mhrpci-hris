@@ -472,10 +472,31 @@ return [
                 ],
             ],
         ],
+        [
+            'text' => ' Hiring Management',
+            'icon' => 'fas fa-users-cog',
+            'can' => 'hrhiring',
+            'submenu' => [
+                [
+                    'text' => ' Hiring',
+                    'url' => 'hirings',
+                    'icon' => 'fas fa-briefcase',
+                    'can' => 'hrhiring',
+                    'active' => ['hirings*', 'regex'],
+                ],
+                [
+                    'text' => ' Applicants',
+                    'url' => '/all-careers',
+                    'icon' => 'fas fa-user-tie',
+                    'can' => 'hrhiring',
+                    'active' => ['/all-careers*', 'regex:/^careers\/\d+$/'],
+                ],
+            ]
+        ],
                 [
             'text' => ' Others',
             'icon' => 'fas fa-cogs',
-            'can' => ['admin', 'super-admin', 'hrcomben' , 'hrcompliance', 'it-staff'],
+            'can' => ['admin', 'super-admin', 'hrcomben' , 'hrcompliance', 'it-staff', 'hrpolicy'],
             'submenu' => [
                 [
                     'text' => ' Loans and CA',
@@ -493,17 +514,10 @@ return [
                 ],
                 [
                     'text' => '  Contacts and Emails',
-                    'url' => 'accountabilities',
+                    'url' => 'credentials',
                     'icon' => 'fas fa-phone ',
                     'can' => 'hrpolicy',
-                    'active' => ['accountabilities*', 'regex'],
-                ],
-                [
-                    'text' => ' Hiring',
-                    'url' => 'hirings',
-                    'icon' => 'fas fa-briefcase',
-                    'can' => 'hrhiring',
-                    'active' => ['hirings*', 'regex'],
+                    'active' => ['credentials*', 'regex'],
                 ],
                 [
                     'text' => ' IT Inventory',
@@ -525,7 +539,7 @@ return [
             'text' => '',
             'icon' => 'fas fa-cogs',
             'topnav_right' => true,
-            'can' => ['admin', 'super-admin','hrcompliance'],
+            'can' => ['admin', 'super-admin','hrcompliance', 'hrpolicy'],
             'submenu' => [
                 [
                     'text' => ' Leave Type',
@@ -539,7 +553,7 @@ return [
                     'url' => 'posts',
                     'icon' => 'fas fa-bullhorn',
                     'active' => ['posts*', 'regex'],
-                    'can' => ['admin', 'super-admin','hrcompliance'],
+                    'can' => ['admin', 'super-admin','hrcompliance', 'hrpolicy'],
                 ],
                 // [
                 //     'text' => ' Birthdays',

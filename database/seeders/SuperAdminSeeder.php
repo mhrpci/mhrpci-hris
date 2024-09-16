@@ -80,5 +80,31 @@ class SuperAdminSeeder extends Seeder
            'profile_image' => ' ',
        ]);
        $it->assignRole('IT Staff');
+
+       // Creating HR Policy User
+       $hrpolicy = User::create([
+        'first_name' => 'HR',
+        'middle_name' => ' ',
+        'last_name' => 'Policy',
+        'suffix' => ' ',
+        'email' => 'hr@policy.com',
+        'bio' => 'HR Policy',
+        'password' => Hash::make('HrPolicy@2024'),
+        'profile_image' => ' ',
+    ]);
+    $hrpolicy->assignRole('HR Policy');
+
+           // Creating HR Policy User
+       $hrhiring = User::create([
+        'first_name' => 'HR',
+        'middle_name' => ' ',
+        'last_name' => 'Hiring',
+        'suffix' => ' ',
+        'email' => 'hr@hiring.com',
+        'bio' => 'HR Hiring',
+        'password' => Hash::make('HrHiring@2024'),
+        'profile_image' => ' ',
+    ]);
+    $hrhiring->assignRole('HR Hiring');
     }
 }
