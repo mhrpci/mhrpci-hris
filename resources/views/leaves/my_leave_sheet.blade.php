@@ -82,44 +82,10 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header">
                     <h3 class="card-title">My Leave Sheet</h3>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Employee Details</h4>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th>Name:</th>
-                                    <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email:</th>
-                                    <td>{{ $employee->email_address }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <h4>Leave Balances</h4>
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th>Sick Leave:</th>
-                                    <td>{{ $sickLeaveBalance /24 }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Emergency Leave:</th>
-                                    <td>{{ $emergencyLeaveBalance /24 }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Vacation Leave:</th>
-                                    <td>{{ $vacationLeaveBalance /24 }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <h4 class="mt-4">Leave Records</h4>
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="min-date">From:</label>

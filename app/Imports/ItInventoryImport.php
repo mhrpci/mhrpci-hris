@@ -15,7 +15,7 @@ class ItInventoryImport implements ToModel
     public function model(array $row)
     {
         return new ItInventory([
-            'name'        => $row[0],  // First column in the CSV/Excel
+            'name'        => $row[0] ?? null,  // First column in the CSV/Excel
             'description' => $row[1] ?? null,  // Second column in the CSV/Excel, nullable
         ]);
     }

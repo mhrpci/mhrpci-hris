@@ -88,6 +88,7 @@ class LeaveController extends Controller
     {
         // Find the leave record
         $leave = Leave::findOrFail($id);
+        $this->markAsRead($leave);
         $diff = $leave->diffdays;
 
         // Load the user who approved the leave
@@ -97,7 +98,14 @@ class LeaveController extends Controller
         return view('leaves.show', compact('leave', 'approvedByUser','diff'));
     }
 
-
+    private function markAsRead(Leave $leave)
+    {
+        if (!$leave->is_read) {
+            $leave->is_read = true;
+            $leave->read_at = now();
+            $leave->save();
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */

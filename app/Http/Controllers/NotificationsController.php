@@ -132,13 +132,16 @@ class NotificationsController extends Controller
     private function generateLeaveRequestNotifications()
     {
         if (Auth::user()->hasRole(['Super Admin', 'Admin'])) {
-            $pendingLeaves = Leave::with('employee')->where('status', 'pending')->get();
+            $pendingLeaves = Leave::with('employee')
+                ->where('status', 'pending')
+                ->where('is_read', false)  // Only fetch unread leave requests
+                ->get();
             foreach ($pendingLeaves as $leave) {
                 $notification = [
                     'icon' => 'fas fa-fw fa-calendar-times',
                     'text' => "{$leave->employee->first_name} {$leave->employee->last_name} requested leave",
                     'time' => $leave->created_at->diffForHumans(),
-                    'details' => "Leave details: {$leave->reason}" // Add details
+                    'details' => "Leave details: {$leave->reason}"
                 ];
                 $this->notifications['leave_requests'][] = $notification;
             }
@@ -154,6 +157,7 @@ class NotificationsController extends Controller
         if ($authUser->hasRole('Employee') && $employee) {
             $tasks = Task::where('employee_id', $employee->id)
                          ->where('status', 'pending')
+                         ->where('is_read', false)  // Only fetch unread tasks
                          ->get();
             foreach ($tasks as $task) {
                 $notification = [
@@ -169,6 +173,7 @@ class NotificationsController extends Controller
         if ($authUser->hasRole(['Super Admin', 'Admin'])) {
             $tasks = Task::with('employee')
                          ->whereIn('status', ['on progress', 'done', 'abandoned'])
+                         ->where('is_read', false)  // Only fetch unread tasks
                          ->get();
             foreach ($tasks as $task) {
                 $notification = [

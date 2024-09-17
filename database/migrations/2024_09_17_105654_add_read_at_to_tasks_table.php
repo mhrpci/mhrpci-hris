@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('it_inventories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->string('description')->nullable();
-            $table->timestamps();
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->boolean('is_read')->default(false);
+            $table->timestamp('read_at')->nullable();
         });
     }
 
@@ -24,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('it_inventories');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropColumn(['is_read', 'read_at']);
+        });
     }
 };

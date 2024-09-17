@@ -120,7 +120,9 @@
                                             @endforeach
                                         </ul>
                                     @endif
-                                    @if(Auth::user()->hasRole(['Super Admin', 'Admin']) || (Auth::user()->hasRole('HR Hiring') && $category === 'job_applications'))
+                                    @if(Auth::user()->hasRole(['Super Admin', 'Admin']) ||
+                                       (Auth::user()->hasRole('HR Hiring') && $category === 'job_applications') ||
+                                       (Auth::user()->hasRole('Employee') && $category === 'tasks'))
                                         <div class="text-right mt-3">
                                             @if($category === 'birthdays')
                                                 <a href="{{ route('employees.birthdays') }}" class="btn btn-outline-primary btn-sm">View Details</a>
@@ -128,6 +130,8 @@
                                                 <a href="{{ route('leaves.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'job_applications')
                                                 <a href="{{ route('careers.all') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                            @elseif($category === 'tasks')
+                                                <a href="{{ route('tasks.myTasks') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @else
                                                 <a href="{{ route($category . '.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @endif

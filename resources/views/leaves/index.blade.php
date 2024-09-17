@@ -105,10 +105,24 @@
                                             </span>
                                         </div>
                                         <select class="form-control" id="status-filter">
-                                            <option value="">All</option>
+                                            <option value="">All Status</option>
                                             <option value="approved">Approved</option>
                                             <option value="rejected">Rejected</option>
                                             <option value="pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text text-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </span>
+                                        </div>
+                                        <select class="form-control" id="read-filter">
+                                            <option value="">All Leaves</option>
+                                            <option value="read">Read Leaves</option>
+                                            <option value="new">Unread Leaves</option>
                                         </select>
                                     </div>
                                 </div>
@@ -120,6 +134,7 @@
                                         <th>Date</th>
                                         <th>Type</th>
                                         <th>Status</th>
+                                        <th>Read</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -138,6 +153,13 @@
                                                     <i class="fas fa-times-circle" style="color: red;"></i> Rejected
                                                 @else
                                                     <i class="fas fa-hourglass-half" style="color: orange;"></i> Pending
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($leave->is_read)
+                                                    <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Read</span>
+                                                @else
+                                                    <span class="badge badge-info"><i class="fas fa-bell mr-1"></i> New</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -181,6 +203,12 @@
                 // Filter by status
                 $('#status-filter').on('change', function() {
                     table.column(3).search(this.value).draw();
+                });
+
+                // Filter by read status
+                $('#read-filter').on('change', function() {
+                    var searchTerm = this.value === 'read' ? 'Read' : (this.value === 'new' ? 'New' : '');
+                    table.column(4).search(searchTerm).draw();
                 });
             });
         </script>

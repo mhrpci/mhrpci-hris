@@ -39,9 +39,20 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
 
-    public function show(Task $task)
+    public function show($id)
     {
+        $task = Task::findOrFail($id);
+        $this->markAsRead($task);
         return view('tasks.show', compact('task'));
+    }
+
+    private function markAsRead(Task $task)
+    {
+        if (!$task->is_read) {
+            $task->is_read = true;
+            $task->read_at = now();
+            $task->save();
+        }
     }
 
     public function edit(Task $task)
@@ -93,7 +104,11 @@ class TaskController extends Controller
         // Fetch the tasks assigned to the logged-in employee
         $tasks = Task::with('employee')
             ->where('employee_id', $employee->id)
-            ->get();
+            ->get()
+            ->map(function ($task) {
+                $task->is_read = !is_null($task->read_at);
+                return $task;
+            });
 
         return view('tasks.my_tasks', compact('employee', 'tasks'));
     }

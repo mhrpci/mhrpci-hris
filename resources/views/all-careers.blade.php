@@ -90,6 +90,18 @@
                     @if($careers->isEmpty())
                         <p>No applicants available at the moment.</p>
                     @else
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-filter"></i></span>
+                                </div>
+                                <select id="read-filter" class="form-control">
+                                    <option value="">All Applications</option>
+                                    <option value="read">Read Applications</option>
+                                    <option value="unread">Unread Applications</option>
+                                </select>
+                            </div>
+                        </div>
                         <table id="careers-table" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -99,6 +111,7 @@
                                     <th>Email</th>
                                     <th>Experience</th>
                                     <th>Applied At</th>
+                                    <th>Read</th>
                                     <th>Action</th> <!-- New column -->
                                 </tr>
                             </thead>
@@ -111,6 +124,13 @@
                                         <td>{{ $career->email }}</td>
                                         <td>{{ $career->experience }} years</td>
                                         <td>{{ $career->created_at->format('F j, Y \a\t g:i A') }}</td>
+                                        <td>
+                                            @if($career->is_read)
+                                                <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Read</span>
+                                            @else
+                                                <span class="badge badge-info"><i class="fas fa-bell mr-1"></i> New</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             <a href="{{ route('careers.show', $career->id) }}" class="btn btn-primary btn-sm">View Details</a>
                                         </td>
@@ -131,10 +151,40 @@
 <!-- /.container-fluid -->
 @endsection
 
+@section('css')
+<style>
+    #read-filter {
+        max-width: 250px;
+    }
+    .input-group-text {
+        background-color: #007bff;
+        color: white;
+        border: 1px solid #007bff;
+    }
+</style>
+@endsection
+
 @section('js')
 <script>
     $(document).ready(function () {
-        $('#careers-table').DataTable();
+        var table = $('#careers-table').DataTable();
+
+        $('#read-filter').on('change', function() {
+            table.draw();
+        });
+
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                var status = $('#read-filter').val();
+                var isRead = $(table.row(dataIndex).node()).find('td:eq(6) span').hasClass('badge-success');
+
+                if (status === "") return true;
+                if (status === "read" && isRead) return true;
+                if (status === "unread" && !isRead) return true;
+
+                return false;
+            }
+        );
     });
 </script>
 @endsection
