@@ -28,7 +28,8 @@ class Payroll extends Model
         'pagibig_loan',
         'cash_advance',
         'overtime_pay',
-        'slug' // Add slug to fillable
+        'slug', // Add slug to fillable
+        'total_earnings',
     ];
 
     protected static function boot()

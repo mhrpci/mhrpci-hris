@@ -88,7 +88,8 @@
             @if(isset($allNotifications) && is_array($allNotifications))
                 <div class="row">
                     @foreach($allNotifications as $category => $notifications)
-                        @if($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin']))
+                        @if(($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin'])) &&
+                            ($category !== 'job_applications' || Auth::user()->hasRole('HR Hiring')))
                             <div class="col-md-6 mb-4">
                                 <div class="notification-item h-100 border rounded p-3">
                                     <h4 class="d-flex align-items-center mb-3">
@@ -102,6 +103,8 @@
                                             <i class="fas fa-calendar-times text-danger mr-2"></i>
                                         @elseif($category === 'tasks')
                                             <i class="fas fa-tasks text-primary mr-2"></i>
+                                        @elseif($category === 'job_applications')
+                                            <i class="fas fa-file-alt text-secondary mr-2"></i>
                                         @endif
                                         {{ ucfirst(str_replace('_', ' ', $category)) }}
                                     </h4>
@@ -117,12 +120,14 @@
                                             @endforeach
                                         </ul>
                                     @endif
-                                    @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
+                                    @if(Auth::user()->hasRole(['Super Admin', 'Admin']) || (Auth::user()->hasRole('HR Hiring') && $category === 'job_applications'))
                                         <div class="text-right mt-3">
                                             @if($category === 'birthdays')
                                                 <a href="{{ route('employees.birthdays') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'leave_requests')
                                                 <a href="{{ route('leaves.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                            @elseif($category === 'job_applications')
+                                                <a href="{{ route('careers.all') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @else
                                                 <a href="{{ route($category . '.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @endif

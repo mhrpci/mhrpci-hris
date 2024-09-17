@@ -136,11 +136,6 @@ class RoleSeeder extends Seeder
             'hiring-list',
             'hiring-create',
             'hiring-edit',
-            'hiring-delete',
-            'career-list',
-            'career-create',
-            'career-edit',
-            'career-delete',
             'hrhiring',
         ]);
 

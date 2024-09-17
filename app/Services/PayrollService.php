@@ -133,6 +133,9 @@ class PayrollService
         // Calculate Net Salary
         $net_salary = $gross_salary - $total_deductions - $contribution_deductions - $loan_deductions + $overtime_pay;
 
+        // Calculate Total Earnings
+        $total_earnings = $this->calculateTotalEarnings($gross_salary, $overtime_pay);
+
         // Store payroll record
         $payroll = Payroll::create([
             'employee_id' => $employee_id,
@@ -151,7 +154,8 @@ class PayrollService
             'sss_loan' => $loans->sss_loan ?? 0,
             'pagibig_loan' => $loans->pagibig_loan ?? 0,
             'cash_advance' => $loans->cash_advance ?? 0,
-            'overtime_pay' => $overtime_pay
+            'overtime_pay' => $overtime_pay,
+            'total_earnings' => $total_earnings
         ]);
 
         return $payroll;
@@ -181,5 +185,10 @@ class PayrollService
         }
 
         return $total_no_attendance_days;
+    }
+
+    private function calculateTotalEarnings($basic_salary, $overtime_pay)
+    {
+        return $basic_salary + $overtime_pay;
     }
 }

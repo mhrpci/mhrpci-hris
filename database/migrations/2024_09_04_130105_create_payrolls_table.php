@@ -28,6 +28,7 @@ return new class extends Migration
             $table->decimal('sss_loan')->nullable();
             $table->decimal('pagibig_loan')->nullable();
             $table->decimal('cash_advance')->nullable();
+            $table->decimal('total_earnings')->nullable();
             $table->decimal('overtime_pay')->nullable();
             $table->timestamps();
         });

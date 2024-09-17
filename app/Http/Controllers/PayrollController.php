@@ -121,13 +121,6 @@ class PayrollController extends Controller
         return view('payroll.payslips', compact('employee'));
     }
 
-    public function downloadPdf($id)
-    {
-        $payroll = Payroll::findOrFail($id);
-        $pdf = PDF::loadView('payroll.payroll.pdf', compact('payroll'));
-        return $pdf->download('payslip.pdf');
-    }
-
     public function myPayrolls()
     {
         // Get the authenticated user
@@ -147,5 +140,32 @@ class PayrollController extends Controller
         } else {
             return redirect()->route('payroll.index')->with('error', 'Employee not found.');
         }
+    }
+
+    public function generatePayslip($payroll_id)
+    {
+        $payroll = Payroll::with('employee')->findOrFail($payroll_id);
+
+        // Ensure dates are Carbon instances
+        $payroll->start_date = Carbon::parse($payroll->start_date);
+        $payroll->end_date = Carbon::parse($payroll->end_date);
+
+        // Get the logo path
+        $logoPath = public_path('vendor/adminlte/dist/img/LOGO4.png');
+
+        $pdf = PDF::loadView('payroll.payslip_pdf', compact('payroll', 'logoPath'));
+
+        // Set paper size to letter
+        $pdf->setPaper('letter');
+
+        // Set custom margins to occupy half of the paper
+        $pdf->setOptions([
+            'margin-top'    => 0,
+            'margin-right'  => 0,
+            'margin-bottom' => 0,
+            'margin-left'   => 0,
+        ]);
+
+        return $pdf->download('payslip_' . $payroll->employee->employee_id . '_' . $payroll->start_date->format('Y-m-d') . '.pdf');
     }
 }

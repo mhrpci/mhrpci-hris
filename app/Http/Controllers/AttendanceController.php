@@ -42,8 +42,8 @@ class AttendanceController extends Controller
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'date_attended' => 'required|date',
-            'time_stamp1' => 'required_without:time_stamp2',
-            'time_stamp2' => 'required_without:time_stamp1',
+            'time_stamp1' => 'nullable',
+            'time_stamp2' => 'nullable',
             'time_in' => 'required_without:time_out|nullable|date_format:H:i',
             'time_out' => 'required_without:time_in|nullable|date_format:H:i',
             'remarks' => 'nullable',
@@ -143,14 +143,11 @@ class AttendanceController extends Controller
             'date_attended' => 'required|date',
             'time_stamp1' => 'nullable|file',
             'time_stamp2' => 'nullable|file',
-            'time_in' => 'nullable|date_format:H:i',
-            'time_out' => 'nullable|date_format:H:i',
+            'time_in' => 'nullable',
+            'time_out' => 'nullable',
             'remarks' => 'nullable',
-            'hours_worked' => 'nullable',
+            'hours_worked' => 'nullable|numeric',
         ]);
-
-        // Get the authenticated user
-        $user = Auth::user();
 
         // Update attendance with provided data
         $attendance->employee_id = $request->employee_id;

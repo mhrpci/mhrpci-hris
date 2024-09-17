@@ -139,8 +139,7 @@ use App\Http\Controllers\HiringController;
     Route::post('inventory/import', [ItInventoryController::class, 'import'])->name('inventory.import');
 
     Route::get('/payroll-employees-with-payroll', [PayrollController::class, 'employeesWithPayroll'])->name('payroll.employeesWithPayroll');
-    Route::get('/payroll/payslips/{employee_id}', [PayrollController::class, 'payslips'])->name('payroll.payslips');
-
+    Route::get('/payroll/{payroll}/payslip', [PayrollController::class, 'generatePayslip'])->name('payroll.payslip');
     //slugs
     Route::get('/employees/{slug}', [EmployeeController::class, 'show']);
     Route::get('employees/{slug}/edit', [EmployeeController::class, 'edit']);

@@ -122,7 +122,7 @@
                         </tr>
                         <tr class="font-weight-bold">
                             <td>Total Earnings</td>
-                            <td class="text-right">₱{{ number_format($payroll->gross_salary + $payroll->overtime_pay, 2) }}</td>
+                            <td class="text-right">₱{{ number_format($payroll->total_earnings, 2) }}</td>
                         </tr>
                     </table>
                 </div>
@@ -213,22 +213,19 @@
 
         <!-- Payslip Footer -->
         <div class="card-footer">
-            <div class="d-flex justify-content-between align-items-center">
-                <button onclick="window.print()" class="btn btn-outline-primary">
-                    <i class="fas fa-print mr-2"></i>Print Payslip
-                </button>
-                <a href="{{ route('payroll.download-pdf', $payroll->id) }}" class="btn btn-primary">
-                    <i class="fas fa-download mr-2"></i>Download PDF
-                </a>
+            <div class="d-flex align-items-center">
                 @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('HR ComBen'))
-                <a href="{{ route('payroll.index') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('payroll.index') }}" class="btn btn-outline-secondary mr-2">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Payroll List
                 </a>
                 @else
-                <button onclick="showLoaderAndGoBack()" class="btn btn-outline-secondary">
+                <button onclick="showLoaderAndGoBack()" class="btn btn-outline-secondary mr-2">
                     <i class="fas fa-arrow-left mr-2"></i>Back
                 </button>
                 @endif
+                <a href="{{ route('payroll.payslip', $payroll->id) }}" class="btn btn-primary">
+                    <i class="fas fa-download mr-2"></i>Download Payslip
+                </a>
             </div>
         </div>
     </div>
