@@ -431,6 +431,7 @@
             }
         });
     });
+
              function populateCities(provinceId, selectedCityId = null) {
                  var cityDropdown = $('#city_id');
                  cityDropdown.empty();
@@ -476,17 +477,6 @@
                      populateBarangays(initialCityId, initialBarangayId);
                  }
                 }
-
-                document.getElementById('department_id').addEventListener('change', function() {
-                                        var departmentId = this.value;
-                                        var positionDropdown = document.getElementById('position_id');
-                                        positionDropdown.innerHTML = '<option value="">Select position</option>';
-                                        @foreach($positions as $position)
-                                            if ("{{ $position->department_id }}" == departmentId) {
-                                                positionDropdown.innerHTML += '<option value="{{ $position->id }}">{{ $position->name }}</option>';
-                                            }
-                                        @endforeach
-                                    });
                 document.getElementById('philhealth_no').addEventListener('input', function (e) {
                                         // Remove non-numeric characters
                                         let input = e.target.value.replace(/\D/g, '');
@@ -542,6 +532,25 @@
                                             formattedSSS = sssNumber;
                                         }
                                         e.target.value = formattedSSS;
+                                    });
+
+                                    // New script for department and position relationship
+                                    $('#department_id').on('change', function() {
+                                        var departmentId = $(this).val();
+                                        var positionSelect = $('#position_id');
+
+                                        // Clear current options
+                                        positionSelect.empty().append('<option value="">Select position</option>');
+
+                                        // Add new options based on selected department
+                                        @foreach($positions as $position)
+                                            if ({{ $position->department_id }} == departmentId) {
+                                                positionSelect.append('<option value="{{ $position->id }}">{{ $position->name }}</option>');
+                                            }
+                                        @endforeach
+
+                                        // Trigger change event on position select to update Select2
+                                        positionSelect.trigger('change');
                                     });
          });
      </script>
