@@ -459,8 +459,8 @@
                     </div>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="#services" class="nav-link" title="Explore Our Services">Services</a></li>
                     <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
+                    <li><a href="#services" class="nav-link" title="Explore Our Services">Services</a></li>
                     <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
                     <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
                 </ul>
