@@ -75,8 +75,8 @@
 }
 </style>
 @stop
-
 @section('content')
+<br>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
@@ -84,6 +84,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Edit Employee</h3>
                 </div>
+                <!-- /.card-header -->
                 <div class="card-body">
                     @if (count($errors) > 0)
                     <div class="alert alert-danger">
@@ -238,13 +239,13 @@
                                         <input type="date" id="date_hired" name="date_hired" value="{{$employee->date_hired}}"class="form-control">
                                     </div>
                                 </div>
-
                             </div>
                             <!-- End Of Contact and Gender-->
+
                             <!-- Start Of Birth Place-->
                             <p>Birth Place</p>
                             <div class="row">
-                            <div class="col-md-6">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="birth_place_province">Province:</label>
                                         <input type="text" id="birth_place_province" name="birth_place_province" value="{{$employee->birth_place_province}}" class="form-control" placeholder="Enter province">
@@ -270,6 +271,7 @@
                                 </div>
                             </div>
                             <!-- End Of Birth Place-->
+
                             <!-- Start Of Home Address-->
                         <p>Home Address</p>
                             <div class="row">
@@ -375,60 +377,173 @@
 @stop
 
 @section('js')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for all dropdowns
-            $('#province_id, #city_id, #barangay_id').select2({
+            // Initialize Select2 for all select elements
+            $('select').select2({
                 theme: 'bootstrap4',
+                width: '100%'
             });
+            function validateAndPreviewImage(event) {
+        var input = event.target;
+        var file = input.files[0];
+        var reader = new FileReader();
 
-            function populateCities(provinceId, selectedCityId = null) {
-                var cityDropdown = $('#city_id');
-                cityDropdown.empty();
-                cityDropdown.append('<option value="">Select city</option>');
-                @foreach($city as $city)
-                    if ("{{ $city->province_id }}" == provinceId) {
-                        var selected = "{{ $city->id }}" == selectedCityId ? 'selected' : '';
-                        cityDropdown.append('<option value="{{ $city->id }}" ' + selected + '>{{ $city->name }}</option>');
-                    }
-                @endforeach
-            }
+        reader.onload = function(){
+            var img = document.getElementById('preview');
+            img.style.display = 'block';
+            img.src = reader.result;
+        };
 
-            function populateBarangays(cityId, selectedBarangayId = null) {
-                var barangayDropdown = $('#barangay_id');
-                barangayDropdown.empty();
-                barangayDropdown.append('<option value="">Select barangay</option>');
-                @foreach($barangay as $barangay)
-                    if ("{{ $barangay->city_id }}" == cityId) {
-                        var selected = "{{ $barangay->id }}" == selectedBarangayId ? 'selected' : '';
-                        barangayDropdown.append('<option value="{{ $barangay->id }}" ' + selected + '>{{ $barangay->name }}</option>');
-                    }
-                @endforeach
-            }
+        // Validate file type
+        if (file.type.startsWith('image/')) {
+            reader.readAsDataURL(file);
+        } else {
+            alert('The selected file is not an image.');
+            input.value = ''; // Clear input
+            document.getElementById('preview').style.display = 'none'; // Hide preview
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        function capitalizeInput(event) {
+            event.target.value = event.target.value.toUpperCase();
+        }
 
-            $('#province_id').on('change', function() {
-                var provinceId = $(this).val();
-                populateCities(provinceId);
-                $('#barangay_id').empty().append('<option value="">Select barangay</option>');
-            });
+        const inputsToCapitalize = [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'suffix',
+            'elementary',
+            'secondary',
+            'tertiary',
+            'birth_place_province',
+            'birth_place_city',
+            'birth_place_barangay',
+            'emergency_name'
+        ];
 
-            $('#city_id').on('change', function() {
-                var cityId = $(this).val();
-                populateBarangays(cityId);
-            });
-
-            // Initial population based on existing data
-            var initialProvinceId = '{{ $employee->province_id }}';
-            var initialCityId = '{{ $employee->city_id }}';
-            var initialBarangayId = '{{ $employee->barangay_id }}';
-            if (initialProvinceId) {
-                populateCities(initialProvinceId, initialCityId);
-                if (initialCityId) {
-                    populateBarangays(initialCityId, initialBarangayId);
-                }
+        inputsToCapitalize.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', capitalizeInput);
             }
         });
-    </script>
+    });
+             function populateCities(provinceId, selectedCityId = null) {
+                 var cityDropdown = $('#city_id');
+                 cityDropdown.empty();
+                 cityDropdown.append('<option value="">Select city</option>');
+                 @foreach($city as $city)
+                     if ("{{ $city->province_id }}" == provinceId) {
+                         var selected = "{{ $city->id }}" == selectedCityId ? 'selected' : '';
+                         cityDropdown.append('<option value="{{ $city->id }}" ' + selected + '>{{ $city->name }}</option>');
+                     }
+                 @endforeach
+             }
+
+             function populateBarangays(cityId, selectedBarangayId = null) {
+                 var barangayDropdown = $('#barangay_id');
+                 barangayDropdown.empty();
+                 barangayDropdown.append('<option value="">Select barangay</option>');
+                 @foreach($barangay as $barangay)
+                     if ("{{ $barangay->city_id }}" == cityId) {
+                         var selected = "{{ $barangay->id }}" == selectedBarangayId ? 'selected' : '';
+                         barangayDropdown.append('<option value="{{ $barangay->id }}" ' + selected + '>{{ $barangay->name }}</option>');
+                     }
+                 @endforeach
+             }
+
+             $('#province_id').on('change', function() {
+                 var provinceId = $(this).val();
+                 populateCities(provinceId);
+                 $('#barangay_id').empty().append('<option value="">Select barangay</option>');
+             });
+
+             $('#city_id').on('change', function() {
+                 var cityId = $(this).val();
+                 populateBarangays(cityId);
+             });
+
+             // Initial population based on existing data
+             var initialProvinceId = '{{ $employee->province_id }}';
+             var initialCityId = '{{ $employee->city_id }}';
+             var initialBarangayId = '{{ $employee->barangay_id }}';
+             if (initialProvinceId) {
+                 populateCities(initialProvinceId, initialCityId);
+                 if (initialCityId) {
+                     populateBarangays(initialCityId, initialBarangayId);
+                 }
+                }
+
+                document.getElementById('department_id').addEventListener('change', function() {
+                                        var departmentId = this.value;
+                                        var positionDropdown = document.getElementById('position_id');
+                                        positionDropdown.innerHTML = '<option value="">Select position</option>';
+                                        @foreach($positions as $position)
+                                            if ("{{ $position->department_id }}" == departmentId) {
+                                                positionDropdown.innerHTML += '<option value="{{ $position->id }}">{{ $position->name }}</option>';
+                                            }
+                                        @endforeach
+                                    });
+                document.getElementById('philhealth_no').addEventListener('input', function (e) {
+                                        // Remove non-numeric characters
+                                        let input = e.target.value.replace(/\D/g, '');
+
+                                        // Format as XXXX-XXXXXX-X (12 digits)
+                                        if (input.length > 12) {
+                                            input = input.slice(0, 12);
+                                        }
+
+                                        let formatted = '';
+                                        for (let i = 0; i < input.length; i++) {
+                                            if (i === 2 || i === 11) {
+                                                formatted += '-';
+                                            }
+                                            formatted += input[i];
+                                        }
+
+                                        e.target.value = formatted;
+                                    });
+                                    document.getElementById('pagibig_no').addEventListener('input', function (e) {
+                                        // Remove non-numeric characters
+                                        let input = e.target.value.replace(/\D/g, '');
+
+                                        // Format as XXXX-XXXX-XXXX (12 digits)
+                                        if (input.length > 12) {
+                                            input = input.slice(0, 12);
+                                        }
+
+                                        let formatted = '';
+                                        for (let i = 0; i < input.length; i++) {
+                                            if (i === 4 || i === 8) {
+                                                formatted += '-';
+                                            }
+                                            formatted += input[i];
+                                        }
+
+                                        e.target.value = formatted;
+                                    });
+                                    document.getElementById('sss_no').addEventListener('input', function (e) {
+                                        let sssNumber = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+                                        if (sssNumber.length > 10) {
+                                            sssNumber = sssNumber.substr(0, 10); // Limit to 10 digits
+                                        }
+                                        // Format: XX-XXXXXXXXX-X
+                                        let formattedSSS = '';
+                                        if (sssNumber.length > 2) {
+                                            formattedSSS = sssNumber.substr(0, 2) + '-';
+                                            if (sssNumber.length > 3) {
+                                                formattedSSS += sssNumber.substr(2, sssNumber.length - 3) + '-';
+                                            }
+                                            formattedSSS += sssNumber.substr(sssNumber.length - 1);
+                                        } else {
+                                            formattedSSS = sssNumber;
+                                        }
+                                        e.target.value = formattedSSS;
+                                    });
+         });
+     </script>
 @stop
+
