@@ -539,7 +539,7 @@ return [
             'text' => '',
             'icon' => 'fas fa-cogs',
             'topnav_right' => true,
-            'can' => ['admin', 'super-admin','hrcompliance', 'hrpolicy'],
+            'can' => ['admin', 'super-admin','hrcomben','hrcompliance', 'hrpolicy'],
             'submenu' => [
                 [
                     'text' => ' Leave Type',
@@ -574,7 +574,7 @@ return [
                     'url' => 'holidays',
                     'icon' => 'fas fa-calendar-alt',
                     'active' => ['holidays*', 'regex'],
-                    'can' => ['admin', 'super-admin','hrcompliance'],
+                    'can' => ['admin', 'super-admin','hrcomben'],
                 ],
                 // [
                 //     'text' => ' Province',

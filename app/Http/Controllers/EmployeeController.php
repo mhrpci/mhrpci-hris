@@ -177,7 +177,15 @@ public function store(Request $request): RedirectResponse
         $departments = Department::all();
 
         // Return the edit view with the data
-        return view('employees.edit', compact('employee', 'genders', 'provinces', 'city', 'barangay', 'positions', 'departments'));
+        return view('employees.edit', compact(
+            'employee',
+            'genders',
+            'provinces',
+            'city',
+            'barangay',
+            'positions',
+            'departments'
+        ));
     }
 
 

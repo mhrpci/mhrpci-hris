@@ -202,12 +202,17 @@
                                                         <i class="fas fa-edit"></i>&nbsp;Edit
                                                     </a>
                                                 @endcan
-                                                    @can('user-create')
-                                                        <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
-                                                        </form>
-                                                    @endcan
+                                                @can('user-create')
+                                                <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
+                                                </form>
+                                                @elsecan('hrcompliance')
+                                                    <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
+                                                    </form>
+                                                @endcan
                                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</a>
                                                         @can('employee-edit')
                                                             <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">

@@ -227,20 +227,6 @@
                                     </div>
                                 </div>
 
-                                <!-- JavaScript to populate positions based on department selection -->
-                                <script>
-                                    document.getElementById('department_id').addEventListener('change', function() {
-                                        var departmentId = this.value;
-                                        var positionDropdown = document.getElementById('position_id');
-                                        positionDropdown.innerHTML = '<option value="">Select position</option>';
-                                        @foreach($positions as $position)
-                                            if ("{{ $position->department_id }}" == departmentId) {
-                                                positionDropdown.innerHTML += '<option value="{{ $position->id }}">{{ $position->name }}</option>';
-                                            }
-                                        @endforeach
-                                    });
-                                </script>
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="birth_date">Birth Date<span class="text-danger">*</span></label>
@@ -320,57 +306,6 @@
                                     </div>
                                 </div>
 
-                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                <script>
-                                    $(document).ready(function() {
-                                        function populateCities(provinceId, selectedCityId = null) {
-                                            var cityDropdown = $('#city_id');
-                                            cityDropdown.empty();
-                                            cityDropdown.append('<option value="">Select city</option>');
-                                            @foreach($city as $city)
-                                                if ("{{ $city->province_id }}" == provinceId) {
-                                                    var selected = "{{ $city->id }}" == selectedCityId ? 'selected' : '';
-                                                    cityDropdown.append('<option value="{{ $city->id }}" ' + selected + '>{{ $city->name }}</option>');
-                                                }
-                                            @endforeach
-                                        }
-
-                                        function populateBarangays(cityId, selectedBarangayId = null) {
-                                            var barangayDropdown = $('#barangay_id');
-                                            barangayDropdown.empty();
-                                            barangayDropdown.append('<option value="">Select barangay</option>');
-                                            @foreach($barangay as $barangay)
-                                                if ("{{ $barangay->city_id }}" == cityId) {
-                                                    var selected = "{{ $barangay->id }}" == selectedBarangayId ? 'selected' : '';
-                                                    barangayDropdown.append('<option value="{{ $barangay->id }}" ' + selected + '>{{ $barangay->name }}</option>');
-                                                }
-                                            @endforeach
-                                        }
-
-                                        $('#province_id').on('change', function() {
-                                            var provinceId = $(this).val();
-                                            populateCities(provinceId);
-                                            $('#barangay_id').empty().append('<option value="">Select barangay</option>');
-                                        });
-
-                                        $('#city_id').on('change', function() {
-                                            var cityId = $(this).val();
-                                            populateBarangays(cityId);
-                                        });
-
-                                        // Initial population based on existing data
-                                        var initialProvinceId = '{{ $employee->province_id }}';
-                                        var initialCityId = '{{ $employee->city_id }}';
-                                        var initialBarangayId = '{{ $employee->barangay_id }}';
-                                        if (initialProvinceId) {
-                                            populateCities(initialProvinceId, initialCityId);
-                                            if (initialCityId) {
-                                                populateBarangays(initialCityId, initialBarangayId);
-                                            }
-                                        }
-                                    });
-                                </script>
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="zip_code">Zip Code<span class="text-danger">*</span></label>
@@ -389,54 +324,11 @@
                                     </div>
                                 </div>
 
-                                <script>
-                                    document.getElementById('sss_no').addEventListener('input', function (e) {
-                                        let sssNumber = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
-                                        if (sssNumber.length > 10) {
-                                            sssNumber = sssNumber.substr(0, 10); // Limit to 10 digits
-                                        }
-                                        // Format: XX-XXXXXXXXX-X
-                                        let formattedSSS = '';
-                                        if (sssNumber.length > 2) {
-                                            formattedSSS = sssNumber.substr(0, 2) + '-';
-                                            if (sssNumber.length > 3) {
-                                                formattedSSS += sssNumber.substr(2, sssNumber.length - 3) + '-';
-                                            }
-                                            formattedSSS += sssNumber.substr(sssNumber.length - 1);
-                                        } else {
-                                            formattedSSS = sssNumber;
-                                        }
-                                        e.target.value = formattedSSS;
-                                    });
-                                </script>
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                     <label for="pagibig_no">PAGIBIG No:</label>
                                     <input type="text" id="pagibig_no" name="pagibig_no" value="{{$employee->pagibig_no}}" class="form-control" placeholder="Enter PAGIBIG number">
                                 </div>
-
-                                <script>
-                                    document.getElementById('pagibig_no').addEventListener('input', function (e) {
-                                        // Remove non-numeric characters
-                                        let input = e.target.value.replace(/\D/g, '');
-
-                                        // Format as XXXX-XXXX-XXXX (12 digits)
-                                        if (input.length > 12) {
-                                            input = input.slice(0, 12);
-                                        }
-
-                                        let formatted = '';
-                                        for (let i = 0; i < input.length; i++) {
-                                            if (i === 4 || i === 8) {
-                                                formatted += '-';
-                                            }
-                                            formatted += input[i];
-                                        }
-
-                                        e.target.value = formatted;
-                                    });
-                                </script>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -449,28 +341,6 @@
                                     <label for="philhealth_no">Phil Health No:</label>
                                     <input type="text" id="philhealth_no" name="philhealth_no" class="form-control" value="{{$employee->philhealth_no}}" placeholder="Enter PhilHealth number">
                                 </div>
-
-                                <script>
-                                    document.getElementById('philhealth_no').addEventListener('input', function (e) {
-                                        // Remove non-numeric characters
-                                        let input = e.target.value.replace(/\D/g, '');
-
-                                        // Format as XXXX-XXXXXX-X (12 digits)
-                                        if (input.length > 12) {
-                                            input = input.slice(0, 12);
-                                        }
-
-                                        let formatted = '';
-                                        for (let i = 0; i < input.length; i++) {
-                                            if (i === 2 || i === 11) {
-                                                formatted += '-';
-                                            }
-                                            formatted += input[i];
-                                        }
-
-                                        e.target.value = formatted;
-                                    });
-                                </script>
                                 </div>
                                 </div>
                                 <div class="row">
@@ -500,7 +370,23 @@
 <!-- /.container-fluid -->
 @endsection
 
+@section('css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+@stop
+
+@section('js')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+$(document).ready(function() {
+    // Initialize Select2 for all select elements
+    $('select').select2({
+        theme: 'bootstrap4',
+        width: '100%'
+    });
+
+    // Image preview and validation
     function validateAndPreviewImage(event) {
         var input = event.target;
         var file = input.files[0];
@@ -512,59 +398,105 @@
             img.src = reader.result;
         };
 
-        // Validate file type
-        if (file.type.startsWith('image/')) {
+        if (file && file.type.startsWith('image/')) {
             reader.readAsDataURL(file);
         } else {
             alert('The selected file is not an image.');
-            input.value = ''; // Clear input
-            document.getElementById('preview').style.display = 'none'; // Hide preview
+            input.value = '';
+            document.getElementById('preview').style.display = 'none';
         }
     }
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function capitalizeInput(event) {
-            event.target.value = event.target.value.toUpperCase();
-        }
 
-        const inputsToCapitalize = [
-            'first_name',
-            'middle_name',
-            'last_name',
-            'suffix',
-            'elementary',
-            'secondary',
-            'tertiary',
-            'birth_place_province',
-            'birth_place_city',
-            'birth_place_barangay',
-            'emergency_name'
-        ];
+    $('#profile').on('change', validateAndPreviewImage);
 
-        inputsToCapitalize.forEach(id => {
-            const input = document.getElementById(id);
-            if (input) {
-                input.addEventListener('input', capitalizeInput);
-            }
+    // Capitalize input fields
+    const inputsToCapitalize = [
+        'first_name', 'middle_name', 'last_name', 'suffix', 'elementary',
+        'secondary', 'tertiary', 'birth_place_province', 'birth_place_city',
+        'birth_place_barangay', 'emergency_name'
+    ];
+
+    inputsToCapitalize.forEach(id => {
+        $(`#${id}`).on('input', function() {
+            this.value = this.value.toUpperCase();
         });
     });
+
+    // Format SSS number
+    $('#sss_no').on('input', function() {
+        let sssNumber = this.value.replace(/\D/g, '').substr(0, 10);
+        let formattedSSS = sssNumber.replace(/^(\d{2})(\d{7})(\d{1})$/, '$1-$2-$3');
+        this.value = formattedSSS;
+    });
+
+    // Format PAGIBIG number
+    $('#pagibig_no').on('input', function() {
+        let input = this.value.replace(/\D/g, '').substr(0, 12);
+        this.value = input.replace(/(\d{4})(?=\d)/g, '$1-');
+    });
+
+    // Format PhilHealth number
+    $('#philhealth_no').on('input', function() {
+        let input = this.value.replace(/\D/g, '').substr(0, 12);
+        this.value = input.replace(/^(\d{2})(\d{9})(\d{1})$/, '$1-$2-$3');
+    });
+
+    // Populate cities and barangays
+    function populateCities(provinceId, selectedCityId = null) {
+        var cityDropdown = $('#city_id');
+        cityDropdown.empty().append('<option value="">Select city</option>');
+        @foreach($city as $city)
+            if ("{{ $city->province_id }}" == provinceId) {
+                var selected = "{{ $city->id }}" == selectedCityId ? 'selected' : '';
+                cityDropdown.append(`<option value="{{ $city->id }}" ${selected}>{{ $city->name }}</option>`);
+            }
+        @endforeach
+    }
+
+    function populateBarangays(cityId, selectedBarangayId = null) {
+        var barangayDropdown = $('#barangay_id');
+        barangayDropdown.empty().append('<option value="">Select barangay</option>');
+        @foreach($barangay as $barangay)
+            if ("{{ $barangay->city_id }}" == cityId) {
+                var selected = "{{ $barangay->id }}" == selectedBarangayId ? 'selected' : '';
+                barangayDropdown.append(`<option value="{{ $barangay->id }}" ${selected}>{{ $barangay->name }}</option>`);
+            }
+        @endforeach
+    }
+
+    $('#province_id').on('change', function() {
+        var provinceId = $(this).val();
+        populateCities(provinceId);
+        $('#barangay_id').empty().append('<option value="">Select barangay</option>');
+    });
+
+    $('#city_id').on('change', function() {
+        var cityId = $(this).val();
+        populateBarangays(cityId);
+    });
+
+    // Initial population based on existing data
+    var initialProvinceId = '{{ $employee->province_id }}';
+    var initialCityId = '{{ $employee->city_id }}';
+    var initialBarangayId = '{{ $employee->barangay_id }}';
+    if (initialProvinceId) {
+        populateCities(initialProvinceId, initialCityId);
+        if (initialCityId) {
+            populateBarangays(initialCityId, initialBarangayId);
+        }
+    }
+
+    // Populate positions based on department selection
+    $('#department_id').on('change', function() {
+        var departmentId = this.value;
+        var positionDropdown = $('#position_id');
+        positionDropdown.empty().append('<option value="">Select position</option>');
+        @foreach($positions as $position)
+            if ("{{ $position->department_id }}" == departmentId) {
+                positionDropdown.append('<option value="{{ $position->id }}">{{ $position->name }}</option>');
+            }
+        @endforeach
+    });
+});
 </script>
-
-@section('css')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
-@stop
-
-@section('js')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Initialize Select2 for all select elements
-            $('select').select2({
-                theme: 'bootstrap4',
-                width: '100%'
-            });
-        });
-    </script>
 @stop
