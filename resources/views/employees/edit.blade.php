@@ -533,25 +533,6 @@
                                         }
                                         e.target.value = formattedSSS;
                                     });
-
-                                    // New script for department and position relationship
-                                    $('#department_id').on('change', function() {
-                                        var departmentId = $(this).val();
-                                        var positionSelect = $('#position_id');
-
-                                        // Clear current options
-                                        positionSelect.empty().append('<option value="">Select position</option>');
-
-                                        // Add new options based on selected department
-                                        @foreach($positions as $position)
-                                            if ({{ $position->department_id }} == departmentId) {
-                                                positionSelect.append('<option value="{{ $position->id }}">{{ $position->name }}</option>');
-                                            }
-                                        @endforeach
-
-                                        // Trigger change event on position select to update Select2
-                                        positionSelect.trigger('change');
-                                    });
          });
      </script>
 @stop

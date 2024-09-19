@@ -105,60 +105,6 @@
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
-    <!-- Modal -->
-    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="notificationModalLabel">Notification Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="notificationDetails"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Include jQuery, Bootstrap JS, and other necessary scripts -->
-    <script>
-        $('#notificationModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var details = JSON.parse(button.data('details')); // Extract info from data-* attributes
-            var title = button.data('title');
-            var type = button.data('type');
-
-            var modal = $(this);
-            modal.find('.modal-title').text(title);
-
-            var detailsHtml = '';
-            if (type === 'task') {
-                detailsHtml = `
-                    <p><strong>Title:</strong> ${details.title}</p>
-                    <p><strong>Description:</strong> ${details.description}</p>
-                    <p><strong>Employee ID:</strong> ${details.employee_id}</p>
-                    <p><strong>Status:</strong> ${details.status}</p>
-                `;
-            } else if (type === 'post') {
-                detailsHtml = `
-                    <p><strong>User ID:</strong> ${details.user_id}</p>
-                    <p><strong>Title:</strong> ${details.title}</p>
-                    <p><strong>Content:</strong> ${details.content}</p>
-                    <p><strong>Start Date:</strong> ${details.date_start}</p>
-                    <p><strong>End Date:</strong> ${details.date_end}</p>
-                `;
-            } else {
-                detailsHtml = `<p>${details}</p>`;
-            }
-
-            modal.find('.modal-body #notificationDetails').html(detailsHtml);
-        });
-    </script>
 </body>
 
 </html>

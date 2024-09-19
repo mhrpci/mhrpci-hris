@@ -7,16 +7,11 @@
         {{-- Left sidebar toggler link --}}
         @include('adminlte::partials.navbar.menu-item-left-sidebar-toggler')
 
-        {{-- Custom left links --}}
-        @yield('content_top_nav_left')
-
-        {{-- App Name --}}
-        <li class="nav-item" style="margin-top: 5px">
-                <span class="brand-text">MHRPCI-HRIS</span>
-        </li>
-
         {{-- Configured left links --}}
         @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-left'), 'item')
+
+        {{-- Custom left links --}}
+        @yield('content_top_nav_left')
     </ul>
 
     {{-- Navbar right links --}}

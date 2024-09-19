@@ -415,7 +415,8 @@
         <span class="letter_a">A</span> <span>ctivity</span>
     </div>
     <div class="actions">
-        <a class="btn" href="javascript:history.back()" title="Go Back">Back</a>
+        <a class="btn" href="{{url(config('user-activity.admin_panel_path'))}}">Goto Admin Panel</a>
+        <a class="btn" href="https://laravelarticle.com/laravel-user-activity" title="Laravel User Activity">Doc</a>
     </div>
 </header>
 <section class="content">
