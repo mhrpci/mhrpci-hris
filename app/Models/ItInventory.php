@@ -14,8 +14,8 @@ class ItInventory extends Model
         'description',
     ];
 
-    public function accountability(): HasMany
+    public function accountability()
     {
-        return $this->hasMany(Accountability::class);
+        return $this->belongsTo(Accountability::class);
     }
 }
