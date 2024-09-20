@@ -162,8 +162,34 @@
                 display: none;
             }
 
-            .hamburger {
+            .mobile-menu-toggle {
                 display: block;
+                font-size: 1.5rem;
+                color: var(--primary-color);
+                cursor: pointer;
+            }
+
+            .mobile-menu {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background-color: var(--white);
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .mobile-menu.show {
+                display: block;
+            }
+
+            .mobile-menu a {
+                display: block;
+                padding: 0.5rem 0;
+                color: var(--text-color);
+                text-decoration: none;
+                font-weight: 500;
             }
 
             .career-item {
@@ -172,6 +198,12 @@
 
             .btn {
                 padding: 8px 16px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-toggle {
+                display: none;
             }
         }
 
@@ -274,7 +306,13 @@
             <ul class="nav-links">
                 <li><a href="{{ url('/') }}">Home</a></li>
             </ul>
+            <div class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
         </nav>
+        <div class="mobile-menu">
+            <a href="{{ url('/') }}">Home</a>
+        </div>
     </header>
 
     <div class="content-wrapper">
@@ -435,6 +473,21 @@
                     var alert = new bootstrap.Alert(alertElement);
                     alert.close();
                 }, 5000);
+            });
+
+            // Mobile menu toggle
+            var mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            var mobileMenu = document.querySelector('.mobile-menu');
+
+            mobileMenuToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('show');
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                    mobileMenu.classList.remove('show');
+                }
             });
         });
     </script>

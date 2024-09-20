@@ -439,6 +439,79 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Mobile Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 1001;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar .nav-links {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .sidebar .nav-links li {
+            margin: 0.5rem 0;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .sidebar .nav-links,
+            .sidebar .auth-buttons {
+                display: flex;
+            }
+
+            .sidebar .auth-buttons {
+                padding: 1rem;
+            }
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .overlay.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -467,9 +540,38 @@
                 <div class="auth-buttons">
                     <a href="{{ route('login') }}" class="login-btn" title="Log In to Your Account">Log In</a>
                 </div>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
             </nav>
         </div>
     </header>
+
+    <!-- Mobile Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="MHR Logo">
+                </div>
+                <div class="app-name">
+                    MHRPCI
+                </div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
+            <li><a href="#services" class="nav-link" title="Explore Our Services">Services</a></li>
+            <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
+            <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
+        </ul>
+        <div class="auth-buttons">
+            <a href="{{ route('login') }}" class="login-btn" title="Log In to Your Account">Log In</a>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
 
     <main>
         <section class="hero">
@@ -620,6 +722,27 @@
             setTimeout(() => {
                 preloader.style.display = 'none';
             }, 500);
+        });
+
+        // Mobile Sidebar Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
+
+            hamburger.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+
+            // Close sidebar when clicking a nav link
+            const sidebarNavLinks = sidebar.querySelectorAll('.nav-link');
+            sidebarNavLinks.forEach(link => {
+                link.addEventListener('click', toggleSidebar);
+            });
         });
     </script>
 </body>
