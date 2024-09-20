@@ -13,7 +13,6 @@ return array(
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Exports\\AttendanceExport' => $baseDir . '/app/Exports/AttendanceExport.php',
     'App\\Exports\\EmployeesExport' => $baseDir . '/app/Exports/EmployeesExport.php',
-    'App\\Http\\Controllers\\AccountabilityController' => $baseDir . '/app/Http/Controllers/AccountabilityController.php',
     'App\\Http\\Controllers\\AttendanceController' => $baseDir . '/app/Http/Controllers/AttendanceController.php',
     'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
     'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',

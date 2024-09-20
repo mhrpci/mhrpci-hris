@@ -79,7 +79,7 @@ use App\Http\Controllers\HiringController;
     Route::resource('tasks', TaskController::class);
     Route::resource('credentials', CredentialController::class);
     Route::resource('hirings', HiringController::class);
-    Route::resource('accountabilities', AccountabilityController::class);
+    // Route::resource('accountabilities', AccountabilityController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');

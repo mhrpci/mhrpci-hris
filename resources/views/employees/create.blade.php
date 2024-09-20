@@ -137,23 +137,37 @@
                             <div class="form-group">
                                     <label for="company_id">Company ID<span class="text-danger">*</span></label>
                                     <input type="text" id="company_id" name="company_id" class="form-control" placeholder="Enter employee company id" required>
+                                    <small class="form-text text-muted">Format: 3 to 5 letters followed by 8 to 11 digits</small>
                                 </div>
 
                                 <script>
                                     document.addEventListener('DOMContentLoaded', function() {
-                                        // Select the input field
                                         var companyIdInput = document.getElementById('company_id');
 
-                                        // Add event listener for input changes
                                         companyIdInput.addEventListener('input', function() {
-                                            // Get the current value and remove any non-alphanumeric characters
-                                            var currentValue = companyIdInput.value.replace(/\W/g, '');
+                                            // Remove any non-alphanumeric characters
+                                            var currentValue = this.value.replace(/[^a-zA-Z0-9]/g, '');
 
-                                            // Format the value with hyphens
-                                            var formattedValue = currentValue.replace(/([A-Z]{3})(\d{10})/, '$1-$2');
+                                            // Ensure the first 3-5 characters are letters
+                                            var letters = currentValue.substr(0, 5).replace(/[^a-zA-Z]/g, '').toUpperCase();
+                                            var numbers = currentValue.substr(letters.length).replace(/\D/g, '');
 
-                                            // Update the input field with formatted value
-                                            companyIdInput.value = formattedValue;
+                                            // Limit letters to 5 and numbers to 10 digits
+                                            letters = letters.substr(0, 5);
+                                            numbers = numbers.substr(0, 11);
+
+                                            // Combine letters and numbers
+                                            var formattedValue = letters + (numbers.length > 0 ? '-' + numbers : '');
+
+                                            // Update the input value
+                                            this.value = formattedValue;
+
+                                            // Validate the input
+                                            if (letters.length >= 3 && letters.length <= 5 && numbers.length >= 8 && numbers.length <= 11) {
+                                                this.setCustomValidity('');
+                                            } else {
+                                                this.setCustomValidity('Company ID must have 3 to 5 letters followed by 8 to 11 digits');
+                                            }
                                         });
                                     });
                                 </script>

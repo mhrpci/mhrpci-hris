@@ -83,51 +83,62 @@ public function index()
  * @return \Illuminate\Http\Response
  */
 public function store(Request $request): RedirectResponse
-    {
-        // Validate the incoming request
-        $validator = Validator::make($request->all(), [
-            'company_id' => 'required',
-            'profile' => 'nullable',
-            'first_name' => 'required',
-            'middle_name' => 'nullable',
-            'last_name' => 'required',
-            'suffix' => 'nullable',
-            'email_address' => 'required|email',
-            'contact_no' => 'required',
-            'birth_date' => 'required|date_format:Y-m-d',
-            'birth_place_province' => 'nullable',
-            'birth_place_city'=> 'nullable',
-            'birth_place_barangay' => 'nullable',
-            'province_id' => 'required',
-            'city_id' => 'required',
-            'barangay_id' => 'required',
-            'gender_id' => 'required',
-            'position_id' => 'required',
-            'department_id' => 'required',
-            'salary' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'zip_code' => 'required|numeric',
-            'date_hired' => 'required|date_format:Y-m-d',
-            'sss_no' => 'nullable|numeric',
-            'pagibig_no' => 'nullable|numeric',
-            'tin_no' => 'nullable|numeric',
-            'philhealth_no' => 'nullable|numeric',
-            'elementary' => 'nullable',
-            'secondary' => 'nullable',
-            'tertiary' => 'nullable',
-            'emergency_name' => 'required',
-            'emergency_no' => 'required|numeric',
-        ]);
+{
+    // Validate the incoming request
+    $validator = Validator::make($request->all(), [
+        'company_id' => 'required',
+        'profile' => 'nullable',
+        'first_name' => 'required',
+        'middle_name' => 'nullable',
+        'last_name' => 'required',
+        'suffix' => 'nullable',
+        'email_address' => 'required|email',
+        'contact_no' => 'required',
+        'birth_date' => 'required|date_format:Y-m-d',
+        'birth_place_province' => 'nullable',
+        'birth_place_city'=> 'nullable',
+        'birth_place_barangay' => 'nullable',
+        'province_id' => 'required',
+        'city_id' => 'required',
+        'barangay_id' => 'required',
+        'gender_id' => 'required',
+        'position_id' => 'required',
+        'department_id' => 'required',
+        'salary' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+        'zip_code' => 'required|numeric',
+        'date_hired' => 'required|date_format:Y-m-d',
+        'sss_no' => 'nullable|numeric',
+        'pagibig_no' => 'nullable|numeric',
+        'tin_no' => 'nullable|numeric',
+        'philhealth_no' => 'nullable|numeric',
+        'elementary' => 'nullable',
+        'secondary' => 'nullable',
+        'tertiary' => 'nullable',
+        'emergency_name' => 'required',
+        'emergency_no' => 'required|numeric',
+    ]);
 
-        // Check if an employee with the same email_address and company_id already exists
-        $existingEmployee = Employee::where('email_address', $request->email_address)
-            ->where('company_id', $request->company_id)
-            ->first();
+    // Check if an employee with the same company_id exists
+    $existingCompanyId = Employee::where('company_id', $request->company_id)->first();
 
-        if ($existingEmployee) {
-            return redirect()->route('employees.create')
-                             ->with('error', 'An employee with this email address already exists for the selected company.');
-        }
+    // Check if an employee with the same email_address exists
+    $existingEmail = Employee::where('email_address', $request->email_address)->first();
 
+    if ($existingCompanyId && $existingEmail) {
+        return redirect()->route('employees.create')
+                         ->withInput()
+                         ->with('error', 'Both Company ID and Email Address are already in use.');
+    } elseif ($existingCompanyId) {
+        return redirect()->route('employees.create')
+                         ->withInput()
+                         ->with('error', 'Company ID is already in use.');
+    } elseif ($existingEmail) {
+        return redirect()->route('employees.create')
+                         ->withInput()
+                         ->with('error', 'Email Address is already in use.');
+    }
+
+    try {
         // Create the employee
         $employee = Employee::create($request->all());
 
@@ -144,8 +155,14 @@ public function store(Request $request): RedirectResponse
 
         // Redirect to the employee's show page by slug
         return redirect()->route('employees.show', $employee->slug)
-        ->with('success', 'Employee created successfully');
+            ->with('success', 'Employee created successfully');
+    } catch (\Exception $e) {
+        // For any other errors
+        return redirect()->route('employees.create')
+                         ->withInput()
+                         ->with('error', 'An error occurred while creating the employee. Please try again.');
     }
+}
 
 
     /**
@@ -431,4 +448,6 @@ public function update(Request $request, $slug): RedirectResponse
 
         return redirect()->route('employees.index')->with('success', 'Employee disabled successfully.');
     }
+
+
 }

@@ -602,7 +602,6 @@ class ComposerStaticInit16797fe2c343f1e93be20ef2cd7ff7c1
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Exports\\AttendanceExport' => __DIR__ . '/../..' . '/app/Exports/AttendanceExport.php',
         'App\\Exports\\EmployeesExport' => __DIR__ . '/../..' . '/app/Exports/EmployeesExport.php',
-        'App\\Http\\Controllers\\AccountabilityController' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountabilityController.php',
         'App\\Http\\Controllers\\AttendanceController' => __DIR__ . '/../..' . '/app/Http/Controllers/AttendanceController.php',
         'App\\Http\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',

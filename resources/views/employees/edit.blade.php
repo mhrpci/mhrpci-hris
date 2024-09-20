@@ -1,539 +1,534 @@
 @extends('adminlte::page')
 
-@section('preloader')
-<div id="loader" class="loader">
-    <div class="loader-content">
-        <div class="wave-loader">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+@section('title', 'Edit Employee')
+
+@section('content_header')
+    <h1 class="m-0 text-dark">Edit Employee</h1>
+@stop
+
+@section('content')
+<div class="row">
+    <div class="col-12">
+        <form action="{{ route('employees.update', $employee->slug) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+
+            <div class="card card-outline card-primary shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title"><i class="fas fa-user-edit mr-2"></i>Employee Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="company_id">Company ID</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-primary text-white"><i class="fas fa-id-card"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control @error('company_id') is-invalid @enderror" id="company_id" name="company_id" value="{{ old('company_id', $employee->company_id) }}" required placeholder="Enter Company ID">
+                                </div>
+                                @error('company_id')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var companyIdInput = document.getElementById('company_id');
+
+                                companyIdInput.addEventListener('input', function() {
+                                    // Remove any non-alphanumeric characters
+                                    var currentValue = this.value.replace(/[^a-zA-Z0-9]/g, '');
+
+                                    // Ensure the first 3-5 characters are letters
+                                    var letters = currentValue.substr(0, 5).replace(/[^a-zA-Z]/g, '').toUpperCase();
+                                    var numbers = currentValue.substr(letters.length).replace(/\D/g, '');
+
+                                    // Limit letters to 5 and numbers to 10 digits
+                                    letters = letters.substr(0, 5);
+                                    numbers = numbers.substr(0, 11);
+
+                                    // Combine letters and numbers
+                                    var formattedValue = letters + (numbers.length > 0 ? '-' + numbers : '');
+
+                                    // Update the input value
+                                    this.value = formattedValue;
+
+                                    // Validate the input
+                                    if (letters.length >= 3 && letters.length <= 5 && numbers.length >= 8 && numbers.length <= 11) {
+                                        this.setCustomValidity('');
+                                    } else {
+                                        this.setCustomValidity('Company ID must have 3 to 5 letters followed by 8 to 11 digits');
+                                    }
+                                });
+                            });
+                        </script>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="profile">Profile Picture</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input @error('profile') is-invalid @enderror" id="profile" name="profile" placeholder="Upload Profile Picture">
+                                    <label class="custom-file-label" for="profile">Choose file</label>
+                                </div>
+                                @error('profile')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @if($employee->profile)
+                                <img src="{{ asset('storage/' . $employee->profile) }}" alt="Profile Image" class="profile-img img-fluid rounded-circle mb-3" style="height: 150px; width: 150px;">
+                            @else
+                                <p>No profile image available</p>
+                            @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-outline card-info shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title"><i class="fas fa-user mr-2"></i>Personal Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" value="{{ old('first_name', $employee->first_name) }}" required placeholder="Enter First Name">
+                                @error('first_name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="middle_name">Middle Name</label>
+                                <input type="text" class="form-control @error('middle_name') is-invalid @enderror" id="middle_name" name="middle_name" value="{{ old('middle_name', $employee->middle_name) }}" placeholder="Enter Middle Name">
+                                @error('middle_name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" value="{{ old('last_name', $employee->last_name) }}" required placeholder="Enter Last Name">
+                                @error('last_name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="suffix">Suffix</label>
+                                <input type="text" class="form-control @error('suffix') is-invalid @enderror" id="suffix" name="suffix" value="{{ old('suffix', $employee->suffix) }}" placeholder="Enter Suffix">
+                                @error('suffix')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="email_address">Email Address</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-info text-white"><i class="fas fa-envelope"></i></span>
+                                    </div>
+                                    <input type="email" class="form-control @error('email_address') is-invalid @enderror" id="email_address" name="email_address" value="{{ old('email_address', $employee->email_address) }}" required placeholder="Enter Email Address">
+                                </div>
+                                @error('email_address')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="contact_no">Contact Number</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-info text-white"><i class="fas fa-phone"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control @error('contact_no') is-invalid @enderror" id="contact_no" name="contact_no" value="{{ old('contact_no', $employee->contact_no) }}" required placeholder="Enter Contact Number">
+                                </div>
+                                @error('contact_no')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="birth_date">Birth Date</label>
+                                <div class="input-group date" id="birth_date_picker" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input @error('birth_date') is-invalid @enderror" data-target="#birth_date_picker" id="birth_date" name="birth_date" value="{{ old('birth_date', $employee->birth_date) }}" required placeholder="YYYY-MM-DD"/>
+                                    <div class="input-group-append" data-target="#birth_date_picker" data-toggle="datetimepicker">
+                                        <div class="input-group-text bg-info text-white"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                @error('birth_date')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="gender_id">Gender</label>
+                                <select class="form-control select2 @error('gender_id') is-invalid @enderror" id="gender_id" name="gender_id" required>
+                                    @foreach($genders as $gender)
+                                        <option value="{{ $gender->id }}" {{ old('gender_id', $employee->gender_id) == $gender->id ? 'selected' : '' }}>{{ $gender->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('gender_id')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-outline card-success shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title"><i class="fas fa-map-marker-alt mr-2"></i>Address Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="province_id">Province</label>
+                                <select class="form-control select2 @error('province_id') is-invalid @enderror" id="province_id" name="province_id" required disabled>
+                                    <option value="">Select Province</option>
+                                    @foreach($provinces as $province)
+                                        <option value="{{ $province->id }}" {{ old('province_id', $employee->province_id) == $province->id ? 'selected' : '' }}>{{ $province->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('province_id')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="city_id">City</label>
+                                <select class="form-control select2 @error('city_id') is-invalid @enderror" id="city_id" name="city_id" required disabled>
+                                    <option value="">Select City</option>
+                                    @if(old('city_id', $employee->city_id))
+                                        <option value="{{ old('city_id', $employee->city_id) }}" selected>{{ $employee->city->name }}</option>
+                                    @endif
+                                </select>
+                                @error('city_id')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="barangay_id">Barangay</label>
+                                <select class="form-control select2 @error('barangay_id') is-invalid @enderror" id="barangay_id" name="barangay_id" required disabled>
+                                    <option value="">Select Barangay</option>
+                                    @if(old('barangay_id', $employee->barangay_id))
+                                        <option value="{{ old('barangay_id', $employee->barangay_id) }}" selected>{{ $employee->barangay->name }}</option>
+                                    @endif
+                                </select>
+                                @error('barangay_id')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="zip_code">Zip Code</label>
+                                <input type="text" class="form-control @error('zip_code') is-invalid @enderror" id="zip_code" name="zip_code" value="{{ old('zip_code', $employee->zip_code) }}" required disabled placeholder="Enter Zip Code">
+                                @error('zip_code')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-outline card-warning shadow-sm mb-4">
+                <div class="card-header bg-warning text-white">
+                    <h3 class="card-title"><i class="fas fa-briefcase mr-2"></i>Employment Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="position_id">Position</label>
+                                <select class="form-control select2 @error('position_id') is-invalid @enderror" id="position_id" name="position_id" required disabled>
+                                    @foreach($positions as $position)
+                                        <option value="{{ $position->id }}" {{ old('position_id', $employee->position_id) == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('position_id')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="department_id">Department</label>
+                                <select class="form-control select2 @error('department_id') is-invalid @enderror" id="department_id" name="department_id" required disabled>
+                                    @foreach($departments as $department)
+                                    <option value="{{ $department->id }}" {{ old('department_id', $employee->department_id) == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('department_id')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="salary">Salary</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-warning text-white">Php</span>
+                                </div>
+                                <input type="number" step="0.01" class="form-control @error('salary') is-invalid @enderror" id="salary" name="salary" value="{{ old('salary', $employee->salary) }}" required>
+                            </div>
+                            @error('salary')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="sss_no">SSS No</label>
+                            <input type="text" class="form-control @error('sss_no') is-invalid @enderror" id="sss_no" name="sss_no" value="{{ old('sss_no', $employee->sss_no) }}" placeholder="Enter SSS No">
+                            @error('sss_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="tin_no">TIN No</label>
+                            <input type="text" class="form-control @error('tin_no') is-invalid @enderror" id="tin_no" name="tin_no" value="{{ old('tin_no', $employee->tin_no) }}" placeholder="Enter TIN No">
+                            @error('tin_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="philhealth_no">PhilHealth No</label>
+                            <input type="text" class="form-control @error('philhealth_no') is-invalid @enderror" id="philhealth_no" name="philhealth_no" value="{{ old('philhealth_no', $employee->philhealth_no) }}" placeholder="Enter PhilHealth No">
+                            @error('philhealth_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="pagibig_no">Pag-IBIG No</label>
+                            <input type="text" class="form-control @error('pagibig_no') is-invalid @enderror" id="pagibig_no" name="pagibig_no" value="{{ old('pagibig_no', $employee->pagibig_no) }}" placeholder="Enter Pag-IBIG No">
+                            @error('pagibig_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_hired">Date Hired</label>
+                            <div class="input-group date" id="date_hired_picker" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input @error('date_hired') is-invalid @enderror" data-target="#date_hired_picker" id="date_hired" name="date_hired" value="{{ old('date_hired', $employee->date_hired) }}" required placeholder="YYYY-MM-DD"/>
+                                <div class="input-group-append" data-target="#date_hired_picker" data-toggle="datetimepicker">
+                                    <div class="input-group-text bg-warning text-white"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            @error('date_hired')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="employee_status">Employment Status</label>
+                            <select class="form-control select2 @error('employee_status') is-invalid @enderror" id="employee_status" name="employee_status" required>
+                                <option value="active" {{ old('employee_status', $employee->employment_status) == 'Active' ? 'selected' : '' }}>Active</option>
+                                <option value="resigned" {{ old('employee_status', $employee->employment_status) == 'Resigned' ? 'selected' : '' }}>Resigned</option>
+                                <option value="terminated" {{ old('employee_status', $employee->employment_status) == 'Terminated' ? 'selected' : '' }}>Terminated</option>
+                            </select>
+                            @error('employee_status')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="rank">Rank</label>
+                            <select class="form-control select2 @error('rank') is-invalid @enderror" id="rank" name="rank" required>
+                                <option value="Rank File" {{ old('rank', $employee->rank) == 'Rank File' ? 'selected' : '' }}>Rank and File</option>
+                                <option value="Managerial" {{ old('rank', $employee->rank) == 'Managerial' ? 'selected' : '' }}>Managerial</option>
+                            </select>
+                            @error('rank')
+                                <span class="invalid-feedback d-block" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12 text-left">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-2"></i>Update Employee
+                        </button>
+                        <a href="{{ route('employees.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left mr-2"></i>Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <h4 class="mt-4 text-dark">Loading...</h4>
-    </div>
+    </form>
 </div>
+</div>
+@stop
+
+@section('css')
+<link rel="stylesheet" href="/css/admin_custom.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
 <style>
-    /* Loader */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-out;
+.card-outline {
+    border-top: 3px solid;
 }
-
-.loader-content {
-    text-align: center;
+.form-group label {
+    font-weight: bold;
+    color: #495057;
 }
-
-/* Wave Loader */
-.wave-loader {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 50px;
+.custom-file-label::after {
+    content: "Browse";
 }
-
-.wave-loader > div {
-    width: 10px;
-    height: 50px;
-    margin: 0 5px;
-    background-color: #8e44ad; /* Purple color */
-    animation: wave 1s ease-in-out infinite;
+.select2-container--default .select2-selection--single {
+    height: calc(2.25rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
-
-.wave-loader > div:nth-child(2) {
-    animation-delay: -0.9s;
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: calc(2.25rem + 2px);
 }
-
-.wave-loader > div:nth-child(3) {
-    animation-delay: -0.8s;
+.card {
+    transition: all 0.3s ease;
 }
-
-.wave-loader > div:nth-child(4) {
-    animation-delay: -0.7s;
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
-
-.wave-loader > div:nth-child(5) {
-    animation-delay: -0.6s;
-}
-
-@keyframes wave {
-    0%, 100% {
-        transform: scaleY(0.5);
-    }
-    50% {
-        transform: scaleY(1);
-    }
+input {
+    text-transform: capitalize;
 }
 </style>
 @stop
-@section('content')
-<br>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Edit Employee</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    @if (count($errors) > 0)
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
-
-                    <form action="{{ route('employees.update', $employee->slug) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <p>Basic Information</p>
-                        <img id="preview" src="{{ asset('storage/' . $employee->profile) }}" alt="Preview" style="width: 10em; height: 10em; border-radius:5em; margin-top: 10px;">
-                        <div class="row">
-                            <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="profile">Profile Picture</label>
-                                <input type="file" id="profile" value="{{ old('profile', $employee->profile) }}" accept="image/*" name="profile" class="form-control"  onchange="validateAndPreviewImage(event)">
-                            </div>
-                        </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="company_id">Company ID<span class="text-danger">*</span></label>
-                                    <input type="text" id="company_id" name="company_id" class="form-control" value="{{ $employee->company_id }}" placeholder="Enter employee company id" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="first_name">First Name<span class="text-danger">*</span></label>
-                                    <input type="text" id="first_name" name="first_name" class="form-control" value="{{ $employee->first_name }}" placeholder="Enter employee first name" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="middle_name">Middle Name</label>
-                                    <input type="text" id="middle_name" name="middle_name" class="form-control" value="{{ $employee->middle_name }}" placeholder="Enter employee middle name (optional)">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="last_name">Last Name<span class="text-danger">*</span></label>
-                                    <input type="text" id="last_name" name="last_name" class="form-control" value="{{ $employee->last_name }}" placeholder="Enter employee last name" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="suffix">Suffix</label>
-                                    <input type="text" id="suffix" name="suffix" class="form-control" value="{{ $employee->suffix }}" placeholder="Enter employee suffix ex:(jr, sr, etc...)">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Add more fields as needed -->
-                        <p>Contact Information</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="email_address">Email Address<span class="text-danger">*</span></label>
-                                    <input type="email" id="email_address" name="email_address" class="form-control" value="{{ $employee->email_address }}" placeholder="Enter employee email address" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="contact_no">Contact No<span class="text-danger">*</span></label>
-                                    <input type="number" id="contact_no" name="contact_no" class="form-control" value="{{ $employee->contact_no }}" placeholder="Enter your contact number" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="emergency_name">Emergency Contact Name<span class="text-danger">*</span></label>
-                                        <input type="text" id="emergency_name" name="emergency_name" class="form-control" value ="{{ $employee->emergency_name}}" placeholder="Enter employee emergency contact name"required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="emergency_no">Emergency Contact No<span class="text-danger">*</span></label>
-                                        <input type="number" id="emergency_no" name="emergency_no" class="form-control" value ="{{ $employee->emergency_no}}" placeholder="Enter your emergency contact number"required>
-                                    </div>
-                                </div>
-                                <!-- Add more fields as needed -->
-                            </div>
-                            <p>School Attainment, Gender, Position and Department</p>
-                            <div class="row">
-                            <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="elementary">Elementary:</label>
-                                        <input type="text" id="elementary" name="elementary" class="form-control" value ="{{ $employee->elementary}}" placeholder="Enter elementary"></input>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="secondary">Secondary:</label>
-                                        <input type="text" id="secondary" name="secondary" class="form-control" value ="{{ $employee->secondary}}" placeholder="Enter secondary"></input>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="tertiary">Tertiary:</label>
-                                        <input type="text" id="tertiary" name="tertiary" class="form-control" value ="{{ $employee->tertiary}}" placeholder="Enter tertiary"></input>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="gender_id">Gender<span class="text-danger">*</span></label>
-                                        <select id="gender_id" name="gender_id" class="form-control" required>
-                                            <option value="">Select gender</option>
-                                            @foreach($genders as $gender)
-                                                <option value="{{ $gender->id }}" {{ $gender->id == $employee->gender_id ? 'selected' : '' }}>{{ $gender->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="department_id">Department <span class="text-danger">*</span></label>
-                                    <select id="department_id" name="department_id" class="form-control" required>
-                                        <option value="">Select department</option>
-                                        @foreach($departments as $department)
-                                            <option value="{{ $department->id }}"{{ $department->id == $employee->department_id ? ' selected' : '' }}>{{ $department->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="position_id">Position <span class="text-danger">*</span></label>
-                                        <select id="position_id" name="position_id" class="form-control" required>
-                                            <option value="">Select position</option>
-                                            @foreach($positions as $position)
-                                                @if($position->department_id == $employee->department_id)
-                                                    <option value="{{ $position->id }}"{{ $position->id == $employee->position_id ? ' selected' : '' }}>{{ $position->name }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="birth_date">Birth Date<span class="text-danger">*</span></label>
-                                        <input type="date" id="birth_date" name="birth_date" value="{{$employee->birth_date}}"class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="date_hired">Date Hired<span class="text-danger">*</span></label>
-                                        <input type="date" id="date_hired" name="date_hired" value="{{$employee->date_hired}}"class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Of Contact and Gender-->
-
-                            <!-- Start Of Birth Place-->
-                            <p>Birth Place</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="birth_place_province">Province:</label>
-                                        <input type="text" id="birth_place_province" name="birth_place_province" value="{{$employee->birth_place_province}}" class="form-control" placeholder="Enter province">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="birth_place_city">City:</label>
-                                        <input type="text" id="birth_place_city" name="birth_place_city" value="{{$employee->birth_place_city}}" class="form-control" placeholder="Enter city">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="birth_place_barangay">Barangay:</label>
-                                        <input type="text" id="birth_place_barangay" name="birth_place_barangay" value="{{$employee->birth_place_barangay}}" class="form-control" placeholder="Enter barangay">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="salary">Monthly Salary<span class="text-danger">*</span></label>
-                                        <input type="number" id="salary" name="salary" value="{{$employee->salary}}" class="form-control" placeholder="Enter monthly salary" step="0.01" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Of Birth Place-->
-
-                            <!-- Start Of Home Address-->
-                        <p>Home Address</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="province_id">Province<span class="text-danger">*</span></label>
-                                    <select id="province_id" name="province_id" class="form-control" required>
-                                        <option value="">Select province</option>
-                                        @foreach($provinces as $province)
-                                            <option value="{{ $province->id }}" {{ $province->id == $employee->province_id ? 'selected' : '' }}>{{ $province->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="city_id">City<span class="text-danger">*</span></label>
-                                    <select id="city_id" name="city_id" class="form-control" required>
-                                        <option value="">Select city</option>
-                                        <!-- City options will be populated dynamically -->
-                                    </select>
-                                </div>
-                            </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="barangay_id">Barangay<span class="text-danger">*</span></label>
-                                        <select id="barangay_id" name="barangay_id" class="form-control" required>
-                                            <option value="">Select barangay</option>
-                                            <!-- Barangay options will be populated dynamically -->
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="zip_code">Zip Code<span class="text-danger">*</span></label>
-                                        <input type="number" id="zip_code" name="zip_code" value="{{$employee->zip_code}}" class="form-control" placeholder="Enter zip code">
-                                    </div>
-                                </div>
-                        </div>
-                        <!-- End Of Home Address-->
-                        <!-- Start Of Identification Card Numbers-->
-                        <p>Identification Card Numbers</p>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="sss_no">SSS No:</label>
-                                        <input type="text" id="sss_no" name="sss_no" class="form-control" value="{{ $employee->sss_no }}" placeholder="Enter SSS number">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                    <label for="pagibig_no">PAGIBIG No:</label>
-                                    <input type="text" id="pagibig_no" name="pagibig_no" value="{{$employee->pagibig_no}}" class="form-control" placeholder="Enter PAGIBIG number">
-                                </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="tin_no">TIN No:</label>
-                                        <input type="number" id="tin_no" name="tin_no" value="{{$employee->tin_no}}" class="form-control" placeholder="Enter tin number">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="philhealth_no">Phil Health No:</label>
-                                    <input type="text" id="philhealth_no" name="philhealth_no" class="form-control" value="{{$employee->philhealth_no}}" placeholder="Enter PhilHealth number">
-                                </div>
-                                </div>
-                                </div>
-                                <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="rank">Rank</label>
-                                        <select class="form-control" id="rank" name="rank">
-                                            <option value="Rank File" {{ old('rank', $employee->rank) == 'Rank File' ? 'selected' : '' }}>Rank File</option>
-                                            <option value="Managerial" {{ old('rank', $employee->rank) == 'Managerial' ? 'selected' : '' }}>Managerial</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                </div>
-<!-- End Of Identification Card Numbers-->
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <a href="{{ route('employees.index') }}" class="btn btn-info">Back</a>
-                    </form>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </div>
-        <!-- /.col-md-12 -->
-    </div>
-    <!-- /.row -->
-</div>
-<!-- /.container-fluid -->
-@endsection
-
-@section('css')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
-@stop
 
 @section('js')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Initialize Select2 for all select elements
-            $('select').select2({
-                theme: 'bootstrap4',
-                width: '100%'
-            });
-            function validateAndPreviewImage(event) {
-        var input = event.target;
-        var file = input.files[0];
-        var reader = new FileReader();
-
-        reader.onload = function(){
-            var img = document.getElementById('preview');
-            img.style.display = 'block';
-            img.src = reader.result;
-        };
-
-        // Validate file type
-        if (file.type.startsWith('image/')) {
-            reader.readAsDataURL(file);
-        } else {
-            alert('The selected file is not an image.');
-            input.value = ''; // Clear input
-            document.getElementById('preview').style.display = 'none'; // Hide preview
-        }
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        function capitalizeInput(event) {
-            event.target.value = event.target.value.toUpperCase();
-        }
-
-        const inputsToCapitalize = [
-            'first_name',
-            'middle_name',
-            'last_name',
-            'suffix',
-            'elementary',
-            'secondary',
-            'tertiary',
-            'birth_place_province',
-            'birth_place_city',
-            'birth_place_barangay',
-            'emergency_name'
-        ];
-
-        inputsToCapitalize.forEach(id => {
-            const input = document.getElementById(id);
-            if (input) {
-                input.addEventListener('input', capitalizeInput);
-            }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'bootstrap'
         });
+    //Initialize datetimepicker
+    $('#birth_date_picker, #date_hired_picker').datetimepicker({
+        format: 'YYYY-MM-DD',
+        icons: {
+            time: 'far fa-clock',
+            date: 'far fa-calendar',
+            up: 'fas fa-arrow-up',
+            down: 'fas fa-arrow-down',
+            previous: 'fas fa-chevron-left',
+            next: 'fas fa-chevron-right',
+            today: 'far fa-calendar-check',
+            clear: 'far fa-trash-alt',
+            close: 'fas fa-times'
+        }
     });
 
-             function populateCities(provinceId, selectedCityId = null) {
-                 var cityDropdown = $('#city_id');
-                 cityDropdown.empty();
-                 cityDropdown.append('<option value="">Select city</option>');
-                 @foreach($city as $city)
-                     if ("{{ $city->province_id }}" == provinceId) {
-                         var selected = "{{ $city->id }}" == selectedCityId ? 'selected' : '';
-                         cityDropdown.append('<option value="{{ $city->id }}" ' + selected + '>{{ $city->name }}</option>');
-                     }
-                 @endforeach
-             }
+    //BS-custom-file-input
+    bsCustomFileInput.init();
 
-             function populateBarangays(cityId, selectedBarangayId = null) {
-                 var barangayDropdown = $('#barangay_id');
-                 barangayDropdown.empty();
-                 barangayDropdown.append('<option value="">Select barangay</option>');
-                 @foreach($barangay as $barangay)
-                     if ("{{ $barangay->city_id }}" == cityId) {
-                         var selected = "{{ $barangay->id }}" == selectedBarangayId ? 'selected' : '';
-                         barangayDropdown.append('<option value="{{ $barangay->id }}" ' + selected + '>{{ $barangay->name }}</option>');
-                     }
-                 @endforeach
-             }
-
-             $('#province_id').on('change', function() {
-                 var provinceId = $(this).val();
-                 populateCities(provinceId);
-                 $('#barangay_id').empty().append('<option value="">Select barangay</option>');
-             });
-
-             $('#city_id').on('change', function() {
-                 var cityId = $(this).val();
-                 populateBarangays(cityId);
-             });
-
-             // Initial population based on existing data
-             var initialProvinceId = '{{ $employee->province_id }}';
-             var initialCityId = '{{ $employee->city_id }}';
-             var initialBarangayId = '{{ $employee->barangay_id }}';
-             if (initialProvinceId) {
-                 populateCities(initialProvinceId, initialCityId);
-                 if (initialCityId) {
-                     populateBarangays(initialCityId, initialBarangayId);
-                 }
-                }
-                document.getElementById('philhealth_no').addEventListener('input', function (e) {
-                                        // Remove non-numeric characters
-                                        let input = e.target.value.replace(/\D/g, '');
-
-                                        // Format as XXXX-XXXXXX-X (12 digits)
-                                        if (input.length > 12) {
-                                            input = input.slice(0, 12);
-                                        }
-
-                                        let formatted = '';
-                                        for (let i = 0; i < input.length; i++) {
-                                            if (i === 2 || i === 11) {
-                                                formatted += '-';
-                                            }
-                                            formatted += input[i];
-                                        }
-
-                                        e.target.value = formatted;
-                                    });
-                                    document.getElementById('pagibig_no').addEventListener('input', function (e) {
-                                        // Remove non-numeric characters
-                                        let input = e.target.value.replace(/\D/g, '');
-
-                                        // Format as XXXX-XXXX-XXXX (12 digits)
-                                        if (input.length > 12) {
-                                            input = input.slice(0, 12);
-                                        }
-
-                                        let formatted = '';
-                                        for (let i = 0; i < input.length; i++) {
-                                            if (i === 4 || i === 8) {
-                                                formatted += '-';
-                                            }
-                                            formatted += input[i];
-                                        }
-
-                                        e.target.value = formatted;
-                                    });
-                                    document.getElementById('sss_no').addEventListener('input', function (e) {
-                                        let sssNumber = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
-                                        if (sssNumber.length > 10) {
-                                            sssNumber = sssNumber.substr(0, 10); // Limit to 10 digits
-                                        }
-                                        // Format: XX-XXXXXXXXX-X
-                                        let formattedSSS = '';
-                                        if (sssNumber.length > 2) {
-                                            formattedSSS = sssNumber.substr(0, 2) + '-';
-                                            if (sssNumber.length > 3) {
-                                                formattedSSS += sssNumber.substr(2, sssNumber.length - 3) + '-';
-                                            }
-                                            formattedSSS += sssNumber.substr(sssNumber.length - 1);
-                                        } else {
-                                            formattedSSS = sssNumber;
-                                        }
-                                        e.target.value = formattedSSS;
-                                    });
-         });
-     </script>
+    // Add smooth scrolling to anchor links
+    $('a[href*="#"]').on('click', function(e) {
+        e.preventDefault();
+        $('html, body').animate({
+            scrollTop: $($(this).attr('href')).offset().top
+        }, 500, 'linear');
+    });
+});
+</script>
 @stop
-
