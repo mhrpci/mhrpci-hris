@@ -255,13 +255,29 @@
 
             async function checkAttendance() {
                 const employeeId = employeeSelect.value;
-                const dateAttended = dateInput.value;
+                const dateInputValue = dateInput.value;
+                const dateAttended = new Date(dateInputValue).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
 
-                if (employeeId && dateAttended) {
-                    const response = await fetch(`/check-attendance?employee_id=${employeeId}&date_attended=${dateAttended}`);
+                if (employeeId && dateInputValue) {
+                    const response = await fetch(`/check-attendance?employee_id=${employeeId}&date_attended=${dateInputValue}`);
                     const data = await response.json();
 
-                    // Logic for showing/hiding time in/out based on attendance status
+                    // New logic to check if attendance is already submitted
+                    if (data.hasTimeIn && data.hasTimeOut) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Attendance Already Submitted',
+                            text: `This employee has already created attendance for ${dateAttended}.`,
+                            confirmButtonText: 'OK'
+                        });
+                        return; // Exit the function if attendance is already submitted
+                    }
+
+                    // Existing logic for showing/hiding time in/out based on attendance status
                     if (data.hasTimeIn) {
                         timeInGroup.style.display = 'none';
                         timeStamp1Group.style.display = 'none';
