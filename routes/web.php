@@ -148,6 +148,7 @@ use App\Http\Controllers\HiringController;
     Route::get('payroll/download-pdf/{id}', [PayrollController::class, 'downloadPdf'])->name('payroll.downloadPdf');
 
     Route::get('/my-leave-sheet', [LeaveController::class, 'myLeaveSheet'])->name('leaves.my_leave_sheet');
+    Route::get('/my-leave-detail/{id}', [LeaveController::class, 'myLeaveDetail'])->name('leaves.myLeaveDetail');
 
     Route::get('/careers', [App\Http\Controllers\CareerController::class, 'index'])->name('careers');
     Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
@@ -156,6 +157,9 @@ use App\Http\Controllers\HiringController;
     Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
 
 Auth::routes();
+
+
+
 
 
 

@@ -15,64 +15,64 @@
 </div>
 <style>
     /* Loader */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-out;
-}
-
-.loader-content {
-    text-align: center;
-}
-
-/* Wave Loader */
-.wave-loader {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 50px;
-}
-
-.wave-loader > div {
-    width: 10px;
-    height: 50px;
-    margin: 0 5px;
-    background-color: #8e44ad; /* Purple color */
-    animation: wave 1s ease-in-out infinite;
-}
-
-.wave-loader > div:nth-child(2) {
-    animation-delay: -0.9s;
-}
-
-.wave-loader > div:nth-child(3) {
-    animation-delay: -0.8s;
-}
-
-.wave-loader > div:nth-child(4) {
-    animation-delay: -0.7s;
-}
-
-.wave-loader > div:nth-child(5) {
-    animation-delay: -0.6s;
-}
-
-@keyframes wave {
-    0%, 100% {
-        transform: scaleY(0.5);
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
     }
-    50% {
-        transform: scaleY(1);
+
+    .loader-content {
+        text-align: center;
     }
-}
+
+    /* Wave Loader */
+    .wave-loader {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 50px;
+    }
+
+    .wave-loader > div {
+        width: 10px;
+        height: 50px;
+        margin: 0 5px;
+        background-color: #8e44ad; /* Purple color */
+        animation: wave 1s ease-in-out infinite;
+    }
+
+    .wave-loader > div:nth-child(2) {
+        animation-delay: -0.9s;
+    }
+
+    .wave-loader > div:nth-child(3) {
+        animation-delay: -0.8s;
+    }
+
+    .wave-loader > div:nth-child(4) {
+        animation-delay: -0.7s;
+    }
+
+    .wave-loader > div:nth-child(5) {
+        animation-delay: -0.6s;
+    }
+
+    @keyframes wave {
+        0%, 100% {
+            transform: scaleY(0.5);
+        }
+        50% {
+            transform: scaleY(1);
+        }
+    }
 </style>
 @stop
 
@@ -114,6 +114,7 @@
                                     <th>Date To</th>
                                     <th>Reason</th>
                                     <th>Status</th>
+                                    <th>Action</th> <!-- Added Action column -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,6 +131,13 @@
                                             <span class="text-danger"><i class="fas fa-times-circle"></i> </span>Rejected
                                         @else
                                             <span class="text-secondary"><i class="fas fa-clock"></i> </span>Pending
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($leave->is_view)
+                                            <span class="text-white badge badge-success">Viewed</span> <!-- Updated design for viewed -->
+                                        @else
+                                            <a href="{{ route('leaves.myLeaveDetail', $leave->id) }}" class="btn btn-info btn-sm">Preview</a> <!-- Original button -->
                                         @endif
                                     </td>
                                 </tr>

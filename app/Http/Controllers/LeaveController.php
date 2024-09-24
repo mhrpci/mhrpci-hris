@@ -281,4 +281,37 @@ public function detail($id)
             return redirect()->route('leaves.index')->with('error', 'Employee not found.');
         }
     }
+
+    /**
+     * Display the leave details for the authenticated employee.
+     */
+    public function myLeaveDetail($id)
+    {
+        $leave = Leave::findOrFail($id);
+        $user = Auth::user();
+        $this->markAsView($leave);
+        $employee = Employee::where('email_address', $user->email)->first();
+
+        // Check if the employee exists and matches the leave ID
+        if ($employee) {
+            $leave = Leave::where('id', $id)->where('employee_id', $employee->id)->first();
+
+            if ($leave) {
+                return view('leaves.my_leave_detail', compact('leave'));
+            } else {
+                return redirect()->route('leaves.index')->with('error', 'Leave not found or does not belong to you.');
+            }
+        } else {
+            return redirect()->route('leaves.index')->with('error', 'Employee not found.');
+        }
+    }
+
+    private function markAsView(Leave $leave)
+    {
+        if (!$leave->is_view) {
+            $leave->is_view = true;
+            $leave->view_at = now();
+            $leave->save();
+        }
+    }
 }

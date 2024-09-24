@@ -50,6 +50,7 @@ class NotificationsController extends Controller
         $this->generatePostNotifications();
         $this->generateHolidayNotifications();
         $this->generateLeaveRequestNotifications();
+        $this->generateEmployeeLeaveNotifications();
         $this->generateTaskNotifications();
         $this->generateJobApplicationNotifications(); // Add job application notifications generation
     }
@@ -205,6 +206,32 @@ class NotificationsController extends Controller
                     'details' => "Applicant: {$application->name}, Email: {$application->email}"
                 ];
                 $this->notifications['job_applications'][] = $notification;
+            }
+        }
+    }
+
+    // Generate leave notifications for the authenticated employee
+    private function generateEmployeeLeaveNotifications()
+    {
+        $authUser = Auth::user();
+        $employee = Employee::where('email_address', $authUser->email)->first();
+
+        if ($authUser->hasRole('Employee') && $employee) {
+            $leaveRequests = Leave::where('employee_id', $employee->id)
+                ->whereIn('status', ['approved', 'rejected']) // Corrected to use whereIn
+                ->where('is_view', false) // Only fetch unread leave requests
+                ->get();
+            foreach ($leaveRequests as $leave) {
+                $updater = $leave->updated_by ? User::find($leave->updated_by) : null; // Fetch the updater's information from User model
+                $updaterName = $updater ? "{$updater->first_name} {$updater->last_name}" : 'Unknown'; // Get the updater's name
+
+                $notification = [
+                    'icon' => 'fas fa-fw fa-calendar-times',
+                    'text' => "Your leave request for {$leave->type->name} is: {$leave->status}",
+                    'time' => $leave->created_at->diffForHumans(),
+                    'details' => "Leave details: {$leave->reason}. Updated by: {$updaterName}" // Add updater's name
+                ];
+                $this->notifications['leave_status'][] = $notification;
             }
         }
     }

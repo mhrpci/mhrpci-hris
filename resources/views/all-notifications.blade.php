@@ -89,7 +89,8 @@
                 <div class="row">
                     @foreach($allNotifications as $category => $notifications)
                         @if(($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin'])) &&
-                            ($category !== 'job_applications' || Auth::user()->hasRole('HR Hiring')))
+                            ($category !== 'job_applications' || Auth::user()->hasRole('HR Hiring')) &&
+                            ($category !== 'leave_status' || Auth::user()->hasRole(['Employee'])))
                             <div class="col-md-6 mb-4">
                                 <div class="notification-item h-100 border rounded p-3">
                                     <h4 class="d-flex align-items-center mb-3">
@@ -105,6 +106,8 @@
                                             <i class="fas fa-tasks text-primary mr-2"></i>
                                         @elseif($category === 'job_applications')
                                             <i class="fas fa-file-alt text-secondary mr-2"></i>
+                                        @elseif($category === 'leave_status')
+                                            <i class="fas fa-user-clock text-warning mr-2"></i> <!-- Added icon for leave_status -->
                                         @endif
                                         {{ ucfirst(str_replace('_', ' ', $category)) }}
                                     </h4>
@@ -122,12 +125,15 @@
                                     @endif
                                     @if(Auth::user()->hasRole(['Super Admin', 'Admin']) ||
                                        (Auth::user()->hasRole('HR Hiring') && $category === 'job_applications') ||
-                                       (Auth::user()->hasRole('Employee') && $category === 'tasks'))
+                                       (Auth::user()->hasRole('Employee') && $category === 'tasks') ||
+                                       (Auth::user()->hasRole('Employee') && $category === 'leave_status'))
                                         <div class="text-right mt-3">
                                             @if($category === 'birthdays')
                                                 <a href="{{ route('employees.birthdays') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'leave_requests')
                                                 <a href="{{ route('leaves.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                            @elseif($category === 'leave_status')
+                                                <a href="{{ route('leaves.my_leave_sheet') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'job_applications')
                                                 <a href="{{ route('careers.all') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'tasks')
