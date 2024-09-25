@@ -108,7 +108,9 @@
                                         <select id="employee_id" name="employee_id" class="form-control" required>
                                             <option value="">Select Employee</option>
                                             @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}">
+                                                <option value="{{ $employee->id }}"
+                                                    data-sss-no="{{ $employee->sss_no }}"
+                                                        data-pagibig-no="{{ $employee->pagibig_no }}">
                                                     {{ $employee->company_id }}  {{ $employee->last_name }}  {{ $employee->first_name }}, {{ $employee->middle_name }}
                                                 </option>
                                             @endforeach
@@ -175,6 +177,25 @@
             $('select').select2({
                 theme: 'bootstrap4',
                 width: '100%'
+            });
+            $('#employee_id').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                var sssNo = selectedOption.data('sss-no');
+                var pagibigNo = selectedOption.data('pagibig-no');
+
+                // Handle SSS Contribution Field
+                if (sssNo) {
+                    $('#sss_loan').removeAttr('readonly').attr('placeholder', '');
+                } else {
+                    $('#sss_loan').attr('readonly', true).attr('placeholder', 'No SSS Number');
+                }
+
+                // Handle PAGIBIG Contribution Field
+                if (pagibigNo) {
+                    $('#pagibig_loan').removeAttr('readonly').attr('placeholder', '');
+                } else {
+                    $('#pagibig_loan').attr('readonly', true).attr('placeholder', 'No PAGIBIG Number');
+                }
             });
         });
     </script>

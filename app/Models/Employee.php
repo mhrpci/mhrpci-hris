@@ -136,7 +136,19 @@ class Employee extends Model
         return $this->hasMany(Credentials::class);
     }
 
+    public function sss()
+    {
+        return $this->hasMany(Sss::class);
+    }
+    public function pagibig()
+    {
+        return $this->hasMany(Pagibig::class);
+    }
 
+    public function philhealth()
+    {
+        return $this->hasMany(Philhealth::class);
+    }
 
     public function employmentStatus(): string
     {

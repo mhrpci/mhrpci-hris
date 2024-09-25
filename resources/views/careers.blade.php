@@ -303,16 +303,13 @@
                     MHRPCI
                 </div>
             </div>
-            <ul class="nav-links">
+            <ul class="nav-links mobile-menu">
                 <li><a href="{{ url('/') }}">Home</a></li>
             </ul>
             <div class="mobile-menu-toggle">
                 <i class="fas fa-bars"></i>
             </div>
         </nav>
-        <div class="mobile-menu">
-            <a href="{{ url('/') }}">Home</a>
-        </div>
     </header>
 
     <div class="content-wrapper">
@@ -475,21 +472,34 @@
                 }, 5000);
             });
 
-            // Mobile menu toggle
             var mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-            var mobileMenu = document.querySelector('.mobile-menu');
+            var navLinks = document.querySelector('.nav-links');
 
             mobileMenuToggle.addEventListener('click', function() {
-                mobileMenu.classList.toggle('show');
+                navLinks.classList.toggle('show');
             });
 
             // Close mobile menu when clicking outside
             document.addEventListener('click', function(event) {
-                if (!mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
-                    mobileMenu.classList.remove('show');
+                if (!navLinks.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                    navLinks.classList.remove('show');
                 }
             });
         });
     </script>
+        <script>
+            // Allow right-click but prevent default context menu
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault(); // Prevent the default context menu
+                // Custom context menu logic can be added here if needed
+            });
+
+            // Disable F12, Ctrl+Shift+I, Ctrl+U
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'U')) {
+                    e.preventDefault();
+                }
+            });
+        </script>
 </body>
 </html>

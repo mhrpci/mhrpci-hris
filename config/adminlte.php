@@ -458,6 +458,34 @@ return [
                     'active' => ['contributions', 'regex'],
                 ],
                 [
+                    'text' => ' SSS',
+                    'url' => 'sss',
+                    'icon' => 'fas fa-id-card',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
+                    'active' => ['sss*', 'regex'],
+                ],
+                [
+                    'text' => ' PAGIBIG',
+                    'url' => 'pagibig',
+                    'icon' => 'fas fa-home',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
+                    'active' => ['pagibig*', 'regex'],
+                ],
+                [
+                    'text' => ' PHILHEALTH',
+                    'url' => 'philhealth',
+                    'icon' => 'fas fa-notes-medical',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
+                    'active' => ['philhealth*', 'regex'],
+                ],
+                [
+                    'text' => ' Loans and CA',
+                    'url' => 'loans',
+                    'icon' => 'fas fa-money-bill-alt',
+                    'can' => ['admin', 'super-admin', 'hrcomben'],
+                    'active' => ['loans*', 'regex'],
+                ],
+                [
                     'text' => ' Contributor',
                     'url' => '/contributions-employees-list',
                     'icon' => 'fas fa-users',
@@ -496,15 +524,8 @@ return [
                 [
             'text' => ' Others',
             'icon' => 'fas fa-cogs',
-            'can' => ['admin', 'super-admin', 'hrcomben' , 'hrcompliance', 'it-staff', 'hrpolicy'],
+            'can' => ['admin', 'super-admin', 'hrcompliance', 'it-staff', 'hrpolicy'],
             'submenu' => [
-                [
-                    'text' => ' Loans and CA',
-                    'url' => 'loans',
-                    'icon' => 'fas fa-money-bill-alt',
-                    'can' => ['admin', 'super-admin', 'hrcomben'],
-                    'active' => ['loans*', 'regex'],
-                ],
                 [
                     'text' => '  Employee Accountability',
                     'url' => 'accountabilities',

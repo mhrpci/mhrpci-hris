@@ -30,7 +30,9 @@ use App\Http\Controllers\ItInventoryController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\HiringController;
-
+use App\Http\Controllers\SssController;
+use App\Http\Controllers\PagibigController;
+use App\Http\Controllers\PhilhealthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -116,7 +118,7 @@ use App\Http\Controllers\HiringController;
     Route::delete('/payroll/{id}', [PayrollController::class, 'destroy'])->name('payroll.destroy');
     Route::get('/my-contributions', [ContributionController::class, 'myContributions'])->name('contributions.my');
     // routes/web.php
-    Route::get('/overtime-hours/{employeeId}', [OvertimeController::class, 'getOvertimeHours'])->name('overtime.hours');
+    Route::get('/overtime-hours/{employeeId}', [OverTimePayController::class, 'getOvertimeHours'])->name('overtime.hours');
 
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
@@ -156,11 +158,6 @@ use App\Http\Controllers\HiringController;
     Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
     Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
 
-Auth::routes();
-
-
-
-
-
-
-
+    Route::resource('sss', SssController::class)->except(['edit', 'update']);
+    Route::post('/sss/destroy-multiple', [SssController::class, 'destroyMultiple'])->name('sss.destroy.multiple');
+    Auth::routes();
