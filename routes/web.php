@@ -159,5 +159,8 @@ use App\Http\Controllers\PhilhealthController;
     Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
 
     Route::resource('sss', SssController::class)->except(['edit', 'update']);
+    Route::resource('pagibig', PagibigController::class)->except(['edit', 'update']);
+    Route::resource('philhealth', PhilhealthController::class)->except(['edit', 'update']);
     Route::post('/sss/destroy-multiple', [SssController::class, 'destroyMultiple'])->name('sss.destroy.multiple');
+
     Auth::routes();

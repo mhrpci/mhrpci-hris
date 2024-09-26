@@ -352,7 +352,7 @@ return [
             'can' => 'normal-employee',
         ],
         [
-            'text' => ' Attendance Management',
+            'text' => ' Attendance',
             'icon' => 'fas fa-clock',
             'submenu' => [
                 [
@@ -360,20 +360,21 @@ return [
                     'url' => 'attendances',
                     'icon' => 'fas fa-sign-in-alt',
                     'can' => ['admin', 'super-admin','hrcomben'],
+                    'active' => ['attendances', 'attendances/create', 'timesheets', 'regex:@^attendances/[0-9]+$@'],
                 ],
-                [
-                    'text' => 'Time In/ Time Out',
-                    'url' => 'attendances/create',
-                    'icon' => 'fas fa-clock',
-                    'can' => ['normal-employee'],
-                ],
-                [
-                    'text' => 'Timesheet',
-                    'url' => '/timesheets',
-                    'icon' => 'fas fa-file-alt',
-                    'active' => ['/timesheets*', 'regex:/employee\/attendance\/[0-9]+/'],
-                    'can' => ['admin', 'super-admin','hrcomben'],
-                ],
+                // [
+                //     'text' => 'Time In/ Time Out',
+                //     'url' => 'attendances/create',
+                //     'icon' => 'fas fa-clock',
+                //     'can' => ['normal-employee'],
+                // ],
+                // [
+                //     'text' => 'Timesheet',
+                //     'url' => '/timesheets',
+                //     'icon' => 'fas fa-file-alt',
+                //     'active' => ['/timesheets*', 'regex:/employee\/attendance\/[0-9]+/'],
+                //     'can' => ['admin', 'super-admin','hrcomben'],
+                // ],
                 [
                     'text' => 'My Timesheet',
                     'url' => '/my-timesheet',
@@ -445,39 +446,39 @@ return [
             ],
         ],
         [
-            'text' => ' Contributions',
+            'text' => ' Loans & Contributions',
             'icon' => 'fas fa-hands-helping',
             'can' => ['admin', 'super-admin', 'hrcomben','normal-employee'],
             'active' => ['contributions*', 'regex'],
             'submenu' => [
+                // [
+                //     'text' => ' Contribution List',
+                //     'url' => 'contributions',
+                //     'icon' => 'fas fa-list',
+                //     'can' => ['admin', 'super-admin', 'hrcomben'],
+                //     'active' => ['contributions', 'regex'],
+                // ],
                 [
-                    'text' => ' Contribution List',
-                    'url' => 'contributions',
-                    'icon' => 'fas fa-list',
-                    'can' => ['admin', 'super-admin', 'hrcomben'],
-                    'active' => ['contributions', 'regex'],
-                ],
-                [
-                    'text' => ' SSS',
+                    'text' => ' Contributions',
                     'url' => 'sss',
-                    'icon' => 'fas fa-id-card',
+                    'icon' => 'fas fa-file-alt',
                     'can' => ['admin', 'super-admin', 'hrcomben'],
                     'active' => ['sss*', 'regex'],
                 ],
-                [
-                    'text' => ' PAGIBIG',
-                    'url' => 'pagibig',
-                    'icon' => 'fas fa-home',
-                    'can' => ['admin', 'super-admin', 'hrcomben'],
-                    'active' => ['pagibig*', 'regex'],
-                ],
-                [
-                    'text' => ' PHILHEALTH',
-                    'url' => 'philhealth',
-                    'icon' => 'fas fa-notes-medical',
-                    'can' => ['admin', 'super-admin', 'hrcomben'],
-                    'active' => ['philhealth*', 'regex'],
-                ],
+                // [
+                //     'text' => ' PAGIBIG',
+                //     'url' => 'pagibig',
+                //     'icon' => 'fas fa-home',
+                //     'can' => ['admin', 'super-admin', 'hrcomben'],
+                //     'active' => ['pagibig*', 'regex'],
+                // ],
+                // [
+                //     'text' => ' PHILHEALTH',
+                //     'url' => 'philhealth',
+                //     'icon' => 'fas fa-notes-medical',
+                //     'can' => ['admin', 'super-admin', 'hrcomben'],
+                //     'active' => ['philhealth*', 'regex'],
+                // ],
                 [
                     'text' => ' Loans and CA',
                     'url' => 'loans',
@@ -503,23 +504,10 @@ return [
         [
             'text' => ' Hiring Management',
             'icon' => 'fas fa-users-cog',
+            'url' => 'hirings',
+            'icon' => 'fas fa-briefcase',
             'can' => 'hrhiring',
-            'submenu' => [
-                [
-                    'text' => ' Hiring',
-                    'url' => 'hirings',
-                    'icon' => 'fas fa-briefcase',
-                    'can' => 'hrhiring',
-                    'active' => ['hirings*', 'regex'],
-                ],
-                [
-                    'text' => ' Applicants',
-                    'url' => '/all-careers',
-                    'icon' => 'fas fa-user-tie',
-                    'can' => 'hrhiring',
-                    'active' => ['/all-careers*', 'regex:/^careers\/\d+$/'],
-                ],
-            ]
+            'active' => ['hirings*', 'all-careers*', 'regex'],
         ],
                 [
             'text' => ' Others',

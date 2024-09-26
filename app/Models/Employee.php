@@ -150,6 +150,20 @@ class Employee extends Model
         return $this->hasMany(Philhealth::class);
     }
 
+    public function sssContribution()
+    {
+        return $this->hasMany(SssContribution::class);
+    }
+    public function pagibigContribtion()
+    {
+        return $this->hasMany(PagibigContribution::class);
+    }
+
+    public function philhealthContribution()
+    {
+        return $this->hasMany(PhilhealthContribution::class);
+    }
+
     public function employmentStatus(): string
     {
         $hiredDate = \Carbon\Carbon::parse($this->date_hired);

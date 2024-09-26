@@ -73,12 +73,105 @@
         transform: scaleY(1);
     }
 }
+
+/*Links*/
+.contribution-nav {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .contribution-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #333;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
+    }
+    .contribution-link:hover {
+        background-color: #e9ecef;
+        text-decoration: none;
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .contribution-link.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+    .contribution-link .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(0,0,0,0.1);
+        margin-right: 10px;
+    }
+    .contribution-link.active .icon-wrapper {
+        background-color: rgba(255,255,255,0.2);
+    }
+    .contribution-link .icon-wrapper i {
+        font-size: 1.2rem;
+    }
+    .contribution-link .text-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .contribution-link .title {
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    .contribution-link .description {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+    .contribution-link.active .description {
+        opacity: 0.9;
+    }
 </style>
 @stop
 
 @section('content')
 <br>
     <div class="container-fluid">
+<!-- Enhanced professional-looking link buttons -->
+<div class="mb-4">
+    <div class="contribution-nav" role="navigation" aria-label="Contribution Types">
+        <a href="{{ route('attendances.index') }}" class="contribution-link {{ request()->routeIs('attendances.index') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Attendance</span>
+                <small class="description">Attendance List</small>
+            </div>
+        </a>
+        <a href="{{ route('attendances.create') }}" class="contribution-link {{ request()->routeIs('attendances.create') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-sign-in-alt"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Time In/Time Out</span>
+                <small class="description">Attendance Create</small>
+            </div>
+        </a>
+        <a href="{{ url('/timesheets') }}" class="contribution-link {{ request()->routeIs('attendances.timesheets') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Timesheets</span>
+                <small class="description">Employee attendance records</small>
+            </div>
+        </a>
+    </div>
+</div>
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -432,3 +525,4 @@
     });
 </script>
 @endsection
+

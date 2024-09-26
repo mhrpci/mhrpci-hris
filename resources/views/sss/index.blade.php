@@ -79,6 +79,39 @@
 @section('content')
 <br>
 
+<!-- Enhanced professional-looking link buttons -->
+<div class="mb-4">
+    <div class="contribution-nav" role="navigation" aria-label="Contribution Types">
+        <a href="{{ route('sss.index') }}" class="contribution-link {{ request()->routeIs('sss.index') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">SSS</span>
+                <small class="description">Social Security System</small>
+            </div>
+        </a>
+        <a href="{{ route('pagibig.index') }}" class="contribution-link {{ request()->routeIs('pagibig.index') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Pag-IBIG</span>
+                <small class="description">Home Development Mutual Fund</small>
+            </div>
+        </a>
+        <a href="{{ route('philhealth.index') }}" class="contribution-link {{ request()->routeIs('philhealth.index') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">PhilHealth</span>
+                <small class="description">Philippine Health Insurance</small>
+            </div>
+        </a>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Sss Contributions List</h3>
@@ -135,6 +168,71 @@
 </div>
 
 @stop
+
+@section('css')
+<style>
+    .contribution-nav {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .contribution-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #333;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
+    }
+    .contribution-link:hover {
+        background-color: #e9ecef;
+        text-decoration: none;
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .contribution-link.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+    .contribution-link .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(0,0,0,0.1);
+        margin-right: 10px;
+    }
+    .contribution-link.active .icon-wrapper {
+        background-color: rgba(255,255,255,0.2);
+    }
+    .contribution-link .icon-wrapper i {
+        font-size: 1.2rem;
+    }
+    .contribution-link .text-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .contribution-link .title {
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    .contribution-link .description {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+    .contribution-link.active .description {
+        opacity: 0.9;
+    }
+</style>
+@endsection
+
 @section('js')
 <script>
     $(document).ready(function () {

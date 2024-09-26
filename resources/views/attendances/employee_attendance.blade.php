@@ -79,73 +79,78 @@
 @section('content')
     <br>
     <div class="container-fluid">
-        <div class="row mb-3">
-            <div class="col-md-6 col-12">
-                <h3 class="text-break">
-                @if(Auth::user()->hasRole('Employee'))
-                My Timesheet
-                @else
-                Employee Timesheet
-                @endif
-                 - {{ $employee->company_id }} - {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h3>
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <h3 class="card-title text-break">
+                        @if(Auth::user()->hasRole('Employee'))
+                        My Timesheet
+                        @else
+                        Employee Timesheet
+                        @endif
+                         - {{ $employee->company_id }} - {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h3>
+                    </div>
+                    <div class="col-md-6 col-12 text-md-right text-center">
+                        <button class="btn btn-primary mb-2" onclick="printAttendance()"><i class="fas fa-print"></i> Print</button>
+                        @if(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin'))
+                        <a href="{{ route('attendances.timesheets') }}" class="btn btn-secondary mb-2">Back</a>
+                        @endif
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6 col-12 text-md-right text-center">
-                <button class="btn btn-primary mb-2" onclick="printAttendance()"><i class="fas fa-print"></i> Print</button>
-                @if(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin'))
-                <a href="{{ route('attendances.timesheets') }}" class="btn btn-secondary mb-2">Back</a>
-                @endif
-            </div>
-        </div>
+            <div class="card-body">
+                <!-- Date range filter form -->
+                <form id="date-range-form" class="mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="start_date">Start Date:</label>
+                                <input type="date" id="start_date" name="start_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="end_date">End Date:</label>
+                                <input type="date" id="end_date" name="end_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary form-control">Filter</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
 
-        <!-- Date range filter form -->
-        <form id="date-range-form" class="mb-3">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="start_date">Start Date:</label>
-                        <input type="date" id="start_date" name="start_date" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="end_date">End Date:</label>
-                        <input type="date" id="end_date" name="end_date" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>&nbsp;</label>
-                        <button type="submit" class="btn btn-primary form-control">Filter</button>
-                    </div>
+                <div class="table-responsive">
+                    <table id="attendanceTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date Attended</th>
+                                <th>Time In</th>
+                                <th>Time Out</th>
+                                <th>Remarks</th>
+                                <th>Hours Worked</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($attendances as $attendance)
+                                <tr>
+                                    <td data-sort="{{ date('Y-m-d', strtotime($attendance->date_attended)) }}">
+                                        {{ date('F d, Y', strtotime($attendance->date_attended)) }}
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($attendance->time_in)->format('h:i A') }}</td>
+                                    <td>{{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('h:i A') : '--:-- --' }}</td>
+                                    <td>{{ $attendance->remarks }}</td>
+                                    <td>{{ $attendance->hours_worked }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </form>
-
-        <div class="table-responsive">
-            <table id="attendanceTable" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Date Attended</th>
-                        <th>Time In</th>
-                        <th>Time Out</th>
-                        <th>Remarks</th>
-                        <th>Hours Worked</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($attendances as $attendance)
-                        <tr>
-                            <td data-sort="{{ date('Y-m-d', strtotime($attendance->date_attended)) }}">
-                                {{ date('F d, Y', strtotime($attendance->date_attended)) }}
-                            </td>
-                            <td>{{ \Carbon\Carbon::parse($attendance->time_in)->format('h:i A') }}</td>
-                            <td>{{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('h:i A') : '--:-- --' }}</td>
-                            <td>{{ $attendance->remarks }}</td>
-                            <td>{{ $attendance->hours_worked }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
         </div>
     </div>
 
