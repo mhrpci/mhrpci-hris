@@ -119,18 +119,23 @@
             <a href="{{ route('sss.create') }}" class="btn btn-success btn-sm rounded-pill">
                 Add Sss Contribution <i class="fas fa-plus-circle"></i>
             </a>
+            <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
+                Export to Excel <i class="fas fa-file-excel"></i>
+            </button>
         </div>
     </div>
     <div class="card-body">
         @if ($message = Session::get('success'))
         <div class="alert alert-success">{{ $message }}</div>
-    @endif
+        @endif
         <table id="sss-table" class="table table-bordered table-striped">
             <thead>
             <tr>
+                <th>SSS NO.</th>
                 <th>Employee</th>
                 <th>Contribution Date</th>
-                <th>Monthly Salary Credit</th>
+                <th>Employee Share</th>
+                <th>Employer Share</th>
                 <th>Total Contribution</th>
                 <th>Actions</th>
             </tr>
@@ -138,9 +143,11 @@
         <tbody>
             @foreach($contributions as $contribution)
                 <tr>
-                    <td>{{ $contribution->employee->company_id }} {{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
+                    <td>{{ $contribution->employee->sss_no}}</td>
+                    <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
                     <td>{{ $contribution->contribution_date->format('F j, Y') }}</td>
-                    <td>{{ number_format($contribution->monthly_salary_credit, 2) }}</td>
+                    <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
+                    <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
                     <td>{{ number_format($contribution->total_contribution, 2) }}</td>
                     <td>
                         <div class="btn-group">
@@ -231,12 +238,96 @@
         opacity: 0.9;
     }
 </style>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
 @endsection
 
 @section('js')
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
 <script>
     $(document).ready(function () {
-        $('#sss-table').DataTable();
+        var table = $('#sss-table').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[1, "desc"]]
+        });
+
+        $('#export-excel').on('click', function() {
+            var data = table.rows().data().toArray();
+            var header = ['SSS NO.', 'Employee', 'Contribution Month', 'Employee Share', 'Employer Share', 'Total Contribution'];
+
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
+                row[0], // SSS NO.
+                row[1], // Employee
+                new Date(row[2]).toLocaleString('default', { month: 'long' }), // Contribution Month
+                parseFloat(row[3].replace(/,/g, '')).toFixed(2), // Employee Share
+                parseFloat(row[4].replace(/,/g, '')).toFixed(2), // Employer Share
+                parseFloat(row[5].replace(/,/g, '')).toFixed(2)  // Total Contribution
+            ])));
+
+            // Set column widths
+            ws['!cols'] = [
+                {wch: 15}, // SSS NO.
+                {wch: 30}, // Employee
+                {wch: 20}, // Contribution Month
+                {wch: 15}, // Employee Share
+                {wch: 15}, // Employer Share
+                {wch: 18}  // Total Contribution
+            ];
+
+            // Style the header row
+            var headerStyle = {
+                font: { bold: true, color: { rgb: "FFFFFF" } },
+                fill: { fgColor: { rgb: "4472C4" } },
+                alignment: { horizontal: "center", vertical: "center" },
+                border: {
+                    top: {style: "thin", color: {auto: 1}},
+                    bottom: {style: "thin", color: {auto: 1}},
+                    left: {style: "thin", color: {auto: 1}},
+                    right: {style: "thin", color: {auto: 1}}
+                }
+            };
+            for (var i = 0; i < header.length; i++) {
+                var cellRef = XLSX.utils.encode_cell({r: 0, c: i});
+                ws[cellRef].s = headerStyle;
+            }
+
+            // Style the data cells
+            var dataStyle = {
+                alignment: { horizontal: "right", vertical: "center" },
+                border: {
+                    top: {style: "thin", color: {auto: 1}},
+                    bottom: {style: "thin", color: {auto: 1}},
+                    left: {style: "thin", color: {auto: 1}},
+                    right: {style: "thin", color: {auto: 1}}
+                }
+            };
+            var currencyStyle = Object.assign({}, dataStyle, { numFmt: "#,##0.00" });
+            var monthStyle = Object.assign({}, dataStyle, {
+                alignment: { horizontal: "center" }
+            });
+
+            var range = XLSX.utils.decode_range(ws['!ref']);
+            for (var R = range.s.r; R <= range.e.r; ++R) {
+                for (var C = range.s.c; C <= range.e.c; ++C) {
+                    var cellRef = XLSX.utils.encode_cell({r: R, c: C});
+                    if (!ws[cellRef]) continue;
+                    if (!ws[cellRef].s) ws[cellRef].s = {};
+                    if (R === 0) {
+                        ws[cellRef].s = headerStyle;
+                    } else {
+                        ws[cellRef].s = C === 2 ? monthStyle : currencyStyle;
+                    }
+                }
+            }
+
+            XLSX.utils.book_append_sheet(wb, ws, 'SSS Contributions');
+            XLSX.writeFile(wb, 'sss_contributions.xlsx');
+        });
     });
 </script>
 @endsection

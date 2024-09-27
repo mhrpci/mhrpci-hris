@@ -33,6 +33,7 @@ use App\Http\Controllers\HiringController;
 use App\Http\Controllers\SssController;
 use App\Http\Controllers\PagibigController;
 use App\Http\Controllers\PhilhealthController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -81,6 +82,7 @@ use App\Http\Controllers\PhilhealthController;
     Route::resource('tasks', TaskController::class);
     Route::resource('credentials', CredentialController::class);
     Route::resource('hirings', HiringController::class);
+    Route::resource('pagibig', PagibigController::class);
     // Route::resource('accountabilities', AccountabilityController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');

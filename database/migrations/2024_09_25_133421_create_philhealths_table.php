@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('philhealths', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOndelete();
-            $table->decimal('basic_salary', 8,2 )->nullable();
-            $table->decimal('employee_share', 8, 2)->nullable();
-            $table->decimal('employer_share', 8, 2)->nullable();
+            $table->decimal('employee_contribution', 8, 2)->nullable();
+            $table->decimal('employer_contribution', 8, 2)->nullable();
             $table->decimal('total_contribution', 8, 2)->nullable();
             $table->date('contribution_date');
             $table->timestamps();

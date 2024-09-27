@@ -61,9 +61,8 @@ class UserController extends Controller
 
         if ($request->hasFile('profile_image')) {
             $image = $request->file('profile_image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('profile_images'), $imageName);
-            $input['profile_image'] = $imageName;
+            $filename = $image->store('profile_images', 'public');
+            $input['profile_image'] = $filename;
         }
 
         $user = User::create($input);
@@ -112,9 +111,8 @@ class UserController extends Controller
 
         if ($request->hasFile('profile_image')) {
             $image = $request->file('profile_image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('profile_images'), $imageName);
-            $input['profile_image'] = $imageName;
+            $filename = $image->store('profile_images', 'public');
+            $input['profile_image'] = $filename;
         }
 
         $user = User::find($id);

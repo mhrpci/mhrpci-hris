@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('pagibigs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->cascadeOndelete();
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->decimal('employee_contribution', 8, 2);
+            $table->decimal('employer_contribution', 8, 2);
+            $table->decimal('total_contribution', 8, 2);
+            $table->date('contribution_date');
             $table->timestamps();
         });
     }

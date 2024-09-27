@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use BadMethodCallException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -27,4 +30,13 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    // public function render($request, Throwable $exception)
+    // {
+    //     if ($exception instanceof BadMethodCallException) {
+    //         // Render the custom 500 error page for BadMethodCallException
+    //         return response()->view('errors.500', [], 500);
+    //     }
+
+    //     return parent::render($request, $exception);
+    // }
 }
