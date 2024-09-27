@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MHR - Revolutionize Your HR Management</title>
+    <title>MHR Property Conglomerates, Inc. - Revolutionize Your Business</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -101,15 +101,6 @@
         }
 
         .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Active Navigation Link */
-        .nav-links a.active {
-            color: var(--primary-color);
-        }
-
-        .nav-links a.active::after {
             width: 100%;
         }
 
@@ -512,6 +503,66 @@
         .overlay.active {
             display: block;
         }
+                /* Chatbot styles */
+                #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #chatbot-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chatbot-close {
+            cursor: pointer;
+        }
+
+        #chatbot-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .messenger-btn {
+            display: inline-block;
+            background-color: #0084FF;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .messenger-btn:hover {
+            background-color: #0066CC;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -525,7 +576,7 @@
             <nav>
                 <div class="logo-container">
                     <div class="logo">
-                        <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="MHR Logo">
+                        <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="MHRPCI Logo">
                     </div>
                     <div class="app-name">
                         MHRPCI
@@ -533,7 +584,8 @@
                 </div>
                 <ul class="nav-links">
                     <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
-                    <li><a href="#services" class="nav-link" title="Explore Our Services">Services</a></li>
+                    <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
+                    <li><a href="#partners" class="nav-link" title="Our Partners">Partners</a></li>
                     <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
                     <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
                 </ul>
@@ -552,7 +604,7 @@
         <div class="sidebar-header">
             <div class="logo-container">
                 <div class="logo">
-                    <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="MHR Logo">
+                    <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="MHRPCI Logo">
                 </div>
                 <div class="app-name">
                     MHRPCI
@@ -561,7 +613,8 @@
         </div>
         <ul class="nav-links">
             <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
-            <li><a href="#services" class="nav-link" title="Explore Our Services">Services</a></li>
+            <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
+            <li><a href="#partners" class="nav-link" title="Our Partners">Partners</a></li>
             <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
         </ul>
@@ -576,97 +629,122 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h1>Welcome to MHR</h1>
-                <p>Your trusted partner in Human Resource Management and Payroll Services.</p>
-                <a href="#about" class="cta-btn">Get Started</a>
+                <h1>Welcome to MHR Property Conglomerates, Inc.</h1>
+                <p>Good Success!</p>
+                <a href="#about" class="cta-btn">Discover More</a>
             </div>
         </section>
 
         <section id="about">
             <div class="container">
-                <h2>About MHR</h2>
-                <p>MHR is a leading provider of HR and payroll solutions, dedicated to empowering businesses of all sizes. With over 20 years of experience, we combine cutting-edge technology with expert knowledge to streamline your HR processes.</p>
+                <h2>About Us</h2>
+                <p>We are a dynamic group of companies with a wide range of expertise across multiple industries. Our strength lies in our diversity and our commitment to innovation and excellence.</p>
                 <div class="about-grid">
                     <div class="about-item">
-                        <i class="fas fa-trophy"></i>
-                        <h3>Industry Leader</h3>
-                        <p>Recognized for excellence in HR and payroll services</p>
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Motivation</h3>
+                        <p>Driven by a passion for excellence and innovation</p>
                     </div>
                     <div class="about-item">
                         <i class="fas fa-users"></i>
-                        <h3>Expert Team</h3>
-                        <p>Dedicated professionals with years of industry experience</p>
+                        <h3>Humanity</h3>
+                        <p>Committed to making a positive impact on people's lives</p>
                     </div>
                     <div class="about-item">
-                        <i class="fas fa-globe"></i>
-                        <h3>Global Reach</h3>
-                        <p>Serving clients across multiple industries worldwide</p>
+                        <i class="fas fa-cogs"></i>
+                        <h3>Resourcefulness</h3>
+                        <p>Adapting and thriving in dynamic business environments</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="services">
+        <section id="subsidiaries">
             <div class="container">
-                <h2>Our Services</h2>
+                <h2>Our Subsidiaries</h2>
                 <div class="grid benefits-grid">
                     <div class="card">
-                        <i class="fas fa-users"></i>
-                        <h3>HR Management</h3>
-                        <p>Comprehensive HR solutions tailored to your needs.</p>
+                        <i class="fas fa-hospital"></i>
+                        <h3>MHRHCI</h3>
+                        <p>Medical and Hospital Resources Health Care, Inc. - Comprehensive healthcare solutions.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <h3>Payroll Services</h3>
-                        <p>Accurate and timely payroll processing for your business.</p>
+                        <i class="fas fa-hotel"></i>
+                        <h3>VHI</h3>
+                        <p>Verbena Hotel Inc. - Luxury hospitality and accommodation services.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-laptop-code"></i>
-                        <h3>IT Solutions</h3>
-                        <p>Custom software development and IT support.</p>
+                        <i class="fas fa-gas-pump"></i>
+                        <h3>BGPDI</h3>
+                        <p>Bay Gas and Petroleum Distributed Inc. - Energy distribution and services.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>Business Solutions</h3>
-                        <p>Strategic consulting to drive your business forward.</p>
+                        <i class="fas fa-hard-hat"></i>
+                        <h3>MHRCON</h3>
+                        <p>MHR Constructions - Building the future with quality and innovation.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-pepper-hot"></i>
+                        <h3>LUSCIOUS</h3>
+                        <p>Luscious Spices - Enhancing flavors in the culinary world.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-dolly"></i>
+                        <h3>MAXIMUM</h3>
+                        <p>Maximum Handling Resources - Efficient logistics and resource management.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-pills"></i>
+                        <h3>RCG</h3>
+                        <p>RCG Pharmaceutical - Advancing healthcare through pharmaceutical innovation.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-industry"></i>
+                        <h3>CEBIC</h3>
+                        <p>CEBIC Industries - Diverse industrial solutions and manufacturing.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="features">
+        <section id="partners">
             <div class="container">
-                <h2>Powerful Features</h2>
+                <h2>Our Partners</h2>
                 <div class="grid feature-grid">
                     <div class="card">
-                        <i class="fas fa-database"></i>
-                        <h3>Centralized Database</h3>
-                        <p>Store and manage employee data securely in one place.</p>
+                        <i class="fas fa-university"></i>
+                        <h3>Financial Institutions</h3>
+                        <p>Partnerships with leading banks and financial services.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <h3>Payroll Integration</h3>
-                        <p>Seamlessly integrate with major payroll systems.</p>
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>Educational Institutes</h3>
+                        <p>Collaborations for research and development.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-tasks"></i>
-                        <h3>Performance Management</h3>
-                        <p>Set goals, conduct reviews, and track employee development.</p>
+                        <i class="fas fa-truck"></i>
+                        <h3>Logistics Partners</h3>
+                        <p>Efficient supply chain and distribution networks.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-user-plus"></i>
-                        <h3>Recruitment & Onboarding</h3>
-                        <p>Streamline hiring and create smooth onboarding experiences.</p>
+                        <i class="fas fa-handshake"></i>
+                        <h3>Strategic Alliances</h3>
+                        <p>Joint ventures and partnerships for mutual growth.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-clock"></i>
-                        <h3>Time & Attendance</h3>
-                        <p>Track work hours and manage leave effortlessly.</p>
+                        <i class="fas fa-heartbeat"></i>
+                        <h3>Intersurgical</h3>
+                        <p>Leading global designer, manufacturer, and supplier of medical devices.</p>
                     </div>
                     <div class="card">
-                        <i class="fas fa-chart-bar"></i>
-                        <h3>Advanced Analytics</h3>
-                        <p>Generate insightful reports and visualize key HR metrics.</p>
+                        <i class="fas fa-flask"></i>
+                        <h3>Bertin</h3>
+                        <p>Innovative solutions in life sciences, defense, and instrumentation.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-band-aid"></i>
+                        <h3>Abena Thai Tapes</h3>
+                        <p>High-quality adhesive tapes and medical supplies manufacturer.</p>
                     </div>
                 </div>
             </div>
@@ -677,44 +755,43 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>Contact Us</h4>
-                    <p>MHR Building: Jose L. Briones St., North Reclamation Area, Cebu City, Cebu, Philippines 6000</p>
-                    <p>Phone: <a href="tel:+63322381887">(032) 238-1887</a></p>
-                    <p>Email: <a href="mailto:info@mhrpci.ph">info@mhrpci.ph</a></p>
+                    <h4>About MHRPCI</h4>
+                    <p>MHR Property Conglomerates, Inc. is a dynamic group of companies with expertise across multiple industries, committed to innovation and excellence.</p>
                 </div>
                 <div class="footer-col">
-                    <h4>Follow Us</h4>
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#subsidiaries">Our Subsidiaries</a></li>
+                        <li><a href="#partners">Partners</a></li>
+                        <li><a href="{{ route('careers') }}">Careers</a></li>
+                        {{-- <li><a href="{{ route('privacy-policy') }}">Privacy Policy</a></li> --}}
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> MHR Building: Jose L. Briones St., North Reclamation Area, Cebu City, Cebu, Philippines 6000</p>
+                    <p><i class="fas fa-phone"></i> <a>(032) 238-1887</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:mhrpciofficial@gmail.com">mhrpciofficial@gmail.com</a></p>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect With Us</h4>
                     <div class="social-icons">
                         <a href="https://www.facebook.com/mhrpci" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.youtube.com/@MHRPCI-tr3dy" target="_blank" rel="noopener noreferrer" class="social-icon" title="Subscribe to our YouTube channel"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.youtube.com/@MHRPCI" target="_blank" rel="noopener noreferrer" class="social-icon" title="Subscribe to our YouTube channel"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.linkedin.com/company/mhrpci" target="_blank" rel="noopener noreferrer" class="social-icon" title="Connect with us on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/mhrpci" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} MHR. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} MHR Property Conglomerates, Inc. All rights reserved.</p>
+                <p>Designed and developed with <i class="fas fa-heart"></i> by MHRPCI Team</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // JavaScript to handle active navigation
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            function changeLinkState() {
-                let index = sections.length;
-
-                while(--index && window.scrollY + 50 < sections[index].offsetTop) {}
-
-                navLinks.forEach((link) => link.classList.remove('active'));
-                navLinks[index].classList.add('active');
-            }
-
-            changeLinkState();
-            window.addEventListener('scroll', changeLinkState);
-        });
-
         // Add preloader script
         window.addEventListener('load', function() {
             const preloader = document.querySelector('.preloader');
@@ -742,6 +819,21 @@
             const sidebarNavLinks = sidebar.querySelectorAll('.nav-link');
             sidebarNavLinks.forEach(link => {
                 link.addEventListener('click', toggleSidebar);
+            });
+        });
+
+        // Chatbot toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotContainer = document.getElementById('chatbot-container');
+            const chatbotClose = document.getElementById('chatbot-close');
+
+            chatbotToggle.addEventListener('click', function() {
+                chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
+            });
+
+            chatbotClose.addEventListener('click', function() {
+                chatbotContainer.style.display = 'none';
             });
         });
     </script>

@@ -497,9 +497,46 @@
             color: var(--gray);
             padding: 20px 0;
         }
+        /* Preloader styles */
+    .preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+
+    .preloader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid #4a90e2;
+        border-top: 3px solid #f39c12;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     </style>
 </head>
 <body>
+    <!-- Add preloader HTML -->
+    <div class="preloader">
+        <div class="spinner"></div>
+    </div>
     <!-- Add shape overlays -->
     <div class="shape-overlay shape-1"></div>
     <div class="shape-overlay shape-2"></div>
@@ -629,6 +666,16 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script>
+            // Add preloader script
+    window.addEventListener('load', function() {
+        const preloader = document.querySelector('.preloader');
+        preloader.classList.add('fade-out');
+        setTimeout(() => {
+            preloader.style.display = 'none';
+        }, 500);
+    });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const saveButtons = document.querySelectorAll('.save-hiring');
@@ -889,35 +936,42 @@
     <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="applyModalLabel">Apply for {{ $hiring->position }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('careers.apply') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('careers.apply') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                         @csrf
                         <input type="hidden" name="hiring_id" value="{{ $hiring->id }}">
-                        <div class="row mb-3">
+                        <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label for="firstName" class="form-label">First Name</label>
                                 <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Enter your first name" required>
+                                <div class="invalid-feedback">Please enter your first name.</div>
                             </div>
                             <div class="col-md-6">
                                 <label for="lastName" class="form-label">Last Name</label>
                                 <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Enter your last name" required>
+                                <div class="invalid-feedback">Please enter your last name.</div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email Address</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Phone Number</label>
                             <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                            <div class="invalid-feedback">Please enter your phone number.</div>
                         </div>
                         <div class="mb-3">
                             <label for="linkedin" class="form-label">LinkedIn Profile (optional)</label>
-                            <input type="url" class="form-control" id="linkedin" name="linkedin" placeholder="Enter your LinkedIn profile URL">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+                                <input type="url" class="form-control" id="linkedin" name="linkedin" placeholder="Enter your LinkedIn profile URL">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="experience" class="form-label">Years of Experience</label>
@@ -928,10 +982,12 @@
                                 <option value="3-5">3-5 years</option>
                                 <option value="5+">5+ years</option>
                             </select>
+                            <div class="invalid-feedback">Please select your years of experience.</div>
                         </div>
                         <div class="mb-3">
                             <label for="resume" class="form-label">Resume (PDF)</label>
                             <input type="file" class="form-control" id="resume" name="resume" accept=".pdf" required>
+                            <div class="invalid-feedback">Please upload your resume in PDF format.</div>
                         </div>
                         <div class="mb-3">
                             <label for="coverLetter" class="form-label">Cover Letter (optional)</label>
@@ -940,14 +996,37 @@
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="agreeTerms" name="agree_terms" required>
                             <label class="form-check-label" for="agreeTerms">I agree to the <a href="#" target="_blank">terms and conditions</a></label>
+                            <div class="invalid-feedback">You must agree to the terms and conditions.</div>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="fas fa-paper-plane me-1"></i> Submit Application
+                            <i class="fas fa-paper-plane me-2"></i> Submit Application
                         </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Add this script at the end of your file, just before the closing </body> tag -->
+    <script>
+        // Form validation
+        (function () {
+            'use strict'
+
+            var forms = document.querySelectorAll('.needs-validation')
+
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 </body>
 </html>
