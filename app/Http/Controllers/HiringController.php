@@ -47,6 +47,7 @@ class HiringController extends Controller
             'position' => 'required|max:255',
             'description' => 'required',
             'requirements' => 'required',
+            'location' => 'required|max:255', // Add this line
         ]);
 
         Hiring::create($validated);
@@ -79,6 +80,7 @@ class HiringController extends Controller
             'position' => 'required|max:255',
             'description' => 'required',
             'requirements' => 'required|max:255',
+            'location' => 'required|max:255', // Add this line
         ]);
 
         $hiring->update($validated);

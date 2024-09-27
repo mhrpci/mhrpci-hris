@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('position');
             $table->text('description');
             $table->text('requirements');
+            $table->string('location')->nullable(); // Add this line
             $table->timestamps();
         });
     }

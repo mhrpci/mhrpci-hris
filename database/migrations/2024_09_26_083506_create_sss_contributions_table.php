@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sss_contributions', function (Blueprint $table) {
             $table->id();
-            $table->foreingId('employee_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->float('sss_contribution')->nullable();
             $table->timestamps();

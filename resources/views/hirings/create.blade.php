@@ -100,6 +100,10 @@
                                 <label for="requirements"><i class="fas fa-list-ul mr-2"></i>Requirements</label>
                                 <textarea class="form-control" id="requirements" name="requirements" rows="4" required></textarea>
                             </div>
+                            <div class="form-group">
+                                <label for="location"><i class="fas fa-map-marker-alt mr-2"></i>Location</label>
+                                <input type="text" class="form-control" id="location" name="location" required>
+                            </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-success btn-lg px-5"><i class="fas fa-plus mr-2"></i>Create Position</button>
                             </div>

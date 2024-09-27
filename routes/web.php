@@ -152,15 +152,22 @@ use App\Http\Controllers\PhilhealthController;
     Route::get('/my-leave-sheet', [LeaveController::class, 'myLeaveSheet'])->name('leaves.my_leave_sheet');
     Route::get('/my-leave-detail/{id}', [LeaveController::class, 'myLeaveDetail'])->name('leaves.myLeaveDetail');
 
-    Route::get('/careers', [App\Http\Controllers\CareerController::class, 'index'])->name('careers');
+    Route::get('/careers', [CareerController::class, 'index'])->name('careers');
+    Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
+    Route::post('/careers/save', [CareerController::class, 'saveHiring'])->name('careers.save');
+    Route::post('/unsave-hiring', [CareerController::class, 'unsaveHiring'])->name('unsave.hiring');
     Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
     Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
     Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
     Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
+    Route::get('/saved-jobs', [CareerController::class, 'savedJobs'])->name('saved.jobs');
+    Route::get('/saved-jobs/count', [CareerController::class, 'getSavedJobsCount'])->name('saved-jobs.count');
 
     Route::resource('sss', SssController::class)->except(['edit', 'update']);
     Route::resource('pagibig', PagibigController::class)->except(['edit', 'update']);
     Route::resource('philhealth', PhilhealthController::class)->except(['edit', 'update']);
     Route::post('/sss/destroy-multiple', [SssController::class, 'destroyMultiple'])->name('sss.destroy.multiple');
+    Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->name('related.jobs');
 
     Auth::routes();
+

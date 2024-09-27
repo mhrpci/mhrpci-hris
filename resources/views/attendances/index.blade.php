@@ -91,6 +91,7 @@
                 <small class="description">Attendance List</small>
             </div>
         </a>
+        @can('attendance-create')
         <a href="{{ route('attendances.create') }}" class="contribution-link {{ request()->routeIs('attendances.create') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-sign-in-alt"></i>
@@ -100,6 +101,7 @@
                 <small class="description">Attendance Create</small>
             </div>
         </a>
+        @endcan
         <a href="{{ url('/timesheets') }}" class="contribution-link {{ request()->routeIs('attendances.timesheets') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-calendar-alt"></i>
@@ -116,13 +118,13 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Attendance Management</h3>
-                    <div class="card-tools">
+                    {{-- <div class="card-tools">
                         @can('attendance-create')
                         <a href="{{ route('attendances.create') }}" class="btn btn-success btn-sm rounded-pill">
                             Add Attendance <i class="fas fa-plus-circle"></i>
                         </a>
                         @endcan
-                    </div>
+                    </div> --}}
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">

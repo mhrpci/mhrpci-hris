@@ -29,7 +29,9 @@
             background-color: var(--white);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: fixed;
-            width: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
         }
 
@@ -37,7 +39,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .logo-container {
@@ -65,6 +69,7 @@
 
         .nav-links li {
             margin-left: 2rem;
+            position: relative;
         }
 
         .nav-links a {
@@ -72,10 +77,52 @@
             font-weight: 500;
             text-decoration: none;
             transition: color 0.3s ease;
+            padding: 0.5rem 0;
+            display: inline-block;
         }
 
         .nav-links a:hover {
             color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary-color);
+            visibility: hidden;
+            transform: scaleX(0);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .nav-links a:hover::after {
+            visibility: visible;
+            transform: scaleX(1);
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.25em 0.6em;
+            border-radius: 50%;
+            vertical-align: top;
+            margin-left: 5px;
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .saved-jobs-count {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
         }
 
         /* Career item styles */
@@ -158,38 +205,37 @@
 
         /* Responsive styles */
         @media (max-width: 768px) {
+            nav {
+                padding: 0.5rem 1rem;
+            }
+
             .nav-links {
                 display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--white);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 0;
+            }
+
+            .nav-links a {
+                padding: 1rem;
+                display: block;
+                border-bottom: 1px solid #f0f0f0;
             }
 
             .mobile-menu-toggle {
                 display: block;
-                font-size: 1.5rem;
-                color: var(--primary-color);
-                cursor: pointer;
-            }
-
-            .mobile-menu {
-                display: none;
-                position: fixed;
-                top: 60px;
-                left: 0;
-                right: 0;
-                background-color: var(--white);
-                padding: 1rem;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-
-            .mobile-menu.show {
-                display: block;
-            }
-
-            .mobile-menu a {
-                display: block;
-                padding: 0.5rem 0;
-                color: var(--text-color);
-                text-decoration: none;
-                font-weight: 500;
             }
 
             .career-item {
@@ -280,6 +326,105 @@
         .icon-1 { top: 10%; left: 5%; font-size: 2rem; }
         .icon-2 { top: 30%; right: 8%; font-size: 1.5rem; }
         .icon-3 { bottom: 15%; left: 10%; font-size: 1.8rem; }
+
+        .save-hiring.saved {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .save-hiring.saved .fa-bookmark {
+            animation: pulse 0.3s ease-in-out;
+            color: white; /* Ensure icon is visible on green background */
+        }
+
+        /* Add these new styles */
+        .save-hiring {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .save-hiring .spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .save-hiring.loading .spinner {
+            display: inline-block;
+        }
+
+        .save-hiring.loading .button-text {
+            visibility: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .save-hiring.saved .button-text {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .nav-links li:not(:last-child) {
+            margin-right: 1rem;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.25em 0.6em;
+            border-radius: 50%;
+            vertical-align: top;
+            margin-left: 5px;
+        }
+
+        .saved-jobs-count {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .nav-links a.active::after {
+            visibility: visible;
+            transform: scaleX(1);
+        }
+
+         /* Enhanced search bar styles */
+    #careerSearch {
+        border-radius: 50px;
+        padding: 10px 20px 10px 40px;
+        border: 2px solid var(--primary-color);
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    #careerSearch:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+    }
+
+    #careerSearch::placeholder {
+        color: #aaa;
+    }
+
+    .fa-search {
+        font-size: 1rem;
+        color: var(--primary-color);
+    }
     </style>
 </head>
 <body>
@@ -303,8 +448,15 @@
                     MHRPCI
                 </div>
             </div>
-            <ul class="nav-links mobile-menu">
-                <li><a href="{{ url('/') }}">Home</a></li>
+            <ul class="nav-links">
+                <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
+                <li><a href="{{ url('/careers') }}" class="{{ request()->is('careers*') ? 'active' : '' }}">Careers</a></li>
+<li>
+                    <a href="{{ url('/saved-jobs') }}" class="{{ request()->is('saved-jobs') ? 'active' : '' }}">
+                        Saved Jobs
+                        <span class="badge saved-jobs-count">0</span>
+                    </a>
+                </li>
             </ul>
             <div class="mobile-menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -331,43 +483,32 @@
             <h1 class="mb-4 text-center">Careers at MHR</h1>
             <p class="lead mb-5 text-center">Join our team and help revolutionize HR management!</p>
 
+            <!-- Add this new search input with icon -->
+            <div class="mb-4 position-relative">
+                <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" id="careerSearch" class="form-control ps-5" placeholder="Search for positions...">
+            </div>
+
             @if($hirings->count() > 0)
-                <div class="row">
-                    @foreach($hirings as $hiring)
-                        <div class="col-lg-6 mb-4">
-                            <div class="career-item h-100 d-flex flex-column">
-                                <h2 class="h4 mb-3">{{ $hiring->position }}</h2>
+            <div class="row row-cols-1 row-cols-md-2 g-4" id="careerList">
+                @foreach($hirings as $hiring)
+                    <div class="col career-item-container">
+                        <div class="career-item h-100 d-flex flex-column">
+                            <h2 class="h4 mb-3">{{ $hiring->position }}</h2>
                                 <p><strong>Description:</strong> {{ Str::limit($hiring->description, 150) }}</p>
-                                {{-- <p class="mb-4"><strong>Requirements:</strong> {{ Str::limit($hiring->requirements, 150) }}</p> --}}
-                                <div class="mt-auto">
-                                    <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#detailsModal{{ $hiring->id }}">
+                                <div class="mt-auto d-flex flex-wrap gap-2">
+                                    <a href="{{ route('careers.show', $hiring->id) }}" class="btn btn-outline-primary">
                                         <i class="fas fa-info-circle me-1"></i> View Details
-                                    </button>
+                                    </a>
                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#applyModal" data-career-id="{{ $hiring->id }}">
                                         <i class="fas fa-paper-plane me-1"></i> Apply Now
                                     </button>
-                                </div>
-                            </div>
-
-                            <!-- Details Modal -->
-                            <div class="modal fade" id="detailsModal{{ $hiring->id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ $hiring->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-scrollable">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="detailsModalLabel{{ $hiring->id }}">{{ $hiring->position }}</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <h6 class="text-primary">Description:</h6>
-                                            <p>{{ $hiring->description }}</p>
-                                            <h6 class="text-primary mt-4">Requirements:</h6>
-                                            <p>{{ $hiring->requirements }}</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#applyModal" data-career-id="{{ $hiring->id }}" data-bs-dismiss="modal">Apply Now</button>
-                                        </div>
-                                    </div>
+                                    <button class="btn btn-outline-secondary save-hiring {{ in_array($hiring->id, $savedHirings) ? 'saved' : '' }}"
+                                            data-hiring-id="{{ $hiring->id }}">
+                                        <i class="fas fa-bookmark me-1"></i>
+                                        <span class="button-text">{{ in_array($hiring->id, $savedHirings) ? 'Saved' : 'Save' }}</span>
+                                        <span class="spinner"><i class="fas fa-spinner fa-spin"></i></span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -477,17 +618,173 @@
 
             mobileMenuToggle.addEventListener('click', function() {
                 navLinks.classList.toggle('show');
+                this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
             });
 
             // Close mobile menu when clicking outside
             document.addEventListener('click', function(event) {
                 if (!navLinks.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
                     navLinks.classList.remove('show');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
                 }
             });
+
+            // Add smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Highlight current page in navigation
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                if (link.classList.contains('active')) {
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+
+            // Save/Unsave hiring functionality
+            var saveButtons = document.querySelectorAll('.save-hiring');
+            saveButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var hiringId = this.getAttribute('data-hiring-id');
+                    if (this.classList.contains('saved')) {
+                        unsaveHiring(hiringId, this);
+                    } else {
+                        saveHiring(hiringId, this);
+                    }
+                });
+            });
+
+            function saveHiring(hiringId, button) {
+                toggleSaveButton(button, true);
+
+                fetch('{{ route("careers.save") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        hiring_id: hiringId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    toggleSaveButton(button, false);
+                    if (data.success) {
+                        updateSaveButtonState(button, true);
+                        showToast('Job saved successfully!');
+                        updateSavedJobsCount(); // Update count after saving
+                    } else {
+                        showToast(data.message || 'Error saving job. Please try again.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toggleSaveButton(button, false);
+                    showToast('An error occurred. Please try again.', 'error');
+                });
+            }
+
+            function unsaveHiring(hiringId, button) {
+                toggleSaveButton(button, true);
+
+                fetch('{{ route("unsave.hiring") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        hiring_id: hiringId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    toggleSaveButton(button, false);
+                    if (data.success) {
+                        updateSaveButtonState(button, false);
+                        showToast('Job removed from saved list.');
+                        updateSavedJobsCount(); // Update count after unsaving
+                    } else {
+                        showToast(data.message || 'Error removing job. Please try again.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toggleSaveButton(button, false);
+                    showToast('An error occurred. Please try again.', 'error');
+                });
+            }
+
+            function toggleSaveButton(button, isLoading) {
+                button.classList.toggle('loading', isLoading);
+                button.disabled = isLoading;
+            }
+
+            function updateSaveButtonState(button, isSaved) {
+                button.classList.toggle('saved', isSaved);
+                button.classList.toggle('btn-outline-secondary', !isSaved);
+                button.classList.toggle('btn-success', isSaved);
+                button.querySelector('.button-text').textContent = isSaved ? 'Saved' : 'Save';
+                button.disabled = false;
+
+                if (isSaved) {
+                    const icon = button.querySelector('.fa-bookmark');
+                    icon.classList.remove('fa-bookmark');
+                    void icon.offsetWidth; // Trigger reflow
+                    icon.classList.add('fa-bookmark');
+                }
+            }
+
+            function showToast(message, type = 'success') {
+                // Create and show a Bootstrap toast
+                var toastHtml = `
+                    <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+                var toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                toastContainer.innerHTML = toastHtml;
+                document.body.appendChild(toastContainer);
+
+                var toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+                toast.show();
+
+                // Remove the toast container after it's hidden
+                toastContainer.addEventListener('hidden.bs.toast', function () {
+                    document.body.removeChild(toastContainer);
+                });
+            }
+
+            // Add this new function to update the saved jobs count
+            function updateSavedJobsCount() {
+                fetch('{{ route("saved-jobs.count") }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        const savedJobsCount = document.querySelector('.saved-jobs-count');
+                        savedJobsCount.textContent = data.count;
+                        savedJobsCount.style.display = 'inline-block'; // Always display the badge
+                    })
+                    .catch(error => console.error('Error fetching saved jobs count:', error));
+            }
+
+            // Call the function when the page loads
+            updateSavedJobsCount();
         });
     </script>
-        <script>
+    <script>
             // Allow right-click but prevent default context menu
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault(); // Prevent the default context menu
@@ -500,6 +797,47 @@
                     e.preventDefault();
                 }
             });
-        </script>
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('careerSearch');
+    const careerList = document.getElementById('careerList');
+    const careerItems = careerList.getElementsByClassName('career-item-container');
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+
+        Array.from(careerItems).forEach(function(item) {
+            const position = item.querySelector('h2').textContent.toLowerCase();
+            const description = item.querySelector('p').textContent.toLowerCase();
+
+            if (position.includes(searchTerm) || description.includes(searchTerm)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        // Show a message if no results are found
+        const visibleItems = Array.from(careerItems).filter(item => item.style.display !== 'none');
+        if (visibleItems.length === 0) {
+            let noResultsMessage = document.getElementById('noResultsMessage');
+            if (!noResultsMessage) {
+                noResultsMessage = document.createElement('div');
+                noResultsMessage.id = 'noResultsMessage';
+                noResultsMessage.className = 'alert alert-info text-center mt-4';
+                noResultsMessage.innerHTML = '<p class="mb-0">No positions found matching your search.</p>';
+                careerList.parentNode.insertBefore(noResultsMessage, careerList.nextSibling);
+            }
+            noResultsMessage.style.display = '';
+        } else {
+            const existingMessage = document.getElementById('noResultsMessage');
+            if (existingMessage) {
+                existingMessage.style.display = 'none';
+            }
+        }
+    });
+});
+    </script>
 </body>
 </html>

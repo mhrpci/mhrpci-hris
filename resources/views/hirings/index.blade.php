@@ -187,6 +187,7 @@
                                     <th>Position</th>
                                     <th>Description</th>
                                     <th>Requirements</th>
+                                    <th>Location</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -196,6 +197,7 @@
                                     <td>{{ $hiring->position }}</td>
                                     <td>{{ Str::limit($hiring->description, 100) }}</td>
                                     <td>{{ Str::limit($hiring->requirements, 100) }}</td>
+                                    <td>{{ $hiring->location }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

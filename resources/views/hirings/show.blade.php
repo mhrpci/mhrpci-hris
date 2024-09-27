@@ -97,6 +97,10 @@
                             @endforeach
                         </ul>
                     </div>
+                    <div class="mb-4">
+                        <h5 class="text-muted">Location</h5>
+                        <p class="lead"><i class="fas fa-map-marker-alt text-danger mr-2"></i>{{ $hiring->location }}</p>
+                    </div>
                 </div>
                 <div class="card-footer bg-light">
                     <div class="d-flex justify-content-between align-items-center flex-wrap">

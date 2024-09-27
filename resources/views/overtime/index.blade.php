@@ -73,11 +73,105 @@
         transform: scaleY(1);
     }
 }
+/*Links*/
+.contribution-nav {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .contribution-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #333;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
+    }
+    .contribution-link:hover {
+        background-color: #e9ecef;
+        text-decoration: none;
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .contribution-link.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+    .contribution-link .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(0,0,0,0.1);
+        margin-right: 10px;
+    }
+    .contribution-link.active .icon-wrapper {
+        background-color: rgba(255,255,255,0.2);
+    }
+    .contribution-link .icon-wrapper i {
+        font-size: 1.2rem;
+    }
+    .contribution-link .text-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .contribution-link .title {
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    .contribution-link .description {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+    .contribution-link.active .description {
+        opacity: 0.9;
+    }
 </style>
 @stop
 @section('content')
 <br>
 <div class="container-fluid">
+        <!-- Enhanced professional-looking link buttons -->
+<div class="mb-4">
+    <div class="contribution-nav" role="navigation" aria-label="Contribution Types">
+        <a href="{{ route('payroll.index') }}" class="contribution-link {{ request()->routeIs('payroll.index') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Payroll</span>
+                <small class="description">Payroll List</small>
+            </div>
+        </a>
+        @can('payroll-create')
+        <a href="{{ route('payroll.create') }}" class="contribution-link {{ request()->routeIs('payroll.create') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Create Payroll</span>
+                <small class="description">Generate Payroll</small>
+            </div>
+        </a>
+        @endcan
+        <a href="{{ route('overtime.index') }}" class="contribution-link {{ request()->routeIs('overtime.index') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Overtime</span>
+                <small class="description">Employee overtime records</small>
+            </div>
+        </a>
+    </div>
+</div>
     <div class="row">
         <div class="col-md-12">
             <div class="card">

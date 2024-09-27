@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Career;
 use App\Models\Hiring;
 use Illuminate\Support\Facades\Mail;
+use App\Models\SavedHiring;
 
 class CareerController extends Controller
 {
@@ -25,7 +26,9 @@ class CareerController extends Controller
     public function index()
     {
         $hirings = Hiring::all();
-        return view('careers', compact('hirings'));
+        $ipAddress = request()->ip();
+        $savedHirings = SavedHiring::where('ip_address', $ipAddress)->pluck('hiring_id')->toArray();
+        return view('careers', compact('hirings', 'savedHirings'));
     }
 
     public function apply(Request $request)
@@ -110,9 +113,12 @@ class CareerController extends Controller
 
     public function show($id)
     {
-        $career = Career::with('hiring')->findOrFail($id);
-        $this->markAsRead($career);
-        return view('showApplicant', compact('career'));
+        $hiring = Hiring::findOrFail($id);
+        $ipAddress = request()->ip();
+        $savedHirings = SavedHiring::where('ip_address', $ipAddress)->pluck('hiring_id')->toArray();
+        $relatedJobs = Hiring::where('id', '!=', $id)->take(5)->get(); // Get 5 related jobs
+
+        return view('career_details', compact('hiring', 'savedHirings', 'relatedJobs'));
     }
 
     private function markAsRead(Career $career)
@@ -158,6 +164,62 @@ class CareerController extends Controller
         ";
 
         Mail::to($career->email)->send(new \App\Mail\InterviewScheduled($emailContent));
+    }
+
+    public function saveHiring(Request $request)
+    {
+        $hiringId = $request->input('hiring_id');
+        $ipAddress = $request->ip();
+
+        try {
+            SavedHiring::create([
+                'hiring_id' => $hiringId,
+                'ip_address' => $ipAddress,
+            ]);
+            return response()->json(['success' => true]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Handle unique constraint violation
+            if ($e->getCode() == 23000) {
+                return response()->json(['success' => false, 'message' => 'You have already saved this hiring.']);
+            }
+            throw $e;
+        }
+    }
+
+    public function unsaveHiring(Request $request)
+    {
+        $hiringId = $request->input('hiring_id');
+        $ipAddress = $request->ip();
+
+        try {
+            $deleted = SavedHiring::where('hiring_id', $hiringId)
+                ->where('ip_address', $ipAddress)
+                ->delete();
+
+            if ($deleted) {
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Hiring was not saved or already removed.']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while unsaving the hiring.']);
+        }
+    }
+
+    public function savedJobs()
+    {
+        $ipAddress = request()->ip();
+        $savedHiringIds = SavedHiring::where('ip_address', $ipAddress)->pluck('hiring_id');
+        $savedJobs = Hiring::whereIn('id', $savedHiringIds)->get();
+
+        return view('saved-jobs', compact('savedJobs'));
+    }
+
+    public function getSavedJobsCount()
+    {
+        $ipAddress = request()->ip();
+        $count = SavedHiring::where('ip_address', $ipAddress)->count();
+        return response()->json(['count' => $count]);
     }
 
 }
