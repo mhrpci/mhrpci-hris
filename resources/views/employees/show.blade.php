@@ -3,12 +3,9 @@
 @section('preloader')
 <div id="loader" class="loader">
     <div class="loader-content">
-        <div class="wave-loader">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+        <div class="mhr-loader">
+            <div class="spinner"></div>
+            <div class="mhr-text">MHR</div>
         </div>
         <h4 class="mt-4 text-dark">Loading...</h4>
     </div>
@@ -33,45 +30,37 @@
         text-align: center;
     }
 
-    /* Wave Loader */
-    .wave-loader {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        height: 50px;
+    /* MHR Loader */
+    .mhr-loader {
+        position: relative;
+        width: 100px;
+        height: 100px;
     }
 
-    .wave-loader > div {
-        width: 10px;
-        height: 50px;
-        margin: 0 5px;
-        background-color: #8e44ad;
-        animation: wave 1s ease-in-out infinite;
+    .spinner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #8e44ad;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
     }
 
-    .wave-loader > div:nth-child(2) {
-        animation-delay: -0.9s;
+    .mhr-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: #8e44ad;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
-    .wave-loader > div:nth-child(3) {
-        animation-delay: -0.8s;
-    }
-
-    .wave-loader > div:nth-child(4) {
-        animation-delay: -0.7s;
-    }
-
-    .wave-loader > div:nth-child(5) {
-        animation-delay: -0.6s;
-    }
-
-    @keyframes wave {
-        0%, 100% {
-            transform: scaleY(0.5);
-        }
-        50% {
-            transform: scaleY(1);
-        }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
     .status-active {

@@ -563,6 +563,199 @@
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+
+        /* Announcements Section */
+        #latest-posts {
+            background-color: var(--light-bg);
+            padding: 6rem 0;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .post-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .post-card p {
+            margin-bottom: 1rem;
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .read-more:hover {
+            background-color: #3a7bd5;
+        }
+
+        .today-posts-badge {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+            vertical-align: top;
+        }
+
+        /* Posts Slider Styles */
+        .container {
+            position: relative;
+        }
+
+        .posts-slider-container {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .posts-slider {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+
+        .post-card {
+            flex: 0 0 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s ease;
+        }
+
+        .slider-btn:hover {
+            background-color: #3a7bd5;
+        }
+
+        .prev-btn {
+            left: -50px;
+        }
+
+        .next-btn {
+            right: -50px;
+        }
+
+        @media (max-width: 1300px) {
+            .prev-btn {
+                left: 10px;
+            }
+
+            .next-btn {
+                right: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slider-btn {
+                padding: 5px 10px;
+                font-size: 16px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #modalTitle {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        #modalContent {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        #modalMeta {
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -587,6 +780,14 @@
                     <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
                     <li><a href="#partners" class="nav-link" title="Our Partners">Partners</a></li>
                     <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
+                    {{-- <li>
+                        <a href="#latest-posts" class="nav-link" title="Read Our Announcements">
+                            Announcements
+                            @if($todayPostsCount > 0)
+                                <span class="today-posts-badge">{{ $todayPostsCount }} new</span>
+                            @endif
+                        </a>
+                    </li> --}}
                     <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
                 </ul>
                 <div class="auth-buttons">
@@ -616,6 +817,7 @@
             <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
             <li><a href="#partners" class="nav-link" title="Our Partners">Partners</a></li>
             <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
+            {{-- <li><a href="#latest-posts" class="nav-link" title="Read Our Announcements">Announcements</a></li> --}}
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
         </ul>
         <div class="auth-buttons">
@@ -749,6 +951,29 @@
                 </div>
             </div>
         </section>
+
+        {{-- <section id="latest-posts">
+            <div class="container">
+                <h2>Latest Posts</h2>
+                <div class="posts-slider-container">
+                    <div class="posts-slider">
+                        @foreach($posts as $post)
+                            <div class="post-card">
+                                <h3>{{ $post->title }}</h3>
+                                <p>{{ Str::limit($post->content, 150) }}</p>
+                                <div class="post-meta">
+                                    <span>By: {{ $post->user->first_name }} {{ $post->user->last_name }}</span>
+                                    <span>{{ $post->created_at->format('M d, Y') }}</span>
+                                </div>
+                                <a href="{{ route('posts.show', $post->id) }}" class="read-more">Read More</a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <button class="slider-btn prev-btn" aria-label="Previous posts">&lt;</button>
+                <button class="slider-btn next-btn" aria-label="Next posts">&gt;</button>
+            </div>
+        </section> --}}
     </main>
 
     <footer id="contact">
@@ -790,6 +1015,16 @@
             </div>
         </div>
     </footer>
+
+    <!-- Post Modal -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalContent"></div>
+            <div id="modalMeta"></div>
+        </div>
+    </div>
 
     <script>
         // Add preloader script
@@ -836,20 +1071,148 @@
                 chatbotContainer.style.display = 'none';
             });
         });
-    </script>
-        <script>
-            // Allow right-click but prevent default context menu
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault(); // Prevent the default context menu
-                // Custom context menu logic can be added here if needed
-            });
 
-            // Disable F12, Ctrl+Shift+I, Ctrl+U
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.querySelector('.posts-slider');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const postCards = document.querySelectorAll('.post-card');
+            let currentIndex = 0;
+            let autoSlideInterval;
+
+            function updateSliderPosition() {
+                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+
+            function showPrevPost() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                } else {
+                    currentIndex = postCards.length - 1;
+                }
+                updateSliderPosition();
+                resetAutoSlide();
+            }
+
+            function showNextPost() {
+                if (currentIndex < postCards.length - 1) {
+                    currentIndex++;
+                } else {
+                    currentIndex = 0;
+                }
+                updateSliderPosition();
+                resetAutoSlide();
+            }
+
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(showNextPost, 10000); // 10 seconds
+            }
+
+            function resetAutoSlide() {
+                clearInterval(autoSlideInterval);
+                startAutoSlide();
+            }
+
+            prevBtn.addEventListener('click', showPrevPost);
+            nextBtn.addEventListener('click', showNextPost);
+
+            // Optional: Add keyboard navigation
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'U')) {
-                    e.preventDefault();
+                if (e.key === 'ArrowLeft') {
+                    showPrevPost();
+                } else if (e.key === 'ArrowRight') {
+                    showNextPost();
                 }
             });
-        </script>
+
+            // Optional: Add touch swipe support
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            slider.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            slider.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                if (touchStartX - touchEndX > 50) {
+                    showNextPost();
+                }
+                if (touchEndX - touchStartX > 50) {
+                    showPrevPost();
+                }
+            }
+
+            // Start the automatic slide
+            startAutoSlide();
+
+            // Pause auto-slide when hovering over the slider
+            slider.addEventListener('mouseenter', function() {
+                clearInterval(autoSlideInterval);
+            });
+
+            // Resume auto-slide when mouse leaves the slider
+            slider.addEventListener('mouseleave', function() {
+                startAutoSlide();
+            });
+        });
+
+        // Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('postModal');
+            const closeBtn = document.querySelector('.close');
+            const readMoreButtons = document.querySelectorAll('.read-more');
+
+            readMoreButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    fetchPostDetails(postId);
+                });
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            function fetchPostDetails(postId) {
+                fetch(`/api/posts/${postId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('modalTitle').textContent = data.title;
+                        document.getElementById('modalContent').innerHTML = data.content;
+                        document.getElementById('modalMeta').innerHTML = `
+                            <p>By: ${data.user.first_name} ${data.user.last_name}</p>
+                            <p>Posted on: ${new Date(data.created_at).toLocaleDateString()}</p>
+                        `;
+                        modal.style.display = 'block';
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Allow right-click but prevent default context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault(); // Prevent the default context menu
+            // Custom context menu logic can be added here if needed
+        });
+
+        // Disable F12, Ctrl+Shift+I, Ctrl+U
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -463,7 +463,7 @@ return [
                     'url' => 'sss',
                     'icon' => 'fas fa-file-alt',
                     'can' => ['admin', 'super-admin', 'hrcomben'],
-                    'active' => ['sss*', 'regex'],
+                    'active' => ['sss*','philhealth*','pagibig*', 'regex'],
                 ],
                 // [
                 //     'text' => ' PAGIBIG',
@@ -480,7 +480,7 @@ return [
                 //     'active' => ['philhealth*', 'regex'],
                 // ],
                 [
-                    'text' => ' Loans and CA',
+                    'text' => ' Loans',
                     'url' => 'loans',
                     'icon' => 'fas fa-money-bill-alt',
                     'can' => ['admin', 'super-admin', 'hrcomben'],
@@ -615,39 +615,11 @@ return [
             'can' => ['admin', 'super-admin','hrcompliance'],
             'submenu' => [
                 [
-                    'text' => ' User',
+                    'text' => ' User Management',
                     'url' => 'users',
-                    'icon' => 'fas fa-user',
-                    'active' => ['users*', 'regex'],
+                    'icon' => 'fas fa-user-cog',
+                    'active' => ['users*','roles*','departments*','positions*', 'regex'],
                     'can' => ['admin', 'super-admin'],
-                ],
-                [
-                    'text' => ' Roles and Permission',
-                    'url' => 'roles',
-                    'icon' => 'fas fa-lock',
-                    'active' => ['roles*', 'regex'],
-                    'can' => 'super-admin'
-                ],
-                [
-                    'text' => ' Gender',
-                    'url' => 'genders',
-                    'icon' => 'fas fa-venus-mars',
-                    'active' => ['genders*', 'regex'],
-                    'can' => ['admin', 'super-admin'],
-                ],
-                [
-                    'text' => ' Position',
-                    'url' => 'positions',
-                    'icon' => 'fas fa-briefcase',
-                    'active' => ['positions*', 'regex'],
-                    'can' => ['admin', 'super-admin','hrcompliance'],
-                ],
-                [
-                    'text' => ' Department',
-                    'url' => 'departments',
-                    'icon' => 'fas fa-sitemap',
-                    'active' => ['departments*', 'regex'],
-                    'can' => ['admin', 'super-admin','hrcompliance'],
                 ],
                 [
                     'text' => ' User Logs',

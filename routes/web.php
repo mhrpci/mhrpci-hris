@@ -33,6 +33,7 @@ use App\Http\Controllers\HiringController;
 use App\Http\Controllers\SssController;
 use App\Http\Controllers\PagibigController;
 use App\Http\Controllers\PhilhealthController;
+use App\Http\Controllers\WelcomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,10 +45,7 @@ use App\Http\Controllers\PhilhealthController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-    Route::get('/', function () {
-    notify()->success('Good Day!');
-    return view('welcome');
-    });
+    Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
     Route::get('/home', function () {
         notify()->success('Welcome to MHRPCI - HRIS');
         return view('home');
@@ -155,7 +153,7 @@ use App\Http\Controllers\PhilhealthController;
     Route::get('/my-leave-detail/{id}', [LeaveController::class, 'myLeaveDetail'])->name('leaves.myLeaveDetail');
 
     Route::get('/careers', [CareerController::class, 'index'])->name('careers');
-    Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
+    Route::get('/applicants/{id}', [CareerController::class, 'showApplicant'])->name('showApplicant');
     Route::post('/careers/save', [CareerController::class, 'saveHiring'])->name('careers.save');
     Route::post('/unsave-hiring', [CareerController::class, 'unsaveHiring'])->name('unsave.hiring');
     Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');

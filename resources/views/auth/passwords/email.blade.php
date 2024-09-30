@@ -81,9 +81,61 @@
         .btn-login:active {
             transform: scale(0.98);
         }
+
+        /* Updated Loader Styles */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader-content {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6a1b9a;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #6a1b9a;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- Updated Loader HTML -->
+    <div id="loader" class="loader">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <div class="loader-text">MHR</div>
+        </div>
+    </div>
+
     <div class="container">
         <form class="login-form" method="POST" action="{{ route('password.email') }}" id="reset-password-form">
             @csrf
@@ -100,7 +152,77 @@
     </div>
 
     <script>
+        // Loader Script
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader');
+            setTimeout(function() {
+                loader.style.opacity = '0';
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500); // Fade out transition time
+            }, 2000); // Display loader for 2 seconds
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Add form submission handler
+            const resetPasswordForm = document.getElementById('reset-password-form');
+            resetPasswordForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                try {
+                    const response = await fetch(resetPasswordForm.action, {
+                        method: 'POST',
+                        body: new FormData(resetPasswordForm),
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        if (data.status === 'disabled') {
+                            // User is disabled, show error
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Account Disabled',
+                                text: 'Your account is disabled. Please contact support.',
+                                confirmButtonColor: '#6a1b9a'
+                            });
+                        } else {
+                            // Success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Password reset link has been sent to your email.',
+                                confirmButtonColor: '#6a1b9a'
+                            });
+                        }
+                    } else {
+                        // Error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: data.message || 'Failed to send password reset link. Please try again.',
+                            confirmButtonColor: '#6a1b9a'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong. Please try again later.',
+                        confirmButtonColor: '#6a1b9a'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
     // Add form submission handler
     const resetPasswordForm = document.getElementById('reset-password-form');
     resetPasswordForm.addEventListener('submit', async (e) => {

@@ -93,9 +93,57 @@
         .forgot-password a:hover {
             text-decoration: underline;
         }
+
+        /* Add these new styles for the preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(247, 247, 247, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .preloader-content {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+        .preloader-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6a1b9a;
+            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+            animation: spin 1s linear infinite;
+        }
+        .preloader-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #6a1b9a;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- Add the preloader HTML -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-spinner"></div>
+            <div class="preloader-text">MHR</div>
+        </div>
+    </div>
+
     <div class="container">
         <form class="reset-form" method="POST" action="{{ route('password.update') }}" id="reset-password-form">
             @csrf
@@ -122,10 +170,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Add preloader logic
+            const preloader = document.getElementById('preloader');
+            window.addEventListener('load', () => {
+                preloader.style.display = 'none';
+            });
+
             // Add form submission handler
             const resetPasswordForm = document.getElementById('reset-password-form');
             resetPasswordForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                preloader.style.display = 'flex'; // Show preloader before request
 
                 try {
                     const response = await fetch(resetPasswordForm.action, {
@@ -173,6 +228,8 @@
                         text: 'Something went wrong. Please try again later.',
                         confirmButtonColor: '#6a1b9a'
                     });
+                } finally {
+                    preloader.style.display = 'none'; // Hide preloader after request
                 }
             });
         });

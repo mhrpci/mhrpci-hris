@@ -73,9 +73,48 @@
         .resend-link a:hover {
             text-decoration: underline;
         }
+
+        /* Add these new styles for the preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(247, 247, 247, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .preloader-content {
+            width: 100px;
+            height: 100px;
+            border: 5px solid #6a1b9a;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: #6a1b9a;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- Add the preloader div -->
+    <div class="preloader">
+        <div class="preloader-content">
+            MHR
+        </div>
+    </div>
+
     <div class="container">
         <div class="login-form">
             <div class="logo">
@@ -95,6 +134,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Add this line to hide the preloader when the page is loaded
+            document.querySelector('.preloader').style.display = 'none';
+
             // Add form submission handler
             const resetPasswordForm = document.querySelector('form');
             resetPasswordForm.addEventListener('submit', async (e) => {

@@ -69,10 +69,10 @@
 <br>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">SSS Contribution Form</h3>
+            <h3 class="card-title">PHILHEALTH Contribution Form</h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('sss.store') }}" method="POST">
+            <form action="{{ route('philhealth.store') }}" method="POST">
                 @csrf
                 <div class="form-group">
                     <label for="employee_id">Employee</label>
@@ -88,7 +88,7 @@
                     <input type="date" name="contribution_date" id="contribution_date" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Contribution</button>
-                <a href="{{ route('sss.index') }}" class="btn btn-secondary">Back</a>
+                <a href="{{ route('philhealth.index') }}" class="btn btn-secondary">Back</a>
             </form>
         </div>
     </div>

@@ -69,63 +69,51 @@
 <div class="container py-4">
     <div class="card shadow-lg border-0 rounded-lg">
         <div class="card-header bg-primary text-white">
-            <h3 class="card-title mb-0">SSS Contribution Information</h3>
+            <h3 class="card-title mb-0">PHILHEALTH Contribution Information</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-8">
                     <div class="employee-info mb-4">
-                        <h4 class="text-primary">{{ $sss->employee->last_name }}, {{ $sss->employee->first_name }} {{ $sss->employee->middle_name ?? '' }} {{ $sss->employee->suffix ?? '' }}</h4>
-                        <p class="text-muted">Employee ID: {{ $sss->employee->company_id }}</p>
+                        <h4 class="text-primary">{{ $philhealth->employee->last_name }}, {{ $philhealth->employee->first_name }} {{ $philhealth->employee->middle_name ?? '' }} {{ $philhealth->employee->suffix ?? '' }}</h4>
+                        <p class="text-muted">Employee ID: {{ $philhealth->employee->company_id }}</p>
                     </div>
                     <div class="contribution-details">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="detail-item">
                                     <span class="detail-label">Contribution Date</span>
-                                    <span class="detail-value">{{ $sss->contribution_date->format('F j, Y') }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="detail-item">
-                                    <span class="detail-label">Monthly Salary Credit</span>
-                                    <span class="detail-value">₱{{ number_format($sss->monthly_salary_credit, 2) }}</span>
+                                    <span class="detail-value">{{ $philhealth->contribution_date->format('F j, Y') }}</span>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="detail-item">
                                     <span class="detail-label">Employee Contribution</span>
-                                    <span class="detail-value">₱{{ number_format($sss->employee_contribution, 2) }}</span>
+                                    <span class="detail-value">₱{{ number_format($philhealth->employee_contribution, 2) }}</span>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="detail-item">
                                     <span class="detail-label">Employer Contribution</span>
-                                    <span class="detail-value">₱{{ number_format($sss->employer_contribution, 2) }}</span>
+                                    <span class="detail-value">₱{{ number_format($philhealth->employer_contribution, 2) }}</span>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="detail-item">
                                     <span class="detail-label">Total Contribution</span>
-                                    <span class="detail-value font-weight-bold">₱{{ number_format($sss->total_contribution, 2) }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="detail-item">
-                                    <span class="detail-label">EC Contribution</span>
-                                    <span class="detail-value">₱{{ number_format($sss->ec_contribution, 2) }}</span>
+                                    <span class="detail-value font-weight-bold">₱{{ number_format($philhealth->total_contribution, 2) }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 d-none d-md-block">
-                    <img src="{{ asset('vendor/adminlte/dist/img/sss.png') }}" alt="SSS Logo" class="img-fluid mt-4" style="opacity: 0.7;">
+                    <img src="{{ asset('vendor/adminlte/dist/img/philhealth.png') }}" alt="philhealth Logo" class="img-fluid mt-4" style="opacity: 0.7;">
                 </div>
             </div>
         </div>
         <div class="card-footer">
-            <a href="{{ route('sss.index') }}" class="btn btn-primary">
+            <a href="{{ route('philhealth.index') }}" class="btn btn-primary">
                 <i class="fas fa-arrow-left mr-2"></i>Back to List
             </a>
         </div>

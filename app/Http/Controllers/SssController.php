@@ -18,7 +18,7 @@ class SssController extends Controller
 
     public function create()
     {
-        $employees = Employee::all();
+        $employees = Employee::whereNotNull('sss_no')->get();
         return view('sss.create', compact('employees'));
     }
 

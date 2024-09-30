@@ -3,48 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
+use Illuminate\Support\Carbon;
 
 class WelcomeController extends Controller
 {
-    public function setSeasonalTheme(Request $request)
+    public function index()
     {
-        // Determine the current season
-        $month = date('m');
-        $season = $this->getSeason($month);
-
-        // Set the theme based on the season
-        $theme = $this->getThemeForSeason($season);
-
-        // Store the theme in the session
-        $request->session()->put('theme', $theme);
-
-        return redirect()->back();
+        $posts = Post::with('user')->latest()->take(6)->get();
+        $todayPostsCount = $this->countTodayPosts();
+        return view('welcome', compact('posts', 'todayPostsCount'));
     }
 
-    private function getSeason($month)
+    public function showPost($id)
     {
-        // Determine the season based on the month
-        if ($month >= 3 && $month <= 5) {
-            return 'spring';
-        } elseif ($month >= 6 && $month <= 8) {
-            return 'summer';
-        } elseif ($month >= 9 && $month <= 11) {
-            return 'fall';
-        } else {
-            return 'winter';
-        }
+        $post = Post::findOrFail($id);
+        $relatedPosts = $this->getRelatedPosts($post);
+        return view('posts', compact('post', 'relatedPosts'));
     }
 
-    private function getThemeForSeason($season)
+    private function countTodayPosts()
     {
-        // Define CSS files for each season
-        $themes = [
-            'spring' => 'spring.css',
-            'summer' => 'summer.css',
-            'fall' => 'fall.css',
-            'winter' => 'winter.css',
-        ];
+        return Post::whereDate('created_at', Carbon::today())->count();
+    }
 
-        return $themes[$season] ?? 'default.css';
+    private function getRelatedPosts($post)
+    {
+        return Post::where('id', '!=', $post->id)
+                    ->whereDate('created_at', Carbon::today())
+                    ->take(3)
+                    ->get();
     }
 }

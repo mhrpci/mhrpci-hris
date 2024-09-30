@@ -27,28 +27,19 @@ class Philhealth extends Model
         return $this->belongsTo(Employee::class);
     }
 
-
-    public function calculateContribution(Employee $employee, $month, $year)
+    public function calculateContribution()
     {
-        $salary = $employee->salary;
-        $totalContribution = $salary * 0.05;
-        $employeeContribution = $totalContribution / 2;
-        $employerContribution = $totalContribution / 2;
+        $salary = $this->employee->salary;
+        $monthlyBasicSalary = min(max($salary, 10000), 80000);
 
-        return PhilhealthContribution::create([
-            'employee_id' => $employee->id,
-            'employee_contribution' => $employeeContribution,
-            'employer_contribution' => $employerContribution,
-            'total_contribution' => $totalContribution,
-            'contribution_date' => Carbon::create($year, $month, 1),
-        ]);
-    }
+        $premium = $monthlyBasicSalary * 0.05;
+        $employeeShare = $premium / 2;
+        $employerShare = $premium / 2;
 
-    public function getContributionForMonth(Employee $employee, $month, $year)
-    {
-        return PhilhealthContribution::where('employee_id', $employee->id)
-            ->whereYear('contribution_date', $year)
-            ->whereMonth('contribution_date', $month)
-            ->first();
+        $this->employee_contribution = round($employeeShare, 2);
+        $this->employer_contribution = round($employerShare, 2);
+        $this->total_contribution = round($premium, 2);
+
+        return $this;
     }
 }

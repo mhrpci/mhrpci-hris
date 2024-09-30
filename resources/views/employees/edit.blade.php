@@ -2,10 +2,70 @@
 
 @section('title', 'Edit Employee')
 
-@section('content_header')
-    <h1 class="m-0 text-dark">Edit Employee</h1>
-@stop
+@section('preloader')
+<div id="loader" class="loader">
+    <div class="loader-content">
+        <div class="mhr-loader">
+            <div class="spinner"></div>
+            <div class="mhr-text">MHR</div>
+        </div>
+        <h4 class="mt-4 text-dark">Loading...</h4>
+    </div>
+</div>
+<style>
+    /* Loader */
+    .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
 
+    .loader-content {
+        text-align: center;
+    }
+
+    /* MHR Loader */
+    .mhr-loader {
+        position: relative;
+        width: 100px;
+        height: 100px;
+    }
+
+    .spinner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #8e44ad;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    .mhr-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: #8e44ad;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+@stop
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -409,9 +469,9 @@
                         <div class="form-group">
                             <label for="employee_status">Employment Status</label>
                             <select class="form-control select2 @error('employee_status') is-invalid @enderror" id="employee_status" name="employee_status" required>
-                                <option value="active" {{ old('employee_status', $employee->employment_status) == 'Active' ? 'selected' : '' }}>Active</option>
-                                <option value="resigned" {{ old('employee_status', $employee->employment_status) == 'Resigned' ? 'selected' : '' }}>Resigned</option>
-                                <option value="terminated" {{ old('employee_status', $employee->employment_status) == 'Terminated' ? 'selected' : '' }}>Terminated</option>
+                                <option value="Active" {{ old('employee_status', $employee->employment_status) == 'Active' ? 'selected' : '' }}>Active</option>
+                                <option value="Resigned" {{ old('employee_status', $employee->employment_status) == 'Resigned' ? 'selected' : '' }}>Resigned</option>
+                                <option value="Terminated" {{ old('employee_status', $employee->employment_status) == 'Terminated' ? 'selected' : '' }}>Terminated</option>
                             </select>
                             @error('employee_status')
                                 <span class="invalid-feedback d-block" role="alert">

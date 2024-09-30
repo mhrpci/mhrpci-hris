@@ -384,99 +384,35 @@
 }
 
 .loader-content {
-    text-align: center;
-}
-
-/* Wave Loader */
-.wave-loader {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 50px;
-}
-
-.wave-loader > div {
-    width: 10px;
-    height: 50px;
-    margin: 0 5px;
-    background-color: #8e44ad;
-    animation: wave 1s ease-in-out infinite;
-}
-
-.wave-loader > div:nth-child(2) {
-    animation-delay: -0.9s;
-}
-
-.wave-loader > div:nth-child(3) {
-    animation-delay: -0.8s;
-}
-
-.wave-loader > div:nth-child(4) {
-    animation-delay: -0.7s;
-}
-
-.wave-loader > div:nth-child(5) {
-    animation-delay: -0.6s;
-}
-
-@keyframes wave {
-    0%, 100% {
-        transform: scaleY(0.5);
-    }
-    50% {
-        transform: scaleY(1);
-    }
-}
-
-/* Box Loader */
-.box-loader {
-    width: 50px;
-    height: 50px;
-    margin: auto;
     position: relative;
+    width: 100px;
+    height: 100px;
 }
 
-.box-loader > div {
+.spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #8e44ad;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: spin 1s linear infinite;
+}
+
+.loader-text {
     position: absolute;
-    width: 16px;
-    height: 16px;
-    background-color: #8e44ad;
-    animation: box-loader 2s infinite ease-in-out;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #8e44ad;
 }
 
-.box-loader > div:nth-child(1) {
-    top: 0;
-    left: 0;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-.box-loader > div:nth-child(2) {
-    top: 0;
-    right: 0;
-    animation-delay: 0.5s;
-}
-
-.box-loader > div:nth-child(3) {
-    bottom: 0;
-    left: 0;
-    animation-delay: 1.5s;
-}
-
-.box-loader > div:nth-child(4) {
-    bottom: 0;
-    right: 0;
-    animation-delay: 1s;
-}
-
-@keyframes box-loader {
-    0%, 100% {
-        transform: scale(0.5);
-        opacity: 0.5;
-    }
-    50% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
 .notification {
             position: fixed;
             top: 10px;
@@ -572,13 +508,8 @@
 <body>
     <div id="loader" class="loader">
         <div class="loader-content">
-            <div class="wave-loader">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
+            <div class="spinner"></div>
+            <div class="loader-text">MHR</div>
         </div>
     </div>
     <div class="container" id="container">

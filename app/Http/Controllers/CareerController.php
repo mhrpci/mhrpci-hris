@@ -111,6 +111,15 @@ class CareerController extends Controller
         return view('all-careers', compact('careers'));
     }
 
+    public function showApplicant($id)
+    {
+        // Find the leave record
+        $career = Career::findOrFail($id);
+        $this->markAsRead($career);
+
+        return view('showApplicant', compact('career'));
+    }
+
     public function show($id)
     {
         $hiring = Hiring::findOrFail($id);
