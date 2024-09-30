@@ -286,3 +286,5 @@ class NotificationsController extends Controller
         return view('all-notifications', ['allNotifications' => $this->notifications]);
     }
 }
+
+

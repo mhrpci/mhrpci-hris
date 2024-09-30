@@ -84,8 +84,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="contribution_date">Contribution Date</label>
-                    <input type="date" name="contribution_date" id="contribution_date" class="form-control" required>
+                    <label for="contribution_date">Contribution Month</label>
+                    <input type="month" name="contribution_date" id="contribution_date" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Contribution</button>
                 <a href="{{ route('sss.index') }}" class="btn btn-secondary">Back</a>

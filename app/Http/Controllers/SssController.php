@@ -28,11 +28,12 @@ class SssController extends Controller
     {
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'contribution_date' => 'required|date',
+            'contribution_date' => 'required|date_format:Y-m',
         ]);
 
         $employee = Employee::findOrFail($request->employee_id);
-        Sss::createContribution($employee, $request->contribution_date);
+        $contributionDate = $request->contribution_date . '-01'; // Add day to make it a valid date
+        Sss::createContribution($employee, $contributionDate);
         return redirect()->route('sss.index')->with('success', 'SSS contribution created successfully.');
     }
 

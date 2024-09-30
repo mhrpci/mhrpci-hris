@@ -142,11 +142,24 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                @if($employee->profile)
-                                <img src="{{ asset('storage/' . $employee->profile) }}" alt="Profile Image" class="profile-img img-fluid rounded-circle mb-3" style="height: 150px; width: 150px;">
-                            @else
-                                <p>No profile image available</p>
-                            @endif
+                                <label for="current_profile">Current Profile Picture</label>
+                                <div class="text-center">
+                                    @if($employee->profile)
+                                        <img src="{{ asset('storage/' . $employee->profile) }}" alt="Profile Image" class="profile-img img-fluid rounded-circle mb-3" style="height: 150px; width: 150px; object-fit: cover; border: 3px solid #007bff;">
+                                    @else
+                                        <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile Image" class="profile-img img-fluid rounded-circle mb-3" style="height: 150px; width: 150px; object-fit: cover; border: 3px solid #6c757d;">
+                                    @endif
+                                </div>
+                                <div class="text-center">
+                                    @if($employee->profile)
+                                        <p class="mb-1"><small>Current: {{ basename($employee->profile) }}</small></p>
+                                        <button type="button" class="btn btn-sm btn-danger" id="remove_profile_btn">
+                                            <i class="fas fa-trash-alt"></i> Remove
+                                        </button>
+                                    @else
+                                        <p class="text-muted"><small>No custom profile picture set</small></p>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -413,6 +426,26 @@
                             @enderror
                         </div>
                     </div>
+                    <script>
+                        document.getElementById('sss_no').addEventListener('input', function (e) {
+                            let sssNumber = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+                            if (sssNumber.length > 10) {
+                                sssNumber = sssNumber.substr(0, 10); // Limit to 10 digits
+                            }
+                            // Format: XX-XXXXXXXXX-X
+                            let formattedSSS = '';
+                            if (sssNumber.length > 2) {
+                                formattedSSS = sssNumber.substr(0, 2) + '-';
+                                if (sssNumber.length > 3) {
+                                    formattedSSS += sssNumber.substr(2, sssNumber.length - 3) + '-';
+                                }
+                                formattedSSS += sssNumber.substr(sssNumber.length - 1);
+                            } else {
+                                formattedSSS = sssNumber;
+                            }
+                            e.target.value = formattedSSS;
+                        });
+                    </script>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="tin_no">TIN No</label>
@@ -435,6 +468,27 @@
                             @enderror
                         </div>
                     </div>
+                    <script>
+                        document.getElementById('philhealth_no').addEventListener('input', function (e) {
+                            // Remove non-numeric characters
+                            let input = e.target.value.replace(/\D/g, '');
+
+                            // Format as XXXX-XXXXXX-X (12 digits)
+                            if (input.length > 12) {
+                                input = input.slice(0, 12);
+                            }
+
+                            let formatted = '';
+                            for (let i = 0; i < input.length; i++) {
+                                if (i === 2 || i === 11) {
+                                    formatted += '-';
+                                }
+                                formatted += input[i];
+                            }
+
+                            e.target.value = formatted;
+                        });
+                    </script>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="pagibig_no">Pag-IBIG No</label>
@@ -446,6 +500,27 @@
                             @enderror
                         </div>
                     </div>
+                    <script>
+                        document.getElementById('pagibig_no').addEventListener('input', function (e) {
+                            // Remove non-numeric characters
+                            let input = e.target.value.replace(/\D/g, '');
+
+                            // Format as XXXX-XXXX-XXXX (12 digits)
+                            if (input.length > 12) {
+                                input = input.slice(0, 12);
+                            }
+
+                            let formatted = '';
+                            for (let i = 0; i < input.length; i++) {
+                                if (i === 4 || i === 8) {
+                                    formatted += '-';
+                                }
+                                formatted += input[i];
+                            }
+
+                            e.target.value = formatted;
+                        });
+                    </script>
                 </div>
 
                 <div class="row">
@@ -592,3 +667,34 @@ input {
 });
 </script>
 @stop
+
+@push('js')
+<script>
+    $(document).ready(function() {
+        // Preview new profile image
+        $('#profile').on('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('.profile-img').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove profile image
+        $('#remove_profile_btn').on('click', function() {
+            if (confirm('Are you sure you want to remove the profile picture?')) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'remove_profile',
+                    value: '1'
+                }).appendTo('form');
+                $('.profile-img').attr('src', '{{ asset('images/default-profile.png') }}');
+                $(this).parent().html('<p class="text-muted"><small>Profile picture will be removed upon saving</small></p>');
+            }
+        });
+    });
+</script>
+@endpush

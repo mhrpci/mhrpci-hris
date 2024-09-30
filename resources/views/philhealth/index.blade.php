@@ -134,7 +134,7 @@
                 <tr>
                     <td>{{ $contribution->employee->philhealth_no}}</td>
                     <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
-                    <td>{{ $contribution->contribution_date->format('F j, Y') }}</td>
+                    <td>{{ $contribution->contribution_date->format('F Y') }}</td>
                     <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
                     <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
                     <td>{{ number_format($contribution->total_contribution, 2) }}</td>

@@ -69,26 +69,34 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <div class="card mt-4 shadow-sm">
+            <div class="card mt-4 shadow">
                 <div class="card-header bg-primary text-white">
                     <h1 class="mb-0 h3">{{ $hiring->position }}</h1>
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
-                        <h5 class="text-muted">Description</h5>
+                        <h5 class="text-primary"><i class="fas fa-info-circle mr-2"></i>Description</h5>
                         <p class="lead">{{ $hiring->description }}</p>
                     </div>
                     <div class="mb-4">
-                        <h5 class="text-muted">Requirements</h5>
-                        <ul class="list-unstyled">
+                        <h5 class="text-primary"><i class="fas fa-list-ul mr-2"></i>Requirements</h5>
+                        <ul class="list-group">
                             @foreach(explode("\n", $hiring->requirements) as $requirement)
-                                <li><i class="fas fa-check-circle text-success mr-2"></i>{{ $requirement }}</li>
+                                <li class="list-group-item"><i class="fas fa-check-circle text-success mr-2"></i>{{ $requirement }}</li>
                             @endforeach
                         </ul>
                     </div>
                     <div class="mb-4">
-                        <h5 class="text-muted">Location</h5>
-                        <p class="lead"><i class="fas fa-map-marker-alt text-danger mr-2"></i>{{ $hiring->location }}</p>
+                        <h5 class="text-primary"><i class="fas fa-gift mr-2"></i>Benefits</h5>
+                        <ul class="list-group">
+                            @foreach(explode("\n", $hiring->benefits) as $benefit)
+                                <li class="list-group-item"><i class="fas fa-star text-warning mr-2"></i>{{ $benefit }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="mb-4">
+                        <h5 class="text-primary"><i class="fas fa-map-marker-alt mr-2"></i>Location</h5>
+                        <p class="lead">{{ $hiring->location }}</p>
                     </div>
                 </div>
                 <div class="card-footer bg-light">

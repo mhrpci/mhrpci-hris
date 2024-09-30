@@ -38,3 +38,4 @@ if (Notification.permission === 'default') {
 } else {
     console.log('Notification permission already granted.');
 }
+

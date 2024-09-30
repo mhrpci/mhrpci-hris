@@ -629,6 +629,22 @@
             </div>
 
             <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="section-title">Benefits</h3>
+                        <ul class="list-group list-group-flush">
+                            @foreach(explode("\n", $hiring->benefits) as $benefit)
+                                @if(trim($benefit) !== '')
+                                    <li class="list-group-item">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        {{ trim($benefit) }}
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="card related-jobs-card">
                     <div class="card-body">
                         <h3 class="section-title">Related Jobs</h3>

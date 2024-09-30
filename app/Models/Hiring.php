@@ -13,6 +13,7 @@ class Hiring extends Model
         'position',
         'description',
         'requirements',
+        'benefits',
         'location',
     ];
 

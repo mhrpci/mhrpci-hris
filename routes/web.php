@@ -21,7 +21,7 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AccountabilityController;
-use App\Http\Controllers\MessageController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\OverTimePayController;
@@ -33,7 +33,6 @@ use App\Http\Controllers\HiringController;
 use App\Http\Controllers\SssController;
 use App\Http\Controllers\PagibigController;
 use App\Http\Controllers\PhilhealthController;
-use App\Http\Controllers\WelcomeController;
 
 /*
 |--------------------------------------------------------------------------

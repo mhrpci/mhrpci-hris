@@ -47,6 +47,7 @@ class HiringController extends Controller
             'position' => 'required|max:255',
             'description' => 'required',
             'requirements' => 'required',
+            'benefits' => 'required',
             'location' => 'required|max:255', // Add this line
         ]);
 
@@ -80,6 +81,7 @@ class HiringController extends Controller
             'position' => 'required|max:255',
             'description' => 'required',
             'requirements' => 'required',
+            'benefits' => 'required',
             'location' => 'required|max:255',
         ]);
 

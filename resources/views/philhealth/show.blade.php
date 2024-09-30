@@ -83,7 +83,7 @@
                             <div class="col-md-6 mb-3">
                                 <div class="detail-item">
                                     <span class="detail-label">Contribution Date</span>
-                                    <span class="detail-value">{{ $philhealth->contribution_date->format('F j, Y') }}</span>
+                                    <span class="detail-value">{{ $philhealth->contribution_date->format('F Y') }}</span>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">

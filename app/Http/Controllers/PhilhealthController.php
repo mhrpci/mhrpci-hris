@@ -25,14 +25,14 @@ class PhilhealthController extends Controller
     {
         $validatedData = $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'contribution_date' => 'required|date',
+            'contribution_date' => 'required|date_format:Y-m',
         ]);
 
         $employee = Employee::findOrFail($validatedData['employee_id']);
 
         $philhealth = new Philhealth();
         $philhealth->employee()->associate($employee);
-        $philhealth->contribution_date = $validatedData['contribution_date'];
+        $philhealth->contribution_date = $validatedData['contribution_date'] . '-01';
 
         $philhealth->calculateContribution();
 
