@@ -79,8 +79,8 @@ class HiringController extends Controller
         $validated = $request->validate([
             'position' => 'required|max:255',
             'description' => 'required',
-            'requirements' => 'required|max:255',
-            'location' => 'required|max:255', // Add this line
+            'requirements' => 'required',
+            'location' => 'required|max:255',
         ]);
 
         $hiring->update($validated);

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sss;
+use App\Models\SssContribution;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class SssController extends Controller
 {
@@ -31,7 +33,6 @@ class SssController extends Controller
 
         $employee = Employee::findOrFail($request->employee_id);
         Sss::createContribution($employee, $request->contribution_date);
-
         return redirect()->route('sss.index')->with('success', 'SSS contribution created successfully.');
     }
 

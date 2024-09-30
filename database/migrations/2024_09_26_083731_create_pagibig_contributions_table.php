@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('pagibig_contributions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->date('date');
+            $table->float('pagibig_contribution')->nullable();
             $table->timestamps();
         });
     }
