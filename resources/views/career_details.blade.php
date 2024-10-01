@@ -530,6 +530,86 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    .job-description {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    .qualification-list .list-group-item,
+    .benefits-list .list-group-item {
+        border: none;
+        padding: 0.5rem 0;
+    }
+
+    .qualification-list .fas,
+    .benefits-list .fas {
+        font-size: 1.1rem;
+    }
+
+    .benefits-card {
+        background-color: #f8f9fa;
+    }
+
+    .related-jobs-card {
+        height: 100%;
+    }
+
+    .related-jobs-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .related-job-item {
+        transition: all 0.3s ease;
+    }
+
+    .related-job-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    @media (max-width: 991px) {
+        .col-lg-8,
+        .col-lg-4 {
+            margin-bottom: 2rem;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .job-description,
+        .qualification-list,
+        .benefits-list {
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+        }
+
+        .related-jobs-container {
+            max-height: 300px;
+        }
+    }
+
+    /* Custom scrollbar for related jobs */
+    .related-jobs-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .related-jobs-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .related-jobs-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    .related-jobs-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
     </style>
 </head>
 <body>
@@ -607,19 +687,20 @@
 
     <div class="container mt-5">
         <div class="row">
-            <div class="col-lg-8">
+            <!-- Job Description and Qualifications Column -->
+            <div class="col-lg-8 mb-4">
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
                         <h2 class="section-title">Job Description</h2>
-                        <p class="mb-4">{!! nl2br(e($hiring->description)) !!}</p>
+                        <p class="mb-4 job-description">{!! nl2br(e($hiring->description)) !!}</p>
 
                         <h2 class="section-title mt-5">Qualifications</h2>
-                        <ul class="list-group list-group-flush">
+                        <ul class="list-group list-group-flush qualification-list">
                             @foreach(explode("\n", $hiring->requirements) as $requirement)
                                 @if(trim($requirement) !== '')
-                                    <li class="list-group-item">
-                                        <i class="fas fa-check-circle text-success me-2"></i>
-                                        {{ trim($requirement) }}
+                                    <li class="list-group-item d-flex align-items-start">
+                                        <i class="fas fa-check-circle text-success me-3 mt-1"></i>
+                                        <span>{{ trim($requirement) }}</span>
                                     </li>
                                 @endif
                             @endforeach
@@ -628,47 +709,54 @@
                 </div>
             </div>
 
+            <!-- Benefits and Related Jobs Column -->
             <div class="col-lg-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h3 class="section-title">Benefits</h3>
-                        <ul class="list-group list-group-flush">
-                            @foreach(explode("\n", $hiring->benefits) as $benefit)
-                                @if(trim($benefit) !== '')
-                                    <li class="list-group-item">
-                                        <i class="fas fa-check-circle text-success me-2"></i>
-                                        {{ trim($benefit) }}
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
+                <div class="row">
+                    <div class="col-md-6 col-lg-12 mb-4">
+                        <div class="card benefits-card h-100">
+                            <div class="card-body">
+                                <h3 class="section-title">Benefits</h3>
+                                <ul class="list-group list-group-flush benefits-list">
+                                    @foreach(explode("\n", $hiring->benefits) as $benefit)
+                                        @if(trim($benefit) !== '')
+                                            <li class="list-group-item d-flex align-items-start">
+                                                <i class="fas fa-gift text-primary me-3 mt-1"></i>
+                                                <span>{{ trim($benefit) }}</span>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card related-jobs-card">
-                    <div class="card-body">
-                        <h3 class="section-title">Related Jobs</h3>
-                        <div class="related-jobs-container">
-                            @foreach($relatedJobs as $relatedJob)
-                                @if($relatedJob->id !== $hiring->id)
-                                    <div class="card mb-3 border-0 shadow-sm">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $relatedJob->position }}</h5>
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-map-marker-alt me-2"></i>{{ $relatedJob->location }}
-                                                </small>
-                                            </p>
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    {{ Str::limit($relatedJob->description, 100) }}
-                                                </small>
-                                            </p>
-                                            <a href="{{ route('careers.show', $relatedJob->id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
-                                        </div>
-                                    </div>
-                                @endif
-                            @endforeach
+                    <div class="col-md-6 col-lg-12">
+                        <div class="card related-jobs-card h-100">
+                            <div class="card-body">
+                                <h3 class="section-title">Related Jobs</h3>
+                                <div class="related-jobs-container">
+                                    @foreach($relatedJobs as $relatedJob)
+                                        @if($relatedJob->id !== $hiring->id)
+                                            <div class="card mb-3 border-0 shadow-sm related-job-item">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ $relatedJob->position }}</h5>
+                                                    <p class="card-text">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-map-marker-alt me-2"></i>{{ $relatedJob->location }}
+                                                        </small>
+                                                    </p>
+                                                    <p class="card-text">
+                                                        <small class="text-muted">
+                                                            {{ Str::limit($relatedJob->description, 100) }}
+                                                        </small>
+                                                    </p>
+                                                    <a href="{{ route('careers.show', $relatedJob->id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
