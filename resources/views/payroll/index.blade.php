@@ -168,9 +168,9 @@
                 <div class="card-header">
                     <h3 class="card-title">Payroll Records</h3>
                     <div class="card-tools">
-                        <a href="{{ route('payroll.create') }}" class="btn btn-success btn-sm rounded-pill">
+                        {{-- <a href="{{ route('payroll.create') }}" class="btn btn-success btn-sm rounded-pill">
                             Create Payroll <i class="fas fa-plus-circle"></i>
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 <!-- /.card-header -->
