@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // other middleware entries
         'log.successful.logout' => \App\Http\Middleware\LogSuccessfulLogout::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }

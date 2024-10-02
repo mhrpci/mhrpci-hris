@@ -153,8 +153,8 @@ use App\Http\Controllers\PhilhealthController;
 
     Route::get('/careers', [CareerController::class, 'index'])->name('careers');
     Route::get('/applicants/{id}', [CareerController::class, 'showApplicant'])->name('showApplicant');
-    Route::post('/careers/save', [CareerController::class, 'saveHiring'])->name('careers.save');
-    Route::post('/unsave-hiring', [CareerController::class, 'unsaveHiring'])->name('unsave.hiring');
+    Route::post('/careers/save', [CareerController::class, 'saveHiring'])->name('careers.save')->middleware('throttle:60,1');
+    Route::post('/unsave-hiring', [CareerController::class, 'unsaveHiring'])->name('unsave.hiring')->middleware('throttle:60,1');
     Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
     Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
     Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');

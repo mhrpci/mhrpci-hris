@@ -7,6 +7,10 @@ use App\Models\Career;
 use App\Models\Hiring;
 use Illuminate\Support\Facades\Mail;
 use App\Models\SavedHiring;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 class CareerController extends Controller
 {
@@ -177,41 +181,88 @@ class CareerController extends Controller
 
     public function saveHiring(Request $request)
     {
-        $hiringId = $request->input('hiring_id');
-        $ipAddress = $request->ip();
-
         try {
-            SavedHiring::create([
+            // Validate the input
+            $validator = Validator::make($request->all(), [
+                'hiring_id' => 'required|integer|exists:hirings,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => 'Invalid input.', 'errors' => $validator->errors()], 422);
+            }
+
+            $hiringId = $request->input('hiring_id');
+            $ipAddress = $request->ip();
+
+            // Use a database transaction to ensure data integrity
+            DB::beginTransaction();
+
+            $savedHiring = SavedHiring::create([
                 'hiring_id' => $hiringId,
                 'ip_address' => $ipAddress,
             ]);
-            return response()->json(['success' => true]);
-        } catch (\Illuminate\Database\QueryException $e) {
+
+            DB::commit();
+
+            Log::info("Job saved successfully", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            return response()->json(['success' => true, 'message' => 'Job saved successfully.']);
+
+        } catch (QueryException $e) {
+            DB::rollBack();
             // Handle unique constraint violation
-            if ($e->getCode() == 23000) {
-                return response()->json(['success' => false, 'message' => 'You have already saved this hiring.']);
+            if ($e->getCode() == '23000') {
+                Log::warning("Attempt to save already saved job", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+                return response()->json(['success' => false, 'message' => 'You have already saved this job.'], 409);
             }
-            throw $e;
+            Log::error("Error saving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while saving the job.'], 500);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Unexpected error saving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
         }
     }
 
     public function unsaveHiring(Request $request)
     {
-        $hiringId = $request->input('hiring_id');
-        $ipAddress = $request->ip();
-
         try {
+            // Validate the input
+            $validator = Validator::make($request->all(), [
+                'hiring_id' => 'required|integer|exists:hirings,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'message' => 'Invalid input.', 'errors' => $validator->errors()], 422);
+            }
+
+            $hiringId = $request->input('hiring_id');
+            $ipAddress = $request->ip();
+
+            // Use a database transaction to ensure data integrity
+            DB::beginTransaction();
+
             $deleted = SavedHiring::where('hiring_id', $hiringId)
                 ->where('ip_address', $ipAddress)
                 ->delete();
 
+            DB::commit();
+
             if ($deleted) {
-                return response()->json(['success' => true]);
+                Log::info("Job unsaved successfully", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+                return response()->json(['success' => true, 'message' => 'Job removed from saved list.']);
             } else {
-                return response()->json(['success' => false, 'message' => 'Hiring was not saved or already removed.']);
+                Log::warning("Attempt to unsave a job that wasn't saved", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+                return response()->json(['success' => false, 'message' => 'Job was not in your saved list.'], 404);
             }
+
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error("Database error unsaving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while removing the job from your saved list.'], 500);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while unsaving the hiring.']);
+            DB::rollBack();
+            Log::error("Unexpected error unsaving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
         }
     }
 
