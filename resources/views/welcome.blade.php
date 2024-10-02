@@ -790,9 +790,7 @@
                     </li> --}}
                     <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
                 </ul>
-                <div class="auth-buttons">
-                    <a href="{{ route('login') }}" class="login-btn" title="Log In to Your Account">Log In</a>
-                </div>
+                <!-- Removed auth-buttons div -->
                 <div class="hamburger">
                     <i class="fas fa-bars"></i>
                 </div>
@@ -820,9 +818,7 @@
             {{-- <li><a href="#latest-posts" class="nav-link" title="Read Our Announcements">Announcements</a></li> --}}
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
         </ul>
-        <div class="auth-buttons">
-            <a href="{{ route('login') }}" class="login-btn" title="Log In to Your Account">Log In</a>
-        </div>
+        <!-- Removed auth-buttons div -->
     </div>
 
     <!-- Overlay -->
