@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Laravel App')</title>
+    <title>MHR Property COnglomerates, Inc.</title>
 <style>
       /* Loader */
       .loader {
@@ -158,6 +158,32 @@
         font-size: 1.8rem;
         font-weight: bold;
     }
+
+    .theme-option {
+        width: 30px;
+        height: 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        opacity: 0.8;
+        position: relative;
+    }
+
+    .theme-option:hover {
+        opacity: 1;
+    }
+
+    .theme-option.active::after {
+        content: '\2714';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 16px;
+    }
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -198,6 +224,12 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+                <!-- Add this line -->
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                        <i class="fas fa-paint-brush"></i>
+                    </a>
+                </li>
                 @can('admin', 'super-admin', 'hrcomben', 'hrcompliance', 'hrpolicy')
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
@@ -267,7 +299,7 @@
 
                 <!-- Dark Mode Toggle -->
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="dark-mode" href="#" role="button">
+                    <a class="nav-link" id="dark-mode-toggle" href="#" role="button">
                         <i class="fas fa-moon"></i>
                     </a>
                 </li>
@@ -296,7 +328,7 @@
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="/profile" class="btn btn-default btn-flat">Profile</a>
                                 <a href="{{ url('/logout') }}" class="btn btn-default btn-flat float-right">Sign out</a>
                             </li>
                         </ul>
@@ -355,7 +387,7 @@
                         @endcan
 
                         <li class="nav-item has-treeview {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-clock"></i>
                                 <p>
                                     Attendance
@@ -366,7 +398,7 @@
                                 @can('admin', 'super-admin', 'hrcomben')
                                 <li class="nav-item">
                                     <a href="{{ url('/attendances') }}" class="nav-link {{ Request::is('attendances*') || Request::is('timesheets*') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
                                         <p>Attendance</p>
                                     </a>
                                 </li>
@@ -374,7 +406,7 @@
                                 @can('normal-employee')
                                 <li class="nav-item">
                                     <a href="{{ url('/my-timesheet') }}" class="nav-link {{ Request::is('my-timesheet') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
+                                        <i class="fas fa-user-clock nav-icon"></i>
                                         <p>My Timesheet</p>
                                     </a>
                                 </li>
@@ -383,11 +415,177 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ url('/tasks') }}" class="nav-link {{ Request::is('tasks*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-tasks"></i>
-                                <p>Tasks</p>
+                            <a href="{{ url('/settings') }}" class="nav-link {{ Request::is('settings*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-cog"></i>
+                                <p>Settings</p>
                             </a>
                         </li>
+                        <li class="nav-item has-treeview {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-calendar"></i>
+                                <p>
+                                    Leave Management
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @can('admin', 'super-admin', 'hrcomben')
+                                <li class="nav-item">
+                                    <a href="{{ url('/leaves') }}" class="nav-link {{ Request::is('leaves*') ? 'active' : '' }}">
+                                        <i class="fas fa-list nav-icon"></i>
+                                        <p>Leave List</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('normal-employee', 'super-admin')
+                                <li class="nav-item">
+                                    <a href="{{ url('/leaves/create') }}" class="nav-link {{ Request::is('leaves/create') ? 'active' : '' }}">
+                                        <i class="fas fa-calendar-check nav-icon"></i>
+                                        <p>Apply Leave</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('admin', 'super-admin', 'hrcomben')
+                                <li class="nav-item">
+                                    <a href="{{ url('/leaves-employees') }}" class="nav-link {{ Request::is('leaves-employees*') ? 'active' : '' }}">
+                                        <i class="fas fa-file nav-icon"></i>
+                                        <p>Leave Sheet</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('normal-employee')
+                                <li class="nav-item">
+                                    <a href="{{ url('/my-leave-sheet') }}" class="nav-link {{ Request::is('my-leave-sheet*') ? 'active' : '' }}">
+                                        <i class="fas fa-print nav-icon"></i>
+                                        <p>My Leaves</p>
+                                    </a>
+                                </li>
+                                @endcan
+                            </ul>
+                        </li>
+
+                        <li class="nav-item has-treeview {{ Request::is('payroll*', 'overtime*', 'my-payrolls*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('payroll*', 'overtime*', 'my-payrolls*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-coins"></i>
+                                <p>
+                                    Payroll Management
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @can('admin', 'super-admin', 'hrcomben')
+                                <li class="nav-item">
+                                    <a href="{{ url('/payroll') }}" class="nav-link {{ Request::is('payroll*', 'overtime*') ? 'active' : '' }}">
+                                        <i class="fas fa-money-bill-wave nav-icon"></i>
+                                        <p>Payroll</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('normal-employee', 'super-admin')
+                                <li class="nav-item">
+                                    <a href="{{ url('/my-payrolls') }}" class="nav-link {{ Request::is('my-payrolls*') ? 'active' : '' }}">
+                                        <i class="fas fa-file-alt nav-icon"></i>
+                                        <p>My Payroll</p>
+                                    </a>
+                                </li>
+                                @endcan
+                            </ul>
+                        </li>
+
+                        <li class="nav-item has-treeview {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loans*', 'my-contributions*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loans*', 'my-contributions*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-hands-helping"></i>
+                                <p>
+                                    Loans & Contributions
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @can('admin', 'super-admin', 'hrcomben')
+                                <li class="nav-item">
+                                    <a href="{{ url('/sss') }}" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*') ? 'active' : '' }}">
+                                        <i class="fas fa-file-alt nav-icon"></i>
+                                        <p>Contributions</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/loans') }}" class="nav-link {{ Request::is('loans*') ? 'active' : '' }}">
+                                        <i class="fas fa-money-bill-alt nav-icon"></i>
+                                        <p>Loans</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/contributions-employees-list') }}" class="nav-link {{ Request::is('contributions-employees-list*') ? 'active' : '' }}">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <p>Contributor</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('normal-employee', 'super-admin', 'admin', 'hrcomben')
+                                <li class="nav-item">
+                                    <a href="{{ url('/my-contributions') }}" class="nav-link {{ Request::is('my-contributions*') ? 'active' : '' }}">
+                                        <i class="fas fa-solid fa-gift nav-icon"></i>
+                                        <p>My Contribution</p>
+                                    </a>
+                                </li>
+                                @endcan
+                            </ul>
+                        </li>
+
+                        @can('hrhiring')
+                        <li class="nav-item">
+                            <a href="{{ url('/hirings') }}" class="nav-link {{ Request::is('hirings*', 'all-careers*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-briefcase"></i>
+                                <p>Hiring Management</p>
+                            </a>
+                        </li>
+                        @endcan
+
+                        @canany(['admin', 'super-admin', 'hrcompliance', 'it-staff', 'hrpolicy'])
+                        <li class="nav-item has-treeview {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    Others
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @can('hrcompliance')
+                                <li class="nav-item">
+                                    <a href="{{ url('/accountabilities') }}" class="nav-link {{ Request::is('accountabilities*') ? 'active' : '' }}">
+                                        <i class="fas fa-check-circle nav-icon"></i>
+                                        <p>Employee Accountability</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('hrpolicy')
+                                <li class="nav-item">
+                                    <a href="{{ url('/credentials') }}" class="nav-link {{ Request::is('credentials*') ? 'active' : '' }}">
+                                        <i class="fas fa-phone nav-icon"></i>
+                                        <p>Contacts and Emails</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('super-admin', 'it-staff')
+                                <li class="nav-item">
+                                    <a href="{{ url('/inventory') }}" class="nav-link {{ Request::is('inventory*') ? 'active' : '' }}">
+                                        <i class="fas fa-cubes nav-icon"></i>
+                                        <p>IT Inventory</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('super-admin')
+                                <li class="nav-item">
+                                    <a href="{{ url('/properties') }}" class="nav-link {{ Request::is('properties*') ? 'active' : '' }}">
+                                        <i class="fas fa-building nav-icon"></i>
+                                        <p>Properties</p>
+                                    </a>
+                                </li>
+                                @endcan
+                            </ul>
+                        </li>
+                        @endcanany
                         <li class="nav-item">
                             <a href="{{ url('/projects') }}" class="nav-link {{ Request::is('projects*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-project-diagram"></i>
@@ -406,13 +604,8 @@
                                 <p>Reports</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/settings') }}" class="nav-link {{ Request::is('settings*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cog"></i>
-                                <p>Settings</p>
-                            </a>
-                        </li>
                     </ul>
+
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
@@ -424,7 +617,7 @@
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
-                    <h1 class="m-0">@yield('page-title', 'Dashboard')</h1>
+                    <h1 class="m-0"></h1>
                 </div>
             </div>
             <!-- /.content-header -->
@@ -504,6 +697,33 @@
                     $(this).remove();
                 });
             }, 5000);
+
+            // Dark Mode Toggle
+            function toggleDarkMode() {
+                $('body').toggleClass('dark-mode');
+                localStorage.setItem('darkMode', $('body').hasClass('dark-mode'));
+                updateDarkModeIcon();
+            }
+
+            function updateDarkModeIcon() {
+                if ($('body').hasClass('dark-mode')) {
+                    $('#dark-mode-toggle i').removeClass('fa-moon').addClass('fa-sun');
+                } else {
+                    $('#dark-mode-toggle i').removeClass('fa-sun').addClass('fa-moon');
+                }
+            }
+
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'true') {
+                $('body').addClass('dark-mode');
+                updateDarkModeIcon();
+            }
+
+            // Dark mode toggle click event
+            $('#dark-mode-toggle').on('click', function(e) {
+                e.preventDefault();
+                toggleDarkMode();
+            });
         });
     </script>
 
