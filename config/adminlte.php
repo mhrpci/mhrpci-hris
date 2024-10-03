@@ -535,6 +535,13 @@ return [
                     'can' => ['super-admin', 'it-staff'],
                     'active' => ['inventory*', 'regex'],
                 ],
+                [
+                    'text' => '  Properties',
+                    'url' => 'properties',
+                    'icon' => 'fas fa-building',
+                    'can' => 'super-admin',
+                    'active' => ['properties*', 'regex'],
+                ],
                 // [
                 //     'text' => ' Contributor',
                 //     'url' => '/contributions-employees-list',

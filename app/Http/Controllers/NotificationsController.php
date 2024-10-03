@@ -34,25 +34,34 @@ class NotificationsController extends Controller
         // Generate HTML for dropdown notifications
         $dropdownHtml = $this->generateDropdownHtml();
 
-        return [
+        return response()->json([
             'label' => $totalNotifications,
             'label_color' => 'danger',
             'icon_color' => 'dark',
             'dropdown' => $dropdownHtml,
-        ];
+        ]);
     }
 
     // Generate all types of notifications
     private function generateNotifications()
     {
-        // Generate notifications for each category
-        $this->generateBirthdayNotifications();
-        $this->generatePostNotifications();
-        $this->generateHolidayNotifications();
-        $this->generateLeaveRequestNotifications();
-        $this->generateEmployeeLeaveNotifications();
-        $this->generateTaskNotifications();
-        $this->generateJobApplicationNotifications(); // Add job application notifications generation
+        try {
+            // Generate notifications for each category
+            $this->generateBirthdayNotifications();
+            $this->generatePostNotifications();
+            $this->generateHolidayNotifications();
+            $this->generateLeaveRequestNotifications();
+            $this->generateEmployeeLeaveNotifications();
+            $this->generateTaskNotifications();
+            $this->generateJobApplicationNotifications();
+
+            // Log the count of notifications for debugging
+            \Log::info('Notification counts:', $this->notifications);
+        } catch (\Exception $e) {
+            // Log any exceptions that occur
+            \Log::error('Error generating notifications: ' . $e->getMessage());
+            // You might want to re-throw the exception or handle it differently
+        }
     }
 
     // Generate birthday notifications
@@ -61,10 +70,14 @@ class NotificationsController extends Controller
         $today = Carbon::today();
         $authUserEmail = Auth::user()->email;
 
+        \Log::info('Generating birthday notifications', ['today' => $today, 'authUserEmail' => $authUserEmail]);
+
         // Fetch employees with birthdays today
         $todaysBirthdays = Employee::whereMonth('birth_date', $today->month)
             ->whereDay('birth_date', $today->day)
             ->get();
+
+        \Log::info('Employees with birthdays today', ['count' => $todaysBirthdays->count()]);
 
         foreach ($todaysBirthdays as $employee) {
             $notification = [
@@ -218,20 +231,20 @@ class NotificationsController extends Controller
 
         if ($authUser->hasRole('Employee') && $employee) {
             $leaveRequests = Leave::where('employee_id', $employee->id)
-                ->whereIn('status', ['approved', 'rejected']) // Corrected to use whereIn
-                ->where('is_view', false) // Only fetch unread leave requests
+                ->whereIn('status', ['approved', 'rejected'])
+                ->where('is_view', false)
                 ->get();
             foreach ($leaveRequests as $leave) {
-                $updater = $leave->updated_by ? User::find($leave->updated_by) : null; // Fetch the updater's information from User model
-                $updaterName = $updater ? "{$updater->first_name} {$updater->last_name}" : 'Unknown'; // Get the updater's name
+                $updater = $leave->updated_by ? \App\Models\User::find($leave->updated_by) : null;
+                $updaterName = $updater ? "{$updater->first_name} {$updater->last_name}" : 'Unknown';
 
                 $notification = [
                     'icon' => 'fas fa-fw fa-calendar-times',
                     'text' => "Your leave request for {$leave->type->name} is: {$leave->status}",
-                    'time' => $leave->created_at->diffForHumans(),
-                    'details' => "Leave details: {$leave->reason}. Updated by: {$updaterName}" // Add updater's name
+                    'time' => $leave->updated_at->diffForHumans(),
+                    'details' => "Leave details: {$leave->reason}. Updated by: {$updaterName}"
                 ];
-                $this->notifications['leave_status'][] = $notification;
+                $this->notifications['leave_requests'][] = $notification;
             }
         }
     }
@@ -239,7 +252,7 @@ class NotificationsController extends Controller
     // Count the total number of notifications
     private function countTotalNotifications()
     {
-        return array_sum(array_map('count', $this->notifications)); // Sum all counts from notifications
+        return array_sum(array_map('count', $this->notifications));
     }
 
     // Generate HTML for dropdown notifications
@@ -251,10 +264,12 @@ class NotificationsController extends Controller
         foreach ($allNotifications as $key => $not) {
             $icon = "<i class='mr-2 {$not['icon']}'></i>";
             $time = "<span class='float-right text-muted text-sm'>{$not['time']}</span>";
-            $dropdownHtml .= "<a href='#' class='dropdown-item d-flex justify-content-between align-items-center flex-wrap text-right' data-toggle='modal' data-target='#notificationModal' data-details='{$not['details']}' data-title='{$not['text']}'>
+            $details = htmlspecialchars($not['details'], ENT_QUOTES, 'UTF-8');
+            $text = htmlspecialchars($not['text'], ENT_QUOTES, 'UTF-8');
+            $dropdownHtml .= "<a href='#' class='dropdown-item d-flex justify-content-between align-items-center flex-wrap text-right' data-toggle='modal' data-target='#notificationModal' data-details='{$details}' data-title='{$text}'>
                                 <div class='d-flex align-items-center w-100'>
                                     {$icon}
-                                    <span class='text-truncate'>{$not['text']}</span>
+                                    <span class='text-truncate'>{$text}</span>
                                 </div>
                                 {$time}
                               </a>";
@@ -269,14 +284,14 @@ class NotificationsController extends Controller
     // Flatten the notifications for dropdown HTML generation
     private function flattenNotifications()
     {
-        // Return an array of notifications with their counts
         $flattened = [];
-        foreach ($this->notifications as $category => $notifications) {
-            foreach ($notifications as $notification) {
-                $flattened[] = $notification;
-            }
+        foreach ($this->notifications as $notifications) {
+            $flattened = array_merge($flattened, $notifications);
         }
-        return $flattened;
+        usort($flattened, function($a, $b) {
+            return strtotime($b['time']) - strtotime($a['time']);
+        });
+        return array_slice($flattened, 0, 10); // Limit to 10 most recent notifications
     }
 
     // Show all notifications in a view
@@ -286,5 +301,3 @@ class NotificationsController extends Controller
         return view('all-notifications', ['allNotifications' => $this->notifications]);
     }
 }
-
-

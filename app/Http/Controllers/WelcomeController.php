@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Property;
 use Illuminate\Support\Carbon;
 
 class WelcomeController extends Controller
@@ -12,7 +13,8 @@ class WelcomeController extends Controller
     {
         $posts = Post::with('user')->latest()->take(6)->get();
         $todayPostsCount = $this->countTodayPosts();
-        return view('welcome', compact('posts', 'todayPostsCount'));
+        $properties = Property::all();
+        return view('welcome', compact('posts', 'todayPostsCount', 'properties'));
     }
 
     public function showPost($id)
