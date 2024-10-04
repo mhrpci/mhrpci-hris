@@ -1,140 +1,139 @@
 @extends('layouts.app')
-
 <style>
-.welcome-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.clock-container {
-    text-align: right;
-}
-
-.calendar {
-      max-width: 90%;
-      margin: 0 auto;
-      text-align: center;
-      margin-top: 20px; /* Adjust as needed */
+    .welcome-container {
+        display: flex;
+        justify-content: space-between;
     }
 
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .clock-container {
+        text-align: right;
     }
 
-    .days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
-    }
-
-    .day {
-      padding: 10px;
-      border: 1px solid #ddd;
-    }
-
-    .event {
-      background-color: lightblue;
-    }
-
-    .animated-greeting {
-        animation: fadeIn 2s ease-in-out;
-        color: #ff6347; /* Tomato color */
-    }
-
-    .birthday-heading {
-        animation: bounceIn 1s ease-in-out;
-        color: #ff4500; /* OrangeRed color */
-    }
-
-    .birthday-list {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .birthday-item {
-        animation: slideIn 0.5s ease-in-out;
-        background-color: #ffe4b5; /* Moccasin color */
-        padding: 10px;
-        margin: 5px 0;
-        border-radius: 5px;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
+    .calendar {
+          max-width: 90%;
+          margin: 0 auto;
+          text-align: center;
+          margin-top: 20px; /* Adjust as needed */
         }
-        to {
-            opacity: 1;
-        }
-    }
 
-    @keyframes bounceIn {
-        from {
-            transform: scale(0.5);
-            opacity: 0;
+        .header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
         }
-        to {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
 
-    @keyframes slideIn {
-        from {
-            transform: translateX(-100%);
-            opacity: 0;
+        .days {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          gap: 5px;
         }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .welcome-heading {
-            font-size: 28px;
+        .day {
+          padding: 10px;
+          border: 1px solid #ddd;
         }
-        .welcome-subheading {
-            font-size: 24px;
+
+        .event {
+          background-color: lightblue;
         }
-        .clock-container {
-            text-align: center;
-            margin-top: 20px;
+
+        .animated-greeting {
+            animation: fadeIn 2s ease-in-out;
+            color: #ff6347; /* Tomato color */
         }
-    }
 
-    /* Enhanced card styles */
-    .card {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+        .birthday-heading {
+            animation: bounceIn 1s ease-in-out;
+            color: #ff4500; /* OrangeRed color */
+        }
 
-    /* Improved list styles */
-    .custom-list {
-        list-style-type: none;
-        padding-left: 0;
-    }
-    .custom-list li {
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-    }
-    .custom-list li:last-child {
-        border-bottom: none;
-    }
+        .birthday-list {
+            list-style-type: none;
+            padding: 0;
+        }
 
-    /* Enhanced icons */
-    .card-icon {
-        font-size: 2.5rem;
-        margin-right: 15px;
-    }
-</style>
+        .birthday-item {
+            animation: slideIn 0.5s ease-in-out;
+            background-color: #ffe4b5; /* Moccasin color */
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounceIn {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .welcome-heading {
+                font-size: 28px;
+            }
+            .welcome-subheading {
+                font-size: 24px;
+            }
+            .clock-container {
+                text-align: center;
+                margin-top: 20px;
+            }
+        }
+
+        /* Enhanced card styles */
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Improved list styles */
+        .custom-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .custom-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .custom-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Enhanced icons */
+        .card-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+    </style>
 
 @section('content')
 <br>

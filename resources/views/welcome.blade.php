@@ -1502,6 +1502,19 @@
                 max-width: 800px;
                 margin: 0 auto 2rem;
             }
+
+        /* Hide Google auth buttons on mobile */
+        @media (max-width: 768px) {
+            .auth-buttons {
+                display: none;
+            }
+        }
+
+        /* Show auth buttons in mobile sidebar */
+        .sidebar .auth-buttons {
+            display: block;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -1599,19 +1612,25 @@
             <li><a href="#partners" class="nav-link" title="Our Partners">Partners</a></li>
             <li><a href="#properties" class="nav-link" title="Our Properties">Properties</a></li>
             <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
-            {{-- <li><a href="#latest-posts" class="nav-link" title="Read Our Announcements">Announcements</a></li> --}}
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
         </ul>
         <div class="auth-buttons mobile-only">
             @if(Auth::guard('google')->check())
-                <div class="user-info">
+                <div class="user-info mobile-user-info">
                     <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="avatar">
                     <span class="user-name">{{ Auth::guard('google')->user()->name }}</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
                 </div>
-                <div class="user-dropdown">
+                <div class="user-dropdown mobile-user-dropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-name">{{ Auth::guard('google')->user()->name }}</div>
+                        <div class="user-email">{{ Auth::guard('google')->user()->email }}</div>
+                    </div>
                     <form action="{{ route('google.logout') }}" method="POST" class="logout-form">
                         @csrf
-                        <button type="submit" class="logout-btn">Logout</button>
+                        <button type="submit" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
                     </form>
                 </div>
             @else
@@ -2214,21 +2233,36 @@
         document.addEventListener('DOMContentLoaded', function() {
             const userInfo = document.querySelector('.user-info');
             const userDropdown = document.querySelector('.user-dropdown');
+            const mobileUserInfo = document.querySelector('.mobile-user-info');
+            const mobileUserDropdown = document.querySelector('.mobile-user-dropdown');
 
-            if (userInfo) {
-                userInfo.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    userInfo.classList.toggle('active');
-                    userDropdown.classList.toggle('active');
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (!userInfo.contains(e.target) && !userDropdown.contains(e.target)) {
-                        userInfo.classList.remove('active');
-                        userDropdown.classList.remove('active');
-                    }
-                });
+            function toggleDropdown(info, dropdown) {
+                if (info && dropdown) {
+                    info.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        info.classList.toggle('active');
+                        dropdown.classList.toggle('active');
+                    });
+                }
             }
+
+            // Toggle for desktop
+            toggleDropdown(userInfo, userDropdown);
+
+            // Toggle for mobile
+            toggleDropdown(mobileUserInfo, mobileUserDropdown);
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (userInfo && userDropdown && !userInfo.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userInfo.classList.remove('active');
+                    userDropdown.classList.remove('active');
+                }
+                if (mobileUserInfo && mobileUserDropdown && !mobileUserInfo.contains(e.target) && !mobileUserDropdown.contains(e.target)) {
+                    mobileUserInfo.classList.remove('active');
+                    mobileUserDropdown.classList.remove('active');
+                }
+            });
         });
 
         // Enhanced alert handling

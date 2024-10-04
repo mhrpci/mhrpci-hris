@@ -694,12 +694,12 @@
                 });
             });
 
-            // If the page takes too long to load, hide the preloader after 5 seconds
+            // If the page takes too long to load, hide the preloader after 1 second
             setTimeout(function() {
                 $('#loader').fadeOut('slow', function() {
                     $(this).remove();
                 });
-            }, 5000);
+            }, 1000); // Changed from 5000 to 1000 milliseconds
 
             // Dark Mode Toggle
             function toggleDarkMode() {
