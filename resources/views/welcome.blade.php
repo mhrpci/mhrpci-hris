@@ -105,20 +105,215 @@
         }
 
         /* Login Button */
-        .auth-buttons .login-btn {
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .user-info:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .user-info .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .user-info .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .user-info .dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .user-info.active .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 200px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .user-dropdown-header {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .user-dropdown-header .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .user-dropdown-header .user-email {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .logout-btn {
+            width: 100%;
             background-color: var(--primary-color);
             color: var(--white);
             border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
+            padding: 10px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
             font-weight: 600;
-            text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .auth-buttons .login-btn:hover {
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        .logout-btn:hover {
             background-color: #3a7bd5;
-            transform: translateY(-2px);
+        }
+
+        .google-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--white);
+            color: var(--text-color);
+            border: 1px solid #dadce0;
+            padding: 10px 16px;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .google-login-btn i {
+            margin-right: 10px;
+            color: #4285F4;
+        }
+
+        .google-login-btn:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Enhanced Alert Styles */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 350px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateY(-20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+        }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .alert-close {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+            color: inherit;
+            text-shadow: none;
+            opacity: .5;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        .alert-close:hover {
+            color: inherit;
+            text-decoration: none;
+            opacity: .75;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .auth-buttons {
+                margin-top: 10px;
+            }
+
+            .user-info, .google-login-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin-top: 0;
+                border-radius: 15px 15px 0 0;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                padding: 20px;
+            }
+
+            .user-dropdown-header {
+                text-align: center;
+            }
+
+            .alert {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
         }
 
         /* Hero Section */
@@ -488,7 +683,6 @@
             }
         }
 
-        /* Overlay */
         .overlay {
             display: none;
             position: fixed;
@@ -902,25 +1096,47 @@
         }
 
         /* Property Section Styles */
-        .properties-carousel-container {
-            position: relative;
-            overflow: hidden;
-            padding: 0 50px;
-            margin-top: 2rem;
+        #properties {
+            padding: 6rem 0;
+            background-color: var(--light-bg);
         }
 
-        .properties-carousel {
+        .properties-filter {
             display: flex;
-            transition: transform 0.3s ease;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            background-color: var(--white);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
         .property-card {
-            flex: 0 0 calc(33.333% - 20px);
-            margin: 0 10px;
             background-color: var(--white);
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -931,8 +1147,8 @@
 
         .property-image {
             position: relative;
-            overflow: hidden;
             height: 200px;
+            overflow: hidden;
         }
 
         .property-image img {
@@ -946,21 +1162,38 @@
             transform: scale(1.05);
         }
 
+        .property-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
         .property-details {
             padding: 1.5rem;
         }
 
         .property-details h3 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
             font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
         }
 
-        .property-details p {
-            margin-bottom: 1rem;
-            color: var(--text-color);
+        .property-location {
             font-size: 0.9rem;
-            line-height: 1.4;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-description {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
         }
 
         .read-more-btn {
@@ -970,175 +1203,35 @@
             padding: 0.5rem 1rem;
             border-radius: 5px;
             text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: background-color 0.3s ease;
             font-size: 0.9rem;
             font-weight: 600;
         }
 
         .read-more-btn:hover {
             background-color: #3a7bd5;
-            transform: translateY(-2px);
         }
 
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 10;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .load-more-container {
+            text-align: center;
+            margin-top: 2rem;
         }
 
-        .carousel-btn:hover {
-            background-color: #3a7bd5;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .prev-btn {
-            left: 10px;
-        }
-
-        .next-btn {
-            right: 10px;
-        }
-
-        @media (max-width: 1200px) {
-            .property-card {
-                flex: 0 0 calc(50% - 20px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .property-card {
-                flex: 0 0 calc(100% - 20px);
-            }
-
-            .properties-carousel-container {
-                padding: 0 30px;
-            }
-
-            .carousel-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .properties-carousel-container {
-                padding: 0 20px;
-            }
-
-            .property-details h3 {
-                font-size: 1.1rem;
-            }
-
-            .property-details p {
-                font-size: 0.85rem;
-            }
-
-            .read-more-btn {
-                font-size: 0.85rem;
-            }
-        }
-
-        .properties-filter {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            background-color: var(--white);
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 0.75rem 1.5rem;
-            margin: 0.5rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .filter-btn:hover, .filter-btn.active {
+        #load-more {
             background-color: var(--primary-color);
             color: var(--white);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
         }
 
-        .filter-btn i {
-            margin-right: 0.5rem;
-            font-size: 1.1rem;
+        #load-more:hover {
+            background-color: #3a7bd5;
         }
 
-        .filter-btn span {
-            margin-right: 0.5rem;
-        }
-
-        .property-count {
-            background-color: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover .property-count,
-        .filter-btn.active .property-count {
-            background-color: var(--white);
-            color: var(--primary-color);
-        }
-
-        @media (max-width: 768px) {
-            .filter-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            .filter-btn i {
-                font-size: 1rem;
-            }
-
-            .property-count {
-                width: 20px;
-                height: 20px;
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .properties-filter {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .filter-btn {
-                width: 100%;
-                max-width: 250px;
-                justify-content: space-between;
-            }
-        }
-
-        /* Properties Section Responsiveness */
         @media (max-width: 768px) {
             .properties-filter {
                 flex-direction: column;
@@ -1146,15 +1239,30 @@
             }
 
             .filter-btn {
-                margin: 5px 0;
+                margin: 0.25rem 0;
             }
 
-            .property-card {
-                flex: 0 0 100%;
+            .properties-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .properties-grid {
+                grid-template-columns: 1fr;
             }
 
-            .carousel-btn {
-                display: none;
+            .property-details h3 {
+                font-size: 1.1rem;
+            }
+
+            .property-location,
+            .property-description {
+                font-size: 0.85rem;
+            }
+
+            .read-more-btn {
+                font-size: 0.85rem;
             }
         }
 
@@ -1176,13 +1284,241 @@
             font-size: 1.1rem;
             color: var(--text-color);
         }
+
+        /* Google Auth Styles */
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .user-info:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .user-info .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .user-info .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .user-info .dropdown-icon {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .user-info.active .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 200px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .user-dropdown-header {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .user-dropdown-header .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .user-dropdown-header .user-email {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .logout-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        .logout-btn:hover {
+            background-color: #3a7bd5;
+        }
+
+        .google-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--white);
+            color: var(--text-color);
+            border: 1px solid #dadce0;
+            padding: 10px 16px;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .google-login-btn i {
+            margin-right: 10px;
+            color: #4285F4;
+        }
+
+        .google-login-btn:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Enhanced Alert Styles */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 350px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: translateY(-20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+        }
+
+        .alert.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .alert-close {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+            color: inherit;
+            text-shadow: none;
+            opacity: .5;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        .alert-close:hover {
+            color: inherit;
+            text-decoration: none;
+            opacity: .75;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .auth-buttons {
+                margin-top: 10px;
+            }
+
+            .user-info, .google-login-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin-top: 0;
+                border-radius: 15px 15px 0 0;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                padding: 20px;
+            }
+
+            .user-dropdown-header {
+                text-align: center;
+            }
+
+            .alert {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+
+        .centered-text {
+                text-align: center;
+                max-width: 800px;
+                margin: 0 auto 2rem;
+            }
     </style>
 </head>
 <body>
-    <!-- Add preloader HTML -->
-    <div class="preloader">
-        <div class="spinner"></div>
-    </div>
+    <!-- Alerts -->
+    @if(session('success'))
+        <div id="successAlert" class="alert alert-success">
+            <span>{{ session('success') }}</span>
+            <a href="#" class="alert-close" onclick="closeAlert('successAlert')">&times;</a>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div id="errorAlert" class="alert alert-error">
+            <span>{{ session('error') }}</span>
+            <a href="#" class="alert-close" onclick="closeAlert('errorAlert')">&times;</a>
+        </div>
+    @endif
 
     <header>
         <div class="container">
@@ -1213,7 +1549,31 @@
                     </li> --}}
                     <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
                 </ul>
-                <!-- Removed auth-buttons div -->
+                <div class="auth-buttons">
+                    @if(Auth::guard('google')->check())
+                        <div class="user-info">
+                            <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="avatar">
+                            <span class="user-name">{{ Auth::guard('google')->user()->name }}</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </div>
+                        <div class="user-dropdown">
+                            <div class="user-dropdown-header">
+                                <div class="user-name">{{ Auth::guard('google')->user()->name }}</div>
+                                <div class="user-email">{{ Auth::guard('google')->user()->email }}</div>
+                            </div>
+                            <form action="{{ route('google.logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <a href="{{ route('google.login') }}" class="google-login-btn">
+                            <i class="fab fa-google"></i> Sign in with Google
+                        </a>
+                    @endif
+                </div>
                 <div class="hamburger">
                     <i class="fas fa-bars"></i>
                 </div>
@@ -1242,7 +1602,24 @@
             {{-- <li><a href="#latest-posts" class="nav-link" title="Read Our Announcements">Announcements</a></li> --}}
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
         </ul>
-        <!-- Removed auth-buttons div -->
+        <div class="auth-buttons mobile-only">
+            @if(Auth::guard('google')->check())
+                <div class="user-info">
+                    <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="avatar">
+                    <span class="user-name">{{ Auth::guard('google')->user()->name }}</span>
+                </div>
+                <div class="user-dropdown">
+                    <form action="{{ route('google.logout') }}" method="POST" class="logout-form">
+                        @csrf
+                        <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                </div>
+            @else
+                <a href="{{ route('google.login') }}" class="google-login-btn">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </a>
+            @endif
+        </div>
     </div>
 
     <!-- Overlay -->
@@ -1345,12 +1722,12 @@
                             <i class="fas fa-university"></i>
                             <h3>Financial Institutions</h3>
                             <p>Partnerships with leading banks and financial services.</p>
-                        </div>
+        </div>
                         <div class="card animate-on-scroll">
                             <i class="fas fa-graduation-cap"></i>
                             <h3>Educational Institutes</h3>
                             <p>Collaborations for research and development.</p>
-                        </div>
+        </div>
                         <div class="card animate-on-scroll">
                             <i class="fas fa-truck"></i>
                             <h3>Logistics Partners</h3>
@@ -1365,7 +1742,7 @@
                             <i class="fas fa-heartbeat"></i>
                             <h3>Intersurgical</h3>
                             <p>Leading global designer, manufacturer, and supplier of medical devices.</p>
-                        </div>
+                    </div>
                         <div class="card animate-on-scroll">
                             <i class="fas fa-flask"></i>
                             <h3>Bertin</h3>
@@ -1375,63 +1752,58 @@
                             <i class="fas fa-band-aid"></i>
                             <h3>Abena Thai Tapes</h3>
                             <p>High-quality adhesive tapes and medical supplies manufacturer.</p>
+                            </div>
                         </div>
-                    </div>
                 </div>
-            </div>
+                </div>
         </section>
 
         <section id="properties" class="parallax-section">
             <div class="parallax-bg"></div>
             <div class="container">
                 <div class="section-content">
-                    <h2 class="animate-on-scroll">Explore Our Properties</h2>
-                    <p class="section-description animate-on-scroll">Discover a wide range of properties for rent and sale, tailored to meet your unique needs and preferences.</p>
-                    @if($properties->isEmpty())
-                        <div class="no-properties-message animate-on-scroll">
-                            <i class="fas fa-home fa-3x"></i>
-                            <p>No properties available at the moment. Please check back later.</p>
-                        </div>
-                    @else
-                        <div class="properties-filter animate-on-scroll">
-                            <button class="filter-btn active" data-filter="all">
-                                <i class="fas fa-th-large"></i>
-                                <span>All Properties</span>
-                                <span class="property-count" data-count="all">{{ $properties->count() }}</span>
-                            </button>
-                            <button class="filter-btn" data-filter="for-rent">
-                                <i class="fas fa-key"></i>
-                                <span>For Rent</span>
-                                <span class="property-count" data-count="for-rent">{{ $properties->where('type', 'for-rent')->count() }}</span>
-                            </button>
-                            <button class="filter-btn" data-filter="for-sale">
-                                <i class="fas fa-home"></i>
-                                <span>For Sale</span>
-                                <span class="property-count" data-count="for-sale">{{ $properties->where('type', 'for-sale')->count() }}</span>
-                            </button>
-                        </div>
-                        <div class="properties-carousel-container">
-                            <div class="properties-carousel">
-                                @foreach($properties as $property)
-                                    <div class="property-card animate-on-scroll" data-category="{{ $property->type }}">
-                                        <div class="property-image">
-                                            <img src="{{ asset('storage/' . $property->main_image) }}" alt="{{ $property->property_name }}" class="img-fluid">
-                                            <div class="property-badge">{{ ucfirst($property->type) }}</div>
-                                        </div>
-                                        <div class="property-details">
-                                            <h3>{{ $property->property_name }}</h3>
-                                            <p class="property-location"><i class="fas fa-map-marker-alt"></i> {{ $property->location }}</p>
-                                            <p class="property-price">{{ $property->type === 'for-rent' ? 'Rent: ₱' . number_format($property->price, 2) . '/mo' : 'Price: ₱' . number_format($property->price, 2) }}</p>
-                                            <p class="property-description">{{ Str::limit($property->description, 100) }}</p>
-                                            <a href="#" class="read-more-btn" data-property-id="{{ $property->id }}">View Details</a>
-                                        </div>
-                                    </div>
-                                @endforeach
+                    <h2 class="animate-on-scroll">Explore Our Properties <span></span></h2>
+                    <p class="section-description animate-on-scroll centered-text">Discover a wide range of properties for rent and sale, tailored to meet your unique needs and preferences.</p>
+                    <div class="properties-filter animate-on-scroll">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-th-large"></i>
+                            <span>All Properties</span>
+                            <span class="property-count" data-count="all">{{ $properties->count() }}</span>
+                        </button>
+                        <button class="filter-btn" data-filter="rent">
+                            <i class="fas fa-key"></i>
+                            <span>For Rent</span>
+                            <span class="property-count" data-count="rent">{{ $properties->where('type', 'rent')->count() }}</span>
+                        </button>
+                        <button class="filter-btn" data-filter="sale">
+                            <i class="fas fa-home"></i>
+                            <span>For Sale</span>
+                            <span class="property-count" data-count="sale">{{ $properties->where('type', 'sale')->count() }}</span>
+                        </button>
+                    </div>
+                    <div class="properties-grid" style="{{ $properties->isEmpty() ? 'display: none;' : '' }}">
+                        @foreach($properties as $property)
+                            <div class="property-card animate-on-scroll" data-category="{{ $property->type }}">
+                                <div class="property-image">
+                                    <img src="{{ asset('storage/' . $property->main_image) }}" alt="{{ $property->property_name }}" class="img-fluid">
+                                    <div class="property-badge">{{ $property->type === 'rent' ? 'For Rent' : 'For Sale' }}</div>
+                                </div>
+                                <div class="property-details">
+                                    <h3>{{ $property->property_name }}</h3>
+                                    <p class="property-location"><i class="fas fa-map-marker-alt"></i> {{ $property->location }}</p>
+                                    <p class="property-description">{{ Str::limit($property->description, 100) }}</p>
+                                    <a href="{{ route('properties.details', $property->id) }}" class="read-more-btn">View Details</a>
+                                </div>
                             </div>
-                        </div>
-                        <button class="carousel-btn prev-btn" aria-label="Previous properties"><i class="fas fa-chevron-left"></i></button>
-                        <button class="carousel-btn next-btn" aria-label="Next properties"><i class="fas fa-chevron-right"></i></button>
-                    @endif
+                        @endforeach
+                    </div>
+                    <div class="no-properties-message animate-on-scroll" style="{{ $properties->isEmpty() ? '' : 'display: none;' }}">
+                        <i class="fas fa-home fa-3x"></i>
+                        <p>No properties available at the moment. Please check back later.</p>
+                    </div>
+                    <div class="load-more-container">
+                        <button id="load-more" class="cta-btn" style="{{ $properties->count() <= 6 ? 'display: none;' : '' }}">Load More</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1448,25 +1820,25 @@
                                 <div class="post-meta">
                                     <span>By: {{ $post->user->first_name }} {{ $post->user->last_name }}</span>
                                     <span>{{ $post->created_at->format('M d, Y') }}</span>
-                                </div>
+        </div>
                                 <a href="{{ route('posts.show', $post->id) }}" class="read-more">Read More</a>
-                            </div>
+                        </div>
                         @endforeach
+                        </div>
                     </div>
-                </div>
                 <button class="slider-btn prev-btn" aria-label="Previous posts">&lt;</button>
                 <button class="slider-btn next-btn" aria-label="Next posts">&gt;</button>
-            </div>
+                </div>
         </section> --}}
     </main>
 
     <footer id="contact">
-        <div class="container">
+            <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
                     <h4>About MHRPCI</h4>
                     <p>MHR Property Conglomerates, Inc. is a dynamic group of companies with expertise across multiple industries, committed to innovation and excellence.</p>
-                </div>
+                        </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <ul>
@@ -1477,26 +1849,26 @@
                         <li><a href="{{ route('careers') }}">Careers</a></li>
                         {{-- <li><a href="{{ route('privacy-policy') }}">Privacy Policy</a></li> --}}
                     </ul>
-                </div>
+                        </div>
                 <div class="footer-col">
                     <h4>Contact Us</h4>
                     <p><i class="fas fa-map-marker-alt"></i> MHR Building: Jose L. Briones St., North Reclamation Area, Cebu City, Cebu, Philippines 6000</p>
                     <p><i class="fas fa-phone"></i> <a>(032) 238-1887</a></p>
                     <p><i class="fas fa-envelope"></i> <a href="mailto:mhrpciofficial@gmail.com">mhrpciofficial@gmail.com</a></p>
-                </div>
+                        </div>
                 <div class="footer-col">
                     <h4>Connect With Us</h4>
                     <div class="social-icons">
                         <a href="https://www.facebook.com/mhrpciofficial" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="https://www.youtube.com/@MHRPCI" target="_blank" rel="noopener noreferrer" class="social-icon" title="Subscribe to our YouTube channel"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-            </div>
+                        </div>
+                        </div>
+                        </div>
             <div class="footer-bottom">
                 <p>&copy; {{ date('Y') }} MHR Property Conglomerates, Inc. All rights reserved.</p>
                 <p>Designed and developed with <i class="fas fa-heart"></i> by MHRPCI Team</p>
-            </div>
-        </div>
+                        </div>
+                        </div>
     </footer>
 
     <!-- Post Modal -->
@@ -1506,8 +1878,8 @@
             <h2 id="modalTitle"></h2>
             <div id="modalContent"></div>
             <div id="modalMeta"></div>
-        </div>
-    </div>
+                    </div>
+                </div>
 
     <script>
         // Add preloader script
@@ -1771,110 +2143,121 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            const carousel = document.querySelector('.properties-carousel');
-            const prevBtn = document.querySelector('.prev-btn');
-            const nextBtn = document.querySelector('.next-btn');
             const propertyCards = document.querySelectorAll('.property-card');
-            let currentIndex = 0;
+            const loadMoreBtn = document.getElementById('load-more');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const propertiesGrid = document.querySelector('.properties-grid');
+            const noPropertiesMessage = document.querySelector('.no-properties-message');
+            let visibleCards = 6;
 
-            function updateCarouselPosition() {
-                const cardWidth = propertyCards[0].offsetWidth;
-                const maxIndex = propertyCards.length - getVisibleCards();
-                currentIndex = Math.min(Math.max(currentIndex, 0), maxIndex);
-                carousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
-                updateButtonVisibility();
-            }
-
-            function getVisibleCards() {
-                if (window.innerWidth >= 1200) return 3;
-                if (window.innerWidth >= 768) return 2;
-                return 1;
-            }
-
-            function updateButtonVisibility() {
-                prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
-                nextBtn.style.opacity = currentIndex >= propertyCards.length - getVisibleCards() ? '0.5' : '1';
-            }
-
-            function showPrevProperties() {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                    updateCarouselPosition();
-                }
-            }
-
-            function showNextProperties() {
-                if (currentIndex < propertyCards.length - getVisibleCards()) {
-                    currentIndex++;
-                    updateCarouselPosition();
-                }
-            }
-
-            prevBtn.addEventListener('click', showPrevProperties);
-            nextBtn.addEventListener('click', showNextProperties);
-
-            // Optional: Add keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowLeft') {
-                    showPrevProperties();
-                } else if (e.key === 'ArrowRight') {
-                    showNextProperties();
+            // Initially hide cards beyond the visible limit
+            propertyCards.forEach((card, index) => {
+                if (index >= visibleCards) {
+                    card.style.display = 'none';
                 }
             });
 
-            // Optional: Add touch swipe support
-            let touchStartX = 0;
-            let touchEndX = 0;
+            // Load More functionality
+            loadMoreBtn.addEventListener('click', function() {
+                const hiddenCards = document.querySelectorAll('.property-card[style="display: none;"]');
+                const cardsToShow = hiddenCards.length > 6 ? 6 : hiddenCards.length;
 
-            carousel.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
+                for (let i = 0; i < cardsToShow; i++) {
+                    hiddenCards[i].style.display = 'block';
+                }
+
+                visibleCards += cardsToShow;
+
+                if (hiddenCards.length <= 6) {
+                    loadMoreBtn.style.display = 'none';
+                }
             });
 
-            carousel.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            });
-
-            function handleSwipe() {
-                if (touchStartX - touchEndX > 50) {
-                    showNextProperties();
-                }
-                if (touchEndX - touchStartX > 50) {
-                    showPrevProperties();
-                }
-            }
-
-            // Initial position update
-            updateCarouselPosition();
-
-            // Update on window resize
-            window.addEventListener('resize', updateCarouselPosition);
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const propertyCards = document.querySelectorAll('.property-card');
-
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
+            // Filtering functionality
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
                     const filter = this.getAttribute('data-filter');
 
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    filterBtns.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
 
-                    propertyCards.forEach(card => {
+                    let visibleCount = 0;
+
+                    propertyCards.forEach((card, index) => {
                         if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                            card.style.display = 'block';
+                            card.style.display = index < visibleCards ? 'block' : 'none';
+                            visibleCount++;
                         } else {
                             card.style.display = 'none';
                         }
                     });
 
-                    // Reset carousel position after filtering
-                    updateCarouselPosition();
+                    // Show/hide no properties message
+                    if (visibleCount === 0) {
+                        propertiesGrid.style.display = 'none';
+                        noPropertiesMessage.style.display = 'block';
+                        loadMoreBtn.style.display = 'none';
+                    } else {
+                        propertiesGrid.style.display = 'grid';
+                        noPropertiesMessage.style.display = 'none';
+                        loadMoreBtn.style.display = visibleCount > visibleCards ? 'inline-block' : 'none';
+                    }
                 });
             });
+
+            // Initial check for load more button visibility
+            if (propertyCards.length <= visibleCards) {
+                loadMoreBtn.style.display = 'none';
+            }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInfo = document.querySelector('.user-info');
+            const userDropdown = document.querySelector('.user-dropdown');
+
+            if (userInfo) {
+                userInfo.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userInfo.classList.toggle('active');
+                    userDropdown.classList.toggle('active');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!userInfo.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userInfo.classList.remove('active');
+                        userDropdown.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+        // Enhanced alert handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+
+            function showAlert(alertElement) {
+                if (alertElement) {
+                    setTimeout(() => {
+                        alertElement.classList.add('show');
+                    }, 100);
+                    setTimeout(() => {
+                        closeAlert(alertElement.id);
+                    }, 5000);
+                }
+            }
+
+            showAlert(successAlert);
+            showAlert(errorAlert);
+        });
+
+        function closeAlert(alertId) {
+            const alert = document.getElementById(alertId);
+            alert.classList.remove('show');
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 500);
+        }
     </script>
 </body>
 </html>

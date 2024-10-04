@@ -123,14 +123,5 @@ class User extends Authenticatable
         return $this->employee_type === 'employee'; // Adjust this based on your actual implementation
     }
 
-    public function conversations()
-    {
-        return $this->belongsToMany(Conversation::class);
-    }
-
-    public function messages()
-    {
-        return $this->hasMany(Message::class);
-    }
 
 }

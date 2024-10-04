@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -118,5 +119,24 @@ class PropertyController extends Controller
     {
         $property->delete();
         return redirect()->route('properties.index')->with('success', 'Property deleted successfully.');
+    }
+
+    /**
+     * Display detailed information about the specified property.
+     */
+    public function showDetails($id)
+    {
+        $property = Property::findOrFail($id);
+
+        // Fetch related properties
+        $relatedProperties = Property::where('id', '!=', $property->id)
+            ->where(function ($query) use ($property) {
+                $query->where('type', $property->type)
+                    ->orWhere('location', $property->location);
+            })
+            ->limit(5)
+            ->get();
+
+        return view('properties_details', compact('property', 'relatedProperties'));
     }
 }

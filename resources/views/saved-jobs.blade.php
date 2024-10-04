@@ -339,6 +339,104 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Google Auth Styles */
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .user-info .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .logout-form {
+            padding: 10px;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #3a7bd5;
+        }
+
+        .google-login-btn {
+            display: flex;
+            align-items: center;
+            background-color: #4285F4;
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .google-login-btn i {
+            margin-right: 10px;
+        }
+
+        .google-login-btn:hover {
+            background-color: #3367D6;
+        }
+
+        @media (max-width: 768px) {
+            .auth-buttons {
+                margin-top: 10px;
+            }
+
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-info .avatar {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+
+            .user-dropdown {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -365,6 +463,24 @@
                 <li><a href="{{ url('/careers') }}" class="{{ request()->is('careers') ? 'active' : '' }}">Careers</a></li>
                 <li><a href="{{ url('/saved-jobs') }}" class="{{ request()->is('saved-jobs') ? 'active' : '' }}">Saved Jobs </a></li>
             </ul>
+            <div class="auth-buttons">
+                @if(Auth::guard('google')->check())
+                    <div class="user-info">
+                        <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="avatar">
+                        <span class="user-name">{{ Auth::guard('google')->user()->name }}</span>
+                        <div class="user-dropdown">
+                            <form action="{{ route('google.logout') }}" method="POST" class="logout-form">
+                                @csrf
+                                <button type="submit" class="logout-btn">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('google.login') }}" class="google-login-btn">
+                        <i class="fab fa-google"></i> Login with Google
+                    </a>
+                @endif
+            </div>
             <div class="mobile-menu-toggle">
                 <i class="fas fa-bars"></i>
             </div>
@@ -442,6 +558,22 @@
                     e.preventDefault();
                 }
             });
+
+            const userInfo = document.querySelector('.user-info');
+            const userDropdown = document.querySelector('.user-dropdown');
+
+            if (userInfo) {
+                userInfo.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('active');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!userInfo.contains(e.target)) {
+                        userDropdown.classList.remove('active');
+                    }
+                });
+            }
         });
     </script>
 </body>

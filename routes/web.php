@@ -34,6 +34,7 @@ use App\Http\Controllers\SssController;
 use App\Http\Controllers\PagibigController;
 use App\Http\Controllers\PhilhealthController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\GoogleAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -170,5 +171,10 @@ use App\Http\Controllers\PropertyController;
     Route::post('/sss/destroy-multiple', [SssController::class, 'destroyMultiple'])->name('sss.destroy.multiple');
     Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->name('related.jobs');
 
-    Auth::routes();
+    Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
+    Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+    Route::post('auth/google/logout', [GoogleAuthController::class, 'logout'])->name('google.logout');
 
+    Route::get('/properties/{id}/details', [PropertyController::class, 'showDetails'])->name('properties.details');
+
+    Auth::routes();

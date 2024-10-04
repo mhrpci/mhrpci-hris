@@ -41,6 +41,11 @@ return [
             'provider' => 'users',
         ],
 
+        'google' => [
+            'driver' => 'session',
+            'provider' => 'google_users',
+        ],
+
         'api' => [
         'driver' => 'sanctum',
         'provider' => 'users',
@@ -68,6 +73,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'google_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\GoogleUser::class,
         ],
 
         // 'users' => [
