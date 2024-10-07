@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Career;
 use App\Models\Hiring;
-use Illuminate\Support\Facades\Mail;
 use App\Models\SavedHiring;
+use App\Models\GoogleUser;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CareerController extends Controller
 {
@@ -27,11 +29,24 @@ class CareerController extends Controller
     //     $this->middleware(['permission:career-delete'], ['only' => ['destroy']]);
     // }
 
+    private function getGoogleUserId()
+    {
+        $user = Auth::user();
+        if (!$user || !$user->google_id) {
+            throw new \Exception('User not authenticated or Google ID not found');
+        }
+        return GoogleUser::where('google_id', $user->google_id)->first()->id ?? null;
+    }
+
     public function index()
     {
         $hirings = Hiring::all();
-        $ipAddress = request()->ip();
-        $savedHirings = SavedHiring::where('ip_address', $ipAddress)->pluck('hiring_id')->toArray();
+        try {
+            $googleUserId = $this->getGoogleUserId();
+            $savedHirings = SavedHiring::where('google_user_id', $googleUserId)->pluck('hiring_id')->toArray();
+        } catch (\Exception $e) {
+            $savedHirings = [];
+        }
         return view('careers', compact('hirings', 'savedHirings'));
     }
 
@@ -127,9 +142,13 @@ class CareerController extends Controller
     public function show($id)
     {
         $hiring = Hiring::findOrFail($id);
-        $ipAddress = request()->ip();
-        $savedHirings = SavedHiring::where('ip_address', $ipAddress)->pluck('hiring_id')->toArray();
-        $relatedJobs = Hiring::where('id', '!=', $id)->take(5)->get(); // Get 5 related jobs
+        try {
+            $googleUserId = $this->getGoogleUserId();
+            $savedHirings = SavedHiring::where('google_user_id', $googleUserId)->pluck('hiring_id')->toArray();
+        } catch (\Exception $e) {
+            $savedHirings = [];
+        }
+        $relatedJobs = Hiring::where('id', '!=', $id)->take(5)->get();
 
         return view('career_details', compact('hiring', 'savedHirings', 'relatedJobs'));
     }
@@ -182,7 +201,6 @@ class CareerController extends Controller
     public function saveHiring(Request $request)
     {
         try {
-            // Validate the input
             $validator = Validator::make($request->all(), [
                 'hiring_id' => 'required|integer|exists:hirings,id',
             ]);
@@ -192,33 +210,31 @@ class CareerController extends Controller
             }
 
             $hiringId = $request->input('hiring_id');
-            $ipAddress = $request->ip();
+            $googleUserId = $this->getGoogleUserId();
 
-            // Use a database transaction to ensure data integrity
             DB::beginTransaction();
 
             $savedHiring = SavedHiring::create([
                 'hiring_id' => $hiringId,
-                'ip_address' => $ipAddress,
+                'google_user_id' => $googleUserId,
             ]);
 
             DB::commit();
 
-            Log::info("Job saved successfully", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            Log::info("Job saved successfully", ['hiring_id' => $hiringId, 'google_user_id' => $googleUserId]);
             return response()->json(['success' => true, 'message' => 'Job saved successfully.']);
 
         } catch (QueryException $e) {
             DB::rollBack();
-            // Handle unique constraint violation
             if ($e->getCode() == '23000') {
-                Log::warning("Attempt to save already saved job", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+                Log::warning("Attempt to save already saved job", ['hiring_id' => $hiringId ?? null, 'google_user_id' => $googleUserId ?? null]);
                 return response()->json(['success' => false, 'message' => 'You have already saved this job.'], 409);
             }
-            Log::error("Error saving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            Log::error("Error saving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId ?? null, 'google_user_id' => $googleUserId ?? null]);
             return response()->json(['success' => false, 'message' => 'An error occurred while saving the job.'], 500);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Unexpected error saving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            Log::error("Unexpected error saving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId ?? null, 'google_user_id' => $googleUserId ?? null]);
             return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
         }
     }
@@ -226,7 +242,6 @@ class CareerController extends Controller
     public function unsaveHiring(Request $request)
     {
         try {
-            // Validate the input
             $validator = Validator::make($request->all(), [
                 'hiring_id' => 'required|integer|exists:hirings,id',
             ]);
@@ -236,49 +251,56 @@ class CareerController extends Controller
             }
 
             $hiringId = $request->input('hiring_id');
-            $ipAddress = $request->ip();
+            $googleUserId = $this->getGoogleUserId();
 
-            // Use a database transaction to ensure data integrity
             DB::beginTransaction();
 
             $deleted = SavedHiring::where('hiring_id', $hiringId)
-                ->where('ip_address', $ipAddress)
+                ->where('google_user_id', $googleUserId)
                 ->delete();
 
             DB::commit();
 
             if ($deleted) {
-                Log::info("Job unsaved successfully", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+                Log::info("Job unsaved successfully", ['hiring_id' => $hiringId, 'google_user_id' => $googleUserId]);
                 return response()->json(['success' => true, 'message' => 'Job removed from saved list.']);
             } else {
-                Log::warning("Attempt to unsave a job that wasn't saved", ['hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+                Log::warning("Attempt to unsave a job that wasn't saved", ['hiring_id' => $hiringId, 'google_user_id' => $googleUserId]);
                 return response()->json(['success' => false, 'message' => 'Job was not in your saved list.'], 404);
             }
 
         } catch (QueryException $e) {
             DB::rollBack();
-            Log::error("Database error unsaving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            Log::error("Database error unsaving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId ?? null, 'google_user_id' => $googleUserId ?? null]);
             return response()->json(['success' => false, 'message' => 'An error occurred while removing the job from your saved list.'], 500);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Unexpected error unsaving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId, 'ip_address' => $ipAddress]);
+            Log::error("Unexpected error unsaving job", ['error' => $e->getMessage(), 'hiring_id' => $hiringId ?? null, 'google_user_id' => $googleUserId ?? null]);
             return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
         }
     }
 
     public function savedJobs()
     {
-        $ipAddress = request()->ip();
-        $savedHiringIds = SavedHiring::where('ip_address', $ipAddress)->pluck('hiring_id');
-        $savedJobs = Hiring::whereIn('id', $savedHiringIds)->get();
+        try {
+            $googleUserId = $this->getGoogleUserId();
+            $savedJobIds = SavedHiring::where('google_user_id', $googleUserId)->pluck('hiring_id');
+            $savedJobs = Hiring::whereIn('id', $savedJobIds)->get();
+        } catch (\Exception $e) {
+            $savedJobs = collect();
+        }
 
         return view('saved-jobs', compact('savedJobs'));
     }
 
     public function getSavedJobsCount()
     {
-        $ipAddress = request()->ip();
-        $count = SavedHiring::where('ip_address', $ipAddress)->count();
+        try {
+            $googleUserId = $this->getGoogleUserId();
+            $count = SavedHiring::where('google_user_id', $googleUserId)->count();
+        } catch (\Exception $e) {
+            $count = 0;
+        }
         return response()->json(['count' => $count]);
     }
 

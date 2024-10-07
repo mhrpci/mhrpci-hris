@@ -30,4 +30,5 @@ class Career extends Model
     {
         return $this->belongsTo(Hiring::class);
     }
+
 }

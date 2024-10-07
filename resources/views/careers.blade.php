@@ -9,8 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f39c12;
+            --primary-color: #0056b3;
+            --secondary-color: #6c757d;
             --text-color: #333;
             --light-bg: #f8f9fa;
             --white: #ffffff;
@@ -24,657 +24,305 @@
             background-color: var(--light-bg);
         }
 
-        /* Header and Navigation styles */
-        header {
+        .navbar {
             background-color: var(--white);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
+            padding: 1rem 0;
         }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 2rem;
-            max-width: 1200px;
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 6rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: var(--light-bg);
+            transform: skewY(-3deg);
+        }
+
+        .hero h1 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 3rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
             margin: 0 auto;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .app-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .nav-links {
-            display: flex;
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links li {
-            margin-left: 2rem;
-            position: relative;
-        }
-
-        .nav-links a {
-            color: var(--text-color);
-            font-weight: 500;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            padding: 0.5rem 0;
-            display: inline-block;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--primary-color);
-            visibility: hidden;
-            transform: scaleX(0);
-            transition: all 0.3s ease-in-out;
-        }
-
-        .nav-links a:hover::after {
-            visibility: visible;
-            transform: scaleX(1);
-        }
-
-        .badge {
-            font-size: 0.8rem;
-            padding: 0.25em 0.6em;
-            border-radius: 50%;
-            vertical-align: top;
-            margin-left: 5px;
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .saved-jobs-count {
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            cursor: pointer;
-        }
-
-        /* Career item styles */
         .career-item {
             background-color: var(--white);
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
         }
 
         .career-item:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .career-item h2 {
             color: var(--primary-color);
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
 
-        .career-item p {
-            color: var(--gray);
-            margin-bottom: 20px;
-        }
-
-        /* Button styles */
-        .btn {
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            color: var(--white);
+        .career-item-content {
+            padding: 2rem;
         }
 
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
+            background-color: #004494;
+            border-color: #004494;
+            transform: translateY(-2px);
         }
 
-        /* Modal styles */
-        .modal-content {
-            border-radius: 8px;
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .modal-header {
+        .btn-outline-primary:hover {
             background-color: var(--primary-color);
             color: var(--white);
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            transform: translateY(-2px);
         }
 
-        .modal-title {
-            font-weight: 600;
+        #careerSearch {
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
-        /* Footer styles */
-        footer {
-            flex-shrink: 0;
+        #careerSearch:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0,86,179,0.25);
+        }
+
+        .footer {
             background-color: var(--white);
             color: var(--gray);
-            padding: 20px 0;
+            padding: 3rem 0;
+            margin-top: 4rem;
         }
 
-        /* Responsive styles */
         @media (max-width: 768px) {
-            nav {
-                padding: 0.5rem 1rem;
-            }
-
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
+            .navbar-nav {
                 background-color: var(--white);
-                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-            }
-
-            .nav-links.show {
-                display: flex;
-            }
-
-            .nav-links li {
-                margin: 0;
-            }
-
-            .nav-links a {
                 padding: 1rem;
-                display: block;
-                border-bottom: 1px solid #f0f0f0;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             }
 
-            .mobile-menu-toggle {
-                display: block;
+            .hero {
+                padding: 4rem 0;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
             }
 
             .career-item {
-                padding: 20px;
-            }
-
-            .btn {
-                padding: 8px 16px;
+                margin-bottom: 1.5rem;
             }
         }
 
-        @media (min-width: 769px) {
-            .mobile-menu-toggle {
-                display: none;
-            }
+        .card {
+            transition: transform 0.2s ease-in-out;
         }
 
-        /* Add these new styles */
-        html, body {
-            height: 100%;
+        .card:hover {
+            transform: translateY(-5px);
         }
 
-        body {
-            display: flex;
-            flex-direction: column;
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 500;
         }
 
-        .content-wrapper {
-            flex: 1 0 auto;
+        .card-text {
+            font-size: 0.9rem;
         }
 
-        /* Enhanced Background shapes */
-        .bg-shape {
-            position: fixed;
-            z-index: -1;
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
         }
 
-        .bg-shape-1 {
-            top: -100px;
-            left: -100px;
-            width: 400px;
-            height: 400px;
-            background-color: rgba(74, 144, 226, 0.1);
-            border-radius: 50%;
-            animation: float 20s ease-in-out infinite;
-        }
-
-        .bg-shape-2 {
-            bottom: -150px;
-            right: -150px;
-            width: 500px;
-            height: 500px;
-            background-color: rgba(243, 156, 18, 0.1);
-            border-radius: 50%;
-            animation: float 15s ease-in-out infinite reverse;
-        }
-
-        .bg-shape-3 {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            background-color: rgba(46, 204, 113, 0.1);
-            border-radius: 50%;
-            animation: pulse 10s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-
-        /* Decorative elements */
-        .decorative-icon {
-            position: absolute;
-            opacity: 0.1;
-            color: var(--primary-color);
-        }
-
-        .icon-1 { top: 10%; left: 5%; font-size: 2rem; }
-        .icon-2 { top: 30%; right: 8%; font-size: 1.5rem; }
-        .icon-3 { bottom: 15%; left: 10%; font-size: 1.8rem; }
-
-        .save-hiring.saved {
-            background-color: #28a745;
-            color: white;
-            border-color: #28a745;
-            transition: all 0.3s ease;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .save-hiring.saved .fa-bookmark {
-            animation: pulse 0.3s ease-in-out;
-            color: white; /* Ensure icon is visible on green background */
-        }
-
-        /* Add these new styles */
-        .save-hiring {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .save-hiring .spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-        }
-
-        .save-hiring.loading .spinner {
-            display: inline-block;
-        }
-
-        .save-hiring.loading .button-text {
-            visibility: hidden;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .save-hiring.saved .button-text {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .nav-links li:not(:last-child) {
-            margin-right: 1rem;
-        }
-
-        .badge {
-            font-size: 0.8rem;
-            padding: 0.25em 0.6em;
-            border-radius: 50%;
-            vertical-align: top;
-            margin-left: 5px;
-        }
-
-        .saved-jobs-count {
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a.active {
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        .nav-links a.active::after {
-            visibility: visible;
-            transform: scaleX(1);
-        }
-
-         /* Enhanced search bar styles */
-    #careerSearch {
-        border-radius: 50px;
-        padding: 10px 20px 10px 40px;
-        border: 2px solid var(--primary-color);
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    #careerSearch:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
-    }
-
-    #careerSearch::placeholder {
-        color: #aaa;
-    }
-
-    .fa-search {
-        font-size: 1rem;
-        color: var(--primary-color);
-    }
-    /* Add these preloader styles */
-    .preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--white);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-        }
-
-        .preloader.fade-out {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--primary-color);
-            border-top: 3px solid var(--secondary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Google Auth Styles */
-        .auth-buttons {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-
-        .user-info .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .user-info .user-name {
-            font-weight: 600;
-            color: var(--text-color);
-            cursor: pointer;
-        }
-
-        .user-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: var(--white);
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .user-dropdown.active {
-            display: block;
-        }
-
-        .logout-form {
-            padding: 10px;
-        }
-
-        .logout-btn {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background-color: #3a7bd5;
-        }
-
-        .google-login-btn {
-            display: flex;
-            align-items: center;
-            background-color: #4285F4;
-            color: var(--white);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .google-login-btn i {
-            margin-right: 10px;
-        }
-
-        .google-login-btn:hover {
-            background-color: #3367D6;
-        }
-
-        @media (max-width: 768px) {
-            .auth-buttons {
-                margin-top: 10px;
+        @media (max-width: 767.98px) {
+            .card-body {
+                padding: 1rem;
             }
 
-            .user-info {
-                flex-direction: column;
-                align-items: flex-start;
+            .card-title {
+                font-size: 1.1rem;
             }
 
-            .user-info .avatar {
-                margin-right: 0;
-                margin-bottom: 5px;
+            .card-text {
+                font-size: 0.85rem;
             }
 
-            .user-dropdown {
-                width: 100%;
+            .btn-sm {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-        <!-- Add this preloader HTML right after the opening body tag -->
-        <div class="preloader">
-            <div class="spinner"></div>
-        </div>
-    <!-- Add these elements just after the opening body tag -->
-    <div class="bg-shape bg-shape-1"></div>
-    <div class="bg-shape bg-shape-2"></div>
-    <div class="bg-shape bg-shape-3"></div>
-
-    <!-- Decorative icons -->
-    <i class="fas fa-briefcase decorative-icon icon-1"></i>
-    <i class="fas fa-users decorative-icon icon-2"></i>
-    <i class="fas fa-chart-line decorative-icon icon-3"></i>
-
-    <header>
-        <nav>
-            <div class="logo-container">
-                <div class="logo">
-                    <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="MHR Logo">
-                </div>
-                <div class="app-name">
-                    MHRPCI
-                </div>
-            </div>
-            <ul class="nav-links">
-                <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
-                <li><a href="{{ url('/careers') }}" class="{{ request()->is('careers*') ? 'active' : '' }}">Careers</a></li>
-<li>
-                    <a href="{{ url('/saved-jobs') }}" class="{{ request()->is('saved-jobs') ? 'active' : '' }}">
-                        Saved Jobs
-                        <span class="badge saved-jobs-count">0</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="auth-buttons">
-                @if(Auth::guard('google')->check())
-                    <div class="user-info">
-                        <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="avatar">
-                        <span class="user-name">{{ Auth::guard('google')->user()->name }}</span>
-                        <div class="user-dropdown">
-                            <form action="{{ route('google.logout') }}" method="POST" class="logout-form">
-                                @csrf
-                                <button type="submit" class="logout-btn">Logout</button>
-                            </form>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="MHR Logo" height="30" class="d-inline-block align-top me-2">
+                MHRPCI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('careers*') ? 'active' : '' }}" href="{{ url('/careers') }}">Careers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('saved-jobs') ? 'active' : '' }}" href="{{ url('/saved-jobs') }}">
+                            Saved Jobs
+                            <span class="badge bg-primary saved-jobs-count">0</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="ms-lg-3 mt-3 mt-lg-0">
+                    @if(Auth::guard('google')->check())
+                        <div class="dropdown">
+                            <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="rounded-circle me-2" width="24" height="24">
+                                {{ Auth::guard('google')->user()->name }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li>
+                                    <form action="{{ route('google.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
-                @else
-                    <a href="{{ route('google.login') }}" class="google-login-btn">
-                        <i class="fab fa-google"></i> Login with Google
-                    </a>
-                @endif
-            </div>
-            <div class="mobile-menu-toggle">
-                <i class="fas fa-bars"></i>
-            </div>
-        </nav>
-    </header>
-
-    <div class="content-wrapper">
-        <div class="container" style="margin-top: 80px;">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    @else
+                        <a href="{{ route('google.login') }}" class="btn btn-primary">
+                            <i class="fab fa-google me-2"></i> Login with Google
+                        </a>
+                    @endif
                 </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            <h1 class="mb-4 text-center">Careers at MHR</h1>
-            <p class="lead mb-5 text-center">Join our team and help revolutionize HR management!</p>
-
-            <!-- Add this new search input with icon -->
-            <div class="mb-4 position-relative">
-                <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                <input type="text" id="careerSearch" class="form-control ps-5" placeholder="Search for positions...">
             </div>
+        </div>
+    </nav>
 
-            @if($hirings->count() > 0)
-            <div class="row row-cols-1 row-cols-md-2 g-4" id="careerList">
+    <div class="hero">
+        <div class="container text-center">
+            <h1>Join Our Team</h1>
+            <p class="lead">Discover exciting career opportunities and help shape the future of MHR Property Conglomerates, Inc.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        <div class="mb-4">
+            <input type="text" id="careerSearch" class="form-control form-control-lg" placeholder="Search for positions...">
+        </div>
+
+        @if($hirings->count() > 0)
+            <div class="row g-4" id="careerList">
                 @foreach($hirings as $hiring)
-                    <div class="col career-item-container">
-                        <div class="career-item h-100 d-flex flex-column">
-                            <h2 class="h4 mb-3">{{ $hiring->position }}</h2>
-                                <p><strong>Description:</strong> {{ Str::limit($hiring->description, 150) }}</p>
-                                <div class="mt-auto d-flex flex-wrap gap-2">
-                                    <a href="{{ route('careers.show', $hiring->id) }}" class="btn btn-outline-primary">
+                    <div class="col-12 col-md-6 col-lg-4 career-item-container">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column">
+                                <h2 class="card-title h5 text-primary">{{ $hiring->position }}</h2>
+                                <p class="card-text mb-3 flex-grow-1 text-secondary"><strong>Description:</strong> {{ Str::limit($hiring->description, 100) }}</p>
+                                <div class="d-flex gap-2 mt-auto">
+                                    <a href="{{ route('careers.show', $hiring->id) }}" class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-info-circle me-1"></i> View Details
                                     </a>
-                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#applyModal" data-career-id="{{ $hiring->id }}">
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#applyModal" data-career-id="{{ $hiring->id }}">
                                         <i class="fas fa-paper-plane me-1"></i> Apply Now
                                     </button>
-                                    <button class="btn btn-outline-secondary save-hiring {{ in_array($hiring->id, $savedHirings) ? 'saved' : '' }}"
-                                            data-hiring-id="{{ $hiring->id }}">
-                                        <i class="fas fa-bookmark me-1"></i>
-                                        <span class="button-text">{{ in_array($hiring->id, $savedHirings) ? 'Saved' : 'Save' }}</span>
-                                        <span class="spinner"><i class="fas fa-spinner fa-spin"></i></span>
+                                    <button class="btn btn-outline-secondary btn-sm save-hiring" data-hiring-id="{{ $hiring->id }}">
+                                        <i class="fas fa-bookmark me-1"></i> Save
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="alert alert-info text-center">
-                    <p class="mb-0">There are currently no open positions. Please check back later.</p>
-                </div>
-            @endif
-        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="alert alert-info text-center">
+                <p class="mb-0">There are currently no open positions. Please check back later.</p>
+            </div>
+        @endif
     </div>
-
     <!-- Application Modal -->
     <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -740,9 +388,9 @@
         </div>
     </div>
 
-    <footer>
+    <footer class="footer">
         <div class="container text-center">
-            <p>&copy; {{ date('Y') }} MHR. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} MHR Property Conglomerates, Inc. All rights reserved.</p>
         </div>
     </footer>
 
@@ -810,141 +458,6 @@
                 }
             });
 
-            // Save/Unsave hiring functionality
-            var saveButtons = document.querySelectorAll('.save-hiring');
-            saveButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var hiringId = this.getAttribute('data-hiring-id');
-                    if (this.classList.contains('saved')) {
-                        unsaveHiring(hiringId, this);
-                    } else {
-                        saveHiring(hiringId, this);
-                    }
-                });
-            });
-
-            function saveHiring(hiringId, button) {
-                toggleSaveButton(button, true);
-
-                fetch('{{ route("careers.save") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        hiring_id: hiringId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    toggleSaveButton(button, false);
-                    if (data.success) {
-                        updateSaveButtonState(button, true);
-                        showToast('Job saved successfully!');
-                        updateSavedJobsCount(); // Update count after saving
-                    } else {
-                        showToast(data.message || 'Error saving job. Please try again.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    toggleSaveButton(button, false);
-                    showToast('An error occurred. Please try again.', 'error');
-                });
-            }
-
-            function unsaveHiring(hiringId, button) {
-                toggleSaveButton(button, true);
-
-                fetch('{{ route("unsave.hiring") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        hiring_id: hiringId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    toggleSaveButton(button, false);
-                    if (data.success) {
-                        updateSaveButtonState(button, false);
-                        showToast('Job removed from saved list.');
-                        updateSavedJobsCount(); // Update count after unsaving
-                    } else {
-                        showToast(data.message || 'Error removing job. Please try again.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    toggleSaveButton(button, false);
-                    showToast('An error occurred. Please try again.', 'error');
-                });
-            }
-
-            function toggleSaveButton(button, isLoading) {
-                button.classList.toggle('loading', isLoading);
-                button.disabled = isLoading;
-            }
-
-            function updateSaveButtonState(button, isSaved) {
-                button.classList.toggle('saved', isSaved);
-                button.classList.toggle('btn-outline-secondary', !isSaved);
-                button.classList.toggle('btn-success', isSaved);
-                button.querySelector('.button-text').textContent = isSaved ? 'Saved' : 'Save';
-                button.disabled = false;
-
-                if (isSaved) {
-                    const icon = button.querySelector('.fa-bookmark');
-                    icon.classList.remove('fa-bookmark');
-                    void icon.offsetWidth; // Trigger reflow
-                    icon.classList.add('fa-bookmark');
-                }
-            }
-
-            function showToast(message, type = 'success') {
-                // Create and show a Bootstrap toast
-                var toastHtml = `
-                    <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="d-flex">
-                            <div class="toast-body">
-                                ${message}
-                            </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                    </div>
-                `;
-                var toastContainer = document.createElement('div');
-                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-                toastContainer.innerHTML = toastHtml;
-                document.body.appendChild(toastContainer);
-
-                var toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
-                toast.show();
-
-                // Remove the toast container after it's hidden
-                toastContainer.addEventListener('hidden.bs.toast', function () {
-                    document.body.removeChild(toastContainer);
-                });
-            }
-
-            // Add this new function to update the saved jobs count
-            function updateSavedJobsCount() {
-                fetch('{{ route("saved-jobs.count") }}')
-                    .then(response => response.json())
-                    .then(data => {
-                        const savedJobsCount = document.querySelector('.saved-jobs-count');
-                        savedJobsCount.textContent = data.count;
-                        savedJobsCount.style.display = 'inline-block'; // Always display the badge
-                    })
-                    .catch(error => console.error('Error fetching saved jobs count:', error));
-            }
-
-            // Call the function when the page loads
-            updateSavedJobsCount();
         });
     </script>
     <script>

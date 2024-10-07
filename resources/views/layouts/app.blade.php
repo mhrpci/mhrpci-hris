@@ -373,6 +373,15 @@
                         <div class="theme-option bg-gray" data-theme="gray"></div>
                     </div>
                 </div>
+                 <!-- New navbar position options -->
+                <div class="navbar-position-wrapper mb-4">
+                    <label for="navbar-position-select" class="d-block mb-2">Navbar Position</label>
+                    <select id="navbar-position-select" class="form-control bg-dark text-light border-secondary">
+                        <option value="static">Static (Default)</option>
+                        <option value="fixed">Fixed Top</option>
+                        <option value="sticky">Sticky Top</option>
+                    </select>
+                </div>
             </div>
         </aside>
         <!-- /.control-sidebar -->
@@ -973,6 +982,48 @@
 
             // Call this function on page load
             loadSavedTheme();
+
+             // Navbar Position Functionality
+    function applyNavbarPosition(position) {
+        const $body = $('body');
+        const $navbar = $('.main-header');
+
+        // Remove existing classes
+        $body.removeClass('layout-navbar-fixed layout-navbar-not-fixed');
+        $navbar.removeClass('fixed-top sticky-top');
+
+        switch (position) {
+            case 'fixed':
+                $body.addClass('layout-navbar-fixed');
+                $navbar.addClass('fixed-top');
+                break;
+            case 'sticky':
+                $navbar.addClass('sticky-top');
+                break;
+            default: // 'static'
+                $body.addClass('layout-navbar-not-fixed');
+                break;
+        }
+
+        // Save preference
+        localStorage.setItem('navbarPosition', position);
+    }
+
+    // Navbar position change event handler
+    $('#navbar-position-select').on('change', function() {
+        const selectedPosition = $(this).val();
+        applyNavbarPosition(selectedPosition);
+    });
+
+    // Load saved navbar position
+    function loadSavedNavbarPosition() {
+        const savedPosition = localStorage.getItem('navbarPosition') || 'static';
+        $('#navbar-position-select').val(savedPosition);
+        applyNavbarPosition(savedPosition);
+    }
+
+    // Call this function on page load
+    loadSavedNavbarPosition();
         });
     </script>
 

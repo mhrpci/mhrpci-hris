@@ -156,8 +156,15 @@ use App\Http\Controllers\GoogleAuthController;
 
     Route::get('/careers', [CareerController::class, 'index'])->name('careers');
     Route::get('/applicants/{id}', [CareerController::class, 'showApplicant'])->name('showApplicant');
-    Route::post('/careers/save', [CareerController::class, 'saveHiring'])->name('careers.save')->middleware('throttle:60,1');
-    Route::post('/unsave-hiring', [CareerController::class, 'unsaveHiring'])->name('unsave.hiring')->middleware('throttle:60,1');
+    // Save and unsave hirings
+    Route::post('/careers/save', [CareerController::class, 'saveHiring'])->name('careers.save');
+    Route::post('/careers/unsave', [CareerController::class, 'unsaveHiring'])->name('careers.unsave');
+
+    // Get saved jobs count
+    Route::get('/careers/saved/count', [CareerController::class, 'getSavedJobsCount'])->name('careers.saved.count');
+
+    // View saved jobs
+    Route::get('/saved-jobs', [CareerController::class, 'savedJobs'])->name('saved-jobs');
     Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
     Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
     Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');

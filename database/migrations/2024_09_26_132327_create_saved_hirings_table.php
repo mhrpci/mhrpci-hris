@@ -14,11 +14,12 @@ class CreateSavedHiringsTable extends Migration
         Schema::create('saved_hirings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('hiring_id');
-            $table->string('ip_address', 45);
+            $table->unsignedBigInteger('google_user_id');
             $table->timestamps();
 
             $table->foreign('hiring_id')->references('id')->on('hirings')->onDelete('cascade');
-            $table->unique(['hiring_id', 'ip_address']);
+            $table->foreign('google_user_id')->references('id')->on('google_users')->onDelete('cascade');
+            $table->unique(['hiring_id', 'google_user_id']);
         });
     }
 
