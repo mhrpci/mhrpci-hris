@@ -27,7 +27,7 @@
         <div class="card-body">
             <div class="row mb-4">
                 <!-- Info Boxes -->
-                <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="col">
                     <div class="info-box bg-primary">
                         <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
                         <div class="info-box-content">
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="col">
                     <div class="info-box bg-success">
                         <span class="info-box-icon"><i class="fas fa-heartbeat"></i></span>
                         <div class="info-box-content">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="col">
                     <div class="info-box bg-info">
                         <span class="info-box-icon"><i class="fas fa-home"></i></span>
                         <div class="info-box-content">
@@ -60,18 +60,6 @@
                         </div>
                         <div class="info-box-overlay">
                             <img src="{{ asset('vendor/adminlte/dist/img/pagibig.png') }}" alt="Pag-IBIG Logo">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
-                    <div class="info-box bg-warning">
-                        <span class="info-box-icon"><i class="fas fa-receipt"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total TIN</span>
-                            <span class="info-box-number">{{ number_format($totals['tin'], 2) }}</span>
-                        </div>
-                        <div class="info-box-overlay">
-                            <img src="{{ asset('vendor/adminlte/dist/img/tin.png') }}" alt="TIN Logo">
                         </div>
                     </div>
                 </div>
@@ -84,23 +72,29 @@
                             <th>SSS</th>
                             <th>PhilHealth</th>
                             <th>Pag-IBIG</th>
-                            <th>TIN</th>
                         </tr>
                     </thead>
                     <tbody id="contributionTableBody">
-                        @forelse($contributions as $contribution)
-                        <tr data-date="{{ $contribution->date }}">
-                            <td>{{ $contribution->date }}</td>
-                            <td>{{ number_format($contribution->sss_contribution, 2) }}</td>
-                            <td>{{ number_format($contribution->philhealth_contribution, 2) }}</td>
-                            <td>{{ number_format($contribution->pagibig_contribution, 2) }}</td>
-                            <td>{{ number_format($contribution->tin_contribution, 2) }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">No Data Available</td>
-                        </tr>
-                    @endforelse
+                        @php
+                            $allDates = $ssscontributions->pluck('date')
+                                ->concat($philhealthcontributions->pluck('date'))
+                                ->concat($pagibigcontributions->pluck('date'))
+                                ->unique()
+                                ->sort()
+                                ->reverse();
+                        @endphp
+                        @forelse($allDates as $date)
+                            <tr data-date="{{ $date }}">
+                                <td>{{ $date }}</td>
+                                <td>{{ number_format($ssscontributions->where('date', $date)->first()->sss_contribution ?? 0, 2) }}</td>
+                                <td>{{ number_format($philhealthcontributions->where('date', $date)->first()->philhealth_contribution ?? 0, 2) }}</td>
+                                <td>{{ number_format($pagibigcontributions->where('date', $date)->first()->pagibig_contribution ?? 0, 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">No Data Available</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
                 <div id="no-data-message" class="text-center" style="display: none;">No data available for the selected month.</div>
@@ -110,74 +104,7 @@
 </div>
 @endsection
 
-@push('css')
-<style>
-    .container-fluid {
-        padding: 20px;
-    }
-
-    .info-box {
-    position: relative;
-    overflow: hidden;
-    height: 120px;
-    border-radius: .25rem;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-    background-color: #f4f6f9;
-}
-
-.info-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.info-box-icon {
-    font-size: 2.5rem;
-    color: #fff;
-    margin-right: 1rem;
-}
-
-.info-box-content {
-    position: relative; /* Added to ensure content overlays on top of the background */
-    z-index: 1; /* Ensure content is above the overlay */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.info-box-text {
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.info-box-number {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.info-box-overlay {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 100px; /* Adjusted size for better visibility */
-    height: auto; /* Auto height to maintain aspect ratio */
-    opacity: 0.15; /* Slightly increased opacity for subtle effect */
-    z-index: 0; /* Positioned behind the content */
-}
-
-.info-box-overlay img {
-    width: 100%; /* Ensure the image takes the full width of the container */
-    height: auto; /* Maintain aspect ratio */
-}
-
-</style>
-@endpush
-
-@push('js')
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('printButton').addEventListener('click', function() {

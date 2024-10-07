@@ -120,7 +120,7 @@
                                                             </form>
                                                         @endcan
                                                     @endif
-                                                    @can('employee-delete')
+                                                    @can('super-admin')
                                                     <form action="{{ route('employees.destroy', $employee->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')

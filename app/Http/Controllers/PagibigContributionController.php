@@ -70,9 +70,13 @@ class PagibigContributionController extends Controller
             'pagibig_contribution' => 'nullable|numeric',
         ]);
 
-        PagibigContribution::create($validatedData);
+        $contribution = PagibigContribution::create($validatedData);
 
-        return redirect()->route('pagibigcontributions.index')->with('success', 'Pagibig Contribution created successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Pagibig Contribution created successfully.',
+            'data' => $contribution
+        ], 201);
     }
 
     /**
@@ -111,7 +115,11 @@ class PagibigContributionController extends Controller
 
         $pagibigcontribution->update($validatedData);
 
-        return redirect()->route('pagibigcontributions.index')->with('success', 'Pagibig Contribution updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Pagibig Contribution updated successfully.',
+            'data' => $pagibigcontribution
+        ]);
     }
 
     /**
@@ -121,6 +129,9 @@ class PagibigContributionController extends Controller
     {
         $pagibigcontribution->delete();
 
-        return redirect()->route('pagibigcontributions.index')->with('success', 'Pagibig Contribution deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Pagibig Contribution deleted successfully.'
+        ]);
     }
 }

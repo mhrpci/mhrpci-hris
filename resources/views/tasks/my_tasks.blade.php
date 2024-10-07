@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<br>
 <div class="container-fluid">
     @if ($message = Session::get('success'))
         <div class="alert alert-success">{{ $message }}</div>
@@ -9,17 +8,19 @@
 
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">My Tasks</h3>
-            <div class="float-right">
-                <div class="input-group input-group-sm">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-filter"></i></span>
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h3 class="card-title mb-2 mb-sm-0">My Tasks</h3>
+                <div class="mt-2 mt-sm-0">
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-filter"></i></span>
+                        </div>
+                        <select id="readFilter" class="form-control form-control-sm">
+                            <option value="">All</option>
+                            <option value="read">Read</option>
+                            <option value="new">Unread</option>
+                        </select>
                     </div>
-                    <select id="readFilter" class="form-control form-control-sm">
-                        <option value="">All</option>
-                        <option value="read">Read</option>
-                        <option value="new">Unread</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -39,14 +40,14 @@
                     <tbody>
                         @if($tasks->isEmpty())
                             <tr>
-                                <td colspan="5" class="text-center">No tasks assigned to you.</td>
+                                <td colspan="6" class="text-center">No tasks assigned to you.</td>
                             </tr>
                         @else
                             @foreach($tasks as $task)
                                 <tr>
-                                    <td>{{ $task->title }}</td>
-                                    <td>{{ $task->description }}</td>
-                                    <td>
+                                    <td data-label="Title">{{ $task->title }}</td>
+                                    <td data-label="Description">{{ $task->description }}</td>
+                                    <td data-label="Status">
                                         @if($task->status === 'Pending')
                                             <i class="fas fa-hourglass-half text-secondary"></i> Pending
                                         @elseif($task->status === 'On Progress')
@@ -57,15 +58,15 @@
                                             <i class="fas fa-times-circle text-danger"></i> Abandoned
                                         @endif
                                     </td>
-                                    <td>{{ $task->employee->first_name }} {{ $task->employee->last_name }}</td>
-                                    <td>
+                                    <td data-label="Assigned To">{{ $task->employee->first_name }} {{ $task->employee->last_name }}</td>
+                                    <td data-label="Read">
                                         @if($task->is_read)
                                             <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Read</span>
                                         @else
                                             <span class="badge badge-info"><i class="fas fa-bell mr-1"></i> New</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td data-label="Action">
                                         <div class="btn-group">
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -90,7 +91,7 @@
 </div>
 @endsection
 
-@section('css')
+@push('styles')
 <style>
     .rotating {
         animation: rotate 2s infinite linear;
@@ -137,10 +138,42 @@
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
     }
-</style>
-@endsection
 
-@section('js')
+    @media screen and (max-width: 767px) {
+        #tasksTable thead {
+            display: none;
+        }
+
+        #tasksTable, #tasksTable tbody, #tasksTable tr, #tasksTable td {
+            display: block;
+            width: 100%;
+        }
+
+        #tasksTable tr {
+            margin-bottom: 15px;
+        }
+
+        #tasksTable td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+        }
+
+        #tasksTable td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            text-align: left;
+            font-weight: bold;
+        }
+    }
+</style>
+@endpush
+
+@push('scripts')
 <script>
     $(document).ready(function () {
         var table = $('#tasksTable').DataTable({
@@ -153,7 +186,18 @@
             "responsive": true,
             "columnDefs": [
                 { "orderable": false, "targets": 5 } // Disable ordering on the Action column (now index 5)
-            ]
+            ],
+            "language": {
+                "search": "Search:",
+                "lengthMenu": "Show _MENU_ entries",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                "paginate": {
+                    "first": "First",
+                    "last": "Last",
+                    "next": "Next",
+                    "previous": "Previous"
+                }
+            }
         });
 
         // Add custom filtering for read/unread
@@ -163,4 +207,4 @@
         });
     });
 </script>
-@endsection
+@endpush

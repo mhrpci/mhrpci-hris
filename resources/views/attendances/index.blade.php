@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('content')
 <br>
 <div class="container-fluid">
 <!-- Enhanced professional-looking link buttons -->

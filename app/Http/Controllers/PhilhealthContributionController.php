@@ -70,9 +70,13 @@ class PhilhealthContributionController extends Controller
             'philhealth_contribution' => 'nullable|numeric',
         ]);
 
-        PhilhealthContribution::create($validatedData);
+        $contribution = PhilhealthContribution::create($validatedData);
 
-        return redirect()->route('philhealthcontributions.index')->with('success', 'Pagibig Contribution created successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Philhealth Contribution created successfully.',
+            'data' => $contribution
+        ], 201);
     }
 
     /**
@@ -111,7 +115,11 @@ class PhilhealthContributionController extends Controller
 
         $philhealthcontribution->update($validatedData);
 
-        return redirect()->route('philhealthcontributions.index')->with('success', 'Pagibig Contribution updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Philhealth Contribution updated successfully.',
+            'data' => $philhealthcontribution
+        ]);
     }
 
     /**
@@ -121,6 +129,9 @@ class PhilhealthContributionController extends Controller
     {
         $philhealthcontribution->delete();
 
-        return redirect()->route('philhealthcontributions.index')->with('success', 'Pagibig Contribution deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Philhealth Contribution deleted successfully.'
+        ]);
     }
 }

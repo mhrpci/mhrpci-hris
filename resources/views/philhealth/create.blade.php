@@ -7,6 +7,16 @@
             <h3 class="card-title">PHILHEALTH Contribution Form</h3>
         </div>
         <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('philhealth.store') }}" method="POST">
                 @csrf
                 <div class="form-group">
@@ -19,8 +29,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="contribution_month">Contribution Month</label>
-                    <input type="month" name="contribution_month" id="contribution_month" class="form-control" required>
+                    <label for="contribution_date">Contribution Month</label>
+                    <input type="month" name="contribution_date" id="contribution_date" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Contribution</button>
                 <a href="{{ route('philhealth.index') }}" class="btn btn-secondary">Back</a>

@@ -184,6 +184,137 @@
         color: #fff;
         font-size: 16px;
     }
+
+    /* Right Sidebar Styles */
+    .control-sidebar {
+        width: 250px;
+    }
+    .control-sidebar-dark {
+        background-color: #343a40;
+    }
+    .control-sidebar-content {
+        padding: 1rem;
+    }
+    .theme-option-wrapper {
+        margin-bottom: 1rem;
+    }
+    .theme-option-wrapper label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #ced4da;
+        font-weight: 600;
+    }
+    .theme-select {
+        width: 100%;
+        background-color: #454d55;
+        color: #fff;
+        border: 1px solid #6c757d;
+        border-radius: 4px;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    .theme-select option {
+        background-color: #454d55;
+        color: #fff;
+    }
+    .theme-select:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
+    }
+
+    .theme-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .theme-option {
+        width: 30px;
+        height: 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        opacity: 0.8;
+        position: relative;
+    }
+
+    .theme-option:hover {
+        opacity: 1;
+    }
+
+    .theme-option.active::after {
+        content: '\2714';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 16px;
+    }
+    /*my-contribution css*/
+    .container-fluid {
+        padding: 20px;
+    }
+
+    .info-box {
+    position: relative;
+    overflow: hidden;
+    height: 120px;
+    border-radius: .25rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f4f6f9;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.info-box-icon {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-right: 1rem;
+}
+
+.info-box-content {
+    position: relative; /* Added to ensure content overlays on top of the background */
+    z-index: 1; /* Ensure content is above the overlay */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-box-text {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.info-box-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.info-box-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px; /* Adjusted size for better visibility */
+    height: auto; /* Auto height to maintain aspect ratio */
+    opacity: 0.15; /* Slightly increased opacity for subtle effect */
+    z-index: 0; /* Positioned behind the content */
+}
+
+.info-box-overlay img {
+    width: 100%; /* Ensure the image takes the full width of the container */
+    height: auto; /* Maintain aspect ratio */
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -193,6 +324,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+
     @stack('styles')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -208,6 +346,36 @@
     </div>
 
     <div class="wrapper">
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+            <div class="p-3 control-sidebar-content">
+                <h5 class="text-light mb-3">Customize Theme</h5>
+                <hr class="mb-2">
+                <div class="theme-option-wrapper">
+                    <label>Select Theme Color</label>
+                    <div class="theme-options">
+                        <div class="theme-option bg-primary" data-theme="primary"></div>
+                        <div class="theme-option bg-secondary" data-theme="secondary"></div>
+                        <div class="theme-option bg-info" data-theme="info"></div>
+                        <div class="theme-option bg-success" data-theme="success"></div>
+                        <div class="theme-option bg-danger" data-theme="danger"></div>
+                        <div class="theme-option bg-indigo" data-theme="indigo"></div>
+                        <div class="theme-option bg-purple" data-theme="purple"></div>
+                        <div class="theme-option bg-pink" data-theme="pink"></div>
+                        <div class="theme-option bg-navy" data-theme="navy"></div>
+                        <div class="theme-option bg-lightblue" data-theme="lightblue"></div>
+                        <div class="theme-option bg-teal" data-theme="teal"></div>
+                        <div class="theme-option bg-cyan" data-theme="cyan"></div>
+                        <div class="theme-option bg-dark" data-theme="dark"></div>
+                        <div class="theme-option bg-gray-dark" data-theme="gray-dark"></div>
+                        <div class="theme-option bg-gray" data-theme="gray"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
 
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -230,47 +398,47 @@
                         <i class="fas fa-paint-brush"></i>
                     </a>
                 </li>
-                @can('admin', 'super-admin', 'hrcomben', 'hrcompliance', 'hrpolicy')
+                @canany(['admin', 'super-admin', 'hrcomben', 'hrcompliance', 'hrpolicy'])
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="fas fa-cogs"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        @can('admin', 'super-admin')
+                        @canany(['admin', 'super-admin'])
                         <a href="{{ url('types') }}" class="dropdown-item">
                             <i class="fas fa-folder mr-2"></i> Leave Type
                         </a>
-                        @endcan
-                        @can('admin', 'super-admin', 'hrcompliance', 'hrpolicy')
+                        @endcanany
+                        @canany(['admin', 'super-admin', 'hrcompliance', 'hrpolicy'])
                         <a href="{{ url('posts') }}" class="dropdown-item">
                             <i class="fas fa-bullhorn mr-2"></i> Announcement
                         </a>
-                        @endcan
+                        @endcanany
                         @can('admin')
                         <a href="{{ url('tasks') }}" class="dropdown-item">
                             <i class="fas fa-tasks mr-2"></i> Send Task
                         </a>
                         @endcan
-                        @can('admin', 'super-admin', 'hrcomben')
+                        @canany(['admin', 'super-admin', 'hrcomben'])
                         <a href="{{ url('holidays') }}" class="dropdown-item">
                             <i class="fas fa-calendar-alt mr-2"></i> Holiday
                         </a>
-                        @endcan
+                        @endcanany
                     </div>
                 </li>
-                @endcan
+                @endcanany
 
-                @can('admin', 'super-admin', 'hrcompliance')
+                @canany(['admin', 'super-admin', 'hrcompliance'])
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="fas fa-users"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        @can('admin', 'super-admin')
+                        @canany(['admin', 'super-admin'])
                         <a href="{{ url('users') }}" class="dropdown-item">
                             <i class="fas fa-user-cog mr-2"></i> User Management
                         </a>
-                        @endcan
+                        @endcanany
                         @can('super-admin')
                         <a href="{{ url('/user-activity') }}" class="dropdown-item">
                             <i class="fas fa-history mr-2"></i> User Logs
@@ -278,7 +446,7 @@
                         @endcan
                     </div>
                 </li>
-                @endcan
+                @endcanany
 
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown" id="notification-dropdown">
@@ -371,14 +539,14 @@
                             </a>
                         </li>
 
-                        @can('admin', 'super-admin', 'hrcompliance')
+                        @canany(['admin', 'super-admin', 'hrcompliance'])
                         <li class="nav-item">
                             <a href="{{ url('/employees') }}" class="nav-link {{ Request::is('employees*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-user-tie"></i>
                                 <p>Employee Management</p>
                             </a>
                         </li>
-                        @endcan
+                        @endcanany
 
                         @can('normal-employee')
                         <li class="nav-item">
@@ -398,14 +566,14 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @can('admin', 'super-admin', 'hrcomben')
+                                @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
                                     <a href="{{ url('/attendances') }}" class="nav-link {{ Request::is('attendances*') || Request::is('timesheets*') ? 'active' : '' }}">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
                                         <p>Attendance</p>
                                     </a>
                                 </li>
-                                @endcan
+                                @endcanany
                                 @can('normal-employee')
                                 <li class="nav-item">
                                     <a href="{{ url('/my-timesheet') }}" class="nav-link {{ Request::is('my-timesheet') ? 'active' : '' }}">
@@ -417,12 +585,6 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="{{ url('/settings') }}" class="nav-link {{ Request::is('settings*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cog"></i>
-                                <p>Settings</p>
-                            </a>
-                        </li>
                         <li class="nav-item has-treeview {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-calendar"></i>
@@ -432,30 +594,30 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @can('admin', 'super-admin', 'hrcomben')
+                                @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
                                     <a href="{{ url('/leaves') }}" class="nav-link {{ Request::is('leaves*') ? 'active' : '' }}">
                                         <i class="fas fa-list nav-icon"></i>
                                         <p>Leave List</p>
                                     </a>
                                 </li>
-                                @endcan
-                                @can('normal-employee', 'super-admin')
+                                @endcanany
+                                @canany(['normal-employee', 'super-admin'])
                                 <li class="nav-item">
                                     <a href="{{ url('/leaves/create') }}" class="nav-link {{ Request::is('leaves/create') ? 'active' : '' }}">
                                         <i class="fas fa-calendar-check nav-icon"></i>
                                         <p>Apply Leave</p>
                                     </a>
                                 </li>
-                                @endcan
-                                @can('admin', 'super-admin', 'hrcomben')
+                                @endcanany
+                                @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
                                     <a href="{{ url('/leaves-employees') }}" class="nav-link {{ Request::is('leaves-employees*') ? 'active' : '' }}">
                                         <i class="fas fa-file nav-icon"></i>
                                         <p>Leave Sheet</p>
                                     </a>
                                 </li>
-                                @endcan
+                                @endcanany
                                 @can('normal-employee')
                                 <li class="nav-item">
                                     <a href="{{ url('/my-leave-sheet') }}" class="nav-link {{ Request::is('my-leave-sheet*') ? 'active' : '' }}">
@@ -476,22 +638,22 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @can('admin', 'super-admin', 'hrcomben')
+                                @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
                                     <a href="{{ url('/payroll') }}" class="nav-link {{ Request::is('payroll*', 'overtime*') ? 'active' : '' }}">
                                         <i class="fas fa-money-bill-wave nav-icon"></i>
                                         <p>Payroll</p>
                                     </a>
                                 </li>
-                                @endcan
-                                @can('normal-employee', 'super-admin')
+                                @endcanany
+                                @canany(['normal-employee', 'super-admin'])
                                 <li class="nav-item">
                                     <a href="{{ url('/my-payrolls') }}" class="nav-link {{ Request::is('my-payrolls*') ? 'active' : '' }}">
                                         <i class="fas fa-file-alt nav-icon"></i>
                                         <p>My Payroll</p>
                                     </a>
                                 </li>
-                                @endcan
+                                @endcanany
                             </ul>
                         </li>
 
@@ -504,7 +666,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @can('admin', 'super-admin', 'hrcomben')
+                                @canany('admin', 'super-admin', 'hrcomben')
                                 <li class="nav-item">
                                     <a href="{{ url('/sss') }}" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*') ? 'active' : '' }}">
                                         <i class="fas fa-file-alt nav-icon"></i>
@@ -523,15 +685,15 @@
                                         <p>Contributor</p>
                                     </a>
                                 </li>
-                                @endcan
-                                @can('normal-employee', 'super-admin', 'admin', 'hrcomben')
+                                @endcanany
+                                @canany(['normal-employee', 'super-admin', 'admin', 'hrcomben'])
                                 <li class="nav-item">
                                     <a href="{{ url('/my-contributions') }}" class="nav-link {{ Request::is('my-contributions*') ? 'active' : '' }}">
                                         <i class="fas fa-solid fa-gift nav-icon"></i>
                                         <p>My Contribution</p>
                                     </a>
                                 </li>
-                                @endcan
+                                @endcanany
                             </ul>
                         </li>
 
@@ -589,6 +751,12 @@
                             </ul>
                         </li>
                         @endcanany
+                        <li class="nav-item">
+                            <a href="{{ url('/settings') }}" class="nav-link {{ Request::is('settings*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-cog"></i>
+                                <p>Settings</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ url('/projects') }}" class="nav-link {{ Request::is('projects*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-project-diagram"></i>
@@ -727,6 +895,84 @@
                 e.preventDefault();
                 toggleDarkMode();
             });
+
+            // Theme customization
+            function applyTheme(navbarClass, sidebarClass, brandClass) {
+                // Apply navbar theme
+                $('.main-header').attr('class', 'main-header navbar navbar-expand ' + navbarClass);
+
+                // Apply sidebar theme
+                $('.main-sidebar').attr('class', 'main-sidebar ' + sidebarClass);
+
+                // Apply brand theme
+                $('.brand-link').attr('class', 'brand-link ' + brandClass);
+
+                // Update active links color in sidebar
+                $('.nav-sidebar .nav-link.active').css('background-color', getComputedStyle(document.documentElement).getPropertyValue('--' + sidebarClass.split('-')[2] + '-color'));
+
+                // Update navbar text and icon colors
+                updateNavbarColors(navbarClass);
+
+                // Save theme preferences
+                localStorage.setItem('navbarVariant', navbarClass);
+                localStorage.setItem('sidebarVariant', sidebarClass);
+                localStorage.setItem('brandVariant', brandClass);
+
+                // Update select values
+                $('#theme-select').val(navbarClass.split('-')[1]);
+            }
+
+            // Function to update navbar text and icon colors
+            function updateNavbarColors(navbarClass) {
+                var isDark = navbarClass.includes('navbar-dark');
+                var textColor = isDark ? '#ffffff' : '#000000';
+                var iconColor = isDark ? '#ffffff' : '#000000';
+
+                $('.main-header .nav-link').css('color', textColor);
+                $('.main-header .nav-link i').css('color', iconColor);
+
+                // Adjust dropdown text colors
+                $('.main-header .dropdown-menu a').css('color', '#212529');
+
+                // Adjust navbar brand text color
+                $('.main-header .navbar-brand').css('color', textColor);
+            }
+
+            // Theme change event handler
+            $('.theme-option').on('click', function() {
+                var selectedTheme = $(this).data('theme');
+                var navbarClass = 'navbar-' + selectedTheme + ' ' + (isLightColor(selectedTheme) ? 'navbar-light' : 'navbar-dark');
+                var sidebarClass = 'sidebar-dark-' + selectedTheme;
+                var brandClass = 'bg-' + selectedTheme;
+
+                applyTheme(navbarClass, sidebarClass, brandClass);
+
+                // Update active state
+                $('.theme-option').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // Function to determine if a color is light
+            function isLightColor(color) {
+                var lightColors = ['light', 'warning', 'white', 'orange', 'lime', 'teal', 'cyan'];
+                return lightColors.includes(color);
+            }
+
+            // Load saved theme
+            function loadSavedTheme() {
+                var navbarVariant = localStorage.getItem('navbarVariant') || 'navbar-light navbar-white';
+                var sidebarVariant = localStorage.getItem('sidebarVariant') || 'sidebar-dark-primary';
+                var brandVariant = localStorage.getItem('brandVariant') || 'bg-white';
+
+                applyTheme(navbarVariant, sidebarVariant, brandVariant);
+
+                // Set active state on the correct theme option
+                var activeTheme = navbarVariant.split('-')[1];
+                $('.theme-option[data-theme="' + activeTheme + '"]').addClass('active');
+            }
+
+            // Call this function on page load
+            loadSavedTheme();
         });
     </script>
 

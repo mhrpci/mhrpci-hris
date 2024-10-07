@@ -40,6 +40,18 @@ class SuperAdminSeeder extends Seeder
         ]);
         $admin->assignRole('Admin');
 
+         // Creating HR Compliance User
+         $finance = User::create([
+            'first_name' => 'Finance',
+            'middle_name' => ' ',
+            'last_name' => 'Head',
+            'suffix' => ' ',
+            'email' => 'finance@head.com',
+            'bio' => 'HR Compliance',
+            'password' => Hash::make('Finance@2024'),
+            'profile_image' => 'profile_images/XS2ujV6rEFPG6dwoSS5ITDo8cBuXGkOHI97FaasF.png',
+        ]);
+        $finance->assignRole('HR  Compliance');
 
          // Creating HR Compliance User
          $hrcompliance = User::create([

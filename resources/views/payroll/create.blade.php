@@ -60,20 +60,6 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="employee_id">Employee<span class="text-danger">*</span></label>
-                                        <select id="employee_id" name="employee_id" class="form-control" required>
-                                            <option value="">Select Employee</option>
-                                            @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}">
-                                                    {{ $employee->company_id }}  {{ $employee->last_name }}  {{ $employee->first_name }}, {{ $employee->middle_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
                                         <label for="start_date">Start Date<span class="text-danger">*</span></label>
                                         <input type="date" name="start_date" id="start_date" class="form-control" required>
                                     </div>
@@ -90,7 +76,10 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="btn-group" role="group" aria-label="Button group">
-                                        <button type="submit" class="btn btn-primary">Generate Payroll</button>&nbsp;&nbsp;
+                                        <button type="submit" class="btn btn-primary">Generate Payroll for All</button>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#specificEmployeeModal">
+                                            Generate for Specific Employee
+                                        </button>&nbsp;&nbsp;
                                         <a href="{{ route('payroll.index') }}" class="btn btn-info">Back</a>
                                     </div>
                                 </div>
@@ -98,6 +87,46 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Specific Employee -->
+    <div class="modal fade" id="specificEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="specificEmployeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="specificEmployeeModalLabel">Generate Payroll for Specific Employee</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('payroll.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="employee_id">Select Employee<span class="text-danger">*</span></label>
+                            <select name="employee_id" id="employee_id" class="form-control" required>
+                                <option value="">Select an employee</option>
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name ?? ' ' }} {{ $employee->suffix ?? ' ' }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal_start_date">Start Date<span class="text-danger">*</span></label>
+                            <input type="date" name="start_date" id="modal_start_date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal_end_date">End Date<span class="text-danger">*</span></label>
+                            <input type="date" name="end_date" id="modal_end_date" class="form-control" required readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Generate Payroll</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -118,25 +147,32 @@
                 width: '100%'
             });
 
-            // Automatically set the end date based on start date selection
-            $('#start_date').change(function() {
-                var startDate = new Date($(this).val());
+            // Function to set end date based on start date
+            function setEndDate(startDateInput, endDateInput) {
+                var startDate = new Date(startDateInput.val());
                 var endDate = new Date(startDate);
 
                 if (startDate.getDate() >= 11 && startDate.getDate() <= 25) {
-                    // Set end date to 25th of the same month
                     endDate.setDate(25);
                 } else if (startDate.getDate() >= 26 || startDate.getDate() <= 10) {
-                    // Set end date to 10th of the next month
                     if (startDate.getDate() >= 26) {
                         endDate.setMonth(startDate.getMonth() + 1);
                     }
                     endDate.setDate(10);
                 }
 
-                // Format the end date to YYYY-MM-DD and set the value
                 var formattedEndDate = endDate.toISOString().split('T')[0];
-                $('#end_date').val(formattedEndDate);
+                endDateInput.val(formattedEndDate);
+            }
+
+            // Set end date for main form
+            $('#start_date').change(function() {
+                setEndDate($('#start_date'), $('#end_date'));
+            });
+
+            // Set end date for modal form
+            $('#modal_start_date').change(function() {
+                setEndDate($('#modal_start_date'), $('#modal_end_date'));
             });
         });
     </script>

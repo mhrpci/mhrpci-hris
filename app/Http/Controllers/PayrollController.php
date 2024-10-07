@@ -27,40 +27,65 @@ class PayrollController extends Controller
      */
     public function create()
     {
-        // Get the authenticated user
-        $user = auth()->user();
-
-        // Check if the user has the Super Admin role
-        if ($user->hasRole('Super Admin')) {
-            $employees = Employee::where('employee_status', 'Active')->get();
-        } else {
-            // If not Super Admin, only get employees with Rank File rank
-            $employees = Employee::where('rank', 'Rank File')
-                                 ->where('employee_status', 'Active')
-                                 ->get();
-        }
-
+        $employees = Employee::where('employee_status', 'Active')->get();
         return view('payroll.create', compact('employees'));
     }
 
-    // Store the payroll record
+    // Store the payroll records for all employees
     public function store(Request $request)
     {
         $request->validate([
-            'employee_id' => 'required|exists:employees,id',
             'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'employee_id' => 'nullable|exists:employees,id',
         ]);
 
-        $employee_id = $request->input('employee_id');
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
+        $specific_employee_id = $request->input('employee_id');
 
-        // Call the PayrollService to calculate and store payroll
-        $payroll = $this->payrollService->calculatePayroll($employee_id, $start_date, $end_date);
+        $user = auth()->user();
 
-        return redirect()->route('payroll.show', ['id' => $payroll->id])
-                         ->with('success', 'Payroll calculated and stored successfully.');
+        if ($specific_employee_id) {
+            $employees = Employee::where('id', $specific_employee_id)
+                                 ->where('employee_status', 'Active')
+                                 ->get();
+        } else {
+            if ($user->hasRole('Super Admin')) {
+                $employees = Employee::where('employee_status', 'Active')->get();
+            } else {
+                $employees = Employee::where('rank', 'Rank File')
+                                     ->where('employee_status', 'Active')
+                                     ->get();
+            }
+        }
+
+        $successCount = 0;
+        $failCount = 0;
+
+        foreach ($employees as $employee) {
+            try {
+                if ($this->existingPayroll($employee->id, $start_date, $end_date)) {
+                    \Log::warning("Payroll already exists for employee ID {$employee->id} for the given date range.");
+                    $failCount++;
+                    continue;
+                }
+
+                $this->payrollService->calculatePayroll($employee->id, $start_date, $end_date);
+                $successCount++;
+            } catch (\Exception $e) {
+                \Log::error("Failed to calculate payroll for employee ID {$employee->id}: " . $e->getMessage());
+                $failCount++;
+            }
+        }
+
+        $message = "Payroll calculated and stored successfully for {$successCount} " .
+                   ($specific_employee_id ? "employee" : "active employees") . ".";
+        if ($failCount > 0) {
+            $message .= " Failed for {$failCount} " . ($specific_employee_id ? "employee" : "employees") . ". Check logs for details.";
+        }
+
+        return redirect()->route('payroll.index')->with('success', $message);
     }
 
     // Display payroll details
@@ -167,5 +192,21 @@ class PayrollController extends Controller
         ]);
 
         return $pdf->download('payslip_' . $payroll->employee->employee_id . '_' . $payroll->start_date->format('Y-m-d') . '.pdf');
+    }
+
+    /**
+     * Check if a payroll record already exists for the given employee and date range
+     *
+     * @param int $employee_id
+     * @param string $start_date
+     * @param string $end_date
+     * @return bool
+     */
+    public function existingPayroll($employee_id, $start_date, $end_date)
+    {
+        return Payroll::where('employee_id', $employee_id)
+            ->where('start_date', $start_date)
+            ->where('end_date', $end_date)
+            ->exists();
     }
 }

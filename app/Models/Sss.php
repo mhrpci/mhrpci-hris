@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class Sss extends Model
 {
@@ -104,7 +105,7 @@ class Sss extends Model
         $salary = $employee->salary;
         $contribution = self::calculateContribution($salary);
 
-        return self::create([
+        $newContribution = self::create([
             'employee_id' => $employee->id,
             'monthly_salary_credit' => $contribution['monthly_salary_credit'],
             'employee_contribution' => $contribution['employee_contribution'],
@@ -113,5 +114,27 @@ class Sss extends Model
             'ec_contribution' => $contribution['ec_contribution'],
             'contribution_date' => $contributionDate,
         ]);
+
+        // Create SssContribution entries
+        self::createSssContributionEntries($employee->id, $contribution['employee_contribution'], $contributionDate);
+
+        return $newContribution;
+    }
+
+    private static function createSssContributionEntries($employeeId, $employeeContribution, $contributionDate)
+    {
+        $halfContribution = $employeeContribution / 2;
+        $contributionMonth = Carbon::parse($contributionDate);
+
+        $firstDate = $contributionMonth->copy()->setDay(10);
+        $lastDate = $contributionMonth->copy()->setDay(25);
+
+        foreach ([$firstDate, $lastDate] as $date) {
+            SssContribution::create([
+                'employee_id' => $employeeId,
+                'date' => $date,
+                'sss_contribution' => $halfContribution,
+            ]);
+        }
     }
 }

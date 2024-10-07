@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contribution;
+use App\Models\SssContribution;
 use Illuminate\Http\Request;
 use App\Models\Employee;
+use App\Models\PhilhealthContribution;
+use App\Models\PagibigContribution;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -193,19 +196,24 @@ public function employeeContributions(Request $request, $employee_id)
         if ($user && $user->hasRole('Employee')) {
             $employee = Employee::where('email_address', $user->email)->firstOrFail();
 
-            $contributions = Contribution::where('employee_id', $employee->id)
+            $ssscontributions = SssContribution::where('employee_id', $employee->id)
+                ->orderBy('date', 'desc')
+                ->get();
+            $philhealthcontributions = PhilhealthContribution::where('employee_id', $employee->id)
+                ->orderBy('date', 'desc')
+                ->get();
+            $pagibigcontributions = PagibigContribution::where('employee_id', $employee->id)
                 ->orderBy('date', 'desc')
                 ->get();
 
             // Calculate totals
             $totals = [
-                'sss' => $contributions->sum('sss_contribution'),
-                'philhealth' => $contributions->sum('philhealth_contribution'),
-                'pagibig' => $contributions->sum('pagibig_contribution'),
-                'tin' => $contributions->sum('tin_contribution')
+                'sss' => $ssscontributions->sum('sss_contribution'),
+                'philhealth' => $philhealthcontributions->sum('philhealth_contribution'),
+                'pagibig' => $pagibigcontributions->sum('pagibig_contribution'),
             ];
 
-            return view('contributions.my-contributions', compact('contributions', 'totals', 'employee'));
+            return view('contributions.my-contributions', compact('ssscontributions','philhealthcontributions', 'pagibigcontributions', 'totals', 'employee'));
         }
 
         return redirect()->route('contributions.index')->with('error', 'Unauthorized access.');

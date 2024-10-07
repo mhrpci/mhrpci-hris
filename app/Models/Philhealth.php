@@ -42,4 +42,29 @@ class Philhealth extends Model
 
         return $this;
     }
+
+    public function storeWithContributions()
+    {
+        $this->save();
+
+        $contributionDate = Carbon::parse($this->contribution_date);
+        $firstHalfDate = Carbon::create($contributionDate->year, $contributionDate->month, 10);
+        $secondHalfDate = Carbon::create($contributionDate->year, $contributionDate->month, 25);
+
+        $halfContribution = $this->employee_contribution / 2;
+
+        PhilhealthContribution::create([
+            'employee_id' => $this->employee_id,
+            'philhealth_contribution' => round($halfContribution, 2),
+            'date' => $firstHalfDate,
+        ]);
+
+        PhilhealthContribution::create([
+            'employee_id' => $this->employee_id,
+            'philhealth_contribution' => round($halfContribution, 2),
+            'date' => $secondHalfDate,
+        ]);
+
+        return $this;
+    }
 }

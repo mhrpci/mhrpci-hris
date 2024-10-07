@@ -43,7 +43,7 @@ class SssContributionController extends Controller
 
         // Calculate totals
         $totals = [
-            'philhealth' => $ssscontributions->sum('philhealth_contribution'),
+            'sss' => $ssscontributions->sum('sss_contribution'),
         ];
 
         $employees = Employee::all(); // For the employee dropdown
@@ -67,12 +67,16 @@ class SssContributionController extends Controller
         $validatedData = $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'date' => 'required|date',
-            'philhealth_contribution' => 'nullable|numeric',
+            'sss_contribution' => 'nullable|numeric',
         ]);
 
-        SssContribution::create($validatedData);
+        $contribution = SssContribution::create($validatedData);
 
-        return redirect()->route('ssscontributions.index')->with('success', 'Pagibig Contribution created successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'SSS Contribution created successfully.',
+            'data' => $contribution
+        ], 201);
     }
 
     /**
@@ -106,12 +110,16 @@ class SssContributionController extends Controller
         $validatedData = $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'date' => 'required|date',
-            'philhealth_contribution' => 'nullable|numeric',
+            'sss_contribution' => 'nullable|numeric',
         ]);
 
         $ssscontribution->update($validatedData);
 
-        return redirect()->route('ssscontributions.index')->with('success', 'Pagibig Contribution updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'SSS Contribution updated successfully.',
+            'data' => $ssscontribution
+        ]);
     }
 
     /**
@@ -121,6 +129,9 @@ class SssContributionController extends Controller
     {
         $ssscontribution->delete();
 
-        return redirect()->route('ssscontributions.index')->with('success', 'Pagibig Contribution deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'SSS Contribution deleted successfully.'
+        ]);
     }
 }

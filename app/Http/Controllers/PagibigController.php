@@ -25,11 +25,11 @@ class PagibigController extends Controller
     {
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'contribution_month' => 'required|date_format:Y-m',
+            'contribution_date' => 'required|date_format:Y-m',
         ]);
 
         $employee = Employee::findOrFail($request->employee_id);
-        $contributionDate = $request->contribution_month . '-01';
+        $contributionDate = $request->contribution_date . '-01';
         Pagibig::createContribution($employee, $contributionDate);
 
         return redirect()->route('pagibig.index')->with('success', 'Pagibig contribution created successfully.');

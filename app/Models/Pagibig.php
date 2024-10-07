@@ -46,6 +46,29 @@ class Pagibig extends Model
         $contribution->calculateContribution();
         $contribution->save();
 
+        // Create PagibigContribution entries
+        self::createPagibigContributions($contribution);
+
         return $contribution;
+    }
+
+    public static function createPagibigContributions(Pagibig $pagibig)
+    {
+        $employerContribution = $pagibig->employer_contribution / 2;
+        $contributionDate = $pagibig->contribution_date;
+
+        // Create first contribution (10th of the month)
+        PagibigContribution::create([
+            'employee_id' => $pagibig->employee_id,
+            'pagibig_contribution' => $employerContribution,
+            'date' => $contributionDate->copy()->setDay(10),
+        ]);
+
+        // Create second contribution (25th of the month)
+        PagibigContribution::create([
+            'employee_id' => $pagibig->employee_id,
+            'pagibig_contribution' => $employerContribution,
+            'date' => $contributionDate->copy()->setDay(25),
+        ]);
     }
 }

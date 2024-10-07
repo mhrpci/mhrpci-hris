@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '0ea1238abb0fffd4ae558363ecde8a9942574a09',
+        'reference' => 'e2fd4e51175c74076b08cfd3adc5749a7789ded9',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -418,15 +418,6 @@
                 0 => 'v10.48.22',
             ),
         ),
-        'jeroennoten/laravel-adminlte' => array(
-            'pretty_version' => 'v3.13.0',
-            'version' => '3.13.0.0',
-            'reference' => 'b254870c3bc38616fbd45c8884712a34915ac774',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../jeroennoten/laravel-adminlte',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'kodova/hamcrest-php' => array(
             'dev_requirement' => true,
             'replaced' => array(
@@ -445,7 +436,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '0ea1238abb0fffd4ae558363ecde8a9942574a09',
+            'reference' => 'e2fd4e51175c74076b08cfd3adc5749a7789ded9',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -665,9 +656,9 @@
             'dev_requirement' => false,
         ),
         'nette/schema' => array(
-            'pretty_version' => 'v1.3.0',
-            'version' => '1.3.0.0',
-            'reference' => 'a6d3a6d1f545f01ef38e60f375d1cf1f4de98188',
+            'pretty_version' => 'v1.3.2',
+            'version' => '1.3.2.0',
+            'reference' => 'da801d52f0354f70a638673c4a0f04e16529431d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../nette/schema',
             'aliases' => array(),

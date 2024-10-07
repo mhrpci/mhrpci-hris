@@ -10,7 +10,6 @@
         "dompdf/dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.8",
         "haruncpi/laravel-user-activity": "^1.0",
-        "jeroennoten/laravel-adminlte": "^3.11",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.16",

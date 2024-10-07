@@ -34,9 +34,7 @@ class PhilhealthController extends Controller
         $philhealth->employee()->associate($employee);
         $philhealth->contribution_date = $validatedData['contribution_date'] . '-01';
 
-        $philhealth->calculateContribution();
-
-        $philhealth->save();
+        $philhealth->calculateContribution()->storeWithContributions();
 
         return redirect()->route('philhealth.index')->with('success', 'Philhealth contribution created successfully.');
     }

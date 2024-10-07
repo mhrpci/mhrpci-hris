@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Contribution;
+use App\Models\SssContribution;
+use App\Models\PagibigContribution;
+use App\Models\PhilhealthContribution;
 use App\Models\Loan;
 use App\Models\Attendance;
 use App\Models\OvertimePay;
@@ -48,7 +50,13 @@ class PayrollService
     $gross_salary = $daily_salary * $working_days;
 
         // Fetch contributions and loans
-        $contributions = Contribution::where('employee_id', $employee_id)
+        $ssscontributions = SssContribution::where('employee_id', $employee_id)
+                    ->whereBetween('date', [$start, $end])
+                    ->first();
+        $pagibigcontributions = PagibigContribution::where('employee_id', $employee_id)
+                    ->whereBetween('date', [$start, $end])
+                    ->first();
+        $philhealthcontributions = PhilhealthContribution::where('employee_id', $employee_id)
                     ->whereBetween('date', [$start, $end])
                     ->first();
 
@@ -115,11 +123,14 @@ class PayrollService
 
         // Deduct Contributions (if within payroll period)
         $contribution_deductions = 0;
-        if ($contributions) {
-            $contribution_deductions += $contributions->sss_contribution ?? 0;
-            $contribution_deductions += $contributions->pagibig_contribution ?? 0;
-            $contribution_deductions += $contributions->philhealth_contribution ?? 0;
-            $contribution_deductions += $contributions->tin_contribution ?? 0;
+        if ($ssscontributions) {
+            $contribution_deductions += $ssscontributions->sss_contribution ?? 0;
+        }
+        if ($pagibigcontributions) {
+            $contribution_deductions += $pagibigcontributions->pagibig_contribution ?? 0;
+        }
+        if ($philhealthcontributions) {
+            $contribution_deductions += $philhealthcontributions->philhealth_contribution ?? 0;
         }
 
         // Deduct Loans (if within payroll period)
@@ -147,10 +158,10 @@ class PayrollService
             'undertime_deduction' => $undertime_deduction,
             'absent_deduction' => $absent_deduction,
             'no_attendance_deduction' => $no_attendance_deduction,
-            'sss_contribution' => $contributions->sss_contribution ?? 0,
-            'pagibig_contribution' => $contributions->pagibig_contribution ?? 0,
-            'philhealth_contribution' => $contributions->philhealth_contribution ?? 0,
-            'tin_contribution' => $contributions->tin_contribution ?? 0,
+            'sss_contribution' => $ssscontributions->sss_contribution ?? 0,
+            'pagibig_contribution' => $pagibigcontributions->pagibig_contribution ?? 0,
+            'philhealth_contribution' => $philhealthcontributions->philhealth_contribution ?? 0,
+            // 'tin_contribution' => $contributions->tin_contribution ?? 0,
             'sss_loan' => $loans->sss_loan ?? 0,
             'pagibig_loan' => $loans->pagibig_loan ?? 0,
             'cash_advance' => $loans->cash_advance ?? 0,

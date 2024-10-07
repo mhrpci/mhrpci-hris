@@ -144,9 +144,9 @@
                     <i class="fas fa-arrow-left mr-2"></i>Back to Payroll List
                 </a>
                 @else
-                <button onclick="showLoaderAndGoBack()" class="btn btn-outline-secondary mr-2">
+                <a href="{{ url('/my-payrolls') }}" class="btn btn-outline-secondary mr-2">
                     <i class="fas fa-arrow-left mr-2"></i>Back
-                </button>
+                </a>
                 @endif
                 <a href="{{ route('payroll.payslip', $payroll->id) }}" class="btn btn-primary">
                     <i class="fas fa-download mr-2"></i>Download Payslip
@@ -164,14 +164,5 @@
     }
     .table td, .table th { padding: 0.5rem; }
 </style>
-
-<script>
-function showLoaderAndGoBack() {
-    document.getElementById('loader').style.display = 'flex';
-    setTimeout(() => {
-        history.back();
-    }, 500); // Adjust the delay as needed
-}
-</script>
 
 @endsection
