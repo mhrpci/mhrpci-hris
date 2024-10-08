@@ -77,4 +77,13 @@ class PostController extends Controller
         $post->delete();
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
     }
+
+    /**
+     * Display the specified post by ID.
+     */
+    public function showPostById($id)
+    {
+        $post = Post::findOrFail($id);
+        return view('post', compact('post'));
+    }
 }

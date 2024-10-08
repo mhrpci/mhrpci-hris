@@ -121,6 +121,9 @@ class RoleSeeder extends Seeder
             'credential-create',
             'credential-edit',
             'credential-delete',
+            'post-list',
+            'post-create',
+            'post-edit',
             'hrpolicy',
         ]);
         $hrhiring->givePermissionTo([

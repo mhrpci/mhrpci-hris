@@ -332,6 +332,39 @@
     <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 
     @stack('styles')
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for all select elements
+            $('select').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+        });
+    </script>
+    <script>
+        // Disable right-click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+        document.onkeydown = function(e) {
+            if (
+                event.keyCode === 123 || // F12
+                (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
+                (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
+                (e.ctrlKey && e.keyCode === 85) // Ctrl+U
+            ) {
+                return false;
+            }
+        };
+
+        // Disable developer tools
+        setInterval(function() {
+            debugger;
+        }, 100);
+    </script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -395,6 +428,12 @@
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     {{-- <a href="{{ url('/') }}" class="nav-link">Home</a> --}}
+                </li>
+                <!-- Our Policies link with larger text and icon -->
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="{{ url('/policies-page') }}" class="nav-link" style="font-size: 1.2rem; font-weight: bold;">
+                        <i class="fas fa-file-alt mr-2"></i> Our Policies
+                    </a>
                 </li>
                 <!-- Add more nav items here -->
             </ul>
@@ -719,8 +758,8 @@
                         @endcan
 
                         @canany(['admin', 'super-admin', 'hrcompliance', 'it-staff', 'hrpolicy'])
-                        <li class="nav-item has-treeview {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*') ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*', 'policies*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*', 'policies*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     Others
@@ -760,6 +799,14 @@
                                     </a>
                                 </li>
                                 @endcan
+                                @canany(['admin', 'super-admin', 'hrpolicy'])
+                                <li class="nav-item">
+                                    <a href="{{ route('policies.index') }}" class="nav-link {{ Request::is('policies*') ? 'active' : '' }}">
+                                        <i class="fas fa-file-alt nav-icon"></i>
+                                        <p>Company Policy</p>
+                                    </a>
+                                </li>
+                                @endcanany
                             </ul>
                         </li>
                         @endcanany
@@ -973,14 +1020,14 @@
 
             // Load saved theme
             function loadSavedTheme() {
-                var navbarVariant = localStorage.getItem('navbarVariant') || 'navbar-light navbar-white';
+                var navbarVariant = localStorage.getItem('navbarVariant') || 'navbar-dark navbar-primary';
                 var sidebarVariant = localStorage.getItem('sidebarVariant') || 'sidebar-dark-primary';
-                var brandVariant = localStorage.getItem('brandVariant') || 'bg-white';
+                var brandVariant = localStorage.getItem('brandVariant') || 'bg-primary';
 
                 applyTheme(navbarVariant, sidebarVariant, brandVariant);
 
                 // Set active state on the correct theme option
-                var activeTheme = navbarVariant.split('-')[1];
+                var activeTheme = navbarVariant.split('-')[2] || 'primary';
                 $('.theme-option[data-theme="' + activeTheme + '"]').addClass('active');
             }
 

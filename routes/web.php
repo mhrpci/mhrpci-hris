@@ -34,6 +34,8 @@ use App\Http\Controllers\PagibigController;
 use App\Http\Controllers\PhilhealthController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\CalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +85,8 @@ use App\Http\Controllers\GoogleAuthController;
     Route::resource('pagibig', PagibigController::class);
     Route::resource('properties', PropertyController::class);
     Route::resource('accountabilities', AccountabilityController::class);
+    Route::resource('policies', PolicyController::class);
+    Route::get('/policies-page', [PolicyController::class, 'showPolicy'])->name('policies.show-page');
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
@@ -173,5 +177,8 @@ use App\Http\Controllers\GoogleAuthController;
     Route::post('auth/google/logout', [GoogleAuthController::class, 'logout'])->name('google.logout');
 
     Route::get('/properties/{id}/details', [PropertyController::class, 'showDetails'])->name('properties.details');
-
+    Route::get('/posts/show/{id}', [PostController::class, 'showPostById'])->name('posts.showById');
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/holidays', [CalendarController::class, 'getHolidays'])->name('calendar.holidays');
     Auth::routes();
+

@@ -256,6 +256,118 @@
             font-size: 1.2rem;
         }
     }
+
+    /* Enhanced responsive styles */
+    @media (max-width: 1200px) {
+        .dashboard-card .card-title {
+            font-size: 0.85rem;
+        }
+        .dashboard-card .card-text {
+            font-size: 1.3rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .col-lg-6 {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .welcome-heading {
+            font-size: 1.5rem;
+        }
+        .welcome-subheading {
+            font-size: 1.2rem;
+        }
+        #clock {
+            font-size: 2rem;
+        }
+        .card-icon {
+            font-size: 1.3rem;
+        }
+        .dashboard-card .card-title {
+            font-size: 0.8rem;
+        }
+        .dashboard-card .card-text {
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .card-body {
+            padding: 1rem;
+        }
+        .welcome-heading {
+            font-size: 1.3rem;
+        }
+        .welcome-subheading {
+            font-size: 1rem;
+        }
+        #clock {
+            font-size: 1.5rem;
+        }
+        .dashboard-card .card-title {
+            font-size: 0.75rem;
+        }
+        .dashboard-card .card-text {
+            font-size: 1rem;
+        }
+    }
+
+    /* Professional enhancements */
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .welcome-message, .clock-container {
+        background-size: 200% 200%;
+        animation: gradientAnimation 5s ease infinite;
+    }
+    @keyframes gradientAnimation {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+    .animated-text {
+        display: inline-block;
+        animation: textAnimation 2s ease-in-out infinite;
+    }
+    @keyframes textAnimation {
+        0%, 100% {transform: translateY(0);}
+        50% {transform: translateY(-5px);}
+    }
+    .custom-list li {
+        transition: all 0.3s ease;
+    }
+    .custom-list li:hover {
+        background-color: #f8f9fa;
+        padding-left: 10px;
+    }
+    .dashboard-card {
+        overflow: hidden;
+    }
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255,255,255,0.1);
+        transform: rotate(30deg);
+        transition: all 0.5s ease;
+    }
+    .dashboard-card:hover::before {
+        transform: rotate(30deg) translate(-10%, -10%);
+    }
 </style>
 
 <div class="container-fluid py-4">
@@ -266,6 +378,34 @@
             <div class="welcome-message p-4 rounded shadow-sm">
                 <h2 class="welcome-heading mb-2">Welcome, <span class="animated-text">{{ auth()->user()->first_name }}</span></h2>
                 <h4 class="welcome-subheading">{{ auth()->user()->last_name }}</h4>
+                <div class="d-flex justify-content-between align-items-center position-relative" style="height: 60px;">
+                    <span id="greeting" class="mt-3 mb-0 text-white-50" style="font-size: 1.2rem;"></span>
+                    <span id="greeting-emoji" class="mt-3 mb-0 text-white-50" style="font-size: 8rem; position: absolute; right: 50px;top: 1px; transform: translate(50%, -50%); margin-right: 10px;"></span>
+                </div>
+                <script>
+                    function updateGreeting() {
+                        const now = new Date();
+                        const hours = now.getHours();
+                        let greeting;
+                        let emoji;
+
+                        if (hours < 12) {
+                            greeting = "Good Morning";
+                            emoji = "☀️";
+                        } else if (hours < 18) {
+                            greeting = "Good Afternoon";
+                            emoji = "🌤️";
+                        } else {
+                            greeting = "Good Evening";
+                            emoji = "🌙";
+                        }
+
+                        document.getElementById('greeting').textContent = greeting;
+                        document.getElementById('greeting-emoji').textContent = emoji;
+                    }
+
+                    updateGreeting(); // Call the function to set the greeting
+                </script>
             </div>
             @endauth
         </div>
@@ -274,6 +414,7 @@
             <div class="clock-container p-4 rounded shadow-sm">
                 <div id="date" class="mb-2 opacity-75"></div>
                 <h1 id="clock" class="display-4"></h1>
+                <p class="mt-3 mb-0 text-white-50">Philippine Standard Time</p>
             </div>
         </div>
     </div>
@@ -281,23 +422,23 @@
     <!-- Posts section -->
     <div class="row">
         <div class="col-lg-6 mb-4">
-            <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <i class="fas fa-bullhorn card-icon text-primary"></i>
-                    <h5 class="mb-0">Today's Announcement</h5>
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center bg-primary text-white">
+                    <i class="fas fa-bullhorn card-icon mr-2"></i>
+                    <h5 class="mb-0">Today's Announcements</h5>
                 </div>
                 <div class="card-body">
                     @if ($todayPosts && $todayPosts->count() > 0)
                         <ul class="custom-list">
                             @foreach ($todayPosts as $post)
-                                <li>
-                                    <h6>
-                                        <a href="#" data-toggle="modal" data-target="#todayPostModal{{ $post->id }}" class="text-decoration-none">
+                                <li class="mb-3">
+                                    <h6 class="mb-1">
+                                        <a href="#" data-toggle="modal" data-target="#todayPostModal{{ $post->id }}" class="text-decoration-none text-primary">
                                             {{ $post->title }}
                                         </a>
                                     </h6>
-                                    <p class="text-muted mb-0">{{ Str::limit($post->body, 100) }}</p>
-                                    <small class="text-muted">{{ $post->created_at->format('M d, Y') }}</small>
+                                    <p class="text-muted mb-1">{{ Str::limit($post->body, 100) }}</p>
+                                    <small class="text-muted">Posted {{ $post->created_at->diffForHumans() }}</small>
                                 </li>
                             @endforeach
                         </ul>
@@ -310,15 +451,30 @@
 
         <!-- Employee's Leave Count section -->
         <div class="col-lg-6 mb-4">
-            <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <i class="fas fa-calendar-check card-icon text-primary"></i>
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center bg-success text-white">
+                    <i class="fas fa-calendar-check card-icon mr-2"></i>
                     <h5 class="mb-0">Standard Leave Allocation</h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>Sick Leave:</strong> 7 days</p>
-                    <p><strong>Vacation Leave:</strong> 5 days</p>
-                    <p><strong>Emergency Leave:</strong> 3 days</p>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Sick Leave</h6>
+                            <h2 class="mb-0">7 <small>days</small></h2>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Vacation Leave</h6>
+                            <h2 class="mb-0">5 <small>days</small></h2>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Emergency Leave</h6>
+                            <h2 class="mb-0">3 <small>days</small></h2>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-3 mb-0">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Leave allocations are reset annually on January 1st.
+                    </p>
                 </div>
             </div>
         </div>
@@ -470,8 +626,23 @@
                     </div>
                 </div>
             @endforeach
+            @endcanany
+            @can('hrhiring')
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-user-tie card-icon"></i>
+                                <div>
+                                    <h6 class="card-title mb-0">Applicant</h6>
+                                    <h2 class="card-text mb-0">{{ $careerCount }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endcan
         </div>
-    @endcanany
 </div>
 
 <script>
@@ -505,5 +676,30 @@
 
         updateClock();
     })();
+
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Add animation to cards on scroll
+    const cards = document.querySelectorAll('.card');
+    const animateCards = () => {
+        cards.forEach(card => {
+            const cardTop = card.getBoundingClientRect().top;
+            const triggerBottom = window.innerHeight / 5 * 4;
+            if(cardTop < triggerBottom) {
+                card.classList.add('show');
+            } else {
+                card.classList.remove('show');
+            }
+        });
+    }
+    window.addEventListener('scroll', animateCards);
 </script>
 @endsection

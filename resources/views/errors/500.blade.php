@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>404 Not Found</title>
+    <title>500 Internal Server Error</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         body {

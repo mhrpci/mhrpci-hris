@@ -17,3 +17,4 @@ class Holiday extends Model
         'type',
     ];
 }
+

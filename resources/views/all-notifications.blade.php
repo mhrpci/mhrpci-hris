@@ -43,6 +43,9 @@
                                                 <li class="mb-2">
                                                     <span class="text-dark">{{ $notification['text'] }}</span>
                                                     <small class="text-muted d-block">{{ $notification['time'] }}</small>
+                                                    @if($category === 'posts' && !Auth::user()->hasRole(['Super Admin', 'Admin']) && isset($notification['id']))
+                                                        <a href="{{ route('posts.showById', $notification['id']) }}" class="btn btn-outline-info btn-sm mt-1">View Post</a>
+                                                    @endif
                                                 </li>
                                             @endforeach
                                         </ul>

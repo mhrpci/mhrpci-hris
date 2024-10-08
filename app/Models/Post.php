@@ -14,6 +14,11 @@ class Post extends Model
 
     protected $fillable = ['user_id','title', 'content', 'date_start', 'date_end'];
 
+    protected $casts = [
+        'date_start' => 'datetime',
+        'date_end' => 'datetime',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

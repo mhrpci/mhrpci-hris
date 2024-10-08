@@ -104,9 +104,10 @@ class NotificationsController extends Controller
         foreach ($latestPosts as $post) {
             $notification = [
                 'icon' => 'fas fa-fw fa-bullhorn',
-                'text' => "{$post->user->first_name} {$post->user->last_name} posted: {$post->title}", // Add title
+                'text' => "{$post->user->first_name} {$post->user->last_name} posted: {$post->title}",
                 'time' => $post->created_at->diffForHumans(),
-                'details' => "Post details: {$post->content}" // Add details
+                'details' => "Post details: {$post->content}",
+                'id' => $post->id  // Add the post ID to the notification
             ];
             $this->notifications['posts'][] = $notification;
         }

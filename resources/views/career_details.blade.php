@@ -453,12 +453,12 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="/careers">Careers</a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link {{ request()->is('saved-jobs') ? 'active' : '' }}" href="{{ url('/saved-jobs') }}">
                                 Saved Jobs
                                 <span class="badge bg-primary saved-jobs-count">0</span>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
             </div>

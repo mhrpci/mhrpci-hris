@@ -367,12 +367,12 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('careers*') ? 'active' : '' }}" href="{{ url('/careers') }}">Careers</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link {{ request()->is('saved-jobs') ? 'active' : '' }}" href="{{ url('/saved-jobs') }}">
                             Saved Jobs
                             <span class="badge bg-primary saved-jobs-count">0</span>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
                 <div class="ms-lg-3 mt-3 mt-lg-0">
                     @if(Auth::guard('google')->check())

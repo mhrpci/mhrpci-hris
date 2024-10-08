@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Career;
 use App\Models\Employee;
 use App\Models\Attendance;
 use App\Models\Leave;
@@ -144,21 +145,32 @@ class HomeController extends Controller
             'greeting' => $greeting,
         ];
     }
-/**
- * Count employees by department.
- *
- * @return array
- */
-public function countEmployeesByDepartment()
-{
-    return Employee::select('department_id', \DB::raw('count(*) as count'))
-        ->groupBy('department_id')
-        ->with('department') // Assuming you have a relationship defined
-        ->get()
-        ->mapWithKeys(function ($item) {
-            return [$item->department->name => $item->count]; // Adjust based on your department model
-        })->toArray();
-}
+
+    /**
+     * Count the total number of careers.
+     *
+     * @return int
+     */
+    public function countCareers()
+    {
+        return Career::count();
+    }
+
+    /**
+     * Count employees by department.
+     *
+     * @return array
+     */
+    public function countEmployeesByDepartment()
+    {
+        return Employee::select('department_id', \DB::raw('count(*) as count'))
+            ->groupBy('department_id')
+            ->with('department') // Assuming you have a relationship defined
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->department->name => $item->count]; // Adjust based on your department model
+            })->toArray();
+    }
 
     /**
      * Show the application dashboard.
@@ -168,7 +180,7 @@ public function countEmployeesByDepartment()
     public function index()
     {
         // Get counts of employees by department
-$employeesByDepartment = $this->countEmployeesByDepartment();
+        $employeesByDepartment = $this->countEmployeesByDepartment();
 
         // Fetch upcoming holidays and check if today is a holiday
         $holidaysData = $this->upcomingHolidays();
@@ -199,23 +211,25 @@ $employeesByDepartment = $this->countEmployeesByDepartment();
         $rejectedLeavesCount = $this->countLeavesByStatus('rejected');
         $leaveCount = Leave::count();
 
-
         // Delete posts where date_end is equal to today
-    Post::whereDate('date_end', '=', Carbon::today())->delete();
+        Post::whereDate('date_end', '=', Carbon::today())->delete();
 
-    // Get the latest 5 posts ordered by the most recent, where the post date is greater than or equal to tomorrow
-    $latestPosts = Post::whereDate('date_start', '>=', Carbon::tomorrow())
-        ->orderBy('created_at', 'desc')
-        ->take(5) // You can adjust this to 5 to display the latest 5 posts
-        ->get();
+        // Get the latest 5 posts ordered by the most recent, where the post date is greater than or equal to tomorrow
+        $latestPosts = Post::whereDate('date_start', '>=', Carbon::tomorrow())
+            ->orderBy('created_at', 'desc')
+            ->take(5) // You can adjust this to 5 to display the latest 5 posts
+            ->get();
 
-    // Get posts where date_start is equal to today
-    $todayPosts = Post::whereDate('date_start', '=', Carbon::today())->get();
+        // Get posts where date_start is equal to today
+        $todayPosts = Post::whereDate('date_start', '=', Carbon::today())->get();
 
-    // Fetch detailed leave information for the authenticated user and employee
-    $leaveDetails = $this->fetchLeaveDetails();
+        // Fetch detailed leave information for the authenticated user and employee
+        $leaveDetails = $this->fetchLeaveDetails();
 
-        // Pass the counts, sum, monthly contributions, latest posts, leave details, holidays, and birthdays to the view
+        // Get count of careers
+        $careerCount = $this->countCareers();
+
+        // Pass the counts, sum, monthly contributions, latest posts, leave details, holidays, birthdays, and career count to the view
         return view('home', compact(
             'userCount',
             'employeeCount',
@@ -234,8 +248,9 @@ $employeesByDepartment = $this->countEmployeesByDepartment();
             'upcomingBirthdays',
             'todaysBirthdays',
             'currentMonthNameBirthdays',
-            'employeesByDepartment', // Include the department counts
-            'greeting' // Include the greeting
+            'employeesByDepartment',
+            'greeting',
+            'careerCount' // Add the career count
         ));
     }
 }
