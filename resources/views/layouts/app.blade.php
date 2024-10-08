@@ -548,7 +548,7 @@
                             </a>
                         </li>
 
-                        @canany(['admin', 'super-admin', 'hrcompliance'])
+                        @canany(['admin', 'super-admin', 'hrcompliance','finance'])
                         <li class="nav-item">
                             <a href="{{ url('/employees') }}" class="nav-link {{ Request::is('employees*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-user-tie"></i>
@@ -565,7 +565,7 @@
                             </a>
                         </li>
                         @endcan
-
+                        @canany(['admin', 'super-admin', 'hrcomben'])
                         <li class="nav-item has-treeview {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-clock"></i>
@@ -593,7 +593,8 @@
                                 @endcan
                             </ul>
                         </li>
-
+                    @endcanany
+                    @canany(['admin', 'super-admin', 'hrcomben'])
                         <li class="nav-item has-treeview {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-calendar"></i>
@@ -605,7 +606,7 @@
                             <ul class="nav nav-treeview">
                                 @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
-                                    <a href="{{ url('/leaves') }}" class="nav-link {{ Request::is('leaves*') ? 'active' : '' }}">
+                                    <a href="{{ url('/leaves') }}" class="nav-link {{ Request::is('leaves') || Request::is('leaves/[0-9]*') ? 'active' : '' }}">
                                         <i class="fas fa-list nav-icon"></i>
                                         <p>Leave List</p>
                                     </a>
@@ -637,7 +638,8 @@
                                 @endcan
                             </ul>
                         </li>
-
+                        @endcanany
+                        @canany(['admin', 'super-admin', 'hrcomben','finance'])
                         <li class="nav-item has-treeview {{ Request::is('payroll*', 'overtime*', 'my-payrolls*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('payroll*', 'overtime*', 'my-payrolls*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-coins"></i>
@@ -647,7 +649,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @canany(['admin', 'super-admin', 'hrcomben'])
+                                @canany(['admin', 'super-admin','hrcomben','finance'])
                                 <li class="nav-item">
                                     <a href="{{ url('/payroll') }}" class="nav-link {{ Request::is('payroll*', 'overtime*') ? 'active' : '' }}">
                                         <i class="fas fa-money-bill-wave nav-icon"></i>
@@ -665,7 +667,8 @@
                                 @endcanany
                             </ul>
                         </li>
-
+                        @endcanany
+                        @canany(['admin', 'super-admin', 'hrcomben', 'finance', 'normal-employee'])
                         <li class="nav-item has-treeview {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loans*', 'my-contributions*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loans*', 'my-contributions*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hands-helping"></i>
@@ -675,7 +678,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @canany('admin', 'super-admin', 'hrcomben')
+                                @canany(['admin', 'super-admin', 'hrcomben', 'finance'])
                                 <li class="nav-item">
                                     <a href="{{ url('/sss') }}" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*') ? 'active' : '' }}">
                                         <i class="fas fa-file-alt nav-icon"></i>
@@ -695,7 +698,7 @@
                                     </a>
                                 </li>
                                 @endcanany
-                                @canany(['normal-employee', 'super-admin', 'admin', 'hrcomben'])
+                                @canany('normal-employee')
                                 <li class="nav-item">
                                     <a href="{{ url('/my-contributions') }}" class="nav-link {{ Request::is('my-contributions*') ? 'active' : '' }}">
                                         <i class="fas fa-solid fa-gift nav-icon"></i>
@@ -705,7 +708,7 @@
                                 @endcanany
                             </ul>
                         </li>
-
+                        @endcanany
                         @can('hrhiring')
                         <li class="nav-item">
                             <a href="{{ url('/hirings') }}" class="nav-link {{ Request::is('hirings*', 'all-careers*') ? 'active' : '' }}">
@@ -760,6 +763,7 @@
                             </ul>
                         </li>
                         @endcanany
+                        @can('super-admin')
                         <li class="nav-item">
                             <a href="{{ url('/settings') }}" class="nav-link {{ Request::is('settings*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cog"></i>
@@ -785,7 +789,7 @@
                             </a>
                         </li>
                     </ul>
-
+                    @endcanany
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>

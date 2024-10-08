@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Careers at MHR</title>
+    <title>MHRPCI Careers</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -214,9 +214,142 @@
                 font-size: 0.8rem;
             }
         }
+
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.5em 0.75em;
+            border-radius: 50px;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.875rem;
+            border-radius: 50px;
+        }
+
+        .save-job-btn {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .save-job-btn:hover {
+            color: var(--primary-color) !important;
+        }
+
+        @media (max-width: 767.98px) {
+            .card-body {
+                padding: 1.25rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .card-text {
+                font-size: 0.85rem;
+            }
+
+            .btn-sm {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Updated Preloader Styles */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        /* MHR Loader */
+        .mhr-loader {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .spinner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #8e44ad;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .mhr-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #8e44ad;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
     </style>
 </head>
 <body>
+    <!-- Preloader -->
+    <div id="loader" class="loader">
+        <div class="loader-content">
+            <div class="mhr-loader">
+                <div class="spinner"></div>
+                <div class="mhr-text">MHR</div>
+            </div>
+            <h4 class="mt-4 text-dark">Loading...</h4>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">
@@ -297,21 +430,32 @@
             <div class="row g-4" id="careerList">
                 @foreach($hirings as $hiring)
                     <div class="col-12 col-md-6 col-lg-4 career-item-container">
-                        <div class="card h-100 shadow-sm">
+                        <div class="card h-100 shadow-sm border-0">
                             <div class="card-body d-flex flex-column">
-                                <h2 class="card-title h5 text-primary">{{ $hiring->position }}</h2>
-                                <p class="card-text mb-3 flex-grow-1 text-secondary"><strong>Description:</strong> {{ Str::limit($hiring->description, 100) }}</p>
+                                <h2 class="card-title h5 text-primary mb-3">{{ $hiring->position }}</h2>
+                                <p class="card-text mb-3 flex-grow-1 text-secondary">{{ Str::limit($hiring->description, 100) }}</p>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-light text-dark">
+                                        <i class="fas fa-map-marker-alt me-1"></i> {{ $hiring->location }}
+                                    </span>
+                                    <span class="badge bg-light text-dark">
+                                        <i class="fas fa-clock me-1"></i> {{ $hiring->employment_type }}
+                                    </span>
+                                </div>
                                 <div class="d-flex gap-2 mt-auto">
-                                    <a href="{{ route('careers.show', $hiring->id) }}" class="btn btn-outline-primary btn-sm">
+                                    <a href="{{ route('careers.show', $hiring->id) }}" class="btn btn-outline-primary btn-sm flex-grow-1">
                                         <i class="fas fa-info-circle me-1"></i> View Details
                                     </a>
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#applyModal" data-career-id="{{ $hiring->id }}">
+                                    <button class="btn btn-primary btn-sm flex-grow-1" data-bs-toggle="modal" data-bs-target="#applyModal" data-career-id="{{ $hiring->id }}">
                                         <i class="fas fa-paper-plane me-1"></i> Apply Now
                                     </button>
-                                    <button class="btn btn-outline-secondary btn-sm save-hiring" data-hiring-id="{{ $hiring->id }}">
-                                        <i class="fas fa-bookmark me-1"></i> Save
-                                    </button>
                                 </div>
+                                @auth
+                                    <button class="btn btn-link btn-sm text-muted mt-2 save-job-btn" data-hiring-id="{{ $hiring->id }}" data-saved="{{ in_array($hiring->id, $savedHirings) ? 'true' : 'false' }}">
+                                        <i class="fas {{ in_array($hiring->id, $savedHirings) ? 'fa-bookmark' : 'fa-bookmark-o' }} me-1"></i>
+                                        {{ in_array($hiring->id, $savedHirings) ? 'Saved' : 'Save Job' }}
+                                    </button>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -395,19 +539,19 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    <script>
-        // Add this preloader script at the beginning of your existing script
-        window.addEventListener('load', function() {
-            const preloader = document.querySelector('.preloader');
-            preloader.classList.add('fade-out');
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 500);
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('loader');
+
+            // Smooth fade out after 1 second
+            setTimeout(function() {
+                loader.classList.add('fade-out');
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500); // Match this to the transition duration in CSS
+            }, 1000);
+
             var applyModal = document.getElementById('applyModal');
             applyModal.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget;
@@ -514,6 +658,36 @@
         }
     });
 });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.save-job-btn').on('click', function() {
+                var button = $(this);
+                var hiringId = button.data('hiring-id');
+
+                $.ajax({
+                    url: '{{ route("toggle.save.job") }}',
+                    method: 'POST',
+                    data: {
+                        hiring_id: hiringId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.isSaved) {
+                            button.text('Unsave Job');
+                            button.data('saved', 'true');
+                        } else {
+                            button.text('Save Job');
+                            button.data('saved', 'false');
+                        }
+                        alert(response.message);
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>

@@ -112,13 +112,13 @@
                                                     </form>
                                                 @endcan
                                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</a>
-                                                        @can('employee-edit')
+                                                        @canany(['super-admin', 'admin'])
                                                             <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">
                                                                 @csrf
                                                                 @method('PATCH')
                                                                 <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure that this employee is resigned?')"><i class="fas fa-sign-out-alt"></i>&nbsp;Resigned</button>
                                                             </form>
-                                                        @endcan
+                                                        @endcanany
                                                     @endif
                                                     @can('super-admin')
                                                     <form action="{{ route('employees.destroy', $employee->id) }}" method="POST">

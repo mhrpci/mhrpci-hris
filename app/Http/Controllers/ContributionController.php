@@ -6,8 +6,10 @@ use App\Models\Contribution;
 use App\Models\SssContribution;
 use Illuminate\Http\Request;
 use App\Models\Employee;
+use App\Models\Pagibig;
 use App\Models\PhilhealthContribution;
 use App\Models\PagibigContribution;
+use App\Models\Philhealth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -144,31 +146,32 @@ public function employeeContributions(Request $request, $employee_id)
 {
     $employee = Employee::findOrFail($employee_id);
 
-    $query = Contribution::where('employee_id', $employee_id);
-
-    $contributions = $query->orderBy('date')->get();
+    $sssContributions = SssContribution::where('employee_id', $employee_id)->orderBy('date')->get();
+    $philhealthContributions = PhilhealthContribution::where('employee_id', $employee_id)->orderBy('date')->get();
+    $pagibigContributions = PagibigContribution::where('employee_id', $employee_id)->orderBy('date')->get();
 
     // Calculate overall totals
     $totals = [
-        'sss' => $contributions->sum('sss_contribution'),
-        'philhealth' => $contributions->sum('philhealth_contribution'),
-        'pagibig' => $contributions->sum('pagibig_contribution'),
-        'tin' => $contributions->sum('tin_contribution')
+        'sss' => $sssContributions->sum('sss_contribution'),
+        'philhealth' => $philhealthContributions->sum('philhealth_contribution'),
+        'pagibig' => $pagibigContributions->sum('pagibig_contribution'),
     ];
 
-    // Calculate totals for each contribution type
-    $contributionTotals = $contributions->groupBy(function ($contribution) {
+    // Combine all contributions
+    $allContributions = $sssContributions->concat($philhealthContributions)->concat($pagibigContributions);
+
+    // Calculate totals for each contribution type by month
+    $contributionTotals = $allContributions->groupBy(function ($contribution) {
         return Carbon::parse($contribution->date)->format('Y-m');
     })->map(function ($monthContributions) {
         return [
             'sss' => $monthContributions->sum('sss_contribution'),
             'philhealth' => $monthContributions->sum('philhealth_contribution'),
             'pagibig' => $monthContributions->sum('pagibig_contribution'),
-            'tin' => $monthContributions->sum('tin_contribution'),
         ];
     });
 
-    return view('contributions.employee-contributions', compact('employee', 'contributions', 'totals', 'contributionTotals'));
+    return view('contributions.employee-contributions', compact('employee', 'sssContributions', 'philhealthContributions', 'pagibigContributions', 'totals', 'contributionTotals'));
 }
         /**
          * Display a listing of all employees with their time sheet data.

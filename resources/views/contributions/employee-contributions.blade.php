@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="mb-4">Contributions for {{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name?? ' ' }} {{ $employee->suffix ?? ' ' }}</h1>
+    <h1 class="mb-4">Contributions for {{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name ?? ' ' }} {{ $employee->suffix ?? ' ' }}</h1>
     <div class="card mb-4">
         <div class="card-header d-flex align-items-center">
             <a href="{{ route('contributions.employees-list') }}" class="btn btn-sm btn-secondary">
@@ -30,7 +30,7 @@
         <div class="card-body">
             <div class="row mb-4">
                 <!-- Info Boxes -->
-                <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="col-sm-6 col-lg-4 mb-4">
                     <div class="info-box bg-primary">
                         <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
                         <div class="info-box-content">
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="col-sm-6 col-lg-4 mb-4">
                     <div class="info-box bg-success">
                         <span class="info-box-icon"><i class="fas fa-heartbeat"></i></span>
                         <div class="info-box-content">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="col-sm-6 col-lg-4 mb-4">
                     <div class="info-box bg-info">
                         <span class="info-box-icon"><i class="fas fa-home"></i></span>
                         <div class="info-box-content">
@@ -63,18 +63,6 @@
                         </div>
                         <div class="info-box-overlay">
                             <img src="{{ asset('vendor/adminlte/dist/img/pagibig.png') }}" alt="Pag-IBIG Logo">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
-                    <div class="info-box bg-warning">
-                        <span class="info-box-icon"><i class="fas fa-receipt"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total TIN</span>
-                            <span class="info-box-number">{{ number_format($totals['tin'], 2) }}</span>
-                        </div>
-                        <div class="info-box-overlay">
-                            <img src="{{ asset('vendor/adminlte/dist/img/tin.png') }}" alt="TIN Logo">
                         </div>
                     </div>
                 </div>
@@ -87,23 +75,21 @@
                             <th>SSS</th>
                             <th>PhilHealth</th>
                             <th>Pag-IBIG</th>
-                            <th>TIN</th>
                         </tr>
                     </thead>
                     <tbody id="contributionTableBody">
-                        @forelse($contributions as $contribution)
+                        @forelse($sssContributions as $contribution)
                         <tr data-date="{{ $contribution->date }}">
                             <td>{{ $contribution->date }}</td>
                             <td>{{ number_format($contribution->sss_contribution, 2) }}</td>
-                            <td>{{ number_format($contribution->philhealth_contribution, 2) }}</td>
-                            <td>{{ number_format($contribution->pagibig_contribution, 2) }}</td>
-                            <td>{{ number_format($contribution->tin_contribution, 2) }}</td>
+                            <td>{{ number_format($philhealthContributions->where('date', $contribution->date)->first()->philhealth_contribution ?? 0, 2) }}</td>
+                            <td>{{ number_format($pagibigContributions->where('date', $contribution->date)->first()->pagibig_contribution ?? 0, 2) }}</td>
                         </tr>
-                    @empty
+                        @empty
                         <tr>
-                            <td colspan="5" class="text-center">No Data Available</td>
+                            <td colspan="4" class="text-center">No Data Available</td>
                         </tr>
-                    @endforelse
+                        @endforelse
                     </tbody>
                 </table>
                 <div id="no-data-message" class="text-center" style="display: none;">No data available for the selected month.</div>
@@ -112,7 +98,6 @@
     </div>
 </div>
 @endsection
-
 @push('css')
 <style>
     .container-fluid {

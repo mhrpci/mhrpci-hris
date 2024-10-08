@@ -6,6 +6,9 @@
     <title>MHR Property Conglomerates, Inc. - Revolutionize Your Business</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -791,12 +794,57 @@
             margin-bottom: 1rem;
         }
 
-        .post-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 1rem;
+        /* Tour styles */
+        .shepherd-button {
+            background: var(--primary-color);
+            border: 0;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .shepherd-button:not(:disabled):hover {
+            background: #3a7bd5;
+        }
+
+        .shepherd-cancel-icon {
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 2em;
+            transition: color 0.3s ease;
+        }
+
+        .shepherd-cancel-icon:hover {
+            color: rgba(0, 0, 0, 0.8);
+        }
+
+        .shepherd-text {
+            color: #333;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .shepherd-title {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .shepherd-content {
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .shepherd-footer {
+            padding-top: 1rem;
+        }
+
+        .shepherd-element {
+            max-width: 400px;
         }
 
         .read-more {
@@ -2292,6 +2340,206 @@
                 alert.style.display = 'none';
             }, 500);
         }
+
+        // Tour functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tour = new Shepherd.Tour({
+                useModalOverlay: true,
+                defaultStepOptions: {
+                    classes: 'shadow-md bg-white',
+                    scrollTo: true,
+                    cancelIcon: {
+                        enabled: true
+                    }
+                }
+            });
+
+            tour.addStep({
+                id: 'welcome',
+                title: 'Welcome to MHRPCI',
+                text: 'Welcome to MHR Property Conglomerates, Inc. We\'re delighted to guide you through our website and introduce you to our diverse range of services and opportunities.',
+                attachTo: {
+                    element: '.hero',
+                    on: 'bottom'
+                },
+                buttons: [
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+
+            tour.addStep({
+                id: 'google-login',
+                title: 'Sign In with Google',
+                text: `To access personalized features and content, you can easily sign in using your Google account:
+                       <ol>
+                         <li>Locate the "Sign in with Google" button in the top right corner.</li>
+                         <li>Click the button to initiate the login process.</li>
+                         <li>If not already logged into Google, enter your credentials when prompted.</li>
+                         <li>Upon successful authentication, you'll be redirected back to our site.</li>
+                         <li>Your profile picture and name will appear, indicating you're signed in.</li>
+                       </ol>
+                       Signing in grants you access to exclusive content, personalized preferences, and community interactions.`,
+                attachTo: {
+                    element: '.auth-buttons',
+                    on: 'bottom'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+
+            tour.addStep({
+                id: 'about',
+                title: 'About Us',
+                text: 'Explore our company\'s core values and mission. Discover how we\'ve established ourselves as industry leaders through continuous innovation and a commitment to excellence.',
+                attachTo: {
+                    element: '#about',
+                    on: 'top'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+
+            tour.addStep({
+                id: 'subsidiaries',
+                title: 'Our Subsidiaries',
+                text: 'Discover our diverse portfolio of subsidiaries, spanning healthcare, hospitality, energy, construction, and more. Each subsidiary plays a crucial role in our comprehensive range of services.',
+                attachTo: {
+                    element: '#subsidiaries',
+                    on: 'top'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+
+            tour.addStep({
+                id: 'partners',
+                title: 'Strategic Partnerships',
+                text: 'Learn about our strategic alliances and collaborations. These partnerships enable us to deliver cutting-edge solutions and services across various sectors, enhancing our overall value proposition.',
+                attachTo: {
+                    element: '#partners',
+                    on: 'top'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+
+            tour.addStep({
+                id: 'properties',
+                title: 'Property Listings',
+                text: 'Explore our extensive portfolio of properties available for rent and sale. Utilize our advanced filters to find properties that align with your specific requirements and preferences.',
+                attachTo: {
+                    element: '#properties',
+                    on: 'top'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+
+            tour.addStep({
+                id: 'latest-posts',
+                title: 'Latest Announcements',
+                text: 'Stay informed with our latest news, events, and announcements. This section offers valuable insights into our company\'s activities and current industry trends, keeping you up-to-date with our progress and innovations.',
+                attachTo: {
+                    element: '#latest-posts',
+                    on: 'top'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+
+            tour.addStep({
+                id: 'contact',
+                title: 'Contact Us',
+                text: 'Find our contact information, office location, and connect with us on social media. Our team is always ready to assist you with any inquiries or discuss potential opportunities for collaboration.',
+                attachTo: {
+                    element: '#contact',
+                    on: 'top'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back
+                    },
+                    {
+                        text: 'Finish Tour',
+                        action: tour.complete
+                    }
+                ]
+            });
+
+            // Check if it's the user's first visit
+            if (!localStorage.getItem('tourCompleted')) {
+                // Show a welcome message and start the tour
+                Swal.fire({
+                    title: 'Welcome to MHRPCI',
+                    text: 'Would you like a guided tour of our website to explore our services and opportunities?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, start the tour',
+                    cancelButtonText: 'No, thank you',
+                    confirmButtonColor: '#4a90e2',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        tour.start();
+                    }
+                });
+
+                // Mark the tour as completed
+                localStorage.setItem('tourCompleted', 'true');
+            }
+        });
     </script>
 </body>
 </html>

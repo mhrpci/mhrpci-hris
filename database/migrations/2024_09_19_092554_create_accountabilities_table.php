@@ -13,18 +13,30 @@ return new class extends Migration
     {
         Schema::create('accountabilities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('it_inventories_id')->constrained()->cascadeOnDelete();
-            $table->string('documents');
+            $table->unsignedBigInteger('employee_id');
+            $table->json('documents')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
+
+            $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
+        Schema::create('accountability_it_inventory', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('accountability_id');
+            $table->unsignedBigInteger('it_inventory_id');
+            $table->timestamp('assigned_at');
+            $table->timestamp('returned_at')->nullable();
+            $table->timestamps();
+
+            $table->foreign('accountability_id')->references('id')->on('accountabilities')->onDelete('cascade');
+            $table->foreign('it_inventory_id')->references('id')->on('it_inventories')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
+        Schema::dropIfExists('accountability_it_inventory');
         Schema::dropIfExists('accountabilities');
     }
 };

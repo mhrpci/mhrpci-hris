@@ -18,7 +18,6 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\NotificationsController;
-use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AccountabilityController;
 use App\Http\Controllers\WelcomeController;
@@ -83,7 +82,7 @@ use App\Http\Controllers\GoogleAuthController;
     Route::resource('hirings', HiringController::class);
     Route::resource('pagibig', PagibigController::class);
     Route::resource('properties', PropertyController::class);
-    // Route::resource('accountabilities', AccountabilityController::class);
+    Route::resource('accountabilities', AccountabilityController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
@@ -156,21 +155,12 @@ use App\Http\Controllers\GoogleAuthController;
 
     Route::get('/careers', [CareerController::class, 'index'])->name('careers');
     Route::get('/applicants/{id}', [CareerController::class, 'showApplicant'])->name('showApplicant');
-    // Save and unsave hirings
-    Route::post('/careers/save', [CareerController::class, 'saveHiring'])->name('careers.save');
-    Route::post('/careers/unsave', [CareerController::class, 'unsaveHiring'])->name('careers.unsave');
-
-    // Get saved jobs count
-    Route::get('/careers/saved/count', [CareerController::class, 'getSavedJobsCount'])->name('careers.saved.count');
-
-    // View saved jobs
-    Route::get('/saved-jobs', [CareerController::class, 'savedJobs'])->name('saved-jobs');
     Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
     Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
     Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
     Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
     Route::get('/saved-jobs', [CareerController::class, 'savedJobs'])->name('saved.jobs');
-    Route::get('/saved-jobs/count', [CareerController::class, 'getSavedJobsCount'])->name('saved-jobs.count');
+    Route::post('/toggle-save-job', [CareerController::class, 'toggleSaveJob'])->name('toggle.save.job');
 
     Route::resource('sss', SssController::class)->except(['edit', 'update']);
     Route::resource('pagibig', PagibigController::class)->except(['edit', 'update']);

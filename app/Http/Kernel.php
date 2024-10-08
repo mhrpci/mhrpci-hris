@@ -75,5 +75,6 @@ class Kernel extends HttpKernel
         // other middleware entries
         'log.successful.logout' => \App\Http\Middleware\LogSuccessfulLogout::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'google.auth' => \App\Http\Middleware\GoogleAuthenticate::class,
     ];
 }

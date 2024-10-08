@@ -49,9 +49,9 @@ class SuperAdminSeeder extends Seeder
             'email' => 'finance@head.com',
             'bio' => 'HR Compliance',
             'password' => Hash::make('Finance@2024'),
-            'profile_image' => 'profile_images/XS2ujV6rEFPG6dwoSS5ITDo8cBuXGkOHI97FaasF.png',
+            'profile_image' => 'profile_images/Xc6zeykiblGemJME7XQ89GkS88QAl89IN00CRd4p.png',
         ]);
-        $finance->assignRole('HR  Compliance');
+        $finance->assignRole('Finance');
 
          // Creating HR Compliance User
          $hrcompliance = User::create([

@@ -52,4 +52,9 @@ class GoogleUser extends Authenticatable
     {
         return null; // Implement if you want to use "remember me" functionality
     }
+
+    public function savedJobs()
+    {
+        return $this->hasMany(SavedJob::class, 'google_user_id');
+    }
 }
