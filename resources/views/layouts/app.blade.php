@@ -820,9 +820,9 @@
                         @endcanany
                         @can('super-admin')
                         <li class="nav-item">
-                            <a href="{{ url('/settings') }}" class="nav-link {{ Request::is('settings*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cog"></i>
-                                <p>Settings</p>
+                            <a href="{{ url('/backups') }}" class="nav-link {{ Request::is('backups*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-database"></i>
+                                <p>Backups</p>
                             </a>
                         </li>
                         <li class="nav-item">

@@ -219,6 +219,6 @@ public function employeeContributions(Request $request, $employee_id)
             return view('contributions.my-contributions', compact('ssscontributions','philhealthcontributions', 'pagibigcontributions', 'totals', 'employee'));
         }
 
-        return redirect()->route('contributions.index')->with('error', 'Unauthorized access.');
+        return redirect()->route('sss.index')->with('error', 'Unauthorized access.');
     }
 }

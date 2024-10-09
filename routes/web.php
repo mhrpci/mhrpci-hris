@@ -37,8 +37,6 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SubsidiaryController;
-use App\Models\Subsidiary;
-use App\Http\Controllers\BackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,7 +88,6 @@ use App\Http\Controllers\BackupController;
     Route::resource('accountabilities', AccountabilityController::class);
     Route::resource('policies', PolicyController::class);
     Route::resource('subsidiaries', SubsidiaryController::class);
-    Route::get('/subsidiaries/{id}', [SubsidiaryController::class, 'show'])->name('subsidiaries.show');
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
