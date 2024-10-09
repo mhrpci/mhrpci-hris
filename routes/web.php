@@ -37,6 +37,7 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SubsidiaryController;
+use App\Http\Controllers\DatabaseBackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -183,5 +184,6 @@ use App\Http\Controllers\SubsidiaryController;
     Route::get('/calendar/holidays', [CalendarController::class, 'getHolidays'])->name('calendar.holidays');
     Route::get('/policies-page', [PolicyController::class, 'showPolicy'])->name('policies.show-page');
     Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
+
 
     Auth::routes();

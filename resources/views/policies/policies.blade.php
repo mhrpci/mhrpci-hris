@@ -313,8 +313,10 @@
                 policyPages.forEach(page => {
                     const content = page.textContent.toLowerCase();
                     const title = page.querySelector('.policy-title').textContent.toLowerCase();
+                    const sectionTitle = page.previousElementSibling.textContent.toLowerCase(); // Get the section title
 
-                    if (content.includes(searchTerm) || title.includes(searchTerm)) {
+                    // Check if the content, title, or section title includes the search term
+                    if (content.includes(searchTerm) || title.includes(searchTerm) || sectionTitle.includes(searchTerm)) {
                         page.style.display = 'block';
                         highlightText(page, searchTerm);
                         if (!foundMatch) {

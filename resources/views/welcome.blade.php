@@ -221,15 +221,72 @@
             transition: all 0.3s ease;
             font-weight: 600;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .google-login-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            z-index: -1;
+            filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .google-login-btn:hover::before {
+            opacity: 1;
+        }
+
+        .google-login-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--white);
+            z-index: -1;
+            border-radius: 28px;
         }
 
         .google-login-btn i {
             margin-right: 10px;
             color: #4285F4;
+            transition: color 0.3s ease;
         }
 
         .google-login-btn:hover {
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+
+        .google-login-btn:hover i {
+            animation: rotate 0.7s ease-in-out;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Seasonal variations */
+        .season-spring .google-login-btn::before {
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #00fa9a, #00ff7f);
+        }
+
+        .season-summer .google-login-btn::before {
+            background: linear-gradient(45deg, #ff4500, #ffa500, #ffff00, #00ced1);
+        }
+
+        .season-autumn .google-login-btn::before {
+            background: linear-gradient(45deg, #8b4513, #cd853f, #daa520, #ff8c00);
+        }
+
+        .season-winter .google-login-btn::before {
+            background: linear-gradient(45deg, #4169e1, #1e90ff, #87ceeb, #e0ffff);
         }
 
         /* Enhanced Alert Styles */
@@ -1624,15 +1681,72 @@
             transition: all 0.3s ease;
             font-weight: 600;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .google-login-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            z-index: -1;
+            filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .google-login-btn:hover::before {
+            opacity: 1;
+        }
+
+        .google-login-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--white);
+            z-index: -1;
+            border-radius: 28px;
         }
 
         .google-login-btn i {
             margin-right: 10px;
             color: #4285F4;
+            transition: color 0.3s ease;
         }
 
         .google-login-btn:hover {
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+
+        .google-login-btn:hover i {
+            animation: rotate 0.7s ease-in-out;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Seasonal variations */
+        .season-spring .google-login-btn::before {
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #00fa9a, #00ff7f);
+        }
+
+        .season-summer .google-login-btn::before {
+            background: linear-gradient(45deg, #ff4500, #ffa500, #ffff00, #00ced1);
+        }
+
+        .season-autumn .google-login-btn::before {
+            background: linear-gradient(45deg, #8b4513, #cd853f, #daa520, #ff8c00);
+        }
+
+        .season-winter .google-login-btn::before {
+            background: linear-gradient(45deg, #4169e1, #1e90ff, #87ceeb, #e0ffff);
         }
 
         /* Enhanced Alert Styles */
@@ -2105,20 +2219,9 @@
                         </div>
             <div class="footer-bottom">
                 <p>&copy; {{ date('Y') }} MHR Property Conglomerates, Inc. All rights reserved.</p>
-                <p>Designed and developed with <i class="fas fa-heart"></i> by MHRPCI Team</p>
                         </div>
                         </div>
     </footer>
-
-    <!-- Post Modal -->
-    <div id="postModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modalTitle"></h2>
-            <div id="modalContent"></div>
-            <div id="modalMeta"></div>
-                    </div>
-                </div>
 
     <script>
         // Add preloader script
@@ -2608,6 +2711,48 @@
                 });
 
                 localStorage.setItem('tourCompleted', 'true');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Determine current season
+            const now = new Date();
+            const month = now.getMonth();
+            let season;
+
+            if (month >= 2 && month <= 4) {
+                season = 'spring';
+            } else if (month >= 5 && month <= 7) {
+                season = 'summer';
+            } else if (month >= 8 && month <= 10) {
+                season = 'autumn';
+            } else {
+                season = 'winter';
+            }
+
+            // Apply seasonal class to body
+            document.body.classList.add(`season-${season}`);
+
+            // Add hover effect to Google login button
+            const googleBtn = document.querySelector('.google-login-btn');
+            if (googleBtn) {
+                googleBtn.addEventListener('mouseover', function() {
+                    this.style.color = getSeasonalColor(season);
+                });
+
+                googleBtn.addEventListener('mouseout', function() {
+                    this.style.color = 'var(--text-color)';
+                });
+            }
+
+            function getSeasonalColor(season) {
+                switch(season) {
+                    case 'spring': return '#ff69b4';
+                    case 'summer': return '#ff4500';
+                    case 'autumn': return '#daa520';
+                    case 'winter': return '#4169e1';
+                    default: return '#4285F4';
+                }
             }
         });
     </script>

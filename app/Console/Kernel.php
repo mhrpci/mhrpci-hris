@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('attendance:store')->dailyAt('20:00');
         $schedule->command('holidays:fetch')->yearly()->at('00:00');
         $schedule->command('leaves:reset')->yearly()->at('00:00');
+        $schedule->command('backup:clean')->daily()->at('01:00');
+        $schedule->command('backup:run')->daily()->at('02:00');
 
     }
 
