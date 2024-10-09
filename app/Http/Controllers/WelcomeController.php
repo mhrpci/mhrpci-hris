@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Subsidiary;
 use App\Models\Post;
 use App\Models\Property;
 use Illuminate\Support\Carbon;
@@ -14,7 +14,8 @@ class WelcomeController extends Controller
         $posts = Post::with('user')->latest()->take(6)->get();
         $todayPostsCount = $this->countTodayPosts();
         $properties = Property::all();
-        return view('welcome', compact('posts', 'todayPostsCount', 'properties'));
+        $subsidiaries = Subsidiary::all();
+        return view('welcome', compact('posts', 'todayPostsCount', 'properties', 'subsidiaries'));
     }
 
     public function showPost($id)
@@ -35,5 +36,24 @@ class WelcomeController extends Controller
                     ->whereDate('created_at', Carbon::today())
                     ->take(3)
                     ->get();
+    }
+
+    /**
+     * Display the detailed view of the specified resource.
+     */
+    public function showDetails(Subsidiary $subsidiary)
+    {
+        $relatedSubsidiaries = $this->getRelatedSubsidiaries($subsidiary);
+        return view('subsidiaries_details', compact('subsidiary', 'relatedSubsidiaries'));
+    }
+
+    /**
+     * Get related subsidiaries for the given subsidiary.
+     */
+    private function getRelatedSubsidiaries(Subsidiary $subsidiary)
+    {
+        return Subsidiary::where('id', '!=', $subsidiary->id)
+                         ->take(3)
+                         ->get();
     }
 }

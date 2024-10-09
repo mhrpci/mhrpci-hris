@@ -37,6 +37,8 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SubsidiaryController;
+use App\Models\Subsidiary;
+use App\Http\Controllers\BackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +90,7 @@ use App\Http\Controllers\SubsidiaryController;
     Route::resource('accountabilities', AccountabilityController::class);
     Route::resource('policies', PolicyController::class);
     Route::resource('subsidiaries', SubsidiaryController::class);
+    Route::get('/subsidiaries/{id}', [SubsidiaryController::class, 'show'])->name('subsidiaries.show');
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
@@ -182,5 +185,6 @@ use App\Http\Controllers\SubsidiaryController;
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/holidays', [CalendarController::class, 'getHolidays'])->name('calendar.holidays');
     Route::get('/policies-page', [PolicyController::class, 'showPolicy'])->name('policies.show-page');
+    Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
 
     Auth::routes();

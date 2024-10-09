@@ -758,8 +758,8 @@
                         @endcan
 
                         @canany(['admin', 'super-admin', 'hrcompliance', 'it-staff', 'hrpolicy'])
-                        <li class="nav-item has-treeview {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*', 'policies*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*', 'policies*') ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*', 'policies*', 'subsidiaries*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('accountabilities*', 'credentials*', 'inventory*', 'properties*', 'policies*', 'subsidiaries*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     Others
@@ -788,6 +788,14 @@
                                     <a href="{{ url('/inventory') }}" class="nav-link {{ Request::is('inventory*') ? 'active' : '' }}">
                                         <i class="fas fa-cubes nav-icon"></i>
                                         <p>IT Inventory</p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('super-admin', 'it-staff')
+                                <li class="nav-item">
+                                    <a href="{{ url('/subsidiaries') }}" class="nav-link {{ Request::is('subsidiaries*') ? 'active' : '' }}">
+                                        <i class="fas fa-cubes nav-icon"></i>
+                                        <p>Subsidiaries</p>
                                     </a>
                                 </li>
                                 @endcan

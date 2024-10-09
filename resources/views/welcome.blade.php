@@ -794,6 +794,183 @@
             margin-bottom: 1rem;
         }
 
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .subsidiary-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .subsidiary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .subsidiary-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .subsidiary-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .subsidiary-card:hover .subsidiary-img {
+            transform: scale(1.05);
+        }
+
+        .subsidiary-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            color: #999;
+            font-size: 3rem;
+        }
+
+        .subsidiary-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subsidiary-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .subsidiary-description {
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .subsidiary-link {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .subsidiary-link:hover {
+            color: var(--secondary-color);
+        }
+
+        .subsidiary-established {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .subsidiary-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .read-more-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .subsidiary-card {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .subsidiary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .subsidiary-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .subsidiary-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .subsidiary-card:hover .subsidiary-img {
+            transform: scale(1.05);
+        }
+
+        .subsidiary-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subsidiary-info h3 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subsidiary-info p {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .no-subsidiaries-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-subsidiaries-message i {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .no-subsidiaries-message p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Tour styles */
         .shepherd-button {
             background: var(--primary-color);
@@ -1734,46 +1911,41 @@
                 <div class="section-content">
                     <h2 class="animate-on-scroll">Our Subsidiaries</h2>
                     <div class="grid benefits-grid">
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-hospital"></i>
-                            <h3>MHRHCI</h3>
-                            <p>Medical and Hospital Resources Health Care, Inc. - Comprehensive healthcare solutions.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-hotel"></i>
-                            <h3>VHI</h3>
-                            <p>Verbena Hotel Inc. - Luxury hospitality and accommodation services.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-gas-pump"></i>
-                            <h3>BGPDI</h3>
-                            <p>Bay Gas and Petroleum Distributed Inc. - Energy distribution and services.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-hard-hat"></i>
-                            <h3>MHRCON</h3>
-                            <p>MHR Constructions - Building the future with quality and innovation.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-pepper-hot"></i>
-                            <h3>LUSCIOUS</h3>
-                            <p>Luscious Spices - Enhancing flavors in the culinary world.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-dolly"></i>
-                            <h3>MAXIMUM</h3>
-                            <p>Maximum Handling Resources - Efficient logistics and resource management.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-pills"></i>
-                            <h3>RCG</h3>
-                            <p>RCG Pharmaceutical - Advancing healthcare through pharmaceutical innovation.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-industry"></i>
-                            <h3>CEBIC</h3>
-                            <p>CEBIC Industries - Diverse industrial solutions and manufacturing.</p>
-                        </div>
+                        @forelse($subsidiaries as $subsidiary)
+                            <div class="card animate-on-scroll subsidiary-card">
+                                <div class="subsidiary-image">
+                                    @if($subsidiary->main_image)
+                                        <img src="{{ asset('storage/' . $subsidiary->main_image) }}" alt="{{ $subsidiary->name }}" class="subsidiary-img">
+                                    @else
+                                        <div class="subsidiary-placeholder">
+                                            <i class="fas fa-building"></i>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="subsidiary-info">
+                                    <h3>{{ $subsidiary->name }}</h3>
+                                    <p class="subsidiary-description">{{ Str::limit($subsidiary->description, 100) }}</p>
+                                    @if($subsidiary->website)
+                                        <a href="{{ $subsidiary->website }}" target="_blank" rel="noopener noreferrer" class="subsidiary-link">
+                                            <i class="fas fa-globe"></i> Visit Website
+                                        </a>
+                                    @endif
+                                    @if($subsidiary->established_date)
+                                        <p class="subsidiary-established">
+                                            <i class="fas fa-calendar-alt"></i> Established: {{ $subsidiary->established_date->format('F Y') }}
+                                        </p>
+                                    @endif
+                                </div>
+                                <div class="subsidiary-footer">
+                                    <a href="{{ route('subsidiaries_details', $subsidiary->id) }}" class="read-more-btn">Learn More</a>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="no-subsidiaries-message">
+                                <i class="fas fa-building fa-3x"></i>
+                                <p>No subsidiaries available at the moment.</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -2350,180 +2522,79 @@
                     scrollTo: true,
                     cancelIcon: {
                         enabled: true
+                    },
+                    popperOptions: {
+                        modifiers: [{ name: 'offset', options: { offset: [0, 12] } }]
                     }
                 }
             });
 
-            tour.addStep({
-                id: 'welcome',
-                title: 'Welcome to MHRPCI',
-                text: 'Welcome to MHR Property Conglomerates, Inc. We\'re delighted to guide you through our website and introduce you to our diverse range of services and opportunities.',
-                attachTo: {
-                    element: '.hero',
-                    on: 'bottom'
-                },
-                buttons: [
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
+            function isMobile() {
+                return window.innerWidth <= 768;
+            }
 
-            tour.addStep({
-                id: 'google-login',
-                title: 'Sign In with Google',
-                text: `To access personalized features and content, you can easily sign in using your Google account:
-                       <ol>
-                         <li>Locate the "Sign in with Google" button in the top right corner.</li>
-                         <li>Click the button to initiate the login process.</li>
-                         <li>If not already logged into Google, enter your credentials when prompted.</li>
-                         <li>Upon successful authentication, you'll be redirected back to our site.</li>
-                         <li>Your profile picture and name will appear, indicating you're signed in.</li>
-                       </ol>
-                       Signing in grants you access to exclusive content, personalized preferences, and community interactions.`,
-                attachTo: {
-                    element: '.auth-buttons',
-                    on: 'bottom'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back
-                    },
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
+            function getVisibleSections() {
+                const sections = document.querySelectorAll('section');
+                return Array.from(sections).filter(section => {
+                    const rect = section.getBoundingClientRect();
+                    return rect.top < window.innerHeight && rect.bottom >= 0;
+                });
+            }
 
-            tour.addStep({
-                id: 'about',
-                title: 'About Us',
-                text: 'Explore our company\'s core values and mission. Discover how we\'ve established ourselves as industry leaders through continuous innovation and a commitment to excellence.',
-                attachTo: {
-                    element: '#about',
-                    on: 'top'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back
-                    },
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
+            function createDynamicStep(element) {
+                const id = element.id || element.className.split(' ')[0];
+                const title = element.querySelector('h2') ? element.querySelector('h2').textContent : 'Section';
+                const content = element.textContent.slice(0, 150) + '...';
 
-            tour.addStep({
-                id: 'subsidiaries',
-                title: 'Our Subsidiaries',
-                text: 'Discover our diverse portfolio of subsidiaries, spanning healthcare, hospitality, energy, construction, and more. Each subsidiary plays a crucial role in our comprehensive range of services.',
-                attachTo: {
-                    element: '#subsidiaries',
-                    on: 'top'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back
-                    },
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
+                return {
+                    id: id,
+                    title: title,
+                    text: `This section appears to be about: ${content}`,
+                    attachTo: { element: element, on: isMobile() ? 'bottom' : 'right' },
+                    buttons: [
+                        { text: 'Back', action: tour.back },
+                        { text: 'Next', action: tour.next }
+                    ]
+                };
+            }
 
-            tour.addStep({
-                id: 'partners',
-                title: 'Strategic Partnerships',
-                text: 'Learn about our strategic alliances and collaborations. These partnerships enable us to deliver cutting-edge solutions and services across various sectors, enhancing our overall value proposition.',
-                attachTo: {
-                    element: '#partners',
-                    on: 'top'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back
-                    },
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
+            function updateTour() {
+                tour.steps = [];  // Clear existing steps
 
-            tour.addStep({
-                id: 'properties',
-                title: 'Property Listings',
-                text: 'Explore our extensive portfolio of properties available for rent and sale. Utilize our advanced filters to find properties that align with your specific requirements and preferences.',
-                attachTo: {
-                    element: '#properties',
-                    on: 'top'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back
-                    },
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
+                // Welcome step
+                tour.addStep({
+                    id: 'welcome',
+                    title: 'Welcome to MHRPCI',
+                    text: 'Let\'s explore the key features of our website together.',
+                    attachTo: { element: '.hero', on: isMobile() ? 'bottom' : 'bottom-start' },
+                    buttons: [{ text: 'Start Tour', action: tour.next }]
+                });
 
-            tour.addStep({
-                id: 'latest-posts',
-                title: 'Latest Announcements',
-                text: 'Stay informed with our latest news, events, and announcements. This section offers valuable insights into our company\'s activities and current industry trends, keeping you up-to-date with our progress and innovations.',
-                attachTo: {
-                    element: '#latest-posts',
-                    on: 'top'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back
-                    },
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
+                // Dynamically add steps for visible sections
+                getVisibleSections().forEach(section => {
+                    tour.addStep(createDynamicStep(section));
+                });
 
-            tour.addStep({
-                id: 'contact',
-                title: 'Contact Us',
-                text: 'Find our contact information, office location, and connect with us on social media. Our team is always ready to assist you with any inquiries or discuss potential opportunities for collaboration.',
-                attachTo: {
-                    element: '#contact',
-                    on: 'top'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back
-                    },
-                    {
-                        text: 'Finish Tour',
-                        action: tour.complete
-                    }
-                ]
-            });
+                // Conclusion step
+                tour.addStep({
+                    id: 'conclusion',
+                    title: 'Tour Complete',
+                    text: 'Thank you for exploring our website. Feel free to browse around for more information!',
+                    buttons: [{ text: 'Finish', action: tour.complete }]
+                });
+            }
+
+            // Update tour on window resize
+            window.addEventListener('resize', updateTour);
+
+            // Initial tour setup
+            updateTour();
 
             // Check if it's the user's first visit
             if (!localStorage.getItem('tourCompleted')) {
-                // Show a welcome message and start the tour
                 Swal.fire({
                     title: 'Welcome to MHRPCI',
-                    text: 'Would you like a guided tour of our website to explore our services and opportunities?',
+                    text: 'Would you like an AI-guided tour of our website?',
                     icon: 'info',
                     showCancelButton: true,
                     confirmButtonText: 'Yes, start the tour',
@@ -2536,7 +2607,6 @@
                     }
                 });
 
-                // Mark the tour as completed
                 localStorage.setItem('tourCompleted', 'true');
             }
         });
