@@ -36,6 +36,7 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\SubsidiaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,7 +87,7 @@ use App\Http\Controllers\CalendarController;
     Route::resource('properties', PropertyController::class);
     Route::resource('accountabilities', AccountabilityController::class);
     Route::resource('policies', PolicyController::class);
-    Route::get('/policies-page', [PolicyController::class, 'showPolicy'])->name('policies.show-page');
+    Route::resource('subsidiaries', SubsidiaryController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
@@ -180,5 +181,6 @@ use App\Http\Controllers\CalendarController;
     Route::get('/posts/show/{id}', [PostController::class, 'showPostById'])->name('posts.showById');
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/holidays', [CalendarController::class, 'getHolidays'])->name('calendar.holidays');
-    Auth::routes();
+    Route::get('/policies-page', [PolicyController::class, 'showPolicy'])->name('policies.show-page');
 
+    Auth::routes();
