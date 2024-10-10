@@ -708,8 +708,8 @@
                         </li>
                         @endcanany
                         @canany(['admin', 'super-admin', 'hrcomben', 'finance', 'normal-employee'])
-                        <li class="nav-item has-treeview {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loans*', 'my-contributions*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loans*', 'my-contributions*') ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loan_sss*', 'my-contributions*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('contributions*', 'sss*', 'philhealth*', 'pagibig*', 'loan_sss*', 'my-contributions*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hands-helping"></i>
                                 <p>
                                     Loans & Contributions
@@ -725,7 +725,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('/loans') }}" class="nav-link {{ Request::is('loans*') ? 'active' : '' }}">
+                                    <a href="{{ url('/loan_sss') }}" class="nav-link {{ Request::is('loan_sss*') ? 'active' : '' }}">
                                         <i class="fas fa-money-bill-alt nav-icon"></i>
                                         <p>Loans</p>
                                     </a>

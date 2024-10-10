@@ -43,15 +43,34 @@
                 <div class="card-header">
                     <h3 class="card-title">Payroll Records</h3>
                     <div class="card-tools">
-                        {{-- <a href="{{ route('payroll.create') }}" class="btn btn-success btn-sm rounded-pill">
-                            Create Payroll <i class="fas fa-plus-circle"></i>
-                        </a> --}}
+                        <!-- Download Payrolls Form -->
+                        <form action="{{ route('payroll.index') }}" method="GET" class="form-inline">
+                            <div class="input-group input-group-sm mr-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Start Date</span>
+                                </div>
+                                <input type="date" name="start_date" id="start_date" class="form-control" required>
+                            </div>
+                            <div class="input-group input-group-sm mr-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">End Date</span>
+                                </div>
+                                <input type="date" name="end_date" id="end_date" class="form-control" required readonly>
+                            </div>
+                            <input type="hidden" name="download" value="1">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-download"></i> Download Payrolls
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success">{{ $message }}</div>
+                    @endif
+                    @if ($message = Session::get('error'))
+                        <div class="alert alert-danger">{{ $message }}</div>
                     @endif
                     <table id="payroll-table" class="table table-bordered table-hover">
                         <thead>
@@ -113,6 +132,34 @@
 <script>
     $(document).ready(function () {
         $('#payroll-table').DataTable();
+
+        // Function to set end date based on start date
+        function setEndDate(startDateInput, endDateInput) {
+                var startDate = new Date(startDateInput.val());
+                var endDate = new Date(startDate);
+
+                if (startDate.getDate() >= 11 && startDate.getDate() <= 25) {
+                    endDate.setDate(25);
+                } else if (startDate.getDate() >= 26 || startDate.getDate() <= 10) {
+                    if (startDate.getDate() >= 26) {
+                        endDate.setMonth(startDate.getMonth() + 1);
+                    }
+                    endDate.setDate(10);
+                }
+
+                var formattedEndDate = endDate.toISOString().split('T')[0];
+                endDateInput.val(formattedEndDate);
+            }
+
+            // Set end date for main form
+            $('#start_date').change(function() {
+                setEndDate($('#start_date'), $('#end_date'));
+            });
+
+            // Set end date for modal form
+            $('#modal_start_date').change(function() {
+                setEndDate($('#modal_start_date'), $('#modal_end_date'));
+            });
     });
 </script>
 @endsection

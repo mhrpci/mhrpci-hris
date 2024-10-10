@@ -84,6 +84,9 @@
 <body>
     <div class="payslip-container">
         <div class="header">
+            @if($logoBase64)
+                <img src="{{ $logoBase64 }}" alt="Company Logo" class="company-logo">
+            @endif
             <h1 class="text-uppercase text-primary">Payslip</h1>
             <p>For the period: {{ \Carbon\Carbon::parse($payroll->start_date)->format('F d, Y') }} - {{ \Carbon\Carbon::parse($payroll->end_date)->format('F d, Y') }}</p>
         </div>
@@ -183,6 +186,7 @@
                 <div class="column">
                     <h2 class="text-uppercase">Net Pay</h2>
                     <h1 class="text-primary">PHP {{ number_format($payroll->net_salary, 2) }}</h1>
+                    <p class="text-right" style="margin-right: 30%"><strong>{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</strong></p>
                 </div>
                 <div class="column">
                     @php
@@ -198,11 +202,6 @@
                     <p><strong>Pay Date:</strong> {{ $payoutDate->format('F d, Y') }}</p>
                 </div>
             </div>
-
-
-        <div class="footer">
-            <p>This is a computer-generated document. No signature is required.</p>
-        </div>
     </div>
 </body>
 </html>

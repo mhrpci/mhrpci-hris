@@ -37,6 +37,7 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SubsidiaryController;
+use App\Http\Controllers\SssLoanController;
 use App\Http\Controllers\DatabaseBackupController;
 
 /*
@@ -89,6 +90,7 @@ use App\Http\Controllers\DatabaseBackupController;
     Route::resource('accountabilities', AccountabilityController::class);
     Route::resource('policies', PolicyController::class);
     Route::resource('subsidiaries', SubsidiaryController::class);
+    Route::resource('loan_sss', SssLoanController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
@@ -184,6 +186,8 @@ use App\Http\Controllers\DatabaseBackupController;
     Route::get('/calendar/holidays', [CalendarController::class, 'getHolidays'])->name('calendar.holidays');
     Route::get('/policies-page', [PolicyController::class, 'showPolicy'])->name('policies.show-page');
     Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
-
+    Route::get('/loan_sss/{id}/ledger', [SssLoanController::class, 'showLedger'])->name('loan_sss.ledger');
+    Route::post('/loan_sss/generate-payments', [SssLoanController::class, 'generatePayments'])->name('loan_sss.generate_payments');
 
     Auth::routes();
+

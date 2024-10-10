@@ -8,6 +8,8 @@ use App\Models\Payroll;
 use Carbon\Carbon;
 use App\Models\Employee;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class PayrollController extends Controller
 {
@@ -98,16 +100,20 @@ class PayrollController extends Controller
     /**
      * List all payroll records
      */
-    public function index()
+    public function index(Request $request)
     {
         // Get the authenticated user
         $user = auth()->user();
 
-        // Check if the user has the Super Admin role
+        // Check if download is requested
+        if ($request->has('download')) {
+            return $this->downloadPayrolls($request);
+        }
+
+        // Existing index logic
         if ($user->hasRole('Super Admin')) {
             $payrolls = Payroll::with('employee')->get();
         } else {
-            // If not Super Admin, only get payrolls for employees with Rank File rank
             $payrolls = Payroll::whereHas('employee', function ($query) {
                 $query->where('rank', 'Rank File');
             })->with('employee')->get();
@@ -115,6 +121,121 @@ class PayrollController extends Controller
 
         return view('payroll.index', compact('payrolls'));
     }
+
+    protected function downloadPayrolls(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+        ]);
+
+        $start_date = Carbon::parse($request->input('start_date'));
+        $end_date = Carbon::parse($request->input('end_date'));
+
+        // Query payrolls within the date range
+        $payrolls = Payroll::where(function ($query) use ($start_date, $end_date) {
+            $query->whereBetween('start_date', [$start_date, $end_date])
+                  ->orWhereBetween('end_date', [$start_date, $end_date])
+                  ->orWhere(function ($q) use ($start_date, $end_date) {
+                      $q->where('start_date', '<=', $start_date)
+                        ->where('end_date', '>=', $end_date);
+                  });
+        })->with('employee')->get();
+
+        if ($payrolls->isEmpty()) {
+            return redirect()->back()->with('error', 'No payrolls found for the specified date range.');
+        }
+
+        // Create a folder name combining start_date and end_date
+        $folderName = $start_date->format('MdY') . '-' . $end_date->format('MdY') . '-Payrolls';
+
+        // Create a temporary directory to store PDFs
+        $tempDir = storage_path('app/temp_' . $folderName);
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        // Generate PDFs for each payroll
+        foreach ($payrolls as $payroll) {
+            $pdf = $this->generatePayslipPDF($payroll);
+            $filename = $this->getPayslipFilename($payroll);
+            $pdf->save($tempDir . '/' . $filename);
+        }
+
+        // Create a zip file
+        $zipFileName = $folderName . '.zip';
+        $zipFilePath = storage_path('app/' . $zipFileName);
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tempDir));
+            foreach ($files as $file) {
+                if (!$file->isDir()) {
+                    $filePath = $file->getRealPath();
+                    $relativePath = $folderName . '/' . substr($filePath, strlen($tempDir) + 1);
+                    $zip->addFile($filePath, $relativePath);
+                }
+            }
+            $zip->close();
+        }
+
+        // Clean up the temporary directory
+        $this->cleanupTempDirectory($tempDir);
+
+        // Download the zip file
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    }
+
+    protected function generatePayslipPDF($payroll)
+    {
+        // Ensure dates are Carbon instances
+        $payroll->start_date = Carbon::parse($payroll->start_date);
+        $payroll->end_date = Carbon::parse($payroll->end_date);
+
+        // Get the logo path and convert to base64
+        $logoPath = public_path('vendor/adminlte/dist/img/LOGO4.png');
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        }
+
+        $pdf = PDF::loadView('payroll.payslip_pdf', compact('payroll', 'logoBase64'));
+        $pdf->setPaper('letter');
+        $pdf->setOptions([
+            'margin-top'    => 0,
+            'margin-right'  => 0,
+            'margin-bottom' => 0,
+            'margin-left'   => 0,
+        ]);
+
+        return $pdf;
+    }
+
+    protected function getPayslipFilename($payroll)
+    {
+        return $payroll->employee->company_id . '_' .
+               $payroll->employee->last_name . '_' .
+               $payroll->employee->first_name . '_' .
+               $payroll->start_date->format('F d, Y') . '_' .
+               $payroll->end_date->format('F d, Y') . '-Payroll.pdf';
+    }
+
+    protected function cleanupTempDirectory($dir)
+    {
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+
+        rmdir($dir);
+    }
+
     public function destroy($id)
     {
         // Find the payroll record by ID
@@ -178,7 +299,16 @@ class PayrollController extends Controller
         // Get the logo path
         $logoPath = public_path('vendor/adminlte/dist/img/LOGO4.png');
 
-        $pdf = PDF::loadView('payroll.payslip_pdf', compact('payroll', 'logoPath'));
+        // Read image file and convert to base64
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        } else {
+            \Log::error("Logo file not found at path: $logoPath");
+        }
+
+        $pdf = PDF::loadView('payroll.payslip_pdf', compact('payroll', 'logoBase64'));
 
         // Set paper size to letter
         $pdf->setPaper('letter');
@@ -191,7 +321,14 @@ class PayrollController extends Controller
             'margin-left'   => 0,
         ]);
 
-        return $pdf->download('payslip_' . $payroll->employee->employee_id . '_' . $payroll->start_date->format('Y-m-d') . '.pdf');
+        // Create the new filename
+        $filename = $payroll->employee->company_id . '_' .
+                    $payroll->employee->last_name . '_' .
+                    $payroll->employee->first_name . '_' .
+                    $payroll->start_date->format('F d, Y') . '_' .
+                    $payroll->end_date->format('F d, Y') . '-Payroll.pdf';
+
+        return $pdf->download($filename);
     }
 
     /**
