@@ -26,11 +26,20 @@
         </a>
         <a href="{{ route('philhealth.index') }}" class="contribution-link {{ request()->routeIs('philhealth.index') ? 'active' : '' }}">
             <div class="icon-wrapper">
-                <i class="fas fa-heartbeat"></i>
+                <i class="fas fa-money-bill-wave"></i>
             </div>
             <div class="text-wrapper">
                 <span class="title">Cash Advance</span>
                 <small class="description">Company Cash Advance</small>
+            </div>
+        </a>
+        <a href="{{ route('philhealth.index') }}" class="contribution-link {{ request()->routeIs('philhealth.index') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Borrower</span>
+                <small class="description">Loan Applicant List</small>
             </div>
         </a>
     </div>
@@ -53,9 +62,9 @@
     <div class="card-header">
         <h3 class="card-title">SSS Loan List</h3>
         <div class="card-tools">
-            <a href="{{ route('loan_sss.create') }}" class="btn btn-success btn-sm rounded-pill">
-                Add Sss Loan <i class="fas fa-plus-circle"></i>
-            </a>
+            <button type="button" class="btn btn-success btn-sm rounded-pill" data-toggle="modal" data-target="#loanModal">
+                Apply for SSS Loan
+            </button>
             <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
                 Export to Excel <i class="fas fa-file-excel"></i>
             </button>
@@ -77,6 +86,7 @@
                 <th>Repayment Term</th>
                 <th>Monthly Amortization</th>
                 <th>Total Repayment</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -90,13 +100,27 @@
                     <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
                     <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
                     <td>
+                        @if($loan->status == 'active')
+                            <span class="badge badge-success">{{ $loan->status }}</span>
+                        @else
+                            <span class="badge badge-primary">{{ $loan->status }}</span>
+                        @endif
+                    </td>
+                    <td>
                         <div class="btn-group">
                             <div class="dropdown">
                                 <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a href="{{ route('loan_sss.ledger', $loan->id) }}" class="dropdown-item"><i class="fas fa-book"></i>&nbsp;Legder</a>
+                                    <a href="{{ route('loan_sss.ledger', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-book"></i>&nbsp;Ledger
+                                    </a>
+                                    @if($loan->getRemainingBalanceAttribute() == 0)
+                                        <a href="{{ route('loan_sss.edit', $loan->id) }}" class="dropdown-item">
+                                            <i class="fas fa-edit"></i>&nbsp;Update Status
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -106,7 +130,9 @@
         </tbody>
     </table>
 </div>
+</div>
 
+@include('loan_sss.create')
 @endsection
 
 @section('css')
@@ -172,6 +198,8 @@
     }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 @endsection
 
 @section('js')
@@ -179,9 +207,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
     $(document).ready(function () {
+
+        // Initialize Select2 for all select elements
+        $('select').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+
         var table = $('#loan_sss').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],

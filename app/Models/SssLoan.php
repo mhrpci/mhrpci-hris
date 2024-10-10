@@ -15,6 +15,7 @@ class SssLoan extends Model
         'repayment_term',
         'monthly_amortization',
         'total_repayment',
+        'status',
     ];
 
     protected $casts = [

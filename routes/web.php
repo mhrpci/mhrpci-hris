@@ -106,6 +106,7 @@ use App\Http\Controllers\DatabaseBackupController;
     Route::get('/employees/filter', [EmployeeController::class, 'filter'])->name('employees.filter');
     Route::post('employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
     Route::patch('employees/{employee}/disable', [EmployeeController::class, 'disable'])->name('employees.disable');
+    Route::get('/my-profile', [EmployeeController::class, 'viewOwnEmployeeProfile'])->name('employees.own-profile')->middleware('auth');
     });
     Route::get(
     'notifications/get',
@@ -188,6 +189,8 @@ use App\Http\Controllers\DatabaseBackupController;
     Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
     Route::get('/loan_sss/{id}/ledger', [SssLoanController::class, 'showLedger'])->name('loan_sss.ledger');
     Route::post('/loan_sss/generate-payments', [SssLoanController::class, 'generatePayments'])->name('loan_sss.generate_payments');
+    Route::get('/loan_sss/{id}/edit', [SssLoanController::class, 'edit'])->name('loan_sss.edit');
+    Route::post('/loan_sss/{id}/update_status', [SssLoanController::class, 'updateStatus'])->name('loan_sss.update_status');
 
     Auth::routes();
 

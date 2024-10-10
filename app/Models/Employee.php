@@ -163,7 +163,13 @@ class Employee extends Model
     {
         return $this->hasMany(PhilhealthContribution::class);
     }
-
+/**
+     * Get the Pagibig loans for the employee.
+     */
+    public function pagibigLoans()
+    {
+        return $this->hasMany(PagibigLoan::class);
+    }
     public function employmentStatus(): string
     {
         $hiredDate = \Carbon\Carbon::parse($this->date_hired);

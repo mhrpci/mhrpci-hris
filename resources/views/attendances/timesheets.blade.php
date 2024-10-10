@@ -107,6 +107,42 @@
                 theme: 'bootstrap4',
                 width: '100%'
             });
+
+            function filterAndSearch() {
+                var departmentId = $('#filter').val();
+                var searchQuery = $('#search').val().toLowerCase();
+
+                $('.employee-row').each(function() {
+                    var $row = $(this);
+                    var rowDepartmentId = $row.data('department-id').toString();
+                    var employeeName = $row.data('employee-name').toLowerCase();
+                    var companyId = $row.data('company-id').toString().toLowerCase();
+
+                    var departmentMatch = departmentId === 'all' || rowDepartmentId === departmentId;
+                    var searchMatch = searchQuery.length === 0 ||
+                                      employeeName.includes(searchQuery) ||
+                                      companyId.includes(searchQuery);
+
+                    if (departmentMatch && searchMatch) {
+                        $row.show();
+                    } else {
+                        $row.hide();
+                    }
+                });
+
+                if ($('.employee-row:visible').length === 0) {
+                    $('#no-employees').show();
+                } else {
+                    $('#no-employees').hide();
+                }
+            }
+
+            // Bind events
+            $('#filter').on('change', filterAndSearch);
+            $('#search').on('input', filterAndSearch);
+
+            // Initial filter and search
+            filterAndSearch();
         });
     </script>
 @stop

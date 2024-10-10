@@ -33,6 +33,15 @@
                 <small class="description">Philippine Health Insurance</small>
             </div>
         </a>
+        <a href="{{ route('contributions.employees-list') }}" class="contribution-link {{ request()->routeIs('contributions.employees-list') ? 'active' : '' }}">
+            <div class="icon-wrapper">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="text-wrapper">
+                <span class="title">Contributor</span>
+                <small class="description">Employee Contributor List</small>
+            </div>
+        </a>
     </div>
 </div>
 

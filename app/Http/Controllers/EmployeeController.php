@@ -449,5 +449,35 @@ public function update(Request $request, $slug): RedirectResponse
         return redirect()->route('employees.index')->with('success', 'Employee disabled successfully.');
     }
 
+    /**
+     * Display the authenticated employee's own profile.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function viewOwnEmployeeProfile(Request $request)
+    {
+        $user = $request->user();
+
+        // Check if the user has the 'Employee' role
+        if (!$user->hasRole('Employee')) {
+            return redirect()->route('home')->with('error', 'You do not have permission to view this page.');
+        }
+
+        // Find the employee profile associated with the user
+        $employee = Employee::where('email_address', $user->email)->first();
+
+        if (!$employee) {
+            return redirect()->route('home')->with('error', 'Employee profile not found.');
+        }
+
+        // Load related data
+        $employee->load('position', 'department', 'gender', 'province', 'city', 'barangay');
+
+        // Get employment status
+        $employee->employment_status = $employee->employmentStatus();
+
+        return view('employees.own-profile', compact('employee'));
+    }
 
 }

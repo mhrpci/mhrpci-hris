@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('repayment_term'); // Number of months for repayment
             $table->decimal('monthly_amortization', 10, 2); // Computed monthly amortization
             $table->decimal('total_repayment', 10, 2); // Computed total repayment
+            $table->enum('status', ['active', 'complete'])->default('active');
             $table->timestamps();
 
             // Foreign key constraint

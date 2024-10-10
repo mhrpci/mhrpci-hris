@@ -31,6 +31,15 @@ class SssLoanController extends Controller
             'repayment_term' => 'required|integer|min:1|max:24', // Repayment term (1 to 24 months)
         ]);
 
+        // Check if the employee already has an active loan
+        $existingActiveLoan = SssLoan::where('employee_id', $request->employee_id)
+            ->where('status', 'active')
+            ->first();
+
+        if ($existingActiveLoan) {
+            return redirect()->route('loan_sss.index')->with('error', 'This employee already has an active SSS loan. Cannot create a new loan.');
+        }
+
         // Calculate monthly amortization and total repayment
         $loan_amount = $request->loan_amount;
         $repayment_term = $request->repayment_term;
@@ -47,6 +56,7 @@ class SssLoanController extends Controller
             'repayment_term' => $repayment_term,
             'monthly_amortization' => $monthly_amortization,
             'total_repayment' => $total_repayment,
+            'status' => 'active', // Set initial status to active
         ]);
 
         return redirect()->route('loan_sss.index')->with('success', 'SSS Loan has been created successfully.');
@@ -57,8 +67,9 @@ class SssLoanController extends Controller
      */
     public function index()
     {
+        $employees = Employee::all();
         $loan_sss = SssLoan::with('employee')->get();
-        return view('loan_sss.index', compact('loan_sss'));
+        return view('loan_sss.index', compact('loan_sss','employees'));
     }
 
     /**
@@ -123,5 +134,27 @@ class SssLoanController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('loan_sss.index')->with('error', 'Error generating payments: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Update the status of a specific SSS loan.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:active,complete',
+        ]);
+
+        $loan = SssLoan::findOrFail($id);
+        $loan->status = $request->status;
+        $loan->save();
+
+        return redirect()->route('loan_sss.index')->with('success', "SSS Loan status has been updated to {$request->status} successfully.");
+    }
+
+    public function edit($id)
+    {
+        $loan = SssLoan::findOrFail($id);
+        return view('loan_sss.update_status', compact('loan'));
     }
 }

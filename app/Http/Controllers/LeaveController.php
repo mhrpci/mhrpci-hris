@@ -41,8 +41,17 @@ class LeaveController extends Controller
      */
     public function create()
     {
-        // Retrieve only active employees
-        $employees = Employee::where('employee_status', 'Active')->get();
+        // Check if the authenticated user has the 'Employee' role
+        if (auth()->user()->hasRole('Employee')) {
+            // Retrieve only the employee with the same email address as the authenticated user
+            $employees = Employee::where('email_address', auth()->user()->email)
+                                 ->where('employee_status', 'Active')
+                                 ->get();
+        } else {
+            // For other roles, retrieve all active employees
+            $employees = Employee::where('employee_status', 'Active')->get();
+        }
+
         $types = Type::all();
         return view('leaves.create', compact('employees', 'types'));
     }
