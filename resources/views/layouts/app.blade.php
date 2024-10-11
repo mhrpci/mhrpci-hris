@@ -431,8 +431,13 @@
                 </li>
                 <!-- Our Policies link with larger text and icon -->
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ url('/policies-page') }}" class="nav-link" style="font-size: 1.2rem; font-weight: bold;">
+                    <a href="{{ url('/policies-page') }}" class="nav-link" style="font-size: 1.2rem; font-weight: 200;">
                         <i class="fas fa-file-alt mr-2"></i> Our Policies
+                    </a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="{{ url('/calendar') }}" class="nav-link" style="font-size: 1.2rem; font-weight: 200;">
+                        <i class="fas fa-calendar"></i> Our Calendar
                     </a>
                 </li>
                 <!-- Add more nav items here -->
@@ -834,17 +839,17 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url('/projects') }}" class="nav-link {{ Request::is('projects*') ? 'active' : '' }}">
+                            <a href="{{ url('/generators') }}" class="nav-link {{ Request::is('generators*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-project-diagram"></i>
-                                <p>Projects</p>
+                                <p>Generators</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ url('/calendar') }}" class="nav-link {{ Request::is('calendar*') ? 'active' : '' }}">
                                 <i class="nav-icon far fa-calendar-alt"></i>
                                 <p>Calendar</p>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a href="{{ url('/reports') }}" class="nav-link {{ Request::is('reports*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-chart-bar"></i>

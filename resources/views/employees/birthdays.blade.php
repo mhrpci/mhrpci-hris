@@ -49,7 +49,7 @@
         position: relative;
         z-index: 2;
         height: 100%;
-        overflow: hidden;
+        overflow: visible; // Change from hidden to visible
     }
 
     .month-box:hover {
@@ -123,10 +123,72 @@
         opacity: 0.5;
     }
 
+    .balloon {
+        position: absolute;
+        width: 30px;
+        height: 40px;
+        border-radius: 50%;
+        animation: float 3s ease-in-out infinite;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .month-box:hover .balloon {
+        opacity: 1;
+    }
+
+    .balloon::before {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: inherit;
+        border-radius: 50%;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .balloon::after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: 50px;
+        background: #ffffff;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .balloon:nth-child(5n+1) { background: #FFB3BA; left: 20%; animation-delay: 0.5s; }
+    .balloon:nth-child(5n+2) { background: #BAFFC9; left: 40%; animation-delay: 1s; }
+    .balloon:nth-child(5n+3) { background: #BAE1FF; left: 60%; animation-delay: 1.5s; }
+    .balloon:nth-child(5n+4) { background: #FFFFBA; left: 80%; animation-delay: 2s; }
+    .balloon:nth-child(5n+5) { background: #FFD9BA; left: 10%; animation-delay: 2.5s; }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
     @media (max-width: 767px) {
         .month-box {
             margin-bottom: 20px;
         }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const monthBoxes = document.querySelectorAll('.month-box');
+        monthBoxes.forEach(box => {
+            for (let i = 0; i < 5; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                box.appendChild(balloon);
+            }
+        });
+    });
+</script>
+
 @endsection
