@@ -35,4 +35,9 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
+    'openai' => [
+    'api_key' => env('OPENAI_API_KEY'),
+    'organization' => env('OPENAI_ORGANIZATION'),  // Optional
+],
+
 ];

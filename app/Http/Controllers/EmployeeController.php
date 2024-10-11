@@ -472,7 +472,7 @@ public function update(Request $request, $slug): RedirectResponse
         }
 
         // Load related data
-        $employee->load('position', 'department', 'gender', 'province', 'city', 'barangay');
+        $employee->load(['position', 'department', 'gender', 'province', 'city', 'barangay']);
 
         // Get employment status
         $employee->employment_status = $employee->employmentStatus();

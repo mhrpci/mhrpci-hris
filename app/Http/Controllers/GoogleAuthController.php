@@ -9,12 +9,14 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
 {
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request)
     {
+        // Store the previous route in the session
+        $request->session()->put('url.intended', url()->previous());
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
         try {
             $googleUser = Socialite::driver('google')->user();
@@ -30,8 +32,9 @@ class GoogleAuthController extends Controller
 
             Auth::guard('google')->login($user);
 
-            return redirect('/')->with('success', 'Successfully logged in!')
-                ->header('Refresh', '0; url=/');
+            // Redirect to the intended URL or fallback to home
+            $redirectTo = $request->session()->pull('url.intended', '/');
+            return redirect($redirectTo)->with('success', 'Successfully logged in!');
         } catch (\Exception $e) {
             return redirect('/')->with('error', 'Google login failed. Please try again.');
         }
@@ -54,6 +57,8 @@ class GoogleAuthController extends Controller
         Auth::guard('google')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/')->with('success', 'Successfully logged out!');
+
+        // Redirect to the previous page or fallback to home
+        return redirect(url()->previous())->with('success', 'Successfully logged out!');
     }
 }

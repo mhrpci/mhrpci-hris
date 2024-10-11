@@ -11,7 +11,7 @@ class GoogleUser extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'google_id',
+        'google_user_id',
         'name',
         'email',
         'avatar',
@@ -55,6 +55,6 @@ class GoogleUser extends Authenticatable
 
     public function savedJobs()
     {
-        return $this->hasMany(SavedJob::class, 'google_user_id');
+        return $this->hasMany(SavedJob::class);
     }
 }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('abbr');
             $table->text('description');
+            $table->string('tagline');
             $table->string('contact_no')->nullable();
             $table->string('email_address')->nullable();
             $table->string('facebook_page')->nullable();

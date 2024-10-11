@@ -13,6 +13,7 @@ class Subsidiary extends Model
         'name',
         'abbr',
         'description',
+        'tagline',
         'contact_no',
         'email_address',
         'facebook_page',

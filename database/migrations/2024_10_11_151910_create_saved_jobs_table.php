@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('saved_jobs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('google_user_id')->constrained('google_users')->onDelete('cascade');
-            $table->foreignId('hiring_id')->constrained('hirings')->onDelete('cascade');
+            $table->unsignedBigInteger('google_user_id');
+            $table->unsignedBigInteger('hiring_id');
             $table->timestamps();
 
+            $table->foreign('google_user_id')->references('id')->on('google_users')->onDelete('cascade');
+            $table->foreign('hiring_id')->references('id')->on('hirings')->onDelete('cascade');
             $table->unique(['google_user_id', 'hiring_id']);
         });
     }

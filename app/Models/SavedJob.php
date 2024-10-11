@@ -9,10 +9,7 @@ class SavedJob extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'google_user_id',
-        'hiring_id',
-    ];
+    protected $fillable = ['google_user_id', 'hiring_id'];
 
     public function googleUser()
     {

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Career;
 use App\Models\Hiring;
-use App\Models\SavedHiring;
+use App\Models\SavedJob;
 use App\Models\GoogleUser;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
@@ -16,44 +16,156 @@ use Illuminate\Support\Facades\Auth;
 
 class CareerController extends Controller
 {
-    //             /**
-    //  * Display a listing of the resource.
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // function __construct()
-    // {
-    //     $this->middleware(['permission:career-list|career-create|career-edit|career-delete'], ['only' => ['index', 'show']]);
-    //     $this->middleware(['permission:career-create'], ['only' => ['create', 'store']]);
-    //     $this->middleware(['permission:career-edit'], ['only' => ['edit', 'update']]);
-    //     $this->middleware(['permission:career-delete'], ['only' => ['destroy']]);
-    // }
-
     private function getGoogleUserId()
     {
         $user = Auth::user();
-        if (!$user || !$user->google_id) {
-            throw new \Exception('User not authenticated or Google ID not found');
+        if (!$user || !$user->google_user_id) {
+            return null;
         }
-        return GoogleUser::where('google_id', $user->google_id)->first()->id ?? null;
+        return GoogleUser::where('google_id', $user->google_user_id)->first()->id ?? null;
     }
 
     public function index()
     {
         $hirings = Hiring::all();
-        $savedHirings = [];
+        $savedJobs = [];
         $googleUserId = null;
 
         if (Auth::check()) {
             try {
                 $googleUserId = $this->getGoogleUserId();
-                $savedHirings = SavedHiring::where('google_user_id', $googleUserId)->pluck('hiring_id')->toArray();
+                if ($googleUserId) {
+                    $savedJobs = SavedJob::where('google_user_id', $googleUserId)->pluck('hiring_id')->toArray();
+                }
             } catch (\Exception $e) {
                 Log::error('Error fetching saved hirings: ' . $e->getMessage());
             }
         }
 
-        return view('careers', compact('hirings', 'savedHirings', 'googleUserId'));
+        return view('careers', compact('hirings', 'savedJobs', 'googleUserId'));
+    }
+
+    public function show($id)
+    {
+        $hiring = Hiring::findOrFail($id);
+        $googleUserId = $this->getGoogleUserId();
+        $savedJobs = [];
+
+        if ($googleUserId) {
+            $savedJobs = SavedJob::where('google_user_id', $googleUserId)->pluck('hiring_id')->toArray();
+        }
+
+        $relatedJobs = Hiring::where('id', '!=', $id)->take(5)->get();
+
+        return view('career_details', compact('hiring', 'savedJobs', 'relatedJobs', 'googleUserId'));
+    }
+
+    /**
+     * Save a job for the authenticated user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function saveJob(Request $request)
+    {
+        $googleUserId = $this->getGoogleUserId();
+        if (!$googleUserId) {
+            Log::warning('Attempt to save job without authentication');
+            return response()->json(['error' => 'Authentication required'], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'hiring_id' => 'required|exists:hirings,id',
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Invalid save job request', ['errors' => $validator->errors()]);
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $hiringId = $request->input('hiring_id');
+
+        try {
+            DB::beginTransaction();
+
+            $savedJob = SavedJob::updateOrCreate(
+                ['google_user_id' => $googleUserId, 'hiring_id' => $hiringId],
+                ['saved' => true]
+            );
+
+            DB::commit();
+
+            Log::info('Job saved successfully', ['google_user_id' => $googleUserId, 'hiring_id' => $hiringId]);
+            return response()->json([
+                'message' => 'Job saved successfully',
+                'saved' => true,
+                'job_id' => $hiringId
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error saving job', [
+                'google_user_id' => $googleUserId,
+                'hiring_id' => $hiringId,
+                'error' => $e->getMessage()
+            ]);
+            return response()->json(['error' => 'Unable to save job. Please try again later.'], 500);
+        }
+    }
+
+    /**
+     * Unsave a job for the authenticated user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function unsaveJob(Request $request)
+    {
+        $googleUserId = $this->getGoogleUserId();
+        if (!$googleUserId) {
+            Log::warning('Attempt to unsave job without authentication');
+            return response()->json(['error' => 'Authentication required'], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'hiring_id' => 'required|exists:hirings,id',
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Invalid unsave job request', ['errors' => $validator->errors()]);
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $hiringId = $request->input('hiring_id');
+
+        try {
+            DB::beginTransaction();
+
+            $deleted = SavedJob::where('google_user_id', $googleUserId)
+                ->where('hiring_id', $hiringId)
+                ->delete();
+
+            DB::commit();
+
+            if ($deleted) {
+                Log::info('Job unsaved successfully', ['google_user_id' => $googleUserId, 'hiring_id' => $hiringId]);
+                return response()->json([
+                    'message' => 'Job unsaved successfully',
+                    'saved' => false,
+                    'job_id' => $hiringId
+                ]);
+            } else {
+                Log::warning('Attempt to unsave a job that was not saved', ['google_user_id' => $googleUserId, 'hiring_id' => $hiringId]);
+                return response()->json(['error' => 'Job was not saved'], 404);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error unsaving job', [
+                'google_user_id' => $googleUserId,
+                'hiring_id' => $hiringId,
+                'error' => $e->getMessage()
+            ]);
+            return response()->json(['error' => 'Unable to unsave job. Please try again later.'], 500);
+        }
     }
 
     public function apply(Request $request)
@@ -145,16 +257,6 @@ class CareerController extends Controller
         return view('showApplicant', compact('career'));
     }
 
-    public function show($id)
-    {
-        $hiring = Hiring::findOrFail($id);
-        $googleUser = Auth::guard('google')->user();
-        $savedJobs = $googleUser ? $googleUser->savedJobs()->pluck('hiring_id')->toArray() : [];
-        $relatedJobs = Hiring::where('id', '!=', $id)->take(5)->get();
-
-        return view('career_details', compact('hiring', 'savedJobs', 'relatedJobs', 'googleUser'));
-    }
-
     private function markAsRead(Career $career)
     {
         if (!$career->is_read) {
@@ -198,31 +300,5 @@ class CareerController extends Controller
         ";
 
         Mail::to($career->email)->send(new \App\Mail\InterviewScheduled($emailContent));
-    }
-
-    public function toggleSaveJob(Request $request)
-    {
-        $hiringId = $request->input('hiring_id');
-        $googleUser = Auth::guard('google')->user();
-
-        $savedJob = $googleUser->savedJobs()->where('hiring_id', $hiringId)->first();
-
-        if ($savedJob) {
-            $savedJob->delete();
-            $isSaved = false;
-            $message = 'Job removed from saved jobs.';
-        } else {
-            $googleUser->savedJobs()->create(['hiring_id' => $hiringId]);
-            $isSaved = true;
-            $message = 'Job saved successfully.';
-        }
-
-        $savedJobsCount = $googleUser->savedJobs()->count();
-
-        return response()->json([
-            'isSaved' => $isSaved,
-            'message' => $message,
-            'savedJobsCount' => $savedJobsCount
-        ]);
     }
 }

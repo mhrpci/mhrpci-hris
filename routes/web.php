@@ -39,6 +39,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SubsidiaryController;
 use App\Http\Controllers\SssLoanController;
 use App\Http\Controllers\DatabaseBackupController;
+use App\Http\Controllers\OpenAIController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,7 +107,11 @@ use App\Http\Controllers\DatabaseBackupController;
     Route::get('/employees/filter', [EmployeeController::class, 'filter'])->name('employees.filter');
     Route::post('employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
     Route::patch('employees/{employee}/disable', [EmployeeController::class, 'disable'])->name('employees.disable');
-    Route::get('/my-profile', [EmployeeController::class, 'viewOwnEmployeeProfile'])->name('employees.own-profile')->middleware('auth');
+    Route::get('/my-profile', [EmployeeController::class, 'viewOwnEmployeeProfile'])
+         ->name('employee.own-profile');
+         Route::post('/save-job', [CareerController::class, 'saveJob'])->name('save.job');
+         Route::post('/unsave-job', [CareerController::class, 'unsaveJob'])->name('unsave.job');
+    Route::get('/saved-jobs', [CareerController::class, 'getSavedJobs'])->name('saved.jobs');
     });
     Route::get(
     'notifications/get',
@@ -192,5 +197,15 @@ use App\Http\Controllers\DatabaseBackupController;
     Route::get('/loan_sss/{id}/edit', [SssLoanController::class, 'edit'])->name('loan_sss.edit');
     Route::post('/loan_sss/{id}/update_status', [SssLoanController::class, 'updateStatus'])->name('loan_sss.update_status');
 
-    Auth::routes();
+    Route::post('/generate-text', [OpenAIController::class, 'generateText']);
+    Route::post('/generate-image', [OpenAIController::class, 'generateImage']);
 
+    Route::get('/terms', function () {
+        return view('terms');
+    })->name('terms');
+
+    Route::get('/privacy', function () {
+        return view('privacy');
+    })->name('privacy');
+
+    Auth::routes();

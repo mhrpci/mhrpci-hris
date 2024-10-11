@@ -16,7 +16,11 @@
                     <div class="row">
                         <div class="col-md-8 order-2 order-md-1 mt-4 mt-md-0">
                             <h1 class="h2 mb-3 mb-md-4">{{ $subsidiary->name }}</h1>
-                            <p class="lead text-muted mb-4">{{ $subsidiary->description }}</p>
+                            <!-- Add tagline here -->
+                            @if($subsidiary->tagline)
+                                <p class="lead mb-3">{{ $subsidiary->tagline }}</p>
+                            @endif
+                            <p class="text-muted mb-4">{{ $subsidiary->description }}</p>
                             <div class="row mb-4">
                                 <div class="col-sm-6 mb-3">
                                     <h6 class="text-uppercase text-muted">Abbreviation</h6>

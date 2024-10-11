@@ -11,7 +11,13 @@ class GoogleAuthenticate
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::guard('google')->check()) {
-            return redirect()->route('welcome');
+            // Get the current route name
+            $currentRoute = $request->route()->getName();
+
+            // Determine the redirect route based on the current route
+            $redirectRoute = $currentRoute === 'careers' ? 'careers' : 'welcome';
+
+            return redirect()->route($redirectRoute);
         }
 
         return $next($request);

@@ -41,6 +41,7 @@ class SubsidiaryController extends Controller
             'first_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'second_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'third_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tagline' => 'required|string|max:255', // Add this line
         ]);
 
         if ($request->hasFile('main_image')) {
@@ -92,6 +93,7 @@ class SubsidiaryController extends Controller
             'first_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'second_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'third_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tagline' => 'required|string|max:255', // Add this line
         ]);
 
         if ($request->hasFile('main_image')) {

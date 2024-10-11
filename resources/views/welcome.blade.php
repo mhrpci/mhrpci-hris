@@ -790,32 +790,278 @@
             text-align: center;
         }
 
-        .messenger-btn {
-            display: inline-block;
-            background-color: #0084FF;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
+        .card-link {
             text-decoration: none;
-            font-weight: bold;
-            margin-top: 10px;
-            transition: background-color 0.3s ease;
+            color: inherit;
+            display: block;
         }
 
-        .messenger-btn:hover {
-            background-color: #0066CC;
+        /* Subsidiaries Section Styles */
+        #subsidiaries {
+            background-color: var(--light-bg);
+            padding: 4rem 0;
         }
 
-        #chatbot-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        .section-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .subsidiaries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subsidiary-card-wrapper {
+            display: flex;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .subsidiary-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .subsidiary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .subsidiary-image {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; /* 4:3 Aspect Ratio */
+            overflow: hidden;
+        }
+
+        .subsidiary-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .subsidiary-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            color: #999;
+            font-size: 3rem;
+        }
+
+        .subsidiary-info {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subsidiary-name {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subsidiary-abbr {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subsidiary-description {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .no-subsidiaries-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .no-subsidiaries-message i {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .no-subsidiaries-message p {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .subsidiaries-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .subsidiaries-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Subsidiaries Section Styles */
+        #subsidiaries {
+            background-color: var(--light-bg);
+            padding: 4rem 0;
+        }
+
+        .section-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .subsidiaries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subsidiary-card-wrapper {
+            display: flex;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .subsidiary-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .subsidiary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .subsidiary-image {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; /* 4:3 Aspect Ratio */
+            overflow: hidden;
+        }
+
+        .subsidiary-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .subsidiary-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            color: #999;
+            font-size: 3rem;
+        }
+
+        .subsidiary-info {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subsidiary-name {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subsidiary-abbr {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subsidiary-description {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .no-subsidiaries-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .no-subsidiaries-message i {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .no-subsidiaries-message p {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .subsidiaries-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .subsidiaries-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Announcements Section */
@@ -2024,40 +2270,35 @@
             <div class="container">
                 <div class="section-content">
                     <h2 class="animate-on-scroll">Our Subsidiaries</h2>
-                    <div class="grid benefits-grid">
+                    <p class="section-description animate-on-scroll">Discover the diverse portfolio of companies that make up MHR Property Conglomerates, Inc.</p>
+                    <div class="subsidiaries-grid">
                         @forelse($subsidiaries as $subsidiary)
-                            <div class="card animate-on-scroll subsidiary-card">
-                                <div class="subsidiary-image">
-                                    @if($subsidiary->main_image)
-                                        <img src="{{ asset('storage/' . $subsidiary->main_image) }}" alt="{{ $subsidiary->name }}" class="subsidiary-img">
-                                    @else
-                                        <div class="subsidiary-placeholder">
-                                            <i class="fas fa-building"></i>
+                            <div class="subsidiary-card-wrapper animate-on-scroll">
+                                <a href="{{ route('subsidiaries_details', $subsidiary->id) }}" class="card-link">
+                                    <div class="subsidiary-card">
+                                        <div class="subsidiary-image">
+                                            @if($subsidiary->main_image)
+                                                <img src="{{ asset('storage/' . $subsidiary->main_image) }}"
+                                                     alt="{{ $subsidiary->name }}"
+                                                     class="subsidiary-img"
+                                                     loading="lazy">
+                                            @else
+                                                <div class="subsidiary-placeholder">
+                                                    <i class="fas fa-building"></i>
+                                                </div>
+                                            @endif
                                         </div>
-                                    @endif
-                                </div>
-                                <div class="subsidiary-info">
-                                    <h3>{{ $subsidiary->name }}</h3>
-                                    <p class="subsidiary-description">{{ Str::limit($subsidiary->description, 100) }}</p>
-                                    @if($subsidiary->website)
-                                        <a href="{{ $subsidiary->website }}" target="_blank" rel="noopener noreferrer" class="subsidiary-link">
-                                            <i class="fas fa-globe"></i> Visit Website
-                                        </a>
-                                    @endif
-                                    @if($subsidiary->established_date)
-                                        <p class="subsidiary-established">
-                                            <i class="fas fa-calendar-alt"></i> Established: {{ $subsidiary->established_date->format('F Y') }}
-                                        </p>
-                                    @endif
-                                </div>
-                                <div class="subsidiary-footer">
-                                    <a href="{{ route('subsidiaries_details', $subsidiary->id) }}" class="read-more-btn">Learn More</a>
-                                </div>
+                                        <div class="subsidiary-info">
+                                            <h3 class="subsidiary-name">{{ $subsidiary->abbr }}</h3>
+                                            <p class="subsidiary-description">{{ Str::limit($subsidiary->description, 100) }}</p>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
                         @empty
                             <div class="no-subsidiaries-message">
                                 <i class="fas fa-building fa-3x"></i>
-                                <p>No subsidiaries available at the moment.</p>
+                                <p>We're currently updating our subsidiary information. Please check back soon for exciting updates!</p>
                             </div>
                         @endforelse
                     </div>

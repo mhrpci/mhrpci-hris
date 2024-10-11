@@ -24,7 +24,7 @@
                         <h5 class="card-title">{{ $subsidiary->name }} <span class="badge bg-secondary">{{ $subsidiary->abbr }}</span></h5>
                         <p class="card-text flex-grow-1">{{ Str::limit($subsidiary->description, 100) }}</p>
                         <div class="d-flex justify-content-between align-items-center mt-3">
-                            <a href="{{ route('subsidiaries.show', ['id' => $subsidiary->id]) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ route('subsidiaries.show', $subsidiary) }}" class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-eye me-1"></i>View
                             </a>
                             <div class="btn-group" role="group">

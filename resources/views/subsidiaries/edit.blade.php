@@ -24,6 +24,12 @@
                             </div>
                         </div>
 
+                        <!-- New Tagline field -->
+                        <div class="mb-3">
+                            <label for="tagline" class="form-label">Tagline</label>
+                            <input type="text" class="form-control" id="tagline" name="tagline" maxlength="255" placeholder="Enter subsidiary tagline" value="{{ old('tagline', $subsidiary->tagline) }}">
+                        </div>
+
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control" id="description" name="description" rows="3" required placeholder="Enter subsidiary description">{{ old('description', $subsidiary->description) }}</textarea>
