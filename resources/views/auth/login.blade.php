@@ -9,527 +9,270 @@
     <!-- SweetAlert2 CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<style>
-    @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    * {
-        box-sizing: border-box;
-    }
-
-    html, body {
-        height: 100%;
-        margin: 0;
-        overflow: hidden; /* Prevent scrolling */
-    }
-
-    body {
-        background: #f6f5f7;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Montserrat', sans-serif;
-    }
-
-    .container {
-        background-color: #fff;
-        border-radius: 15px;
-        box-shadow: 0 14px 28px rgba(0,0,0,0.25),
-                    0 10px 10px rgba(0,0,0,0.22);
-        position: relative;
-        overflow: hidden;
-        width: 768px;
-        max-width: 100%;
-        min-height: 480px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        /* Ensure container doesn't overflow */
-        max-height: 100vh;
-    }
-
-    .form-container {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        transition: all 0.6s ease-in-out;
-        padding: 20px; /* Add some padding */
-    }
-
-    .overlay-container {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        width: 50%;
-        height: 100%;
-        overflow: hidden;
-        transition: transform 0.6s ease-in-out;
-        z-index: 100;
-    }
-
-    .overlay {
-        background: #5f0a97; /* Fallback color */
-        background: -webkit-linear-gradient(to right, #a45dff, #6e1ab1); /* Purple gradient for WebKit browsers */
-        background: linear-gradient(to right, #a45dff, #6e1ab1); /* Purple gradient for modern browsers */
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: 0 0;
-        color: #FFFFFF;
-        position: relative;
-        left: -100%;
-        height: 100%;
-        width: 200%;
-        transform: translateX(0);
-        transition: transform 0.6s ease-in-out;
-    }
-
-    .form-container:hover {
-        background-color: #f9f9f9; /* Change background color on hover */
-    }
-
-    h1 {
-        font-weight: bold;
-        font-size: 2.5rem; /* Larger font size */
-        color: #050505; /* Darker color for better readability */
-        margin: 0;
-        padding: 20px 0; /* Add some padding */
-        text-align: center; /* Centered text */
-    }
-
-    h2 {
-        text-align: center;
-    }
-
-    p {
-        font-size: 14px;
-        font-weight: 100;
-        line-height: 20px;
-        letter-spacing: 0.5px;
-        margin: 20px 0 30px;
-    }
-
-    span {
-        font-size: 12px;
-    }
-
-    a {
-        color: #333;
-        font-size: 14px;
-        text-decoration: none;
-        margin: 15px 0;
-    }
-
-    button {
-        border-radius: 20px;
-        border: 1px solid #FF4B2B;
-        background-color: #FF4B2B;
-        color: #FFFFFF;
-        font-size: 12px;
-        font-weight: bold;
-        padding: 12px 45px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        transition: transform 80ms ease-in;
-    }
-
-    button:active {
-        transform: scale(0.95);
-    }
-
-    button:focus {
-        outline: none;
-    }
-
-    button.ghost {
-        background-color: transparent;
-        border-color: #FFFFFF;
-    }
-
-    form {
-        background-color: #FFFFFF;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding: 0 50px;
-        height: 100%;
-        text-align: center;
-    }
-
-    input {
-        background-color: #eee;
-        border: none;
-        padding: 12px 15px;
-        margin: 8px 0;
-        width: 100%;
-    }
-
-    .container {
-        background-color: #fff;
-        border-radius: 10px;
-          box-shadow: 0 14px 28px rgba(0,0,0,0.25),
-                0 10px 10px rgba(0,0,0,0.22);
-        position: relative;
-        overflow: hidden;
-        width: 768px;
-        max-width: 100%;
-        min-height: 480px;
-    }
-
-    .form-container {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        transition: all 0.6s ease-in-out;
-    }
-
-    .sign-in-container {
-        left: 0;
-        width: 50%;
-        z-index: 2;
-    }
-
-    .container.right-panel-active .sign-in-container {
-        transform: translateX(100%);
-    }
-
-    .sign-up-container {
-        left: 0;
-        width: 50%;
-        opacity: 0;
-        z-index: 1;
-    }
-
-    .container.right-panel-active .sign-up-container {
-        transform: translateX(100%);
-        opacity: 1;
-        z-index: 5;
-        animation: show 0.6s;
-    }
-
-    @keyframes show {
-        0%, 49.99% {
-            opacity: 0;
-            z-index: 1;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        50%, 100% {
-            opacity: 1;
-            z-index: 5;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-    }
 
-    .overlay-container {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        width: 50%;
-        height: 100%;
-        overflow: hidden;
-        transition: transform 0.6s ease-in-out;
-        z-index: 100;
-    }
-
-    .container.right-panel-active .overlay-container{
-        transform: translateX(-100%);
-    }
-
-    .overlay {
-        background: #5f0a97; /* Fallback color */
-        background: -webkit-linear-gradient(to right, #a45dff, #6e1ab1); /* Purple gradient for WebKit browsers */
-        background: linear-gradient(to right, #a45dff, #6e1ab1); /* Purple gradient for modern browsers */
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: 0 0;
-        color: #FFFFFF;
-        position: relative;
-        left: -100%;
-        height: 100%;
-        width: 200%;
-        transform: translateX(0);
-        transition: transform 0.6s ease-in-out;
-    }
-
-    .container.right-panel-active .overlay {
-          transform: translateX(50%);
-    }
-
-    .overlay-panel {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding: 0 40px;
-        text-align: center;
-        top: 0;
-        height: 100%;
-        width: 50%;
-        transform: translateX(0);
-        transition: transform 0.6s ease-in-out;
-    }
-
-    .overlay-left {
-        transform: translateX(-20%);
-    }
-
-    .container.right-panel-active .overlay-left {
-        transform: translateX(0);
-    }
-
-    .overlay-right {
-        right: 0;
-        transform: translateX(0);
-    }
-
-    .container.right-panel-active .overlay-right {
-        transform: translateX(20%);
-    }
-
-    .social-container {
-        margin: 20px 0;
-    }
-
-    .social-container a {
-        border: 1px solid #DDDDDD;
-        border-radius: 50%;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 5px;
-        height: 40px;
-        width: 40px;
-    }
-
-    footer {
-        background-color: #222;
-        color: #fff;
-        font-size: 14px;
-        bottom: 0;
-        position: fixed;
-        left: 0;
-        right: 0;
-        text-align: center;
-        z-index: 999;
-    }
-
-    footer p {
-        margin: 10px 0;
-    }
-
-    footer i {
-        color: red;
-    }
-
-    footer a {
-        color: #3c97bf;
-        text-decoration: none;
-    }
-
-    input {
-        background-color: #eee;
-        border: 1px solid #ccc; /* Added border color */
-        border-radius: 5px; /* Rounded corners */
-        padding: 12px 15px;
-        margin: 8px 0;
-        width: 100%;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
-    }
-
-    input:focus {
-        border-color: #FF4B2B; /* Change border color on focus */
-        box-shadow: 0 0 5px rgba(255, 75, 43, 0.5); /* Add shadow effect on focus */
-        outline: none; /* Remove default focus outline */
-    }
-
-    input::placeholder {
-        color: #aaa; /* Placeholder color */
-        transition: color 0.3s ease; /* Smooth transition for placeholder color */
-    }
-
-    input:focus::placeholder {
-        color: transparent; /* Hide placeholder text on focus */
-    }
-    button {
-        border-radius: 20px;
-        border: 1px solid #a45dff; /* Border color to match the gradient */
-        background: #a45dff; /* Fallback color */
-        background: -webkit-linear-gradient(to right, #a45dff, #6e1ab1); /* Purple gradient for WebKit browsers */
-        background: linear-gradient(to right, #a45dff, #6e1ab1); /* Purple gradient for modern browsers */
-        color: #FFFFFF;
-        font-size: 12px;
-        font-weight: bold;
-        padding: 12px 45px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        transition: transform 80ms ease-in, background-color 0.3s ease;
-    }
-
-    button:hover {
-        background: #6e1ab1; /* Darker shade on hover */
-        border-color: #6e1ab1; /* Match border color with hover background */
-    }
-/* Loader */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.loader-content {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-.spinner {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #8e44ad;
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    animation: spin 1s linear infinite;
-}
-
-.loader-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-    font-weight: bold;
-    color: #8e44ad;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.notification {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            width: 300px;
-            display: none;
-            z-index: 9999;
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            overflow: hidden;
         }
-        .notification.success {
-            border-color: #4CAF50;
+
+        .form-container {
+            flex: 1;
+            padding: 60px;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .overlay-container {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #ffffff;
+            padding: 60px;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 120px;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            outline: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 15px 30px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #764ba2;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 500;
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .notification.success {
             background-color: #4CAF50;
         }
+
         .notification.error {
-            border-color: #F44336;
-            color: #ffffff;
             background-color: #F44336;
         }
-        .notification .close {
-            float: right;
-            cursor: pointer;
-            font-size: 18px;
-            line-height: 1;
-            padding: 0 5px;
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media screen and (max-width: 768px) {
-    .container {
-        width: 90%;
-        min-height: auto;
-        flex-direction: column;
-    }
+            .container {
+                flex-direction: column;
+            }
 
-    .form-container, .overlay-container {
-        position: relative;
-        width: 100%;
-        height: auto;
-        left: 0;
-    }
+            .form-container, .overlay-container {
+                width: 100%;
+            }
 
-    .overlay-container {
-        display: none;
-    }
+            .overlay-container {
+                display: none;
+            }
 
-    .sign-in-container {
-        z-index: 2;
-    }
+            .form-container {
+                padding: 40px;
+            }
 
-    form {
-        padding: 30px 20px;
-    }
+            h1 {
+                font-size: 2rem;
+            }
 
-    h1 {
-        font-size: 2rem;
-    }
-
-    input, button {
-        width: 100%;
-        max-width: 300px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    input, button {
-        font-size: 14px;
-    }
-}
-
-/* Ensure form elements don't overflow on very small screens */
-@media screen and (max-width: 320px) {
-    input, button {
-        width: 90%;
-    }
-}
-
-/* Adjust container height for smaller screens */
-@media screen and (max-height: 600px) {
-    .container {
-        height: auto;
-        min-height: 100vh;
-    }
-}
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="loader" class="loader">
         <div class="loader-content">
             <div class="spinner"></div>
-            <div class="loader-text">MHR</div>
+            <div>Loading...</div>
         </div>
     </div>
-    <div class="container" id="container">
-        <div class="form-container sign-in-container">
+    <div class="container">
+        <div class="form-container">
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
-                <h1>Sign in</h1>
-                <input type="email" name="email" placeholder="Email" required />
-                <input type="password" name="password" placeholder="Password" required />
+                <h1>Welcome Back</h1>
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" required />
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" id="password" placeholder="Password" required />
+                    <span class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </span>
+                </div>
                 <a href="{{ route('password.request') }}">Forgot your password?</a>
                 <button type="submit">Sign In</button>
             </form>
         </div>
         <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-right">
-                    <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Logo" class="logo" style="height: 100px"> <!-- Add your logo here -->
-                    <h2>MHRPCI-HRIS</h2>
-                    <p>Enter your personal details and start your journey with us</p>
-                </div>
+            <div class="overlay-content">
+                <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Logo" class="logo">
+                <h2>MHRPCI-HRIS</h2>
+                <p>Enter your personal details and start your journey with us</p>
             </div>
         </div>
     </div>
@@ -555,51 +298,78 @@
                 const notification = document.getElementById('notification');
                 if (data.success) {
                     notification.className = 'notification success';
-                    notification.innerHTML = `
-                        <span>Login Successful! Redirecting...</span>
-                        <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
-                    `;
+                    notification.innerHTML = 'Login Successful! Redirecting...';
                     notification.style.display = 'block';
                     setTimeout(() => {
                         window.location.href = data.redirect;
-                    }, 1500); // Show notification for 1.5 seconds
+                    }, 1500);
                 } else {
-                    let errorMessage;
-                    if (data.message === 'Your account is disabled.') {
-                        errorMessage = 'Your account is disabled.';
-                    } else if (data.field === 'email') {
-                        errorMessage = 'Invalid email address';
-                    } else {
-                        errorMessage = 'Invalid password';
-                    }
+                    let errorMessage = data.message === 'Your account is disabled.' ? 'Your account is disabled.' :
+                                       data.field === 'email' ? 'Invalid email address' : 'Invalid password';
                     notification.className = 'notification error';
-                    notification.innerHTML = `
-                        <span>${errorMessage}</span>
-                        <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
-                    `;
+                    notification.innerHTML = errorMessage;
                     notification.style.display = 'block';
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 3000);
                 }
             })
             .catch(error => {
                 const notification = document.getElementById('notification');
                 notification.className = 'notification error';
-                notification.innerHTML = `
-                    <span>Something went wrong. Please try again later.</span>
-                    <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
-                `;
+                notification.innerHTML = 'Something went wrong. Please try again later.';
                 notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
             });
         });
 
-        // Loader
         window.addEventListener('load', function() {
             const loader = document.getElementById('loader');
             setTimeout(function() {
                 loader.style.opacity = '0';
                 setTimeout(function() {
                     loader.style.display = 'none';
-                }, 500); // Fade out transition time
-            }, 2000); // Display loader for 2 seconds
+                }, 500);
+            }, 1000);
+        });
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Add this new function at the end of your script
+        function checkForLogoutMessage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const logoutMessage = urlParams.get('logout');
+            if (logoutMessage === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logged Out',
+                    text: 'You have been successfully logged out.',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            }
+        }
+
+        // Call this function when the page loads
+        window.addEventListener('load', function() {
+            checkForLogoutMessage();
+            // ... your existing load event listener content ...
         });
     </script>
 </body>

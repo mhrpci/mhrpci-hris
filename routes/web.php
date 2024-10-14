@@ -40,6 +40,7 @@ use App\Http\Controllers\SubsidiaryController;
 use App\Http\Controllers\SssLoanController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\OpenAIController;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -207,5 +208,7 @@ use App\Http\Controllers\OpenAIController;
     Route::get('/privacy', function () {
         return view('privacy');
     })->name('privacy');
+
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Auth::routes();

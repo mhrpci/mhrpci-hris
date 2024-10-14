@@ -81,4 +81,28 @@ class LoginController extends Controller
             'field' => 'password'
         ]);
     }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully logged out'
+            ]);
+        }
+
+        return redirect()->route('login', ['logout' => 'success']);
+    }
 }
