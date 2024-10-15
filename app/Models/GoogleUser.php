@@ -11,7 +11,7 @@ class GoogleUser extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'google_user_id',
+        'google_id',
         'name',
         'email',
         'avatar',
