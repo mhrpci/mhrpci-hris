@@ -56,4 +56,13 @@ class WelcomeController extends Controller
                          ->take(3)
                          ->get();
     }
+
+    /**
+     * Display the MHRPCI page.
+     */
+    public function showMhrpci()
+    {
+        $subsidiaries = Subsidiary::all();
+        return view('mhrpci', compact('subsidiaries'));
+    }
 }

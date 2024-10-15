@@ -363,16 +363,6 @@
     </style>
 </head>
 <body>
-    <!-- Preloader -->
-    <div id="loader" class="loader">
-        <div class="loader-content">
-            <div class="mhr-loader">
-                <div class="spinner"></div>
-                <div class="mhr-text">MHR</div>
-            </div>
-            <h4 class="mt-4 text-dark">Loading...</h4>
-        </div>
-    </div>
 
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
@@ -492,12 +482,12 @@
                                         </button>
                                     @endif
                                 </div>
-                                @auth
-                                    <button class="btn btn-link btn-sm text-muted mt-2 save-job-btn" data-hiring-id="{{ $hiring->id }}" data-saved="{{ in_array($hiring->id, $savedHirings) ? 'true' : 'false' }}">
-                                        <i class="fas {{ in_array($hiring->id, $savedHirings) ? 'fa-bookmark' : 'fa-bookmark-o' }} me-1"></i>
-                                        {{ in_array($hiring->id, $savedHirings) ? 'Saved' : 'Save Job' }}
+                                @if(Auth::guard('google')->check())
+                                    <button class="btn btn-link btn-sm text-muted mt-2 save-job-btn" data-hiring-id="{{ $hiring->id }}" data-saved="{{ in_array($hiring->id, $savedJobs) ? 'true' : 'false' }}">
+                                        <i class="fas {{ in_array($hiring->id, $savedJobs) ? 'fa-bookmark' : 'fa-bookmark-o' }} me-1"></i>
+                                        {{ in_array($hiring->id, $savedJobs) ? 'Saved' : 'Save Job' }}
                                     </button>
-                                @endauth
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -756,5 +746,6 @@
             });
         });
     </script>
+    @include('preloader')
 </body>
 </html>

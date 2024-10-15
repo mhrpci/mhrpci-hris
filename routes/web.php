@@ -210,5 +210,6 @@ use App\Http\Controllers\Auth\LoginController;
     })->name('privacy');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/mhrpci', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
 
     Auth::routes();

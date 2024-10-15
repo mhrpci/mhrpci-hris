@@ -334,10 +334,7 @@
     </style>
 </head>
 <body>
-    <!-- Add preloader HTML -->
-    <div class="preloader">
-        <div class="spinner"></div>
-    </div>
+    @include('preloader')
 
     <!-- Add shape overlays -->
     <div class="shape-overlay shape-1"></div>

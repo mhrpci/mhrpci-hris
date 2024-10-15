@@ -799,7 +799,7 @@
                                 @can('super-admin', 'it-staff')
                                 <li class="nav-item">
                                     <a href="{{ url('/subsidiaries') }}" class="nav-link {{ Request::is('subsidiaries*') ? 'active' : '' }}">
-                                        <i class="fas fa-cubes nav-icon"></i>
+                                        <i class="fas fa-industry nav-icon"></i>
                                         <p>Subsidiaries</p>
                                     </a>
                                 </li>

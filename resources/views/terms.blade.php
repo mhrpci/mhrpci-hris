@@ -67,6 +67,7 @@
     </style>
 </head>
 <body>
+    @include('preloader')
     <div class="container">
         <h1 class="text-center">Terms of Service</h1>
 

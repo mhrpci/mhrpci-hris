@@ -958,5 +958,6 @@
             });
         });
     </script>
+    @include('preloader')
 </body>
 </html>

@@ -13,24 +13,26 @@
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f5f7fa;
-        }
-
-        /* Header section */
-        .header {
-            background-color: #fff;
-            border-bottom: 1px solid #e2e8f0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 10px;
+            background-color: #f4f4f4;
+            font-size: 16px;
+            padding-top: 80px;
         }
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 5%;
+        }
+
+        /* Header styles */
+        .header {
+            background-color: #1a237e;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
         }
         .header-content {
             display: flex;
@@ -38,234 +40,161 @@
             align-items: center;
         }
         .logo {
-            font-size: 1.5rem;
+            color: #fff;
+            font-size: 24px;
             font-weight: 700;
-            color: #333;
             text-decoration: none;
-        }
-        .main-nav {
-            display: flex;
-            align-items: center;
-            gap: 20px;
         }
         .nav-link {
+            color: #fff;
             text-decoration: none;
-            color: #333;
-            transition: color 0.3s;
+            font-weight: 500;
+            transition: opacity 0.3s;
         }
         .nav-link:hover {
-            color: #3182ce;
+            opacity: 0.8;
         }
 
-        /* Hero section */
+        /* Updated Hero section styles */
         .hero-section {
-            background-color: #f0f4f8;
-            padding: 60px 0;
+            background-color: #3f51b5;
+            background-image: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+            color: #fff;
+            padding: 120px 0 80px;
+            margin-top: -80px;
+            position: relative;
+            overflow: hidden;
         }
         .hero-content {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            gap: 40px;
+            position: relative;
+            z-index: 2;
         }
         .hero-text {
-            flex: 1;
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 40px;
         }
         .hero-text h1 {
-            font-size: 2.5rem;
-            color: #1a202c;
-            margin-bottom: 1rem;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .hero-text p {
-            font-size: 1.1rem;
-            color: #4a5568;
-            margin-bottom: 2rem;
-        }
-        .cta-button {
-            display: inline-block;
-            background-color: #3182ce;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-        .cta-button:hover {
-            background-color: #2c5282;
+        .hero-text h3 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .hero-image {
-            flex: 1;
-            max-width: 500px;
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 5px solid rgba(255, 255, 255, 0.1);
         }
         .hero-image img {
             width: 100%;
-            height: auto;
-            border-radius: 8px;
+            height: 100%;
+            object-fit: cover;
         }
-
-        /* Stats section */
-        .stats-section {
+        .hero-cta {
+            margin-top: 40px;
+        }
+        .hero-btn {
+            display: inline-block;
+            padding: 12px 24px;
             background-color: #fff;
-            padding: 40px 0;
+            color: #1a237e;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #3182ce;
-        }
-        .stat-label {
-            font-size: 1rem;
-            color: #4a5568;
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
         }
 
-        /* Main content */
+        /* Responsive styles for hero section */
+        @media (min-width: 768px) {
+            .hero-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .hero-text {
+                text-align: left;
+                margin-bottom: 0;
+                margin-right: 40px;
+            }
+            .hero-text h3 {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+        @media (max-width: 767px) {
+            .hero-section {
+                padding: 100px 0 60px;
+            }
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            .hero-text h3 {
+                font-size: 1.2rem;
+            }
+            .hero-image {
+                width: 250px;
+                height: 250px;
+            }
+        }
+
+        /* Main content styles */
         .main-content {
-            padding: 60px 0;
+            padding: 80px 0;
         }
         .content-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 40px;
+            gap: 60px;
         }
-        .about-section, .related-subsidiaries, .contact-info {
+        .about-section, .image-slider-section, .related-subsidiaries {
             background-color: #fff;
+            padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
         h2 {
-            font-size: 1.5rem;
-            color: #2d3748;
-            margin-bottom: 1rem;
+            color: #1a237e;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
         }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .hero-content, .content-grid {
-                flex-direction: column;
-                grid-template-columns: 1fr;
-            }
-            .hero-image {
-                order: -1;
-                margin-bottom: 20px;
-            }
-            .hero-text h1 {
-                font-size: 2rem;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .related-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .related-item.card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .related-item-content {
-            padding: 20px;
-            flex-grow: 1;
-        }
-
-        .related-logo {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
+        p {
             margin-bottom: 15px;
         }
 
-        .related-title {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        .related-description {
-            font-size: 0.9rem;
-            color: #4a5568;
-            margin-bottom: 15px;
-        }
-
-        .related-meta {
-            font-size: 0.8rem;
-            color: #718096;
-        }
-
-        .related-location, .related-year {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .related-button {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            background-color: #3182ce;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-
-        .related-button:hover {
-            background-color: #2c5282;
-        }
-
-        /* Footer styles */
-        .footer {
-            background-color: #2d3748;
-            color: #fff;
-            padding: 40px 0;
-        }
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .footer-section {
-            flex: 1;
-            margin-bottom: 20px;
-            min-width: 200px;
-        }
-        .footer h2 {
-            color: #fff;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-        .footer p {
-            margin-bottom: 10px;
-        }
-        .footer a {
-            color: #63b3ed;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Updated Image Slider Styles */
-        .image-slider-section {
-            margin-bottom: 30px;
-        }
+        /* Image slider styles */
         .slider-container {
             position: relative;
             max-width: 100%;
@@ -281,7 +210,7 @@
             flex: 0 0 100%;
             max-width: 100%;
             position: relative;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            padding-top: 56.25%;
         }
         .slide img {
             position: absolute;
@@ -289,8 +218,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Changed from cover to contain */
-            background-color: #f0f4f8; /* Light background color */
+            object-fit: contain;
+            background-color: #f0f4f8;
         }
         .slider-button {
             position: absolute;
@@ -309,12 +238,8 @@
         .slider-button:hover {
             background-color: rgba(0, 0, 0, 0.7);
         }
-        .slider-button.prev {
-            left: 10px;
-        }
-        .slider-button.next {
-            right: 10px;
-        }
+        .slider-button.prev { left: 10px; }
+        .slider-button.next { right: 10px; }
         .slider-dots {
             position: absolute;
             bottom: 10px;
@@ -335,153 +260,147 @@
             background-color: #fff;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .slide {
-                padding-top: 75%; /* 4:3 Aspect Ratio for smaller screens */
-            }
-        }
-
-        /* Updated and new styles */
-        body {
-            color: #333;
-            background-color: #f8fafc;
-            padding-top: 80px; /* Adjust this value based on your header height */
-        }
-
-        .header {
-            background-color: #fff;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .logo {
-            font-size: 1.75rem;
-        }
-
-        .hero-section {
-            background-color: #edf2f7;
-            padding: 80px 0;
-            margin-top: -80px; /* Negative margin to offset body padding */
-        }
-
-        .hero-text h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-text h3 {
-            font-size: 1.5rem;
-            color: #4a5568;
-            margin-bottom: 2rem;
-        }
-
-        .main-content {
-            padding: 80px 0;
-        }
-
-        .content-grid {
-            gap: 60px;
-        }
-
-        .about-section, .image-slider-section, .related-subsidiaries {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            padding: 40px;
-            margin-bottom: 40px;
-        }
-
-        h2 {
-            font-size: 2rem;
-            color: #2d3748;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #edf2f7;
-            padding-bottom: 0.5rem;
-        }
-
-        .about-section p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #4a5568;
-        }
-
-        .slider-container {
-            margin-top: 20px;
-        }
-
+        /* Related subsidiaries styles */
         .related-grid {
-            gap: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
         }
-
-        .related-item.card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .subsidiary-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        .related-item.card:hover {
+        .subsidiary-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        .subsidiary-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subsidiary-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+        .subsidiary-card p {
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #1a237e;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .btn-primary:hover {
+            background-color: #3f51b5;
         }
 
-        .related-logo {
-            height: 180px;
-        }
-
-        .related-title {
-            font-size: 1.4rem;
-            color: #2d3748;
-        }
-
-        .related-description {
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .related-button {
-            margin-top: 15px;
-        }
-
+        /* Footer styles */
         .footer {
-            background-color: #2d3748;
+            background-color: #1a237e;
+            color: #fff;
             padding: 60px 0 30px;
         }
-
-        .footer h2 {
-            border-bottom: none;
-            padding-bottom: 0;
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 50px;
+        }
+        .footer-section h2 {
+            color: #fff;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        .footer-section p {
+            margin-bottom: 10px;
+        }
+        .footer-section a {
+            color: #fff;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        .footer-section a:hover {
+            opacity: 0.8;
+        }
+        .footer-bottom {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
         }
 
-        .footer-bottom {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #4a5568;
-            text-align: center;
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+            .hero-text h3 {
+                font-size: 1rem;
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .slide {
+                padding-top: 75%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-content {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
+            .hero-text {
+                max-width: 60%;
+            }
+            .hero-image {
+                margin-left: 40px;
+            }
         }
     </style>
 </head>
 <body>
+    @include('preloader')
     <header class="header">
         <div class="container">
             <div class="header-content">
                 <a href="#" class="logo">{{ $subsidiary->name }}</a>
                 <nav class="main-nav">
-                    <a href="{{ route('welcome') }}" class="nav-link"><i class="fas fa-home"></i> Back to Home</a>
+                    <a href="#" class="nav-link" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</a>
                 </nav>
             </div>
         </div>
     </header>
 
     <section class="hero-section">
+        <div class="hero-background"></div>
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
                     <h1>{{ $subsidiary->name }}</h1>
-                    <h3>{{ $subsidiary->abbr }} - {{ $subsidiary->tagline ?? 'Transforming Global Learning' }}</h3>
+                    <h3>{{ $subsidiary->abbr }} - {{ $subsidiary->tagline ?? 'Transforming Industries' }}</h3>
+                    <div class="hero-cta">
+                        <a href="#about" class="hero-btn">Learn More</a>
+                    </div>
                 </div>
                 <div class="hero-image">
                     @if($subsidiary->main_image)
                         <img src="{{ asset('storage/' . $subsidiary->main_image) }}" alt="{{ $subsidiary->name }}">
+                    @else
+                        <img src="{{ asset('images/default-subsidiary.jpg') }}" alt="{{ $subsidiary->name }}">
                     @endif
                 </div>
             </div>
@@ -528,24 +447,17 @@
                         <div id="related" class="related-subsidiaries">
                             <h2>Related Subsidiaries</h2>
                             <div class="related-grid">
-                                @foreach($relatedSubsidiaries as $relatedSubsidiary)
-                                    <div class="related-item card">
-                                        <div class="related-item-content">
-                                            @if($relatedSubsidiary->logo)
-                                                <img src="{{ asset('storage/' . $relatedSubsidiary->logo) }}" alt="{{ $relatedSubsidiary->name }} Logo" class="related-logo">
-                                            @endif
-                                            <h3 class="related-title">{{ $relatedSubsidiary->name }}</h3>
-                                            <p class="related-description">{{ Str::limit($relatedSubsidiary->description, 120) }}</p>
-                                            <div class="related-meta">
-                                                @if($relatedSubsidiary->location)
-                                                    <span class="related-location"><i class="fas fa-map-marker-alt"></i> {{ $relatedSubsidiary->location }}</span>
-                                                @endif
-                                                @if($relatedSubsidiary->founded_year)
-                                                    <span class="related-year"><i class="fas fa-calendar-alt"></i> Est. {{ $relatedSubsidiary->founded_year }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <a href="{{ route('subsidiaries_details', $relatedSubsidiary) }}" class="related-button">Learn More <i class="fas fa-arrow-right"></i></a>
+                                @php
+                                    $randomSubsidiaries = $relatedSubsidiaries->shuffle()->take(2);
+                                @endphp
+                                @foreach($randomSubsidiaries as $relatedSubsidiary)
+                                    <div class="subsidiary-card">
+                                        <h3>{{ $relatedSubsidiary->abbr }}</h3>
+                                        @if($relatedSubsidiary->main_image)
+                                            <img src="{{ asset('storage/' . $relatedSubsidiary->main_image) }}" alt="{{ $relatedSubsidiary->name }} Logo" class="subsidiary-logo">
+                                        @endif
+                                        <p>{{ Str::limit($relatedSubsidiary->description, 60) }}</p>
+                                        <a href="{{ route('subsidiaries_details', $relatedSubsidiary->id) }}" class="btn btn-primary">Learn More</a>
                                     </div>
                                 @endforeach
                             </div>
@@ -561,32 +473,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h2>Contact Us</h2>
-                    <p><i class="fas fa-phone"></i> <strong>Phone:</strong>
-                        @if($subsidiary->contact_no)
-                            @php
-                                $contact_no = preg_replace('/[^0-9]/', '', $subsidiary->contact_no);
-                                if(strlen($contact_no) == 10 && substr($contact_no, 0, 2) == '09') {
-                                    // Mobile number
-                                    $formatted_number = substr($contact_no, 0, 4) . ' ' . substr($contact_no, 4, 3) . ' ' . substr($contact_no, 7);
-                                } elseif(strlen($contact_no) == 11 && substr($contact_no, 0, 3) == '639') {
-                                    // Mobile number with country code
-                                    $formatted_number = '+' . substr($contact_no, 0, 3) . ' ' . substr($contact_no, 3, 3) . ' ' . substr($contact_no, 6, 3) . ' ' . substr($contact_no, 9);
-                                } elseif(strlen($contact_no) == 8) {
-                                    // Landline in Metro Manila
-                                    $formatted_number = '(02) ' . substr($contact_no, 0, 4) . ' ' . substr($contact_no, 4);
-                                } elseif(strlen($contact_no) >= 9 && strlen($contact_no) <= 10) {
-                                    // Landline in other areas
-                                    $area_code = substr($contact_no, 0, strlen($contact_no) - 7);
-                                    $formatted_number = '(' . $area_code . ') ' . substr($contact_no, -7, 3) . ' ' . substr($contact_no, -4);
-                                } else {
-                                    $formatted_number = $subsidiary->contact_no;
-                                }
-                            @endphp
-                            {{ $formatted_number }}
-                        @else
-                            N/A
-                        @endif
-                    </p>
+                    <p><i class="fas fa-phone"></i> <strong>Phone:</strong> {{ $subsidiary->contact_no ?? 'N/A' }}</p>
                     <p><i class="fas fa-envelope"></i> <strong>Email:</strong>
                         @if($subsidiary->email_address)
                             <a href="mailto:{{ $subsidiary->email_address }}">{{ $subsidiary->email_address }}</a>
@@ -599,8 +486,8 @@
                     @endif
                 </div>
                 <div class="footer-section">
-                    <h2>Connect With Us</h2>
                     @if($subsidiary->facebook_page)
+                    <h2>Connect With Us</h2>
                         <p><i class="fab fa-facebook"></i> <a href="{{ $subsidiary->facebook_page }}" target="_blank">Facebook</a></p>
                     @endif
                     @if($subsidiary->website)
@@ -615,6 +502,7 @@
     </footer>
 
     <script>
+        // Image slider script (same as before)
         document.addEventListener('DOMContentLoaded', function() {
             const slider = document.querySelector('.slider');
             const slides = document.querySelectorAll('.slide');
@@ -682,6 +570,21 @@
                 });
             });
         });
+
+        // Add scroll-based header background
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.style.backgroundColor = 'rgba(26, 35, 126, 0.9)';
+            } else {
+                header.style.backgroundColor = '#1a237e';
+            }
+        });
+
+        // Add this script at the end of your body tag or in your existing script section
+        function goBack() {
+            window.history.back();
+        }
     </script>
 </body>
 </html>

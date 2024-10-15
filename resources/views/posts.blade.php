@@ -228,13 +228,7 @@
     </style>
 </head>
 <body>
-    <!-- Add preloader HTML -->
-    <div class="preloader">
-        <div class="preloader-content">
-            <div class="preloader-spinner"></div>
-            <div class="preloader-text">MHR</div>
-        </div>
-    </div>
+    @include('preloader')
 
     <header>
         <nav>

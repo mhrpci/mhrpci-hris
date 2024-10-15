@@ -163,6 +163,7 @@
     </style>
 </head>
 <body>
+    @include('preloader')
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">

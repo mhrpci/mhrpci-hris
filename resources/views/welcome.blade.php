@@ -6,12 +6,9 @@
     <title>MHR Property Conglomerates, Inc. - Revolutionize Your Business</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
-            --primary-color: #4a90e2;
+            --primary-color: #8b09db;
             --secondary-color: #f39c12;
             --text-color: #333;
             --light-bg: #f8f9fa;
@@ -1274,59 +1271,6 @@
             }
         }
 
-        /* Tour styles */
-        .shepherd-button {
-            background: var(--primary-color);
-            border: 0;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            margin-right: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .shepherd-button:not(:disabled):hover {
-            background: #3a7bd5;
-        }
-
-        .shepherd-cancel-icon {
-            color: rgba(0, 0, 0, 0.5);
-            font-size: 2em;
-            transition: color 0.3s ease;
-        }
-
-        .shepherd-cancel-icon:hover {
-            color: rgba(0, 0, 0, 0.8);
-        }
-
-        .shepherd-text {
-            color: #333;
-            line-height: 1.6;
-            font-size: 1rem;
-        }
-
-        .shepherd-title {
-            color: var(--primary-color);
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .shepherd-content {
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .shepherd-footer {
-            padding-top: 1rem;
-        }
-
-        .shepherd-element {
-            max-width: 400px;
-        }
-
         .read-more {
             display: inline-block;
             background-color: var(--primary-color);
@@ -1734,6 +1678,7 @@
             transition: background-color 0.3s ease;
             font-size: 0.9rem;
             font-weight: 600;
+            margin-top: 1rem;
         }
 
         .read-more-btn:hover {
@@ -2103,6 +2048,7 @@
     </style>
 </head>
 <body>
+    @include('preloader')
     <!-- Alerts -->
     @if(session('success'))
         <div id="successAlert" class="alert alert-success">
@@ -2243,7 +2189,11 @@
             <div class="container">
                 <div class="section-content">
                     <h2 class="animate-on-scroll">About Us</h2>
-                    <p class="animate-on-scroll">We are a dynamic group of companies with a wide range of expertise across multiple industries. Our strength lies in our diversity and our commitment to innovation and excellence.</p>
+                    <div class="animate-on-scroll">
+                        <p>MHR Property Conglomerate Inc. (MHRPCI) began in the year 2000 with the establishment of Cebic Trading, a single proprietorship that started with just a 20,000-peso capital, primarily dealing in hospital and office medical supplies. In 2003, MHRPCI expanded its operations in Cebu by forming Medical & Hospital Resources Health Care, Inc. (MHRHCI) to focus on medical supplies and forge international partnerships. Over the years, MHRPCI has continued to grow, spreading its wings to various regions and industries, acquiring businesses in hospitality, pharmaceuticals, hauling, and more, eventually becoming a conglomerate with 10 companies working in synergy.
+                        </p>
+                        <a href="{{ route('mhrpci') }}" class="read-more-btn">Read More</a>
+                    </div>
                     <div class="about-grid">
                         <div class="about-item animate-on-scroll">
                             <i class="fas fa-lightbulb"></i>
@@ -2306,7 +2256,7 @@
             </div>
         </section>
 
-        <section id="partners" class="parallax-section">
+        {{-- <section id="partners" class="parallax-section">
             <div class="parallax-bg"></div>
             <div class="container">
                 <div class="section-content">
@@ -2350,7 +2300,7 @@
                         </div>
                 </div>
                 </div>
-        </section>
+        </section> --}}
 
         <section id="properties" class="parallax-section">
             <div class="parallax-bg"></div>
@@ -2446,9 +2396,9 @@
                         </div>
                 <div class="footer-col">
                     <h4>Contact Us</h4>
-                    <p><i class="fas fa-map-marker-alt"></i> MHR Building: Jose L. Briones St., North Reclamation Area, Cebu City, Cebu, Philippines 6000</p>
-                    <p><i class="fas fa-phone"></i> <a>(032) 238-1887</a></p>
-                    <p><i class="fas fa-envelope"></i> <a href="mailto:mhrpciofficial@gmail.com">mhrpciofficial@gmail.com</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ config('app.company_address') }}, {{ config('app.company_city') }}, Cebu, Philippines 6000</p>
+                    <p><i class="fas fa-phone"></i> <a>{{ config('app.company_phone') }}</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:mhrpciofficial@gmail.com">{{ config('app.company_email') }}</a></p>
                         </div>
                 <div class="footer-col">
                     <h4>Connect With Us</h4>
@@ -2856,104 +2806,6 @@
                 alert.style.display = 'none';
             }, 500);
         }
-
-        // Tour functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const tour = new Shepherd.Tour({
-                useModalOverlay: true,
-                defaultStepOptions: {
-                    classes: 'shadow-md bg-white',
-                    scrollTo: true,
-                    cancelIcon: {
-                        enabled: true
-                    },
-                    popperOptions: {
-                        modifiers: [{ name: 'offset', options: { offset: [0, 12] } }]
-                    }
-                }
-            });
-
-            function isMobile() {
-                return window.innerWidth <= 768;
-            }
-
-            function getVisibleSections() {
-                const sections = document.querySelectorAll('section');
-                return Array.from(sections).filter(section => {
-                    const rect = section.getBoundingClientRect();
-                    return rect.top < window.innerHeight && rect.bottom >= 0;
-                });
-            }
-
-            function createDynamicStep(element) {
-                const id = element.id || element.className.split(' ')[0];
-                const title = element.querySelector('h2') ? element.querySelector('h2').textContent : 'Section';
-                const content = element.textContent.slice(0, 150) + '...';
-
-                return {
-                    id: id,
-                    title: title,
-                    text: `This section appears to be about: ${content}`,
-                    attachTo: { element: element, on: isMobile() ? 'bottom' : 'right' },
-                    buttons: [
-                        { text: 'Back', action: tour.back },
-                        { text: 'Next', action: tour.next }
-                    ]
-                };
-            }
-
-            function updateTour() {
-                tour.steps = [];  // Clear existing steps
-
-                // Welcome step
-                tour.addStep({
-                    id: 'welcome',
-                    title: 'Welcome to MHRPCI',
-                    text: 'Let\'s explore the key features of our website together.',
-                    attachTo: { element: '.hero', on: isMobile() ? 'bottom' : 'bottom-start' },
-                    buttons: [{ text: 'Start Tour', action: tour.next }]
-                });
-
-                // Dynamically add steps for visible sections
-                getVisibleSections().forEach(section => {
-                    tour.addStep(createDynamicStep(section));
-                });
-
-                // Conclusion step
-                tour.addStep({
-                    id: 'conclusion',
-                    title: 'Tour Complete',
-                    text: 'Thank you for exploring our website. Feel free to browse around for more information!',
-                    buttons: [{ text: 'Finish', action: tour.complete }]
-                });
-            }
-
-            // Update tour on window resize
-            window.addEventListener('resize', updateTour);
-
-            // Initial tour setup
-            updateTour();
-
-            // Check if it's the user's first visit
-            if (!localStorage.getItem('tourCompleted')) {
-                Swal.fire({
-                    title: 'Welcome to MHRPCI',
-                    text: 'Would you like an AI-guided tour of our website?',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, start the tour',
-                    cancelButtonText: 'No, thank you',
-                    confirmButtonColor: '#4a90e2',
-                    cancelButtonColor: '#6c757d'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        tour.start();
-                    }
-                });
-
-                localStorage.setItem('tourCompleted', 'true');
-            }
-        });
 
         document.addEventListener('DOMContentLoaded', function() {
             // Determine current season

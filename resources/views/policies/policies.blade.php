@@ -6,233 +6,179 @@
     <title>Company Policies | {{ config('app.name') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
+            --primary-color: #0056b3;
+            --secondary-color: #003366;
             --background-color: #f8f9fa;
             --text-color: #333;
+            --accent-color: #ffc107;
         }
         body {
             background-color: var(--background-color);
-            font-family: 'Roboto', 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             color: var(--text-color);
+            line-height: 1.6;
         }
         .container-fluid {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
+            max-width: 1400px;
+            padding: 2rem;
         }
         .section-title {
             color: var(--secondary-color);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-            margin-top: 2rem;
-            font-weight: 600;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-top: 3rem;
+            font-weight: 700;
+            font-size: 2rem;
         }
         .policy-page {
             background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            page-break-inside: avoid;
+            border-radius: 10px;
             transition: all 0.3s ease;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
         .policy-page:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             transform: translateY(-5px);
         }
         .policy-title {
-            color: var(--secondary-color);
+            color: var(--primary-color);
             font-size: 1.8rem;
-            font-weight: bold;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            font-weight: 700;
+            padding: 1.5rem;
+            background-color: #f1f8ff;
+            margin: 0;
         }
         .policy-content {
             font-size: 1rem;
             line-height: 1.8;
-            text-align: justify;
+            padding: 2rem;
         }
         .policy-content p,
         .policy-content li {
-            margin-bottom: 1.2em;
-            text-indent: 1.5em;
+            margin-bottom: 1rem;
         }
         .policy-content h1, .policy-content h2, .policy-content h3,
         .policy-content h4, .policy-content h5, .policy-content h6 {
             color: var(--secondary-color);
-            margin-top: 1.8em;
-            margin-bottom: 1em;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
             font-weight: 600;
-            text-align: left;
         }
         .policy-content ul, .policy-content ol {
-            margin-bottom: 1.2em;
-            padding-left: 2.5em;
+            padding-left: 2rem;
         }
         .policy-content li {
-            margin-bottom: 0.8em;
-        }
-        .policy-content ul {
-            list-style-type: disc;
-        }
-        .policy-content ul ul {
-            list-style-type: circle;
-        }
-        .policy-content ul ul ul {
-            list-style-type: square;
-        }
-        .policy-content ol {
-            list-style-type: decimal;
-        }
-        .policy-content ol ol {
-            list-style-type: lower-alpha;
-        }
-        .policy-content ol ol ol {
-            list-style-type: lower-roman;
-        }
-        .policy-content ul li::marker,
-        .policy-content ol li::marker {
-            color: var(--secondary-color);
-        }
-        .policy-content dl {
-            margin-bottom: 1em;
-        }
-        .policy-content dt {
-            font-weight: bold;
-            margin-top: 0.5em;
-        }
-        .policy-content dd {
-            margin-left: 2em;
-            margin-bottom: 0.5em;
-        }
-        .justify-text {
-            text-align: justify;
+            margin-bottom: 0.5rem;
         }
         .policy-content table {
-            border-collapse: collapse;
             width: 100%;
-            margin-bottom: 1em;
+            margin-bottom: 1rem;
+            border-collapse: separate;
+            border-spacing: 0;
         }
         .policy-content th, .policy-content td {
-            border: 1px solid #ddd;
-            padding: 12px;
+            border: 1px solid #e0e0e0;
+            padding: 0.75rem;
             text-align: left;
         }
         .policy-content th {
-            background-color: #f2f2f2;
-            font-weight: bold;
+            background-color: #f1f8ff;
+            font-weight: 600;
+            color: var(--secondary-color);
         }
         .btn-back {
             background-color: var(--primary-color);
             color: white;
-            padding: 10px 20px;
+            padding: 0.75rem 1.5rem;
             border-radius: 5px;
             text-decoration: none;
             display: inline-block;
             transition: background-color 0.3s ease;
-            margin-bottom: 1rem;
             font-weight: 500;
+            margin-bottom: 2rem;
         }
         .btn-back:hover {
-            background-color: #2980b9;
+            background-color: #004494;
             color: white;
         }
         .last-updated {
             font-size: 0.9rem;
             color: #6c757d;
             font-style: italic;
-        }
-        @media print {
-            body {
-                background-color: white;
-            }
-            .policy-page {
-                page-break-after: always;
-                box-shadow: none;
-                border: none;
-            }
-            .btn-back, .last-updated {
-                display: none;
-            }
+            margin-top: 0.5rem;
         }
         .company-logo {
-            max-width: 500px;
-            max-height: 500px;
-            margin-bottom: 50px;
+            max-width: 300px;
+            margin-bottom: 2rem;
         }
-
-        /* Add these new styles for the shape background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-            background-color: #f8f9fa;
-            background-image:
-                linear-gradient(30deg, #e0e0e0 12%, transparent 12.5%, transparent 87%, #e0e0e0 87.5%, #e0e0e0),
-                linear-gradient(150deg, #e0e0e0 12%, transparent 12.5%, transparent 87%, #e0e0e0 87.5%, #e0e0e0),
-                linear-gradient(30deg, #e0e0e0 12%, transparent 12.5%, transparent 87%, #e0e0e0 87.5%, #e0e0e0),
-                linear-gradient(150deg, #e0e0e0 12%, transparent 12.5%, transparent 87%, #e0e0e0 87.5%, #e0e0e0),
-                linear-gradient(60deg, #e0e0e077 25%, transparent 25.5%, transparent 75%, #e0e0e077 75%, #e0e0e077),
-                linear-gradient(60deg, #e0e0e077 25%, transparent 25.5%, transparent 75%, #e0e0e077 75%, #e0e0e077);
-            background-size: 80px 140px;
-            background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
-            opacity: 0.3;
-        }
-
-        /* Add these new styles for the sticky search bar */
         .sticky-search {
             position: sticky;
             top: 0;
-            background-color: var(--background-color);
-            padding: 15px 0;
+            background-color: rgba(248, 249, 250, 0.9);
+            padding: 1rem 0;
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid #e0e0e0;
         }
-
-        /* Adjust the policies container to account for the sticky search bar */
         #policies-container {
-            padding-top: 20px;
+            padding-top: 2rem;
         }
-
         #search-results {
-            font-weight: bold;
-            padding: 10px;
+            font-weight: 500;
+            padding: 1rem;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        .highlight {
+            background-color: var(--accent-color);
+            padding: 0.1rem 0.2rem;
+            border-radius: 3px;
+        }
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 1rem;
+            }
+            .policy-title {
+                font-size: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid py-5">
-        <div class="header text-end">
-            <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="Company Logo" class="logo company-logo">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ route('home') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="Company Logo" class="company-logo">
         </div>
-        <a href="{{ route('home') }}" class="btn-back mb-4">
-            <i class="fas fa-arrow-left"></i> Back to Home
-        </a>
-        <h1 class="text-center mb-5">Company Policies</h1>
 
-        <!-- Move the search input outside the policies container and make it sticky -->
-        <div class="sticky-search">
-            <input type="text" id="policySearch" class="form-control" placeholder="Search policies...">
+        <h1 class="text-center mb-5" style="color: var(--secondary-color); font-weight: 700;">Company Policies</h1>
+
+        <div class="sticky-search mb-4">
+            <input type="text" id="policySearch" class="form-control form-control-lg" placeholder="Search policies...">
         </div>
+
+        <div id="search-results"></div>
 
         <div id="policies-container">
             @foreach($policies as $sectionName => $sectionPolicies)
-                <h2 class="section-title mb-4">{{ $sectionName }}</h2>
+                <h2 class="section-title">{{ $sectionName }}</h2>
                 @foreach($sectionPolicies as $policy)
-                    <div class="policy-page mb-5 p-5 bg-white shadow">
-                        <div class="policy-header mb-4">
-                            <h3 class="policy-title">{{ $policy->title }}</h3>
-                            <p class="last-updated">Last updated: {{ $policy->updated_at->format('F d, Y') }}</p>
-                        </div>
+                    <div class="policy-page">
+                        <h3 class="policy-title">{{ $policy->title }}</h3>
                         <div class="policy-content">
                             {!! $policy->content !!}
+                            <p class="last-updated">Last updated: {{ $policy->updated_at->format('F d, Y') }}</p>
                         </div>
                     </div>
                 @endforeach
@@ -246,34 +192,28 @@
             const policyContents = document.querySelectorAll('.policy-content');
 
             policyContents.forEach(content => {
-                // Split the content into lines
                 let lines = content.innerHTML.split('\n');
                 let formattedContent = '';
                 let isNamePosition = false;
 
                 lines.forEach((line, index) => {
                     line = line.trim();
-                    if (line.startsWith('Department Concerned:')) {
-                        formattedContent += `<p><strong>Department Concerned:</strong> ${line.split(':')[1].trim()}</p>`;
-                    } else if (line.startsWith('Persons Involved:')) {
-                        formattedContent += `<p><strong>Persons Involved:</strong> ${line.split(':')[1].trim()}</p>`;
-                    } else if (line.startsWith('Particular Policy Statement:')) {
-                        formattedContent += `<p><strong>Particular Policy Statement:</strong> ${line.split(':')[1].trim()}</p>`;
-                    } else if (line.startsWith('Purpose:')) {
-                        formattedContent += `<p><strong>Purpose:</strong> ${line.split(':')[1].trim()}</p>`;
-                    } else if (line.startsWith('Scope:')) {
-                        formattedContent += `<p><strong>Scope:</strong> ${line.split(':')[1].trim()}</p>`;
-                    } else if (line.startsWith('Basis of the SOP:')) {
-                        formattedContent += `<p><strong>Basis of the SOP:</strong> ${line.split(':')[1].trim()}</p>`;
+                    if (line.startsWith('Department Concerned:') ||
+                        line.startsWith('Persons Involved:') ||
+                        line.startsWith('Particular Policy Statement:') ||
+                        line.startsWith('Purpose:') ||
+                        line.startsWith('Scope:') ||
+                        line.startsWith('Basis of the SOP:')) {
+                        const [label, value] = line.split(':');
+                        formattedContent += `<p><strong>${label}:</strong> ${value.trim()}</p>`;
                     } else if (line.trim() !== '') {
-                        // Check if this line and the next line might be a name and position
                         if (index < lines.length - 1 &&
                             line.split(' ').length <= 4 &&
                             lines[index + 1].split(' ').length <= 4) {
                             isNamePosition = true;
-                            formattedContent += `<p class="name-position"><strong><u>${line}</u></strong></p>`;
+                            formattedContent += `<p class="name-position"><strong>${line}</strong></p>`;
                         } else if (isNamePosition) {
-                            formattedContent += `<p class="name-position"><strong><u>${line}</u></strong></p>`;
+                            formattedContent += `<p class="name-position"><strong>${line}</strong></p>`;
                             isNamePosition = false;
                         } else {
                             formattedContent += `<p>${line}</p>`;
@@ -283,17 +223,15 @@
 
                 content.innerHTML = formattedContent;
 
-                // Apply styles
                 const paragraphs = content.querySelectorAll('p');
                 paragraphs.forEach(p => {
                     if (!p.classList.contains('name-position')) {
-                        p.style.marginBottom = '0.5em';
+                        p.style.marginBottom = '1rem';
                         p.style.textAlign = 'justify';
                     }
                 });
             });
 
-            // Improved search functionality
             const searchInput = document.getElementById('policySearch');
             const policyPages = document.querySelectorAll('.policy-page');
             const policiesContainer = document.getElementById('policies-container');
@@ -313,9 +251,8 @@
                 policyPages.forEach(page => {
                     const content = page.textContent.toLowerCase();
                     const title = page.querySelector('.policy-title').textContent.toLowerCase();
-                    const sectionTitle = page.previousElementSibling.textContent.toLowerCase(); // Get the section title
+                    const sectionTitle = page.previousElementSibling.textContent.toLowerCase();
 
-                    // Check if the content, title, or section title includes the search term
                     if (content.includes(searchTerm) || title.includes(searchTerm) || sectionTitle.includes(searchTerm)) {
                         page.style.display = 'block';
                         highlightText(page, searchTerm);
@@ -359,7 +296,6 @@
 
                             const span = document.createElement('span');
                             span.className = 'highlight';
-                            span.style.backgroundColor = 'yellow';
                             span.textContent = match;
                             fragment.appendChild(span);
 
@@ -393,7 +329,7 @@
                 if (!searchResultsElement) {
                     searchResultsElement = document.createElement('div');
                     searchResultsElement.id = 'search-results';
-                    searchResultsElement.className = 'mt-3 mb-4';
+                    searchResultsElement.className = 'mb-4';
                     policiesContainer.insertBefore(searchResultsElement, policiesContainer.firstChild);
                 }
 

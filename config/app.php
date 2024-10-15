@@ -5,11 +5,14 @@ use Illuminate\Support\ServiceProvider;
 
 return [
 
-    'company_name' => 'MHR HEALTH CARE, INC.',
+    'company_name' => 'MHR Property Conglomerates, Inc.',
     'company_address' => 'MHR Building Jose L. Briones St.',
     'company_city' => 'North Reclamation Area, Cebu City',
     'company_zip' => '6000',
     'company_phone' => '(032) 238-1887',
+    'company_email' => 'contact.mhrpci@mhrpci.ph',
+
+
 
     /*
     |--------------------------------------------------------------------------
