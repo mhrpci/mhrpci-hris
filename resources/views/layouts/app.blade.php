@@ -713,8 +713,8 @@
                         </li>
                         @endcanany
                         @canany(['admin', 'super-admin', 'hrcomben', 'finance', 'normal-employee'])
-                        <li class="nav-item has-treeview {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*','loan_pagibig*', 'cash_advance*', 'my-contributions*', 'contributions-employees-list*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*', 'loan_pagibig*', 'cash_advance*', 'my-contributions*', 'contributions-employees-list*') ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*','loan_pagibig*', 'cash_advances*', 'my-contributions*', 'contributions-employees-list*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*', 'loan_pagibig*', 'cash_advances*', 'my-contributions*', 'contributions-employees-list*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hands-helping"></i>
                                 <p>
                                     Loans & Contributions
@@ -730,7 +730,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('/loan_sss') }}" class="nav-link {{ Request::is('loan_sss*','loan_pagibig*', 'cash_advance*') ? 'active' : '' }}">
+                                    <a href="{{ url('/loan_sss') }}" class="nav-link {{ Request::is('loan_sss*','loan_pagibig*', 'cash_advances*') ? 'active' : '' }}">
                                         <i class="fas fa-money-bill-alt nav-icon"></i>
                                         <p>Loans</p>
                                     </a>

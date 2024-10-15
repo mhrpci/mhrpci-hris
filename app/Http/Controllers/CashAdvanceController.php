@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\CashAdvance;
+use App\Models\CashAdvancePayment;
+use App\Models\Employee;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Loan;
+
+class CashAdvanceController extends Controller
+{
+    public function index()
+    {
+        $employees = Employee::all();
+        $cashAdvances = CashAdvance::with('employee', 'payments')->get();
+        return view('cash_advances.index', compact('cashAdvances', 'employees'));
+    }
+
+    public function create()
+    {
+        $employees = Employee::all();
+        return view('cash_advances.create', compact('employees'));
+    }
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'cash_advance_amount' => 'required|numeric|min:0',
+            'repayment_term' => 'required|integer|min:1',
+        ]);
+
+        $cashAdvance = new CashAdvance($validatedData);
+        $cashAdvance->status = 'active';
+        $cashAdvance->calculateLoanDetails();
+        $cashAdvance->save();
+
+        return redirect()->route('cash_advances.index')->with('success', 'Cash Advance created successfully.');
+    }
+
+    public function show(CashAdvance $cashAdvance)
+    {
+        return view('cash_advances.show', compact('cashAdvance'));
+    }
+
+    public function edit(CashAdvance $cashAdvance)
+    {
+        return view('cash_advances.edit', compact('cashAdvance'));
+    }
+
+    public function update(Request $request, CashAdvance $cashAdvance)
+    {
+        $validatedData = $request->validate([
+            'status' => 'required|in:active,complete',
+        ]);
+
+        $cashAdvance->update($validatedData);
+
+        return redirect()->route('cash_advances.index')->with('success', 'Cash Advance status updated successfully.');
+    }
+
+    public function destroy(CashAdvance $cashAdvance)
+    {
+        $cashAdvance->delete();
+        return redirect()->route('cash_advances.index')->with('success', 'Cash Advance deleted successfully.');
+    }
+
+    public function ledger($id)
+    {
+        $cashAdvance = CashAdvance::with(['employee', 'payments'])->findOrFail($id);
+        return view('cash_advances.ledger', compact('cashAdvance'));
+    }
+
+    public function generatePayments()
+    {
+        try {
+            $cashAdvances = CashAdvance::where('status', 'active')->get();
+            $paymentsGenerated = 0;
+            $currentMonth = Carbon::now()->startOfMonth();
+
+            foreach ($cashAdvances as $cashAdvance) {
+                // Check if a payment for the current month already exists
+                $existingPayment = CashAdvancePayment::where('cash_advance_id', $cashAdvance->id)
+                    ->whereYear('payment_date', $currentMonth->year)
+                    ->whereMonth('payment_date', $currentMonth->month)
+                    ->exists();
+
+                if (!$existingPayment) {
+                    $payment = CashAdvancePayment::create([
+                        'cash_advance_id' => $cashAdvance->id,
+                        'amount' => $cashAdvance->monthly_amortization,
+                        'payment_date' => Carbon::now(),
+                        'notes' => 'Auto-generated payment',
+                    ]);
+                    $paymentsGenerated++;
+
+                    // Calculate half of the payment amount
+                    $halfAmount = $payment->amount / 2;
+
+                    // Get the payment month and year
+                    $paymentDate = Carbon::parse($payment->payment_date);
+                    $paymentYear = $paymentDate->year;
+                    $paymentMonth = $paymentDate->month;
+
+                    // Create two Loan entries for the 10th and 25th of the payment month
+                    foreach ([10, 25] as $day) {
+                        Loan::create([
+                            'employee_id' => $cashAdvance->employee_id,
+                            'cash_advance' => $halfAmount,
+                            'date' => Carbon::create($paymentYear, $paymentMonth, $day),
+                        ]);
+                    }
+                }
+            }
+
+            return redirect()->route('cash_advances.index')->with('success', "Successfully generated {$paymentsGenerated} payments.");
+        } catch (\Exception $e) {
+            return redirect()->route('cash_advances.index')->with('error', 'Error generating payments: ' . $e->getMessage());
+        }
+    }
+}

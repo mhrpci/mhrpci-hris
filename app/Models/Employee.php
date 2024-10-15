@@ -166,9 +166,9 @@ class Employee extends Model
 /**
      * Get the Pagibig loans for the employee.
      */
-    public function pagibigLoans()
+    public function cashAdvance()
     {
-        return $this->hasMany(PagibigLoan::class);
+        return $this->hasMany(CashAdvance::class);
     }
     public function employmentStatus(): string
     {

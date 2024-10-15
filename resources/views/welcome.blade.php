@@ -2080,7 +2080,6 @@
                 <ul class="nav-links">
                     <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
                     <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
-                    <li><a href="#partners" class="nav-link" title="Our Partners">Partners</a></li>
                     <li><a href="#properties" class="nav-link" title="Our Properties">Properties</a></li>
                     <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
                     {{-- <li>
@@ -2140,7 +2139,6 @@
         <ul class="nav-links">
             <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
             <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
-            <li><a href="#partners" class="nav-link" title="Our Partners">Partners</a></li>
             <li><a href="#properties" class="nav-link" title="Our Properties">Properties</a></li>
             <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
@@ -2256,52 +2254,6 @@
             </div>
         </section>
 
-        {{-- <section id="partners" class="parallax-section">
-            <div class="parallax-bg"></div>
-            <div class="container">
-                <div class="section-content">
-                    <h2 class="animate-on-scroll">Our Partners</h2>
-                    <div class="grid feature-grid">
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-university"></i>
-                            <h3>Financial Institutions</h3>
-                            <p>Partnerships with leading banks and financial services.</p>
-        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-graduation-cap"></i>
-                            <h3>Educational Institutes</h3>
-                            <p>Collaborations for research and development.</p>
-        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-truck"></i>
-                            <h3>Logistics Partners</h3>
-                            <p>Efficient supply chain and distribution networks.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-handshake"></i>
-                            <h3>Strategic Alliances</h3>
-                            <p>Joint ventures and partnerships for mutual growth.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-heartbeat"></i>
-                            <h3>Intersurgical</h3>
-                            <p>Leading global designer, manufacturer, and supplier of medical devices.</p>
-                    </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-flask"></i>
-                            <h3>Bertin</h3>
-                            <p>Innovative solutions in life sciences, defense, and instrumentation.</p>
-                        </div>
-                        <div class="card animate-on-scroll">
-                            <i class="fas fa-band-aid"></i>
-                            <h3>Abena Thai Tapes</h3>
-                            <p>High-quality adhesive tapes and medical supplies manufacturer.</p>
-                            </div>
-                        </div>
-                </div>
-                </div>
-        </section> --}}
-
         <section id="properties" class="parallax-section">
             <div class="parallax-bg"></div>
             <div class="container">
@@ -2352,28 +2304,6 @@
             </div>
         </section>
 
-        {{-- <section id="latest-posts">
-            <div class="container">
-                <h2>Latest Posts</h2>
-                <div class="posts-slider-container">
-                    <div class="posts-slider">
-                        @foreach($posts as $post)
-                            <div class="post-card">
-                                <h3>{{ $post->title }}</h3>
-                                <p>{{ Str::limit($post->content, 150) }}</p>
-                                <div class="post-meta">
-                                    <span>By: {{ $post->user->first_name }} {{ $post->user->last_name }}</span>
-                                    <span>{{ $post->created_at->format('M d, Y') }}</span>
-        </div>
-                                <a href="{{ route('posts.show', $post->id) }}" class="read-more">Read More</a>
-                        </div>
-                        @endforeach
-                        </div>
-                    </div>
-                <button class="slider-btn prev-btn" aria-label="Previous posts">&lt;</button>
-                <button class="slider-btn next-btn" aria-label="Next posts">&gt;</button>
-                </div>
-        </section> --}}
     </main>
 
     <footer id="contact">
@@ -2388,10 +2318,8 @@
                     <ul>
                         <li><a href="#about">About Us</a></li>
                         <li><a href="#subsidiaries">Our Subsidiaries</a></li>
-                        <li><a href="#partners">Partners</a></li>
                         <li><a href="#properties">Properties</a></li>
                         <li><a href="{{ route('careers') }}">Careers</a></li>
-                        {{-- <li><a href="{{ route('privacy-policy') }}">Privacy Policy</a></li> --}}
                     </ul>
                         </div>
                 <div class="footer-col">

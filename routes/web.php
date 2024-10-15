@@ -41,6 +41,7 @@ use App\Http\Controllers\SssLoanController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CashAdvanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +94,7 @@ use App\Http\Controllers\Auth\LoginController;
     Route::resource('policies', PolicyController::class);
     Route::resource('subsidiaries', SubsidiaryController::class);
     Route::resource('loan_sss', SssLoanController::class);
+    Route::resource('cash_advances', CashAdvanceController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
@@ -211,5 +213,8 @@ use App\Http\Controllers\Auth\LoginController;
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/mhrpci', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
+
+    Route::get('/cash_advances/{id}/ledger', [CashAdvanceController::class, 'ledger'])->name('cash_advances.ledger');
+    Route::post('/cash_advances/generate-payments', [CashAdvanceController::class, 'generatePayments'])->name('cash_advances.generate_payments');
 
     Auth::routes();

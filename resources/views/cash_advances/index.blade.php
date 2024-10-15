@@ -60,15 +60,15 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">SSS Loan List</h3>
+        <h3 class="card-title">Cash Advance List</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-success btn-sm rounded-pill" data-toggle="modal" data-target="#loanModal">
-                Apply for SSS Loan
+                Apply for Cash Advance
             </button>
             <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
                 Export to Excel <i class="fas fa-file-excel"></i>
             </button>
-            <form action="{{ route('loan_sss.generate_payments') }}" method="POST" style="display: inline;">
+            <form action="{{ route('cash_advances.generate_payments') }}" method="POST" style="display: inline;">
                 @csrf
                 <button type="submit" class="btn btn-info btn-sm rounded-pill mr-2">
                     Generate Payments <i class="fas fa-money-bill-wave"></i>
@@ -77,10 +77,9 @@
         </div>
     </div>
     <div class="card-body">
-        <table id="loan_sss" class="table table-bordered table-striped">
+        <table id="cash_advances" class="table table-bordered table-striped">
             <thead>
             <tr>
-                <th>Sss No.</th>
                 <th>Employee Name</th>
                 <th>Loan Amount</th>
                 <th>Repayment Term</th>
@@ -91,11 +90,10 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($loan_sss as $loan)
+            @foreach($cashAdvances as $loan)
                 <tr>
-                    <td>{{ $loan->employee->sss_no }}</td>
                     <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
-                    <td>₱{{ number_format($loan->loan_amount, 2) }}</td>
+                    <td>₱{{ number_format($loan->cash_advance_amount, 2) }}</td>
                     <td>{{ $loan->repayment_term }} {{ $loan->repayment_term <= 1 ? 'Month' : 'Months' }}</td>
                     <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
                     <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
@@ -113,11 +111,11 @@
                                 <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a href="{{ route('loan_sss.ledger', $loan->id) }}" class="dropdown-item">
+                                    <a href="{{ route('cash_advances.ledger', $loan->id) }}" class="dropdown-item">
                                         <i class="fas fa-book"></i>&nbsp;Ledger
                                     </a>
-                                    @if($loan->getRemainingBalanceAttribute() == 0)
-                                        <a href="{{ route('loan_sss.edit', $loan->id) }}" class="dropdown-item">
+                                    @if($loan->remainingBalance() == 0)
+                                        <a href="{{ route('cash_advances.edit', $loan->id) }}" class="dropdown-item">
                                             <i class="fas fa-edit"></i>&nbsp;Update Status
                                         </a>
                                     @endif
@@ -132,7 +130,7 @@
 </div>
 </div>
 
-@include('loan_sss.create')
+@include('cash_advances.create')
 @endsection
 
 @section('css')
@@ -218,7 +216,7 @@
                 width: '100%'
             });
 
-        var table = $('#loan_sss').DataTable({
+        var table = $('#cash_advances').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
             "order": [[1, "desc"]]
@@ -226,26 +224,26 @@
 
         $('#export-excel').on('click', function() {
             var data = table.rows().data().toArray();
-            var header = ['SSS No.', 'Employee Name', 'Loan Amount', 'Repayment Term', 'Monthly Amortization', 'Total Repayment'];
+            var header = ['Employee Name', 'Loan Amount', 'Repayment Term', 'Monthly Amortization', 'Total Repayment', 'Status'];
 
             var wb = XLSX.utils.book_new();
             var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
-                row[0], // SSS No.
-                row[1], // Employee Name
-                parseFloat(row[2].replace(/[₱,]/g, '')).toFixed(2), // Loan Amount
-                row[3], // Repayment Term
-                parseFloat(row[4].replace(/[₱,]/g, '')).toFixed(2), // Monthly Amortization
-                parseFloat(row[5].replace(/[₱,]/g, '')).toFixed(2)  // Total Repayment
+                row[0], // Employee Name
+                parseFloat(row[1].replace(/[₱,]/g, '')).toFixed(2), // Loan Amount
+                row[2], // Repayment Term
+                parseFloat(row[3].replace(/[₱,]/g, '')).toFixed(2), // Monthly Amortization
+                parseFloat(row[4].replace(/[₱,]/g, '')).toFixed(2), // Total Repayment
+                row[5] // Status
             ])));
 
             // Set column widths
             ws['!cols'] = [
-                {wch: 15}, // SSS No.
                 {wch: 30}, // Employee Name
                 {wch: 15}, // Loan Amount
                 {wch: 15}, // Repayment Term
                 {wch: 20}, // Monthly Amortization
-                {wch: 18}  // Total Repayment
+                {wch: 18}, // Total Repayment
+                {wch: 10}  // Status
             ];
 
             // Style the header row
@@ -289,9 +287,11 @@
                     if (R === 0) {
                         ws[cellRef].s = headerStyle;
                     } else {
-                        if (C === 2) {
+                        if (C === 0) {
+                            ws[cellRef].s = Object.assign({}, dataStyle, { alignment: { horizontal: "left" } });
+                        } else if (C === 2) {
                             ws[cellRef].s = monthStyle;
-                        } else if (C >= 3 && C <= 5) {
+                        } else if (C === 1 || C === 3 || C === 4) {
                             ws[cellRef].s = currencyStyle;
                         } else {
                             ws[cellRef].s = dataStyle;
@@ -300,8 +300,8 @@
                 }
             }
 
-            XLSX.utils.book_append_sheet(wb, ws, 'SSS Loans');
-            XLSX.writeFile(wb, 'sss_loans.xlsx');
+            XLSX.utils.book_append_sheet(wb, ws, 'Cash Advances');
+            XLSX.writeFile(wb, 'cash_advances.xlsx');
         });
 
         // Remove the AJAX call for generate payments
