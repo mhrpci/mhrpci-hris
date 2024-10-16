@@ -42,6 +42,7 @@ use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CashAdvanceController;
+use App\Http\Controllers\PagibigLoanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +96,7 @@ use App\Http\Controllers\CashAdvanceController;
     Route::resource('subsidiaries', SubsidiaryController::class);
     Route::resource('loan_sss', SssLoanController::class);
     Route::resource('cash_advances', CashAdvanceController::class);
+    Route::resource('loan_pagibig', PagibigLoanController::class);
 
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
     Route::get('/leaves/detail/{id}', [LeaveController::class, 'detail'])->name('leaves.detail');
@@ -197,7 +199,6 @@ use App\Http\Controllers\CashAdvanceController;
     Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
     Route::get('/loan_sss/{id}/ledger', [SssLoanController::class, 'showLedger'])->name('loan_sss.ledger');
     Route::post('/loan_sss/generate-payments', [SssLoanController::class, 'generatePayments'])->name('loan_sss.generate_payments');
-    Route::get('/loan_sss/{id}/edit', [SssLoanController::class, 'edit'])->name('loan_sss.edit');
     Route::post('/loan_sss/{id}/update_status', [SssLoanController::class, 'updateStatus'])->name('loan_sss.update_status');
 
     Route::post('/generate-text', [OpenAIController::class, 'generateText']);
@@ -217,4 +218,8 @@ use App\Http\Controllers\CashAdvanceController;
     Route::get('/cash_advances/{id}/ledger', [CashAdvanceController::class, 'ledger'])->name('cash_advances.ledger');
     Route::post('/cash_advances/generate-payments', [CashAdvanceController::class, 'generatePayments'])->name('cash_advances.generate_payments');
 
+    Route::get('/loan_pagibig/{id}/ledger', [PagibigLoanController::class, 'showLedger'])->name('loan_pagibig.ledger');
+    Route::post('/loan_pagibig/generate-payments', [PagibigLoanController::class, 'generatePayments'])->name('loan_pagibig.generate_payments');
+    Route::post('/loan_pagibig/{id}/update_status', [PagibigLoanController::class, 'updateStatus'])->name('loan_pagibig.update_status');
     Auth::routes();
+

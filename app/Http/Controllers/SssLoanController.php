@@ -67,9 +67,11 @@ class SssLoanController extends Controller
      */
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'active')
+                             ->whereNotNull('sss_no')
+                             ->get();
         $loan_sss = SssLoan::with('employee')->get();
-        return view('loan_sss.index', compact('loan_sss','employees'));
+        return view('loan_sss.index', compact('loan_sss', 'employees'));
     }
 
     /**

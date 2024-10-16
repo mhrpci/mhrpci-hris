@@ -15,7 +15,7 @@
                 <small class="description">Social Security System</small>
             </div>
         </a>
-        <a href="{{ route('pagibig.index') }}" class="contribution-link {{ request()->routeIs('pagibig.index') ? 'active' : '' }}">
+        <a href="{{ route('loan_pagibig.index') }}" class="contribution-link {{ request()->routeIs('loan_pagibig.index') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-home"></i>
             </div>

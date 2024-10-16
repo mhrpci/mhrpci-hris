@@ -11,7 +11,7 @@
                 <i class="fas fa-shield-alt"></i>
             </div>
             <div class="text-wrapper">
-                <span class="title">Sss Loan</span>
+                <span class="title">SSS Loan</span>
                 <small class="description">Social Security System</small>
             </div>
         </a>
@@ -60,15 +60,15 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">SSS Loan List</h3>
+        <h3 class="card-title">PAGIBIG Loan List</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-success btn-sm rounded-pill" data-toggle="modal" data-target="#loanModal">
-                Apply for SSS Loan
+                Apply for PAGIBIG Loan
             </button>
             <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
                 Export to Excel <i class="fas fa-file-excel"></i>
             </button>
-            <form action="{{ route('loan_sss.generate_payments') }}" method="POST" style="display: inline;">
+            <form action="{{ route('loan_pagibig.generate_payments') }}" method="POST" style="display: inline;">
                 @csrf
                 <button type="submit" class="btn btn-info btn-sm rounded-pill mr-2">
                     Generate Payments <i class="fas fa-money-bill-wave"></i>
@@ -77,28 +77,30 @@
         </div>
     </div>
     <div class="card-body">
-        <table id="loan_sss" class="table table-bordered table-striped">
+        <table id="loan_pagibig" class="table table-bordered table-striped">
             <thead>
             <tr>
-                <th>Sss No.</th>
+                <th>Pagibig No.</th>
                 <th>Employee Name</th>
                 <th>Loan Amount</th>
-                <th>Repayment Term</th>
+                <th>Loan Term</th>
                 <th>Monthly Amortization</th>
-                <th>Total Repayment</th>
+                <th>Interest Rate</th>
+                <th>Loan Type</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($loan_sss as $loan)
+            @foreach($loans as $loan)
                 <tr>
-                    <td>{{ $loan->employee->sss_no }}</td>
+                    <td>{{ $loan->employee->pagibig_no }}</td>
                     <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
                     <td>₱{{ number_format($loan->loan_amount, 2) }}</td>
-                    <td>{{ $loan->repayment_term }} {{ $loan->repayment_term <= 1 ? 'Month' : 'Months' }}</td>
+                    <td>{{ $loan->loan_term_months }} {{ $loan->loan_term_months <= 1 ? 'Month' : 'Months' }}</td>
                     <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
-                    <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
+                    <td>{{ $loan->interest_rate }}%</td>
+                    <td>{{ $loan->loan_type->value }}</td>
                     <td>
                         @if($loan->status == 'active')
                             <span class="badge badge-success">{{ $loan->status }}</span>
@@ -113,14 +115,23 @@
                                 <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a href="{{ route('loan_sss.ledger', $loan->id) }}" class="dropdown-item">
+                                    <a href="{{ route('loan_pagibig.ledger', $loan->id) }}" class="dropdown-item">
                                         <i class="fas fa-book"></i>&nbsp;Ledger
                                     </a>
-                                    @if($loan->getRemainingBalanceAttribute() == 0)
-                                        <a href="{{ route('loan_sss.edit', $loan->id) }}" class="dropdown-item">
-                                            <i class="fas fa-edit"></i>&nbsp;Update Status
-                                        </a>
+                                    @if($loan->calculateRemainingBalance() == 0)
+                                    <a href="{{ route('loan_pagibig.edit', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-edit"></i>&nbsp;Update Status
+                                    </a>
                                     @endif
+                                    @can('super-admin')
+                                    <form action="{{ route('loan_pagibig.destroy', $loan->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this loan?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-trash"></i>&nbsp;Delete
+                                        </button>
+                                    </form>
+                                    @endcan
                                 </div>
                             </div>
                         </div>
@@ -132,7 +143,7 @@
 </div>
 </div>
 
-@include('loan_sss.create')
+@include('loan_pagibig.create')
 @endsection
 
 @section('css')
@@ -218,7 +229,7 @@
                 width: '100%'
             });
 
-        var table = $('#loan_sss').DataTable({
+        var table = $('#loan_pagibig').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
             "order": [[1, "desc"]]
@@ -226,26 +237,28 @@
 
         $('#export-excel').on('click', function() {
             var data = table.rows().data().toArray();
-            var header = ['SSS No.', 'Employee Name', 'Loan Amount', 'Repayment Term', 'Monthly Amortization', 'Total Repayment'];
+            var header = ['Pagibig No.', 'Employee Name', 'Loan Amount', 'Loan Term', 'Monthly Amortization', 'Interest Rate', 'Loan Type'];
 
             var wb = XLSX.utils.book_new();
             var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
-                row[0], // SSS No.
+                row[0], // Pagibig No.
                 row[1], // Employee Name
                 parseFloat(row[2].replace(/[₱,]/g, '')).toFixed(2), // Loan Amount
-                row[3], // Repayment Term
+                row[3], // Loan Term
                 parseFloat(row[4].replace(/[₱,]/g, '')).toFixed(2), // Monthly Amortization
-                parseFloat(row[5].replace(/[₱,]/g, '')).toFixed(2)  // Total Repayment
+                row[5], // Interest Rate
+                row[6]  // Loan Type
             ])));
 
             // Set column widths
             ws['!cols'] = [
-                {wch: 15}, // SSS No.
+                {wch: 15}, // Pagibig No.
                 {wch: 30}, // Employee Name
                 {wch: 15}, // Loan Amount
-                {wch: 15}, // Repayment Term
+                {wch: 15}, // Loan Term
                 {wch: 20}, // Monthly Amortization
-                {wch: 18}  // Total Repayment
+                {wch: 15}, // Interest Rate
+                {wch: 15}  // Loan Type
             ];
 
             // Style the header row
@@ -289,9 +302,9 @@
                     if (R === 0) {
                         ws[cellRef].s = headerStyle;
                     } else {
-                        if (C === 2) {
+                        if (C === 3) {
                             ws[cellRef].s = monthStyle;
-                        } else if (C >= 3 && C <= 5) {
+                        } else if (C === 2 || C === 4) {
                             ws[cellRef].s = currencyStyle;
                         } else {
                             ws[cellRef].s = dataStyle;
@@ -300,8 +313,8 @@
                 }
             }
 
-            XLSX.utils.book_append_sheet(wb, ws, 'SSS Loans');
-            XLSX.writeFile(wb, 'sss_loans.xlsx');
+            XLSX.utils.book_append_sheet(wb, ws, 'PAGIBIG Loans');
+            XLSX.writeFile(wb, 'pagibig_loans.xlsx');
         });
 
         // Remove the AJAX call for generate payments
