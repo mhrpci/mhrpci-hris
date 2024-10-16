@@ -221,6 +221,5 @@ use App\Http\Controllers\PagibigLoanController;
     Route::get('/loan_pagibig/{id}/ledger', [PagibigLoanController::class, 'showLedger'])->name('loan_pagibig.ledger');
     Route::post('/loan_pagibig/generate-payments', [PagibigLoanController::class, 'generatePayments'])->name('loan_pagibig.generate_payments');
     Route::post('/loan_pagibig/{id}/update_status', [PagibigLoanController::class, 'updateStatus'])->name('loan_pagibig.update_status');
-    Route::get('/tasks/export', [TaskController::class, 'export'])->name('tasks.export');
-    Route::post('/tasks/import', [TaskController::class, 'import'])->name('tasks.import');
+
     Auth::routes();
