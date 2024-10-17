@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0052CC;
+            --primary-color: #8b09db;
             --secondary-color: #00875A;
             --accent-color: #0065FF;
             --background-color: #F4F5F7;
