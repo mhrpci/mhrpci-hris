@@ -333,40 +333,79 @@
 
         /* Enhanced footer styles */
         footer {
-            background-color: #2C3E50;
-            color: #ECF0F1;
-            padding: 3rem 0;
+            background: linear-gradient(135deg, #4a0082 0%, #8b09db 50%, #3498db 100%);
+            color: #ffffff;
+            padding: 4rem 0 2rem;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .footer-heading {
-            color: #3498DB;
-            font-weight: 600;
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h4 {
+            font-size: 1.2rem;
             margin-bottom: 1rem;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .footer-link {
-            color: #ECF0F1;
+        /* Footer Links */
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col a {
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: color 0.3s ease, padding-left 0.3s ease;
+            display: inline-block;
+            font-size: 0.95rem;
         }
 
-        .footer-link:hover {
-            color: #3498DB;
+        .footer-col a:hover {
+            color: #ffffff;
+            padding-left: 5px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
 
+        /* Social Icons */
         .social-icons {
-            display: flex;
-            gap: 1rem;
+            margin-top: 1rem;
         }
 
-        .social-icons a {
-            color: #ECF0F1;
+        .social-icon {
+            color: #ffffff;
             font-size: 1.5rem;
-            transition: color 0.2s ease;
+            margin-right: 1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        .social-icons a:hover {
-            color: #3498DB;
+        .social-icon:hover {
+            color: #e0e0e0;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Footer text */
+        .footer-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         /* Preloader Styles */
@@ -606,47 +645,38 @@
     </main>
 
     <!-- Enhanced Footer -->
-    <footer class="bg-dark text-light py-5">
+    <footer>
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="footer-heading">About MHRPCI</h5>
-                    <p>MHRPCI is a leading company dedicated to innovation and excellence in human resources solutions.</p>
-                    <div class="social-icons mt-3">
-                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                    </div>
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>About MHRPCI</h4>
+                    <p class="footer-text">MHR Property Conglomerates, Inc. is a dynamic group of companies with expertise across multiple industries, committed to innovation and excellence.</p>
                 </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5 class="footer-heading">Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Home</a></li>
-                        <li><a href="#" class="footer-link">About Us</a></li>
-                        <li><a href="#" class="footer-link">Services</a></li>
-                        <li><a href="#" class="footer-link">Careers</a></li>
-                        <li><a href="#" class="footer-link">Contact Us</a></li>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/#about">About Us</a></li>
+                        <li><a href="/#subsidiaries">Our Subsidiaries</a></li>
+                        <li><a href="/#properties">Properties</a></li>
+                        <li><a href="{{ route('careers') }}">Careers</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5 class="footer-heading">Contact Us</h5>
-                    <address>
-                        <p><i class="fas fa-map-marker-alt me-2"></i> 123 Main St, City, Country</p>
-                        <p><i class="fas fa-phone me-2"></i> +1 (123) 456-7890</p>
-                        <p><i class="fas fa-envelope me-2"></i> info@mhrpci.com</p>
-                    </address>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <p class="footer-text"><i class="fas fa-map-marker-alt"></i> {{ config('app.company_address') }}, {{ config('app.company_city') }}, Cebu, Philippines 6000</p>
+                    <p class="footer-text"><i class="fas fa-phone"></i> {{ config('app.company_phone') }}</p>
+                    <p class="footer-text"><i class="fas fa-envelope"></i> <a href="mailto:mhrpciofficial@gmail.com">{{ config('app.company_email') }}</a></p>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect With Us</h4>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/mhrpciofficial" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/@MHRPCI-tr3dy" target="_blank" rel="noopener noreferrer" class="social-icon" title="Subscribe to our YouTube channel"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
             </div>
-            <hr class="mt-4 mb-3">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <p>&copy; 2024 MHRPCI. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <a href="#" class="footer-link me-3">Privacy Policy</a>
-                    <a href="#" class="footer-link">Terms of Service</a>
-                </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ date('Y') }} MHR Property Conglomerates, Inc. All rights reserved.</p>
             </div>
         </div>
     </footer>

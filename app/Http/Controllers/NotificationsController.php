@@ -11,6 +11,7 @@ use App\Models\Task; // Assuming you have a Task model
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Events\NewNotification;
+use Illuminate\Support\Facades\Cache;
 
 class NotificationsController extends Controller
 {
@@ -27,12 +28,18 @@ class NotificationsController extends Controller
     // Method to fetch notifications data
     public function getNotificationsData(Request $request)
     {
-        // Generate notifications and update counts
-        $this->generateNotifications();
+        $cacheKey = 'user_notifications_' . Auth::id();
 
-        // Get the total number of notifications
+        // Try to get notifications from cache first
+        $cachedNotifications = Cache::get($cacheKey);
+
+        if (!$cachedNotifications) {
+            $this->generateNotifications();
+        } else {
+            $this->notifications = $cachedNotifications;
+        }
+
         $totalNotifications = $this->countTotalNotifications();
-        // Generate HTML for dropdown notifications
         $dropdownHtml = $this->generateDropdownHtml();
 
         return response()->json([
@@ -67,6 +74,12 @@ class NotificationsController extends Controller
 
             // Log the count of notifications for debugging
             \Log::info('Notification counts:', $this->notifications);
+
+            // Use environment-specific caching
+            $cacheKey = 'user_notifications_' . Auth::id();
+            $cacheDuration = now()->addMinutes(5);
+
+            Cache::put($cacheKey, $this->notifications, $cacheDuration);
         } catch (\Exception $e) {
             // Log any exceptions that occur
             \Log::error('Error generating notifications: ' . $e->getMessage());
@@ -86,7 +99,12 @@ class NotificationsController extends Controller
             'dropdown' => $dropdownHtml,
         ];
 
-        broadcast(new NewNotification($notificationData))->toOthers();
+        // Use a try-catch block to handle potential broadcasting issues
+        try {
+            broadcast(new NewNotification($notificationData))->toOthers();
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting new notifications: ' . $e->getMessage());
+        }
     }
 
     // Generate birthday notifications

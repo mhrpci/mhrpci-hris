@@ -15,6 +15,8 @@
             --light-bg: #f8f9fa;
             --white: #ffffff;
             --gray: #6c757d;
+            --gradient-start: #8b09db;
+            --gradient-end: #4a90e2;
         }
 
         body {
@@ -49,7 +51,7 @@
         }
 
         .hero {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
             color: var(--white);
             padding: 6rem 0;
             margin-bottom: 3rem;
@@ -106,30 +108,30 @@
         }
 
         .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            border: none;
             padding: 0.6rem 1.5rem;
             font-weight: 500;
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #004494;
-            border-color: #004494;
+            background: linear-gradient(135deg, var(--gradient-end) 0%, var(--gradient-start) 100%);
             transform: translateY(-2px);
         }
 
         .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
+            color: var(--gradient-start);
+            border: 2px solid var(--gradient-start);
             padding: 0.6rem 1.5rem;
             font-weight: 500;
             transition: all 0.3s ease;
         }
 
         .btn-outline-primary:hover {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
             color: var(--white);
+            border-color: transparent;
             transform: translateY(-2px);
         }
 
@@ -184,7 +186,10 @@
 
         .card-title {
             font-size: 1.25rem;
-            font-weight: 500;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .card-text {
@@ -311,7 +316,7 @@
             width: 100%;
             height: 100%;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #8e44ad;
+            border-top: 4px solid var(--gradient-end);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -323,7 +328,9 @@
             transform: translate(-50%, -50%);
             font-size: 24px;
             font-weight: bold;
-            color: #8e44ad;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
@@ -359,6 +366,80 @@
 
         .google-icon {
             margin-right: 8px;
+        }
+
+        /* Enhanced Footer Styles */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #4a90e2 100%);
+            color: var(--white);
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h4 {
+            color: var(--white);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col ul li a {
+            color: var(--white);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            opacity: 0.8;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -589,9 +670,40 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container text-center">
-            <p>&copy; {{ date('Y') }} MHR Property Conglomerates, Inc. All rights reserved.</p>
+    <!-- Enhanced Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>About MHRPCI</h4>
+                    <p class="footer-text">MHR Property Conglomerates, Inc. is a dynamic group of companies with expertise across multiple industries, committed to innovation and excellence.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/#about">About Us</a></li>
+                        <li><a href="/#subsidiaries">Our Subsidiaries</a></li>
+                        <li><a href="/#properties">Properties</a></li>
+                        <li><a href="{{ route('careers') }}">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <p class="footer-text"><i class="fas fa-map-marker-alt"></i> {{ config('app.company_address') }}, {{ config('app.company_city') }}, Cebu, Philippines 6000</p>
+                    <p class="footer-text"><i class="fas fa-phone"></i> {{ config('app.company_phone') }}</p>
+                    <p class="footer-text"><i class="fas fa-envelope"></i> <a href="mailto:{{ config('app.company_email') }}" style="color: white">{{ config('app.company_email') }}</a></p>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect With Us</h4>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/mhrpciofficial" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/@MHRPCI-tr3dy" target="_blank" rel="noopener noreferrer" class="social-icon" title="Subscribe to our YouTube channel"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ date('Y') }} MHR Property Conglomerates, Inc. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 

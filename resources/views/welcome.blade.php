@@ -465,7 +465,7 @@
 
         /* Footer */
         footer {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: var(--white);
             padding: 4rem 0 2rem;
         }
@@ -2332,7 +2332,7 @@
                     <h4>Connect With Us</h4>
                     <div class="social-icons">
                         <a href="https://www.facebook.com/mhrpciofficial" target="_blank" rel="noopener noreferrer" class="social-icon" title="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.youtube.com/@MHRPCI" target="_blank" rel="noopener noreferrer" class="social-icon" title="Subscribe to our YouTube channel"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.youtube.com/@MHRPCI-tr3dy" target="_blank" rel="noopener noreferrer" class="social-icon" title="Subscribe to our YouTube channel"><i class="fab fa-youtube"></i></a>
                         </div>
                         </div>
                         </div>

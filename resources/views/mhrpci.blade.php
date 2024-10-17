@@ -29,7 +29,7 @@
 
         /* Updated Header styles */
         .header {
-            background-color: #1a237e;
+            background-color: #8b09db;
             padding: 15px 0;
             position: fixed;
             width: 100%;
@@ -62,13 +62,13 @@
             border-radius: 5px;
         }
         .nav-link:hover {
-            color: #1a237e;
+            color: #8b09db;
             background-color: #ffffff;
         }
 
         /* Hero section styles */
         .hero-section {
-            background: linear-gradient(135deg, #1a237e, #3f51b5);
+            background: linear-gradient(135deg, #8b09db, #a64dff);
             color: #fff;
             padding: 180px 0 100px;
             text-align: center;
@@ -79,46 +79,47 @@
             align-items: center;
         }
         .hero-text h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         .hero-text h3 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 400;
             margin-bottom: 30px;
             opacity: 0.9;
         }
         .hero-image img {
-            max-width: 300px;
+            max-width: 100%;
+            height: auto;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
         }
 
         /* Main content styles */
         .main-content {
-            padding: 100px 0;
+            padding: 60px 0;
         }
         .content-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 60px;
+            gap: 40px;
         }
         .about-section, .related-subsidiaries {
             background-color: #fff;
-            padding: 50px;
+            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             transition: transform 0.3s ease;
         }
         .about-section:hover, .related-subsidiaries:hover {
             transform: translateY(-5px);
         }
         h2 {
-            color: #1a237e;
-            font-size: 2rem;
-            margin-bottom: 30px;
+            color: #8b09db;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
             position: relative;
             padding-bottom: 10px;
         }
@@ -129,7 +130,7 @@
             left: 0;
             width: 50px;
             height: 3px;
-            background-color: #3f51b5;
+            background-color: #8b09db;
         }
         p {
             margin-bottom: 20px;
@@ -149,19 +150,19 @@
             font-weight: 900;
             position: absolute;
             left: 0;
-            color: #3f51b5;
+            color: #8b09db;
         }
 
         /* Subsidiary card styles */
         .related-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 30px;
+            gap: 20px;
         }
         .subsidiary-card {
             background-color: #fff;
             border-radius: 10px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
             display: flex;
@@ -173,19 +174,19 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
         .subsidiary-card h3 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             margin-bottom: 15px;
             text-align: center;
-            color: #1a237e;
+            color: #8b09db;
         }
         .subsidiary-logo {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
             margin-bottom: 20px;
         }
         .subsidiary-card p {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             text-align: center;
             margin-bottom: 20px;
             color: #555;
@@ -193,35 +194,35 @@
         .btn-primary {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #1a237e;
+            background-color: #8b09db;
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
             transition: all 0.3s ease;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
         }
         .btn-primary:hover {
-            background-color: #3f51b5;
+            background-color: #a64dff;
             transform: translateY(-2px);
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
 
         /* Footer styles */
         .footer {
-            background-color: #1a237e;
+            background-color: #8b09db;
             color: #fff;
-            padding: 80px 0 40px;
+            padding: 60px 0 30px;
         }
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 50px;
+            gap: 30px;
         }
         .footer-section h2 {
             color: #fff;
-            font-size: 1.6rem;
-            margin-bottom: 25px;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
         }
         .footer-section h2::after {
             background-color: #fff;
@@ -238,7 +239,7 @@
             opacity: 0.8;
         }
         .footer-bottom {
-            margin-top: 50px;
+            margin-top: 40px;
             text-align: center;
             font-size: 14px;
             opacity: 0.8;
@@ -247,16 +248,19 @@
         /* Responsive styles */
         @media (max-width: 768px) {
             .hero-text h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             .hero-text h3 {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
             .content-grid, .footer-content {
                 grid-template-columns: 1fr;
             }
             .about-section, .related-subsidiaries {
-                padding: 30px;
+                padding: 20px;
+            }
+            .subsidiary-card {
+                padding: 15px;
             }
         }
         @media (min-width: 1024px) {
@@ -364,14 +368,13 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h2>Contact Us</h2>
-                    <p><i class="fas fa-phone"></i> <strong>Phone:</strong> <!-- Add MHRPCI phone number --></p>
-                    <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:info@mhrpci.com">info@mhrpci.com</a></p>
-                    <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> <!-- Add MHRPCI address --></p>
+                    <p><i class="fas fa-phone"></i> <strong>Phone:</strong> {{ config('app.company_phone') }}</p>
+                    <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:{{ config('app.company_email') }}">{{ config('app.company_email') }}</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong>{{ config('app.company_address') }}, {{ config('app.company_city') }}, Cebu, Philippines 6000</p>
                 </div>
                 <div class="footer-section">
                     <h2>Connect With Us</h2>
-                    <p><i class="fab fa-facebook"></i> <a href="#" target="_blank">Facebook</a></p>
-                    <p><i class="fas fa-globe"></i> <a href="#" target="_blank">Website</a></p>
+                    <p><i class="fab fa-facebook"></i> <a href="https://www.facebook.com/mhrpciofficial" target="_blank">Facebook</a></p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -395,9 +398,9 @@
         window.addEventListener('scroll', function() {
             const header = document.querySelector('.header');
             if (window.scrollY > 50) {
-                header.style.backgroundColor = 'rgba(26, 35, 126, 0.9)';
+                header.style.backgroundColor = 'rgba(139, 9, 219, 0.9)';
             } else {
-                header.style.backgroundColor = '#1a237e';
+                header.style.backgroundColor = '#8b09db';
             }
         });
     </script>

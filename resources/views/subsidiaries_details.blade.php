@@ -26,7 +26,7 @@
 
         /* Header styles */
         .header {
-            background-color: #1a237e;
+            background-color: #4a148c; /* Deep Purple */
             padding: 20px 0;
             position: fixed;
             width: 100%;
@@ -45,20 +45,32 @@
             font-weight: 700;
             text-decoration: none;
         }
+        .main-nav {
+            display: flex;
+            align-items: center;
+        }
         .nav-link {
             color: #fff;
             text-decoration: none;
             font-weight: 500;
             transition: opacity 0.3s;
+            margin-left: 20px;
         }
         .nav-link:hover {
             opacity: 0.8;
         }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
 
         /* Updated Hero section styles */
         .hero-section {
-            background-color: #3f51b5;
-            background-image: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+            background: linear-gradient(135deg, #4a148c 0%, #1a237e 100%);
             color: #fff;
             padding: 120px 0 80px;
             margin-top: -80px;
@@ -115,7 +127,7 @@
             display: inline-block;
             padding: 12px 24px;
             background-color: #fff;
-            color: #1a237e;
+            color: #4a148c; /* Deep Purple */
             text-decoration: none;
             border-radius: 30px;
             font-weight: 600;
@@ -186,7 +198,7 @@
             margin-bottom: 30px;
         }
         h2 {
-            color: #1a237e;
+            color: #4a148c; /* Deep Purple */
             font-size: 1.8rem;
             margin-bottom: 25px;
         }
@@ -298,7 +310,7 @@
         .btn-primary {
             display: inline-block;
             padding: 8px 16px;
-            background-color: #1a237e;
+            background-color: #4a148c; /* Deep Purple */
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
@@ -306,12 +318,12 @@
             font-size: 0.9rem;
         }
         .btn-primary:hover {
-            background-color: #3f51b5;
+            background-color: #6a1b9a; /* Purple */
         }
 
         /* Footer styles */
         .footer {
-            background-color: #1a237e;
+            background: linear-gradient(135deg, #4a148c 0%, #1a237e 100%);
             color: #fff;
             padding: 60px 0 30px;
         }
@@ -356,6 +368,26 @@
             .slide {
                 padding-top: 75%;
             }
+            .menu-toggle {
+                display: block;
+            }
+            .main-nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: #4a148c;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+                display: none;
+            }
+            .main-nav.active {
+                display: flex;
+            }
+            .nav-link {
+                margin: 10px 0;
+            }
         }
         @media (min-width: 1024px) {
             .hero-content {
@@ -370,6 +402,44 @@
                 margin-left: 40px;
             }
         }
+
+        /* Add scroll-based header background */
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.style.backgroundColor = 'rgba(74, 20, 140, 0.9)'; /* Deep Purple with opacity */
+            } else {
+                header.style.backgroundColor = '#4a148c'; /* Deep Purple */
+            }
+        });
+
+        // Add this script at the end of your body tag or in your existing script section
+        function goBack() {
+            window.history.back();
+        }
+
+        /* Logo styles */
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+        .logo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -377,9 +447,22 @@
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <a href="#" class="logo">{{ $subsidiary->name }}</a>
+                <a href="#" class="logo">
+                    @if($subsidiary->main_image)
+                        <img src="{{ asset('storage/' . $subsidiary->main_image) }}" alt="{{ $subsidiary->abbr }} Logo" class="logo-image">
+                    @endif
+                    <span class="logo-text">{{ $subsidiary->abbr }}</span>
+                </a>
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <nav class="main-nav">
                     <a href="#" class="nav-link" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#gallery" class="nav-link">Gallery</a>
+                    @if($relatedSubsidiaries->isNotEmpty())
+                        <a href="#related" class="nav-link">Related</a>
+                    @endif
                 </nav>
             </div>
         </div>
@@ -575,9 +658,9 @@
         window.addEventListener('scroll', function() {
             const header = document.querySelector('.header');
             if (window.scrollY > 50) {
-                header.style.backgroundColor = 'rgba(26, 35, 126, 0.9)';
+                header.style.backgroundColor = 'rgba(74, 20, 140, 0.9)'; /* Deep Purple with opacity */
             } else {
-                header.style.backgroundColor = '#1a237e';
+                header.style.backgroundColor = '#4a148c'; /* Deep Purple */
             }
         });
 
@@ -585,6 +668,30 @@
         function goBack() {
             window.history.back();
         }
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const mainNav = document.querySelector('.main-nav');
+
+            menuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.header-content')) {
+                    mainNav.classList.remove('active');
+                }
+            });
+
+            // Close menu when clicking on a nav link
+            mainNav.addEventListener('click', function(event) {
+                if (event.target.classList.contains('nav-link')) {
+                    mainNav.classList.remove('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
