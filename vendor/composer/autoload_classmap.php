@@ -11,6 +11,7 @@ return array(
     'App\\Console\\Commands\\StoreAttendance' => $baseDir . '/app/Console/Commands/StoreAttendance.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Enums\\LoanType' => $baseDir . '/app/Enums/LoanType.php',
+    'App\\Events\\NewNotification' => $baseDir . '/app/Events/NewNotification.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Exports\\AttendanceExport' => $baseDir . '/app/Exports/AttendanceExport.php',
     'App\\Exports\\EmployeesExport' => $baseDir . '/app/Exports/EmployeesExport.php',

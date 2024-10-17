@@ -173,20 +173,20 @@ public function employeeContributions(Request $request, $employee_id)
 
     return view('contributions.employee-contributions', compact('employee', 'sssContributions', 'philhealthContributions', 'pagibigContributions', 'totals', 'contributionTotals'));
 }
-        /**
-         * Display a listing of all employees with their time sheet data.
-         */
-        public function allEmployeesContribution()
-        {
-            // Retrieve all employees
-            $employees = Employee::where('employee_status', 'Active')->get();
+    /**
+     * Display a listing of all employees with their time sheet data.
+     */
+    public function allEmployeesContribution()
+    {
+        // Retrieve all employees
+        $employees = Employee::where('employee_status', 'Active')->get();
 
-            // If there's additional time sheet data you want to include, add the logic here
-            // For example, if there's a TimeSheet model related to Employee:
-            // $employees = Employee::with('timeSheets')->get();
+        // If there's additional time sheet data you want to include, add the logic here
+        // For example, if there's a TimeSheet model related to Employee:
+        // $employees = Employee::with('timeSheets')->get();
 
-            return view('contributions.employees-list', compact('employees'));
-        }
+        return view('contributions.employees-list', compact('employees'));
+    }
 
     /**
      * Display contributions for the authenticated employee.

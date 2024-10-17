@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Section;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class SectionSeeder extends Seeder
 {
@@ -14,14 +15,30 @@ class SectionSeeder extends Seeder
      */
     public function run()
     {
-        // Clear existing sections
-        Section::truncate();
+        $sections = [
+            'Organizational Structure & Management',
+            'Employee Conduct & Protocol',
+            'Attendance & Leave Policies',
+            'Compensation, Benefits & Privileges',
+            'Facilities, Equipment & Company Property Use',
+            'Staff House & Accommodation',
+            'Reporting & Document Management',
+            'Workplace Safety & Security',
+            'Miscellaneous Policies',
+            'Dress Code & Identification Policies',
+            'Financial Assistance & Applications',
+            'Workforce Management',
+            'Employee Development & Education',
+            'Employee Engagement & Recognition',
+        ];
 
-        // Create sections 1 through 20
-        for ($i = 1; $i <= 20; $i++) {
-            Section::create([
-                'name' => "Section $i",
-                'section_number' => $i
+        foreach ($sections as $index => $section) {
+            $sectionNumber = $index + 1;
+            DB::table('sections')->insert([
+                'name' => "Section {$sectionNumber}: {$section}",
+                'section_number' => $sectionNumber,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
         }
     }

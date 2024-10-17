@@ -51,6 +51,8 @@ class PropertyController extends Controller
         foreach ($imageFields as $field) {
             if ($request->hasFile($field)) {
                 $validatedData[$field] = $request->file($field)->store('property_images', 'public');
+                // Convert the storage path to a public URL
+                $validatedData[$field] = 'storage/' . $validatedData[$field];
             }
         }
 
@@ -101,9 +103,11 @@ class PropertyController extends Controller
             if ($request->hasFile($field)) {
                 // Delete old file if it exists
                 if ($property->$field) {
-                    Storage::disk('public')->delete($property->$field);
+                    Storage::disk('public')->delete(str_replace('storage/', '', $property->$field));
                 }
                 $validatedData[$field] = $request->file($field)->store('property_images', 'public');
+                // Convert the storage path to a public URL
+                $validatedData[$field] = 'storage/' . $validatedData[$field];
             }
         }
 

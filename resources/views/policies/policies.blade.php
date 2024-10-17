@@ -6,52 +6,54 @@
     <title>Company Policies | {{ config('app.name') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0056b3;
-            --secondary-color: #003366;
-            --background-color: #f8f9fa;
-            --text-color: #333;
-            --accent-color: #ffc107;
+            --primary-color: #1e40af;
+            --secondary-color: #1e3a8a;
+            --background-color: #f0f9ff;
+            --text-color: #1e293b;
+            --accent-color: #3b82f6;
+            --hover-color: #2563eb;
         }
         body {
             background-color: var(--background-color);
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: var(--text-color);
             line-height: 1.6;
         }
         .container-fluid {
-            max-width: 1400px;
-            padding: 2rem;
+            max-width: 1200px;
+            padding: 2rem 1rem;
         }
         .section-title {
             color: var(--secondary-color);
             border-bottom: 3px solid var(--accent-color);
             padding-bottom: 0.5rem;
             margin-top: 3rem;
-            font-weight: 700;
-            font-size: 2rem;
+            font-weight: 600;
+            font-size: 1.8rem;
         }
         .policy-page {
             background-color: #fff;
-            border-radius: 10px;
+            border-radius: 15px;
             transition: all 0.3s ease;
             margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
         }
         .policy-page:hover {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             transform: translateY(-5px);
         }
         .policy-title {
             color: var(--primary-color);
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 600;
             padding: 1.5rem;
-            background-color: #f1f8ff;
+            background-color: #e0f2fe;
             margin: 0;
+            border-bottom: 2px solid var(--accent-color);
         }
         .policy-content {
             font-size: 1rem;
@@ -80,14 +82,16 @@
             margin-bottom: 1rem;
             border-collapse: separate;
             border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
         }
         .policy-content th, .policy-content td {
-            border: 1px solid #e0e0e0;
+            border: 1px solid #e2e8f0;
             padding: 0.75rem;
             text-align: left;
         }
         .policy-content th {
-            background-color: #f1f8ff;
+            background-color: #e0f2fe;
             font-weight: 600;
             color: var(--secondary-color);
         }
@@ -95,35 +99,37 @@
             background-color: var(--primary-color);
             color: white;
             padding: 0.75rem 1.5rem;
-            border-radius: 5px;
+            border-radius: 30px;
             text-decoration: none;
             display: inline-block;
             transition: background-color 0.3s ease;
             font-weight: 500;
             margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .btn-back:hover {
-            background-color: #004494;
+            background-color: var(--hover-color);
             color: white;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
         .last-updated {
             font-size: 0.9rem;
-            color: #6c757d;
+            color: #64748b;
             font-style: italic;
-            margin-top: 0.5rem;
+            margin-top: 1rem;
         }
         .company-logo {
-            max-width: 300px;
+            max-width: 200px;
             margin-bottom: 2rem;
         }
         .sticky-search {
             position: sticky;
             top: 0;
-            background-color: rgba(248, 249, 250, 0.9);
+            background-color: rgba(240, 249, 255, 0.95);
             padding: 1rem 0;
             z-index: 1000;
-            backdrop-filter: blur(5px);
-            border-bottom: 1px solid #e0e0e0;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
         }
         #policies-container {
             padding-top: 2rem;
@@ -131,12 +137,13 @@
         #search-results {
             font-weight: 500;
             padding: 1rem;
-            background-color: #e9ecef;
-            border-radius: 5px;
+            background-color: #e0f2fe;
+            border-radius: 10px;
             margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         .highlight {
-            background-color: var(--accent-color);
+            background-color: #fef08a;
             padding: 0.1rem 0.2rem;
             border-radius: 3px;
         }
@@ -145,24 +152,28 @@
                 padding: 1rem;
             }
             .policy-title {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
             .section-title {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
+            }
+            .btn-back {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{{ route('home') }}" class="btn-back">
-                <i class="fas fa-arrow-left"></i> Back to Home
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+            <a href="javascript:history.back()" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i> Back
             </a>
             <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="Company Logo" class="company-logo">
         </div>
 
-        <h1 class="text-center mb-5" style="color: var(--secondary-color); font-weight: 700;">Company Policies</h1>
+        <h1 class="text-center mb-5" style="color: var(--secondary-color); font-weight: 700; font-size: 2.5rem;">Company Policies & Regulations</h1>
 
         <div class="sticky-search mb-4">
             <input type="text" id="policySearch" class="form-control form-control-lg" placeholder="Search policies...">

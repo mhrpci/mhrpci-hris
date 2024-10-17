@@ -601,14 +601,16 @@
                         </li>
                         @endcanany
 
-                        @can('normal-employee')
+                        @auth
+                            @if(auth()->user()->hasRole('Employee'))
                         <li class="nav-item">
                             <a href="{{ url('/my-tasks') }}" class="nav-link {{ Request::is('my-tasks') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-tasks"></i>
                                 <p>My Task</p>
                             </a>
                         </li>
-                        @endcan
+                        @endif
+                      @endauth
                         @canany(['admin', 'super-admin', 'hrcomben', 'normal-employee'])
                         <li class="nav-item has-treeview {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'active' : '' }}">
@@ -627,14 +629,16 @@
                                     </a>
                                 </li>
                                 @endcanany
-                                @can('normal-employee')
+                                @auth
+                                    @if(auth()->user()->hasRole('Employee'))
                                 <li class="nav-item">
                                     <a href="{{ url('/my-timesheet') }}" class="nav-link {{ Request::is('my-timesheet') ? 'active' : '' }}">
                                         <i class="fas fa-user-clock nav-icon"></i>
                                         <p>My Timesheet</p>
                                     </a>
                                 </li>
-                                @endcan
+                                @endif
+                                @endauth
                             </ul>
                         </li>
                     @endcanany
@@ -656,14 +660,16 @@
                                     </a>
                                 </li>
                                 @endcanany
-                                @canany(['normal-employee', 'super-admin'])
+                                @auth
+                                    @if(auth()->user()->hasRole('Employee'))
                                 <li class="nav-item">
                                     <a href="{{ url('/leaves/create') }}" class="nav-link {{ Request::is('leaves/create') ? 'active' : '' }}">
                                         <i class="fas fa-calendar-check nav-icon"></i>
                                         <p>Apply Leave</p>
                                     </a>
                                 </li>
-                                @endcanany
+                                @endif
+                                @endauth
                                 @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
                                     <a href="{{ url('/leaves-employees') }}" class="nav-link {{ Request::is('leaves-employees*') ? 'active' : '' }}">
@@ -672,14 +678,16 @@
                                     </a>
                                 </li>
                                 @endcanany
-                                @can('normal-employee')
+                                @auth
+                                    @if(auth()->user()->hasRole('Employee'))
                                 <li class="nav-item">
                                     <a href="{{ url('/my-leave-sheet') }}" class="nav-link {{ Request::is('my-leave-sheet*') ? 'active' : '' }}">
                                         <i class="fas fa-print nav-icon"></i>
                                         <p>My Leaves</p>
                                     </a>
                                 </li>
-                                @endcan
+                                @endif
+                                @endauth
                             </ul>
                         </li>
                         @endcanany
@@ -701,20 +709,22 @@
                                     </a>
                                 </li>
                                 @endcanany
-                                @canany(['normal-employee', 'super-admin'])
+                                @auth
+                                    @if(auth()->user()->hasRole('Employee'))
                                 <li class="nav-item">
                                     <a href="{{ url('/my-payrolls') }}" class="nav-link {{ Request::is('my-payrolls*') ? 'active' : '' }}">
                                         <i class="fas fa-file-alt nav-icon"></i>
                                         <p>My Payroll</p>
                                     </a>
                                 </li>
-                                @endcanany
+                                @endif
+                                @endauth
                             </ul>
                         </li>
                         @endcanany
                         @canany(['admin', 'super-admin', 'hrcomben', 'finance', 'normal-employee'])
-                        <li class="nav-item has-treeview {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*','loan_pagibig*', 'cash_advances*', 'my-contributions*', 'contributions-employees-list*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*', 'loan_pagibig*', 'cash_advances*', 'my-contributions*', 'contributions-employees-list*') ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*','loan_pagibig*', 'cash_advances*', 'my-contributions*', 'my-loans*', 'contributions-employees-list*', 'loans-employees-list*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*', 'loan_pagibig*', 'cash_advances*', 'my-contributions*', 'my-loans*', 'contributions-employees-list*', 'loans-employees-list*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hands-helping"></i>
                                 <p>
                                     Loans & Contributions
@@ -730,26 +740,28 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('/loan_sss') }}" class="nav-link {{ Request::is('loan_sss*','loan_pagibig*', 'cash_advances*') ? 'active' : '' }}">
+                                    <a href="{{ url('/loan_sss') }}" class="nav-link {{ Request::is('loan_sss*','loan_pagibig*', 'cash_advances*', 'loans-employees-list*') ? 'active' : '' }}">
                                         <i class="fas fa-money-bill-alt nav-icon"></i>
                                         <p>Loans</p>
                                     </a>
                                 </li>
                                 @endcanany
-                                @canany('normal-employee')
-                                <li class="nav-item">
-                                    <a href="{{ url('/my-contributions') }}" class="nav-link {{ Request::is('my-contributions*') ? 'active' : '' }}">
-                                        <i class="fas fa-solid fa-gift nav-icon"></i>
-                                        <p>My Contribution</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ url('/my-loans') }}" class="nav-link {{ Request::is('my-loans*') ? 'active' : '' }}">
-                                        <i class="fas fa-hand-holding-usd nav-icon"></i>
-                                        <p>My Loan</p>
-                                    </a>
-                                </li>
-                                @endcanany
+                                @auth
+                                    @if(auth()->user()->hasRole('Employee'))
+                                    <li class="nav-item">
+                                        <a href="{{ url('/my-contributions') }}" class="nav-link {{ Request::is('my-contributions*') ? 'active' : '' }}">
+                                            <i class="fas fa-solid fa-gift nav-icon"></i>
+                                            <p>My Contribution</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/my-loans') }}" class="nav-link {{ Request::is('my-loans*') ? 'active' : '' }}">
+                                            <i class="fas fa-hand-holding-usd nav-icon"></i>
+                                            <p>My Loan</p>
+                                        </a>
+                                    </li>
+                                    @endif
+                                @endauth
                             </ul>
                         </li>
                         @endcanany
@@ -823,14 +835,16 @@
                             </ul>
                         </li>
                         @endcanany
-                        @can('normal-employee')
+                        @auth
+                            @if(auth()->user()->hasRole('Employee'))
                         <li class="nav-item">
                             <a href="{{ url('/my-profile') }}" class="nav-link {{ Request::is('my-profile*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-user"></i>
                                 <p>My Profile</p>
                             </a>
                         </li>
-                        @endcan
+                        @endif
+                        @endauth
                         @can('super-admin')
                         <li class="nav-item">
                             <a href="{{ url('/backups') }}" class="nav-link {{ Request::is('backups*') ? 'active' : '' }}">

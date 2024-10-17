@@ -137,6 +137,9 @@ use App\Http\Controllers\PagibigLoanController;
     route::get('/payroll/{id}/download-pdf', [PayrollController::class, 'downloadPdf'])->name('payroll.download-pdf');
     Route::delete('/payroll/{id}', [PayrollController::class, 'destroy'])->name('payroll.destroy');
     Route::get('/my-contributions', [ContributionController::class, 'myContributions'])->name('contributions.my');
+    Route::get('/loans/employee/{employee_id}', [LoanController::class, 'employeeLoans'])->name('loans.employee');
+    Route::get('/loans-employees-list', [LoanController::class, 'allEmployeesLoan'])->name('loans.employees-list');
+    Route::get('/my-loans', [LoanController::class, 'myLoans'])->name('loans.my-loans');
     // routes/web.php
     Route::get('/overtime-hours/{employeeId}', [OverTimePayController::class, 'getOvertimeHours'])->name('overtime.hours');
 

@@ -5,44 +5,43 @@
 <!-- Enhanced professional-looking link buttons -->
 <div class="mb-4">
     <div class="contribution-nav" role="navigation" aria-label="Contribution Types">
-        <a href="{{ route('sss.index') }}" class="contribution-link {{ request()->routeIs('sss.index') ? 'active' : '' }}">
+        <a href="{{ route('loan_sss.index') }}" class="contribution-link {{ request()->routeIs('loan_sss.index') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-shield-alt"></i>
             </div>
             <div class="text-wrapper">
-                <span class="title">Sss</span>
+                <span class="title">Sss Loan</span>
                 <small class="description">Social Security System</small>
             </div>
         </a>
-        <a href="{{ route('pagibig.index') }}" class="contribution-link {{ request()->routeIs('pagibig.index') ? 'active' : '' }}">
+        <a href="{{ route('loan_pagibig.index') }}" class="contribution-link {{ request()->routeIs('loan_pagibig.index') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-home"></i>
             </div>
             <div class="text-wrapper">
-                <span class="title">Pag-IBIG</span>
+                <span class="title">Pag-IBIG Loan</span>
                 <small class="description">Home Development Mutual Fund</small>
             </div>
         </a>
-        <a href="{{ route('philhealth.index') }}" class="contribution-link {{ request()->routeIs('philhealth.index') ? 'active' : '' }}">
+        <a href="{{ route('cash_advances.index') }}" class="contribution-link {{ request()->routeIs('cash_advances.index') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-heartbeat"></i>
             </div>
             <div class="text-wrapper">
-                <span class="title">PhilHealth</span>
-                <small class="description">Philippine Health Insurance</small>
+                <span class="title">Cash Advances</span>
+                <small class="description">Cash Advances List</small>
             </div>
         </a>
-        <a href="{{ route('contributions.employees-list') }}" class="contribution-link {{ request()->routeIs('contributions.employees-list') ? 'active' : '' }}">
+        <a href="{{ route('loans.employees-list') }}" class="contribution-link {{ request()->routeIs('loans.employees-list') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-users"></i>
             </div>
             <div class="text-wrapper">
-                <span class="title">Contributor</span>
-                <small class="description">Employee Contributor List</small>
+                <span class="title">Borrower</span>
+                <small class="description">Employee Borrower List</small>
             </div>
         </a>
     </div>
-</div>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Contribution Employee List</h3>
@@ -56,14 +55,14 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-            <tbody>
+                <tbody>
                     @foreach ($employees as $employee)
                         <tr>
                             <td>{{ $employee->company_id }} </td>
                             <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
                             <td>
-                                <a href="{{ route('contributions.employee', ['employee_id' => $employee->id]) }}" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-coins"></i> View Contributions
+                                <a href="{{ route('loans.employee', ['employee_id' => $employee->id]) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-coins"></i> View Loans
                                 </a>
                             </td>
                         </tr>

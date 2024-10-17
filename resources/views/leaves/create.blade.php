@@ -115,7 +115,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="btn-group" role="group" aria-label="Button group">
+                                    @if(Auth::user()->hasRole('Employee'))
+                                        <button type="submit" class="btn btn-primary">Apply</button>&nbsp;&nbsp;
+                                    @else
                                         <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
+                                    @endif
                                         @can('super-admin')
                                         <a href="{{ route('leaves.index') }}" class="btn btn-info">Back</a>
                                         @endcan

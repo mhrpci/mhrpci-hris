@@ -676,6 +676,7 @@ class ComposerStaticInit16797fe2c343f1e93be20ef2cd7ff7c1
         'App\\Console\\Commands\\StoreAttendance' => __DIR__ . '/../..' . '/app/Console/Commands/StoreAttendance.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Enums\\LoanType' => __DIR__ . '/../..' . '/app/Enums/LoanType.php',
+        'App\\Events\\NewNotification' => __DIR__ . '/../..' . '/app/Events/NewNotification.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Exports\\AttendanceExport' => __DIR__ . '/../..' . '/app/Exports/AttendanceExport.php',
         'App\\Exports\\EmployeesExport' => __DIR__ . '/../..' . '/app/Exports/EmployeesExport.php',

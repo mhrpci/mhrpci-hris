@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashAdvance;
 use App\Models\Loan;
 use Illuminate\Http\Request;
 use App\Models\Employee;
+use App\Models\SssLoan;
+use App\Models\PagibigLoan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoanController extends Controller
 {
@@ -108,5 +113,48 @@ class LoanController extends Controller
         $loan->delete();
 
         return redirect()->route('loans.index')->with('success', 'loan deleted successfully.');
+    }
+
+    /**
+     * Display a listing of all employees with their time sheet data.
+     */
+    public function allEmployeesLoan()
+    {
+        // Retrieve all employees
+        $employees = Employee::where('employee_status', 'Active')->get();
+
+        // If there's additional time sheet data you want to include, add the logic here
+        // For example, if there's a TimeSheet model related to Employee:
+        // $employees = Employee::with('timeSheets')->get();
+
+        return view('loans.employees-list', compact('employees'));
+    }
+
+    /**
+     * Display loans for the authenticated employee.
+     */
+    public function myLoans()
+    {
+        $user = Auth::user();
+
+        // Ensure the user is authenticated and has the role 'Employee'
+        if ($user && $user->hasRole('Employee')) {
+            $employee = Employee::where('email_address', $user->email)->firstOrFail();
+
+            $loans = Loan::where('employee_id', $employee->id)
+                ->orderBy('date', 'desc')
+                ->get();
+
+            // Calculate totals
+            $totals = [
+                'sss_loan' => $loans->sum('sss_loan'),
+                'pagibig_loan' => $loans->sum('pagibig_loan'),
+                'cash_advance' => $loans->sum('cash_advance'),
+            ];
+
+            return view('loans.my-loans', compact('loans', 'totals', 'employee'));
+        }
+
+        return redirect()->route('loans.index')->with('error', 'Unauthorized access.');
     }
 }
