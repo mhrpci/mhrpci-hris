@@ -10,6 +10,7 @@ use App\Models\Leave;
 use App\Models\Task; // Assuming you have a Task model
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Events\NewNotification;
 
 class NotificationsController extends Controller
 {
@@ -46,6 +47,8 @@ class NotificationsController extends Controller
     private function generateNotifications()
     {
         try {
+            $oldCount = $this->countTotalNotifications();
+
             // Generate notifications for each category
             $this->generateBirthdayNotifications();
             $this->generatePostNotifications();
@@ -55,13 +58,35 @@ class NotificationsController extends Controller
             $this->generateTaskNotifications();
             $this->generateJobApplicationNotifications();
 
+            $newCount = $this->countTotalNotifications();
+
+            // If there are new notifications, broadcast them
+            if ($newCount > $oldCount) {
+                $this->broadcastNewNotifications();
+            }
+
             // Log the count of notifications for debugging
             \Log::info('Notification counts:', $this->notifications);
         } catch (\Exception $e) {
             // Log any exceptions that occur
             \Log::error('Error generating notifications: ' . $e->getMessage());
-            // You might want to re-throw the exception or handle it differently
         }
+    }
+
+    // Add a new method to broadcast notifications
+    private function broadcastNewNotifications()
+    {
+        $totalNotifications = $this->countTotalNotifications();
+        $dropdownHtml = $this->generateDropdownHtml();
+
+        $notificationData = [
+            'label' => $totalNotifications,
+            'label_color' => 'danger',
+            'icon_color' => 'dark',
+            'dropdown' => $dropdownHtml,
+        ];
+
+        broadcast(new NewNotification($notificationData))->toOthers();
     }
 
     // Generate birthday notifications
