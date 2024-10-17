@@ -1,3 +1,4 @@
+# Base image: PHP 8.2 FPM
 FROM php:8.2-fpm
 
 # Install system dependencies
@@ -9,33 +10,30 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    libzip-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Install additional extensions
-RUN docker-php-ext-configure zip
-RUN docker-php-ext-install zip
-
-# Get latest Composer
+# Install Composer from the official Composer image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Set the working directory
 WORKDIR /var/www
 
-# Copy existing application directory contents
+# Copy the application code into the container
 COPY . /var/www
 
-# Install dependencies
-RUN composer install --no-interaction --no-plugins --no-scripts
+# Install Composer dependencies (with optimization flags for production)
+RUN composer install --optimize-autoloader --no-dev --no-interaction --no-plugins --no-scripts
 
-# Change ownership of our applications
+# Set correct file permissions
 RUN chown -R www-data:www-data /var/www
 
-# Expose port 9000 and start php-fpm server
+# Expose port 9000 (used by php-fpm)
 EXPOSE 9000
+
+# Start PHP-FPM server
 CMD ["php-fpm"]
