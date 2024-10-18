@@ -800,14 +800,14 @@
                                     </a>
                                 </li>
                                 @endcan
-                                @can('super-admin', 'it-staff')
+                                @canany(['hrcompliance', 'it-staff'])
                                 <li class="nav-item">
                                     <a href="{{ url('/inventory') }}" class="nav-link {{ Request::is('inventory*') ? 'active' : '' }}">
                                         <i class="fas fa-cubes nav-icon"></i>
                                         <p>IT Inventory</p>
                                     </a>
                                 </li>
-                                @endcan
+                                @endcanany
                                 @can('super-admin', 'it-staff')
                                 <li class="nav-item">
                                     <a href="{{ url('/subsidiaries') }}" class="nav-link {{ Request::is('subsidiaries*') ? 'active' : '' }}">

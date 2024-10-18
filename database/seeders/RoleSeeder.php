@@ -62,6 +62,9 @@ class RoleSeeder extends Seeder
             'post-list',
             'post-create',
             'post-edit',
+            'inventory-list',
+            'inventory-create',
+            'inventory-edit',
             'hrcompliance',
 
         ]);

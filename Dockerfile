@@ -1,6 +1,8 @@
 # Base image: PHP 8.2 FPM
 FROM php:8.2-fpm
 
+ARG APP_ENV=production
+
 # Set environment variables
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_HOME=/composer
@@ -29,18 +31,27 @@ WORKDIR /var/www
 
 # Copy composer files and install dependencies
 COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader --no-dev
+RUN if [ "$APP_ENV" = "production" ]; then \
+        composer install --no-dev --no-scripts --no-autoloader; \
+    else \
+        composer install --no-scripts --no-autoloader; \
+    fi
 
 # Copy the rest of the application code
 COPY . .
 
-# Generate optimized autoloader and run any necessary scripts
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative \
-    && composer run-script post-install-cmd --no-dev
+# Generate optimized autoloader
+RUN composer dump-autoload --optimize
 
 # Set correct file permissions
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
+
+# Install additional dependencies for local development
+RUN if [ "$APP_ENV" != "production" ]; then \
+        apt-get update && apt-get install -y nodejs npm \
+        && npm install && npm run dev; \
+    fi
 
 # Create a non-root user to run the app
 RUN adduser --disabled-password --gecos '' appuser

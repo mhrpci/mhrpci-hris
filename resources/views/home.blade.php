@@ -368,6 +368,96 @@
     .dashboard-card:hover::before {
         transform: rotate(30deg) translate(-10%, -10%);
     }
+
+    /* Enhanced Analytics Dashboard Styles */
+    .analytics-dashboard {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .analytics-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .analytics-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .analytics-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #333;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 0.25rem;
+    }
+
+    .analytics-icon {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .analytics-number {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .analytics-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .progress {
+        height: 5px;
+        border-radius: 2px;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 100px;
+    }
+
+    @media (max-width: 768px) {
+        .analytics-card {
+            margin-bottom: 1rem;
+        }
+        .analytics-title {
+            font-size: 0.9rem;
+        }
+        .analytics-number {
+            font-size: 1rem;
+        }
+        .analytics-label {
+            font-size: 0.75rem;
+        }
+        .chart-container {
+            height: 80px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .analytics-dashboard {
+            padding: 10px;
+        }
+        .card-body {
+            padding: 0.75rem;
+        }
+        .analytics-title {
+            font-size: 0.85rem;
+        }
+        .analytics-number {
+            font-size: 0.95rem;
+        }
+        .chart-container {
+            height: 60px;
+        }
+    }
 </style>
 
 <div class="container-fluid py-4">
@@ -701,5 +791,172 @@
         });
     }
     window.addEventListener('scroll', animateCards);
+</script>
+
+<!-- Analytics Dashboard -->
+@canany(['super-admin', 'admin'])
+<div class="analytics-dashboard mt-4">
+    <h4 class="mb-3 text-center">Analytics Dashboard</h4>
+
+    <!-- Contributions Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white py-2">
+            <h5 class="mb-0"><i class="fas fa-chart-line mr-2"></i>Contribution Analytics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @php
+                    $contributionItems = [
+                        ['title' => 'SSS', 'icon' => 'fas fa-shield-alt', 'color' => 'primary', 'total' => $analytics['sss']['total_contributions'], 'count' => $analytics['sss']['contribution_count'], 'chartId' => 'sssChart'],
+                        ['title' => 'Pagibig', 'icon' => 'fas fa-home', 'color' => 'success', 'total' => $analytics['pagibig']['total_contributions'], 'count' => $analytics['pagibig']['contribution_count'], 'chartId' => 'pagibigChart'],
+                        ['title' => 'Philhealth', 'icon' => 'fas fa-heartbeat', 'color' => 'danger', 'total' => $analytics['philhealth']['total_contributions'], 'count' => $analytics['philhealth']['contribution_count'], 'chartId' => 'philhealthChart'],
+                    ];
+                @endphp
+
+                @foreach($contributionItems as $item)
+                <div class="col-md-4 mb-3">
+                    <div class="card analytics-card h-100 border-{{ $item['color'] }}">
+                        <div class="card-body p-3">
+                            <h6 class="analytics-title text-{{ $item['color'] }}">
+                                <i class="{{ $item['icon'] }} analytics-icon"></i>{{ $item['title'] }}
+                            </h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="analytics-label">Total</span>
+                                <span class="analytics-number text-{{ $item['color'] }}">₱{{ number_format($item['total'], 2) }}</span>
+                            </div>
+                            <div class="progress mb-2" style="height: 5px;">
+                                <div class="progress-bar bg-{{ $item['color'] }}" role="progressbar" style="width: {{ min(100, ($item['count'] / 1000) * 100) }}%" aria-valuenow="{{ $item['count'] }}" aria-valuemin="0" aria-valuemax="1000"></div>
+                            </div>
+                            <small class="text-muted">{{ $item['count'] }} contributions</small>
+                            <div class="chart-container mt-3" style="height: 100px;">
+                                <canvas id="{{ $item['chartId'] }}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <!-- Loans Section -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white py-2">
+            <h5 class="mb-0"><i class="fas fa-money-bill-wave mr-2"></i>Loan Analytics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @php
+                    $loanItems = [
+                        ['title' => 'SSS Loans', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'total' => $analytics['loans']['sss_loans']['total_amount'], 'count' => $analytics['loans']['sss_loans']['loan_count'], 'chartId' => 'sssLoanChart'],
+                        ['title' => 'Pagibig Loans', 'icon' => 'fas fa-hand-holding-usd', 'color' => 'info', 'total' => $analytics['loans']['pagibig_loans']['total_amount'], 'count' => $analytics['loans']['pagibig_loans']['loan_count'], 'chartId' => 'pagibigLoanChart'],
+                        ['title' => 'Cash Advances', 'icon' => 'fas fa-hand-holding-usd', 'color' => 'secondary', 'total' => $analytics['loans']['cash_advances']['total_amount'], 'count' => $analytics['loans']['cash_advances']['advance_count'], 'chartId' => 'cashAdvanceDoughnutChart'],
+                    ];
+                @endphp
+
+                @foreach($loanItems as $item)
+                <div class="col-md-4 mb-3">
+                    <div class="card analytics-card h-100 border-{{ $item['color'] }}">
+                        <div class="card-body p-3">
+                            <h6 class="analytics-title text-{{ $item['color'] }}">
+                                <i class="{{ $item['icon'] }} analytics-icon"></i>{{ $item['title'] }}
+                            </h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="analytics-label">Total</span>
+                                <span class="analytics-number text-{{ $item['color'] }}">₱{{ number_format($item['total'], 2) }}</span>
+                            </div>
+                            <div class="progress mb-2" style="height: 5px;">
+                                <div class="progress-bar bg-{{ $item['color'] }}" role="progressbar" style="width: {{ min(100, ($item['count'] / 100) * 100) }}%" aria-valuenow="{{ $item['count'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <small class="text-muted">{{ $item['count'] }} {{ $item['title'] == 'Cash Advances' ? 'advances' : 'active loans' }}</small>
+                            <div class="chart-container mt-3" style="height: 100px;">
+                                <canvas id="{{ $item['chartId'] }}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+@endcanany
+
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Function to create a line chart
+    function createLineChart(elementId, label, data) {
+        const ctx = document.getElementById(elementId).getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: label,
+                    data: data,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false // Hide Y axis for more compact view
+                    },
+                    x: {
+                        display: false // Hide X axis for more compact view
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Hide legend for more compact view
+                    }
+                }
+            }
+        });
+    }
+
+    // Function to create a doughnut chart for loans
+    function createDoughnutChart(elementId, label, data) {
+        const ctx = document.getElementById(elementId).getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Available'],
+                datasets: [{
+                    data: [data, 100 - data],
+                    backgroundColor: ['#007bff', '#e9ecef']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    // Create charts when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        createLineChart('sssChart', 'SSS Contributions', @json($analytics['sss']['monthly_trend']));
+        createLineChart('pagibigChart', 'Pagibig Contributions', @json($analytics['pagibig']['monthly_trend']));
+        createLineChart('philhealthChart', 'Philhealth Contributions', @json($analytics['philhealth']['monthly_trend']));
+        createDoughnutChart('sssLoanChart', 'SSS Loans', {{ min(100, ($analytics['loans']['sss_loans']['loan_count'] / 100) * 100) }});
+        createDoughnutChart('pagibigLoanChart', 'Pagibig Loans', {{ min(100, ($analytics['loans']['pagibig_loans']['loan_count'] / 100) * 100) }});
+        createLineChart('cashAdvanceChart', 'Cash Advances', @json($analytics['cash_advance']['monthly_trend']));
+        createDoughnutChart('cashAdvanceDoughnutChart', 'Cash Advances', {{ min(100, ($analytics['loans']['cash_advances']['advance_count'] / 100) * 100) }});
+    });
 </script>
 @endsection

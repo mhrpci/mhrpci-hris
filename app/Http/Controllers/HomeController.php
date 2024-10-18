@@ -11,6 +11,12 @@ use App\Models\Leave;
 use App\Models\Post;
 use App\Models\Holiday;
 use Carbon\Carbon;
+use App\Models\SssContribution;
+use App\Models\PagibigContribution;
+use App\Models\PhilhealthContribution;
+use App\Models\SssLoan;
+use App\Models\PagibigLoan;
+use App\Models\CashAdvance;
 
 class HomeController extends Controller
 {
@@ -173,6 +179,99 @@ class HomeController extends Controller
     }
 
     /**
+     * Get analytics for SSS, Pagibig, Philhealth, and other related data.
+     *
+     * @return array
+     */
+    public function getAnalytics()
+    {
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+
+        // SSS Analytics
+        $sssContributions = SssContribution::whereYear('date', $currentYear)->get();
+        $sssAnalytics = [
+            'total_contributions' => $sssContributions->sum('sss_contribution'),
+            'average_contribution' => $sssContributions->avg('sss_contribution'),
+            'contribution_count' => $sssContributions->count(),
+            'monthly_trend' => $this->getMonthlyTrend($sssContributions, 'sss_contribution'),
+        ];
+
+        // Pagibig Analytics
+        $pagibigContributions = PagibigContribution::whereYear('date', $currentYear)->get();
+        $pagibigAnalytics = [
+            'total_contributions' => $pagibigContributions->sum('pagibig_contribution'),
+            'average_contribution' => $pagibigContributions->avg('pagibig_contribution'),
+            'contribution_count' => $pagibigContributions->count(),
+            'monthly_trend' => $this->getMonthlyTrend($pagibigContributions, 'pagibig_contribution'),
+        ];
+
+        // Philhealth Analytics
+        $philhealthContributions = PhilhealthContribution::whereYear('date', $currentYear)->get();
+        $philhealthAnalytics = [
+            'total_contributions' => $philhealthContributions->sum('philhealth_contribution'),
+            'average_contribution' => $philhealthContributions->avg('philhealth_contribution'),
+            'contribution_count' => $philhealthContributions->count(),
+            'monthly_trend' => $this->getMonthlyTrend($philhealthContributions, 'philhealth_contribution'),
+        ];
+
+        // Cash Advance Analytics
+        $cashAdvances = CashAdvance::whereYear('created_at', $currentYear)->get();
+        $cashAdvanceAnalytics = [
+            'total_amount' => $cashAdvances->sum('cash_advance_amount'),
+            'average_amount' => $cashAdvances->avg('cash_advance_amount'),
+            'advance_count' => $cashAdvances->count(),
+            'monthly_trend' => $this->getMonthlyTrend($cashAdvances, 'cash_advance_amount'),
+        ];
+
+        // Loan Analytics (updated to include Cash Advances)
+        $sssLoans = SssLoan::whereYear('created_at', $currentYear)->get();
+        $pagibigLoans = PagibigLoan::whereYear('created_at', $currentYear)->get();
+        $loanAnalytics = [
+            'sss_loans' => [
+                'total_amount' => $sssLoans->sum('loan_amount'),
+                'average_amount' => $sssLoans->avg('loan_amount'),
+                'loan_count' => $sssLoans->count(),
+            ],
+            'pagibig_loans' => [
+                'total_amount' => $pagibigLoans->sum('loan_amount'),
+                'average_amount' => $pagibigLoans->avg('loan_amount'),
+                'loan_count' => $pagibigLoans->count(),
+            ],
+            'cash_advances' => [
+                'total_amount' => $cashAdvances->sum('cash_advance_amount'),
+                'average_amount' => $cashAdvances->avg('cash_advance_amount'),
+                'advance_count' => $cashAdvances->count(),
+            ],
+        ];
+
+        return [
+            'sss' => $sssAnalytics,
+            'pagibig' => $pagibigAnalytics,
+            'philhealth' => $philhealthAnalytics,
+            'cash_advance' => $cashAdvanceAnalytics,
+            'loans' => $loanAnalytics,
+        ];
+    }
+
+    /**
+     * Get monthly trend for contributions.
+     *
+     * @param \Illuminate\Support\Collection $contributions
+     * @param string $contributionField
+     * @return array
+     */
+    private function getMonthlyTrend($items, $amountField)
+    {
+        $trend = array_fill(1, 12, 0); // Initialize all months with 0
+        foreach ($items as $item) {
+            $month = Carbon::parse($item->created_at)->month;
+            $trend[$month] += $item->$amountField;
+        }
+        return array_values($trend); // Convert to indexed array
+    }
+
+    /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -229,6 +328,9 @@ class HomeController extends Controller
         // Get count of careers
         $careerCount = $this->countCareers();
 
+        // Get analytics
+        $analytics = $this->getAnalytics();
+
         // Pass the counts, sum, monthly contributions, latest posts, leave details, holidays, birthdays, and career count to the view
         return view('home', compact(
             'userCount',
@@ -250,7 +352,8 @@ class HomeController extends Controller
             'currentMonthNameBirthdays',
             'employeesByDepartment',
             'greeting',
-            'careerCount' // Add the career count
+            'careerCount',
+            'analytics'
         ));
     }
 }

@@ -2,16 +2,16 @@
 
 @section('content')
     <br>
-    <div class="toast-container position-fixed bottom-0 right-0 p-3">
+    <div class="toast-container position-fixed p-3" style="z-index: 9999; right: 0; bottom: 0;">
         <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
-            <div class="toast-header">
+            <div class="toast-header bg-primary text-white">
                 <strong class="mr-auto">Notification</strong>
                 <small>Just now</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="toast-body">
+            <div class="toast-body bg-light text-dark">
                 Filter applied successfully!
             </div>
         </div>
@@ -23,7 +23,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Employee Management</h3>
-                        <div class="card-tools d-flex flex-wrap">
+                        <div class="card-tools d-flex flex-wrap justify-content-end">
                             @can('employee-create')
                             <a href="{{ route('employees.create') }}" class="btn btn-success btn-sm rounded-pill mr-2 mb-2">
                                 Add Employee <i class="fas fa-plus-circle"></i>
@@ -35,19 +35,22 @@
                             <button class="btn btn-primary btn-sm rounded-pill mr-2 mb-2" data-toggle="modal" data-target="#importModal">
                                 Import Employees <i class="fas fa-file-import"></i>
                             </button>
-                            <form action="{{ route('employees.export') }}" method="POST" target="_blank">
+                            <form action="{{ route('employees.export') }}" method="POST" target="_blank" class="mr-2 mb-2">
                                 @csrf
-                                <button type="submit" class="btn btn-secondary btn-sm rounded-pill mr-2 mb-2">Export Employees <i class="fas fa-file-export"></i></button>
+                                <button type="submit" class="btn btn-secondary btn-sm rounded-pill">Export Employees <i class="fas fa-file-export"></i></button>
                             </form>
                             <div class="dropdown mr-2 mb-2">
                                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Filter<i class="fas fa-filter"></i>
+                                    Filter <i class="fas fa-filter"></i>
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="filterDropdown">
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#monthModal">Month</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#yearModal">Year</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#statusModal">Status</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a> <!-- New filter option -->
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a>
+                                    @if(auth()->user()->hasAnyRole(['Super Admin', 'Admin', 'Finance']))
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -68,7 +71,8 @@
                                     <th>Employee Name</th>
                                     <th>Department</th>
                                     <th>Position</th>
-                                    <th>Employment Status</th>
+                                    <th>Status</th>
+                                    <th>Rank</th>
                                     <th>Joined Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -82,6 +86,9 @@
                                         <td>{{ $employee->position->name }}</td>
                                         <td align="center" style="color: {{ $employee->employee_status === 'Active' ? 'green' : 'red' }}; font-weight: bold;">
                                             {{ $employee->employee_status }}
+                                        </td>
+                                        <td align="center" style="color: {{ $employee->rank === 'Rank File' ? 'green' : 'blue' }}; font-weight: bold;">
+                                            {{ $employee->rank }}
                                         </td>
                                         <td>{{ $employee->date_hired ? \Carbon\Carbon::parse($employee->date_hired)->format('F j, Y') : '' }}</td>
                                         <td>
@@ -321,6 +328,36 @@
     </div>
 </div>
 
+<!-- Rank Modal -->
+<div class="modal fade" id="rankModal" tabindex="-1" role="dialog" aria-labelledby="rankModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="rankModalLabel">Filter by Rank</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="rankForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="rank">Rank</label>
+                        <select class="form-control" id="rank" name="rank" required>
+                            <option value="">Select Rank</option>
+                            <option value="Rank File">Rank File</option>
+                            <option value="Managerial">Managerial</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Apply Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('js')
@@ -329,7 +366,7 @@
     let table = $('#employees-table').DataTable({
         columnDefs: [
             {
-                targets: 5, // Targeting the "Joined Date" column
+                targets: 6, // Targeting the "Joined Date" column (0-based index)
                 type: 'date'
             }
         ]
@@ -376,7 +413,10 @@
     // Function to show toast notification
     function showToast(message) {
         $('#toast .toast-body').text(message);
-        $('#toast').toast('show');
+        $('#toast').toast({
+            autohide: true,
+            delay: 3000
+        }).toast('show');
     }
 
     // Status Filter
@@ -415,28 +455,39 @@
         $(this).trigger('reset'); // Clear the filter form fields
     });
 
+    // Rank Filter
+    $('#rankForm').on('submit', function (e) {
+        e.preventDefault();
+        table.draw();
+        $('#rankModal').modal('hide');
+        showToast('Rank filter applied successfully!');
+        $(this).trigger('reset'); // Clear the filter form fields
+    });
+
     // Custom filtering function
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            let dateHiredStr = data[5]; // Get the "Joined Date" value from the 6th column
+            let dateHiredStr = data[6]; // Get the "Joined Date" value from the 7th column (0-based index)
             let employeeStatus = data[4]; // Get the "Employment Status" value from the 5th column
             let department = data[2]; // Assuming department is in the 3rd column
+            let rank = data[5]; // Get the "Rank" value from the 6th column (0-based index)
             if (!dateHiredStr) return true; // If no date, include the row
 
             let dateHiredObj = new Date(dateHiredStr);
 
-            // Get the month and year from the form inputs
+            // Get the month, year, status, department, and rank from the form inputs
             let selectedMonth = $('#month').val();
             let selectedYear = $('#year').val();
             let selectedStatus = $('#employee_status').val();
             let selectedDepartment = $('#department').val();
+            let selectedRank = $('#rank').val();
 
             // Convert selectedMonth to date object if it exists
             let filterMonth = selectedMonth ? new Date(selectedMonth) : null;
             let filterYear = selectedYear ? parseInt(selectedYear) : null;
 
-            // Date, status, and department filter logic
-            if (filterMonth || filterYear || selectedStatus || selectedDepartment) {
+            // Date, status, department, and rank filter logic
+            if (filterMonth || filterYear || selectedStatus || selectedDepartment || selectedRank) {
                 // Apply month and year filters if they exist
                 if (filterMonth && filterYear) {
                     if (dateHiredObj.getMonth() !== filterMonth.getMonth() || dateHiredObj.getFullYear() !== filterYear) {
@@ -459,6 +510,11 @@
 
                 // Apply department filter if it exists
                 if (selectedDepartment && department !== selectedDepartment) {
+                    return false;
+                }
+
+                // Apply rank filter if it exists
+                if (selectedRank && rank.trim() !== selectedRank) {
                     return false;
                 }
             }

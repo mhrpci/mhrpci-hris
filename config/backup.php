@@ -11,18 +11,9 @@ return [
 
         'source' => [
             'files' => [
-                /*
-                 * The list of directories and files that will be included in the backup.
-                 */
                 'include' => [
                     base_path(),
                 ],
-
-                /*
-                 * These directories and files will be excluded from the backup.
-                 *
-                 * Directories used by the backup process will automatically be excluded.
-                 */
                 'exclude' => [
                     base_path('vendor'),
                     base_path('node_modules'),
