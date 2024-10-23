@@ -34,6 +34,7 @@ class User extends Authenticatable
         'password',
         'company_id',
         'status',
+        'biometric_token',
     ];
 
     /**
@@ -44,6 +45,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'biometric_token',
     ];
 
     /**

@@ -115,6 +115,9 @@
             $('#paymentsTable').tableExport({
                 formats: ['xlsx'],
                 fileName: 'Pag-IBIG_Loan_Ledger_{{ $loan->employee->last_name }}_{{ $loan->employee->first_name }}',
+                exportOptions: {
+                    columns: [0, 1, 2, 3]
+                }
             });
         });
     });

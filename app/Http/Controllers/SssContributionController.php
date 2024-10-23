@@ -134,4 +134,36 @@ class SssContributionController extends Controller
             'message' => 'SSS Contribution deleted successfully.'
         ]);
     }
+
+    /**
+     * Store SSS contributions for all active employees with SSS numbers.
+     */
+    public function storeForAllEmployees(Request $request)
+    {
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $activeEmployees = Employee::where('employee_status', 'Active')
+            ->whereNotNull('sss_no')
+            ->get();
+
+        $createdContributions = [];
+
+        foreach ($activeEmployees as $employee) {
+            $contribution = SssContribution::create([
+                'employee_id' => $employee->id,
+                'date' => $validatedData['date'],
+                'sss_contribution' => 0, // You may want to calculate this based on employee data
+            ]);
+
+            $createdContributions[] = $contribution;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SSS Contributions created for all active employees with SSS numbers.',
+            'data' => $createdContributions
+        ], 201);
+    }
 }

@@ -61,7 +61,7 @@
                             <td>{{ $employee->company_id }} </td>
                             <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
                             <td>
-                                <a href="{{ route('loans.employee', ['employee_id' => $employee->id]) }}" class="btn btn-sm btn-primary">
+                                <a href="{{ route('loans.employee', $employee->id) }}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-coins"></i> View Loans
                                 </a>
                             </td>

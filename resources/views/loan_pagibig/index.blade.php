@@ -33,7 +33,7 @@
                 <small class="description">Company Cash Advance</small>
             </div>
         </a>
-        <a href="{{ route('philhealth.index') }}" class="contribution-link {{ request()->routeIs('philhealth.index') ? 'active' : '' }}">
+        <a href="{{ route('loans.employees-list') }}" class="contribution-link {{ request()->routeIs('loans.employees-list') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-users"></i>
             </div>
@@ -88,6 +88,7 @@
                 <th>Interest Rate</th>
                 <th>Loan Type</th>
                 <th>Status</th>
+                <th>Remaining Balance</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -108,6 +109,7 @@
                             <span class="badge badge-primary">{{ $loan->status }}</span>
                         @endif
                     </td>
+                    <td>₱{{ number_format($loan->calculateRemainingBalance(), 2) }}</td>
                     <td>
                         <div class="btn-group">
                             <div class="dropdown">
@@ -232,12 +234,15 @@
         var table = $('#loan_pagibig').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "order": [[1, "desc"]]
+            "order": [[1, "desc"]],
+            "columnDefs": [
+                { "orderable": false, "targets": 9 }
+            ]
         });
 
         $('#export-excel').on('click', function() {
             var data = table.rows().data().toArray();
-            var header = ['Pagibig No.', 'Employee Name', 'Loan Amount', 'Loan Term', 'Monthly Amortization', 'Interest Rate', 'Loan Type'];
+            var header = ['Pagibig No.', 'Employee Name', 'Loan Amount', 'Loan Term', 'Monthly Amortization', 'Interest Rate', 'Loan Type', 'Status', 'Remaining Balance'];
 
             var wb = XLSX.utils.book_new();
             var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
@@ -247,7 +252,9 @@
                 row[3], // Loan Term
                 parseFloat(row[4].replace(/[₱,]/g, '')).toFixed(2), // Monthly Amortization
                 row[5], // Interest Rate
-                row[6]  // Loan Type
+                row[6], // Loan Type
+                row[7], // Status
+                parseFloat(row[8].replace(/[₱,]/g, '')).toFixed(2) // Remaining Balance
             ])));
 
             // Set column widths
@@ -258,7 +265,9 @@
                 {wch: 15}, // Loan Term
                 {wch: 20}, // Monthly Amortization
                 {wch: 15}, // Interest Rate
-                {wch: 15}  // Loan Type
+                {wch: 15}, // Loan Type
+                {wch: 15}, // Status
+                {wch: 20}  // Remaining Balance
             ];
 
             // Style the header row

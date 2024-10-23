@@ -62,9 +62,9 @@
     <div class="card-header">
         <h3 class="card-title">Cash Advance List</h3>
         <div class="card-tools">
-            <button type="button" class="btn btn-success btn-sm rounded-pill" data-toggle="modal" data-target="#loanModal">
+            <a href="{{ route('cash_advances.create') }}" class="btn btn-success btn-sm rounded-pill">
                 Apply for Cash Advance
-            </button>
+            </a>
             <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
                 Export to Excel <i class="fas fa-file-excel"></i>
             </button>
@@ -74,6 +74,10 @@
                     Generate Payments <i class="fas fa-money-bill-wave"></i>
                 </button>
             </form>
+            <!-- New button for generating payment for specific employee -->
+            <button type="button" class="btn btn-warning btn-sm rounded-pill" data-toggle="modal" data-target="#generatePaymentModal">
+                Generate Payment for Employee <i class="fas fa-user-cog"></i>
+            </button>
         </div>
     </div>
     <div class="card-body">
@@ -129,8 +133,7 @@
     </table>
 </div>
 </div>
-
-@include('cash_advances.create')
+@include('cash_advances.generate_payments')
 @endsection
 
 @section('css')
@@ -206,22 +209,35 @@
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
     $(document).ready(function () {
-
         // Initialize Select2 for all select elements
         $('select').select2({
-                theme: 'bootstrap4',
-                width: '100%'
-            });
+            theme: 'bootstrap4',
+            width: '100%'
+        });
 
+        // Initialize DataTable
         var table = $('#cash_advances').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "order": [[1, "desc"]]
+            "order": [[1, "desc"]],
+            "language": {
+                "search": "Search:",
+                "lengthMenu": "Show _MENU_ entries",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "(filtered from _MAX_ total entries)",
+                "paginate": {
+                    "first": "First",
+                    "last": "Last",
+                    "next": "Next",
+                    "previous": "Previous"
+                }
+            }
         });
 
+        // Export to Excel functionality
         $('#export-excel').on('click', function() {
             var data = table.rows().data().toArray();
             var header = ['Employee Name', 'Loan Amount', 'Repayment Term', 'Monthly Amortization', 'Total Repayment', 'Status'];
@@ -233,7 +249,7 @@
                 row[2], // Repayment Term
                 parseFloat(row[3].replace(/[₱,]/g, '')).toFixed(2), // Monthly Amortization
                 parseFloat(row[4].replace(/[₱,]/g, '')).toFixed(2), // Total Repayment
-                row[5] // Status
+                $(row[5]).text() // Status (extract text from HTML)
             ])));
 
             // Set column widths
@@ -304,8 +320,26 @@
             XLSX.writeFile(wb, 'cash_advances.xlsx');
         });
 
-        // Remove the AJAX call for generate payments
-        // The form submission will handle this now
+        // // Handle form submission for generate payments
+        // $('form[action="{{ route('cash_advances.generate_payments') }}"]').on('submit', function(e) {
+        //     e.preventDefault();
+        //     $.ajax({
+        //         url: $(this).attr('action'),
+        //         type: 'POST',
+        //         data: $(this).serialize(),
+        //         success: function(response) {
+        //             if (response.success) {
+        //                 alert('Payments generated successfully!');
+        //                 location.reload();
+        //             } else {
+        //                 alert('Error generating payments: ' + response.message);
+        //             }
+        //         },
+        //         error: function() {
+        //             alert('An error occurred while generating payments.');
+        //         }
+        //     });
+        // });
     });
 </script>
 @endsection

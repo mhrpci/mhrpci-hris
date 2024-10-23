@@ -54,11 +54,18 @@
             <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
                 Export to Excel <i class="fas fa-file-excel"></i>
             </button>
+            <!-- Add the new button here -->
+            <button type="button" class="btn btn-info btn-sm rounded-pill" data-toggle="modal" data-target="#createAllModal">
+                Create for All Active ({{ $activeEmployeesCount }}) <i class="fas fa-users"></i>
+            </button>
         </div>
     </div>
     <div class="card-body">
         @if ($message = Session::get('success'))
         <div class="alert alert-success">{{ $message }}</div>
+        @endif
+        @if ($message = Session::get('error'))
+        <div class="alert alert-danger">{{ $message }}</div>
         @endif
         <table id="sss-table" class="table table-bordered table-striped">
             <thead>
@@ -104,6 +111,33 @@
             @endforeach
         </tbody>
     </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createAllModal" tabindex="-1" role="dialog" aria-labelledby="createAllModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createAllModalLabel">Create Contributions for All Active Employees</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('sss.store-all-active') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contribution_date">Contribution Date</label>
+                        <input type="month" class="form-control" id="contribution_date" name="contribution_date" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create Contributions</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @stop
@@ -260,6 +294,12 @@
             XLSX.utils.book_append_sheet(wb, ws, 'SSS Contributions');
             XLSX.writeFile(wb, 'sss_contributions.xlsx');
         });
+
+        // Add this to ensure the modal works correctly
+        $('#createAllModal').on('shown.bs.modal', function () {
+            $('#contribution_date').trigger('focus')
+        })
     });
 </script>
 @endsection
+

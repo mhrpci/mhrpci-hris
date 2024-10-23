@@ -18,16 +18,11 @@ class PagibigLoan extends Model
         'interest_rate',
         'loan_term_months',
         'monthly_amortization',
+        'total_accumulated_value', // Add this new field
     ];
 
     protected $casts = [
         'loan_type' => LoanType::class,
-    ];
-
-    // Default interest rates for each loan type
-    protected $defaultInterestRates = [
-        'MULTI_PURPOSE' => 10.5,  // Default for Multi-Purpose Loan
-        'CALAMITY' => 5.95,       // Default for Calamity Loan
     ];
 
     public function employee(): BelongsTo
@@ -40,42 +35,43 @@ class PagibigLoan extends Model
         $P = $this->loan_amount;
         $n = $this->loan_term_months;
 
-        // Determine the interest rate based on the loan amount for Housing Loans
+        // Determine the interest rate based on the loan type
         if ($this->loan_type === LoanType::HOUSING) {
             $interestRate = $this->determineHousingLoanInterestRate($P);
         } else {
-            // Use the provided interest rate or the default if none is set for other loans
-            $interestRate = $this->interest_rate ?? $this->defaultInterestRates[$this->loan_type->value];
+            // Use the provided interest rate or the default from the enum
+            $interestRate = $this->interest_rate ?? $this->loan_type->getDefaultInterestRate();
         }
+
+        // Store the determined interest rate
+        $this->interest_rate = $interestRate;
 
         $r = $interestRate / 100 / 12; // Monthly interest rate
 
-        switch ($this->loan_type) {
-            case LoanType::HOUSING:
-                // Amortization formula for Housing Loan
-                return ($P * $r * pow(1 + $r, $n)) / (pow(1 + $r, $n) - 1);
-
-            case LoanType::MULTI_PURPOSE:
-            case LoanType::CALAMITY:
-                // Simple interest calculation for Multi-Purpose and Calamity Loans
-                $totalInterest = $interestRate / 100 * ($n / 12);
-                return ($P * (1 + $totalInterest)) / $n;
-        }
-
-        // Default to 0 if the loan type is invalid
-        return 0;
+        // Use the same formula for all loan types
+        return ($P * $r * pow(1 + $r, $n)) / (pow(1 + $r, $n) - 1);
     }
 
-    protected function determineHousingLoanInterestRate(float $loanAmount): float
+    protected function determineHousingLoanInterestRate(): float
     {
-        if ($loanAmount <= 500000) {
-            return 5.75;
-        } elseif ($loanAmount <= 1000000) {
-            return 6.5;
-        } elseif ($loanAmount <= 1500000) {
-            return 7.0;
+        $loanTermYears = $this->loan_term_months / 12;
+
+        if ($loanTermYears <= 1) {
+            return 6.375;
+        } elseif ($loanTermYears <= 3) {
+            return 6.625;
+        } elseif ($loanTermYears <= 5) {
+            return 6.875;
+        } elseif ($loanTermYears <= 10) {
+            return 7.125;
+        } elseif ($loanTermYears <= 15) {
+            return 7.375;
+        } elseif ($loanTermYears <= 20) {
+            return 7.625;
+        } elseif ($loanTermYears <= 25) {
+            return 7.875;
         } else {
-            return 8.0;
+            return 8.125;
         }
     }
 
@@ -88,5 +84,24 @@ class PagibigLoan extends Model
     {
         $totalPaid = $this->payments()->sum('amount');
         return max(0, $this->loan_amount - $totalPaid);
+    }
+
+    public function calculateLoanableAmount(): float
+    {
+        if ($this->loan_type === LoanType::CALAMITY) {
+            return $this->total_accumulated_value * 0.8; // 80% of TAV
+        }
+        // For other loan types, you might want to implement different logic
+        return 0;
+    }
+
+    public function calculateTotalRepayment(): float
+    {
+        return $this->monthly_amortization * $this->loan_term_months;
+    }
+
+    public function calculateTotalInterest(): float
+    {
+        return $this->calculateTotalRepayment() - $this->loan_amount;
     }
 }

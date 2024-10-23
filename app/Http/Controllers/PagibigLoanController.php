@@ -42,8 +42,9 @@ class PagibigLoanController extends Controller
             'employee_id' => 'required|exists:employees,id',
             'loan_type' => 'required|in:' . implode(',', array_column(LoanType::cases(), 'value')),
             'loan_amount' => 'required|numeric|min:0',
-            'interest_rate' => 'required|numeric|min:0|max:100',
+            'interest_rate' => 'nullable|numeric|min:0|max:100',
             'loan_term_months' => 'required|integer|min:1',
+            'total_accumulated_value' => 'required_if:loan_type,calamity|numeric|min:0',
         ]);
 
         // Check if the employee already has an active loan
@@ -52,12 +53,13 @@ class PagibigLoanController extends Controller
             ->exists();
 
         if ($existingActiveLoan) {
-            return redirect()->route('loan_pagibig.create')
+            return redirect()->route('loan_pagibig.index')
                 ->with('error', 'This employee already has an active PAGIBIG loan.')
                 ->withInput();
         }
 
         $loan = new PagibigLoan($validated);
+        $loan->loan_type = LoanType::from($validated['loan_type']);
         $loan->monthly_amortization = $loan->calculateMonthlyAmortization();
         $loan->status = 'active'; // Ensure the new loan is set to active
         $loan->save();

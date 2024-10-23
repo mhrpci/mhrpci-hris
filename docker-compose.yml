@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
       args:
         - APP_ENV=${APP_ENV:-production}
-    container_name: laravel_app
+    container_name: hris_app
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
@@ -22,13 +22,13 @@ services:
       - "DB_USERNAME=${DB_USERNAME}"
       - "DB_PASSWORD=${DB_PASSWORD}"
     networks:
-      - laravel
+      - hris
     depends_on:
       - db
 
   db:
     image: mysql:8.0
-    container_name: laravel_db
+    container_name: hris_db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -39,11 +39,11 @@ services:
       - dbdata:/var/lib/mysql/
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
-      - laravel
+      - hris
 
   nginx:
     image: nginx:alpine
-    container_name: laravel_nginx
+    container_name: hris_nginx
     restart: unless-stopped
     ports:
       - "${NGINX_PORT:-8800}:80"
@@ -53,11 +53,11 @@ services:
     depends_on:
       - app
     networks:
-      - laravel
+      - hris
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: laravel_phpmyadmin
+    container_name: hris_phpmyadmin
     links:
       - db
     environment:
@@ -68,10 +68,10 @@ services:
     ports:
       - 8081:80
     networks:
-      - laravel
+      - hris
 
 networks:
-  laravel:
+  hris:
     driver: bridge
 
 volumes:

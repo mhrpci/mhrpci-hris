@@ -48,6 +48,14 @@
                 theme: 'bootstrap4',
                 width: '100%'
             });
+
+            // Confirm before submitting the form
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to update the loan status?')) {
+                    this.submit();
+                }
+            });
         });
     </script>
 @stop

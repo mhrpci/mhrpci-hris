@@ -157,4 +157,36 @@ class LoanController extends Controller
 
         return redirect()->route('loans.index')->with('error', 'Unauthorized access.');
     }
+
+    /**
+     * Display loans for a specific employee.
+     */
+    public function employeeLoans($employee_id)
+    {
+        $employee = Employee::findOrFail($employee_id);
+
+        $loans = Loan::where('employee_id', $employee_id)
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // Group loans by date and calculate totals
+        $loanTotals = $loans->groupBy(function ($loan) {
+            return Carbon::parse($loan->date)->format('Y-m-d');
+        })->map(function ($groupedLoans) {
+            return [
+                'sss' => $groupedLoans->sum('sss_loan'),
+                'pagibig' => $groupedLoans->sum('pagibig_loan'),
+                'cash_advance' => $groupedLoans->sum('cash_advance'),
+            ];
+        });
+
+        // Calculate overall totals
+        $totals = [
+            'sss' => $loans->sum('sss_loan'),
+            'pagibig' => $loans->sum('pagibig_loan'),
+            'cash_advance' => $loans->sum('cash_advance'),
+        ];
+
+        return view('loans.employee-loans', compact('employee', 'loanTotals', 'totals'));
+    }
 }

@@ -183,16 +183,32 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        var contactInput = document.getElementById('contact_no');
+
+                                        contactInput.addEventListener('input', function() {
+                                            // Remove any non-digit characters
+                                            var cleanedValue = this.value.replace(/\D/g, '');
+
+                                            // Limit to 11 digits
+                                            cleanedValue = cleanedValue.slice(0, 11);
+
+                                            // Update the input value
+                                            this.value = cleanedValue;
+                                        });
+                                    });
+                                    </script>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="birth_date">Birth Date</label>
-                                <div class="input-group date" id="birth_date_picker" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input @error('birth_date') is-invalid @enderror" data-target="#birth_date_picker" id="birth_date" name="birth_date" value="{{ old('birth_date', $employee->birth_date) }}" required placeholder="YYYY-MM-DD"/>
-                                    <div class="input-group-append" data-target="#birth_date_picker" data-toggle="datetimepicker">
-                                        <div class="input-group-text bg-info text-white"><i class="fa fa-calendar"></i></div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-info text-white"><i class="fas fa-calendar"></i></span>
                                     </div>
+                                    <input type="date" class="form-control @error('birth_date') is-invalid @enderror" id="birth_date" name="birth_date" value="{{ old('birth_date', $employee->birth_date) }}" required>
                                 </div>
                                 @error('birth_date')
                                     <span class="invalid-feedback d-block" role="alert">
@@ -208,6 +224,7 @@
                             <div class="form-group">
                                 <label for="gender_id">Gender</label>
                                 <select class="form-control select2 @error('gender_id') is-invalid @enderror" id="gender_id" name="gender_id" required>
+                                    <option value="">Select Gender</option>
                                     @foreach($genders as $gender)
                                         <option value="{{ $gender->id }}" {{ old('gender_id', $employee->gender_id) == $gender->id ? 'selected' : '' }}>{{ $gender->name }}</option>
                                     @endforeach
@@ -217,6 +234,49 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="emergency_name">Emergency Contact Name</label>
+                                <input type="text" class="form-control @error('emergency_name') is-invalid @enderror" id="emergency_name" name="emergency_name" value="{{ old('emergency_name', $employee->emergency_name) }}" required placeholder="Enter Last Name">
+                                @error('emergency_name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="emergency_no">Contact Number</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-info text-white"><i class="fas fa-phone"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control @error('emergency_no') is-invalid @enderror" id="emergency_no" name="emergency_no" value="{{ old('emergency_no', $employee->emergency_no) }}" required placeholder="Enter Contact Number">
+                                </div>
+                                @error('emergency_no')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        var emergencyInput = document.getElementById('emergency_no');
+
+                                        emergencyInput.addEventListener('input', function() {
+                                            // Remove any non-digit characters
+                                            var cleanedValue = this.value.replace(/\D/g, '');
+
+                                            // Limit to 11 digits
+                                            cleanedValue = cleanedValue.slice(0, 11);
+
+                                            // Update the input value
+                                            this.value = cleanedValue;
+                                        });
+                                    });
+                                    </script>
                             </div>
                         </div>
                     </div>
@@ -461,11 +521,11 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="date_hired">Date Hired</label>
-                            <div class="input-group date" id="date_hired_picker" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input @error('date_hired') is-invalid @enderror" data-target="#date_hired_picker" id="date_hired" name="date_hired" value="{{ old('date_hired', $employee->date_hired) }}" required placeholder="YYYY-MM-DD"/>
-                                <div class="input-group-append" data-target="#date_hired_picker" data-toggle="datetimepicker">
-                                    <div class="input-group-text bg-warning text-white"><i class="fa fa-calendar"></i></div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-warning text-white"><i class="fas fa-calendar"></i></span>
                                 </div>
+                                <input type="date" class="form-control @error('date_hired') is-invalid @enderror" id="date_hired" name="date_hired" value="{{ old('date_hired', $employee->date_hired) }}" required>
                             </div>
                             @error('date_hired')
                                 <span class="invalid-feedback d-block" role="alert">
@@ -523,9 +583,8 @@
 @stop
 
 @section('css')
-<link rel="stylesheet" href="/css/admin_custom.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 <style>
 .card-outline {
     border-top: 3px solid;
@@ -559,46 +618,67 @@
 .card:hover {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
-input {
+input:not([type="file"]) {
     text-transform: capitalize;
+}
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+.input-group-text {
+    min-width: 40px;
+    justify-content: center;
+}
+.select2-container--bootstrap4 .select2-selection--single {
+    height: calc(2.25rem + 2px) !important;
+}
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__placeholder {
+    color: #757575;
+    line-height: 2.25rem;
+}
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
+    position: absolute;
+    top: 50%;
+    right: 3px;
+    width: 20px;
+}
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
+    top: 60%;
+    border-color: #343a40 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    width: 0;
+    height: 0;
+    left: 50%;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
 }
 </style>
 @stop
 
 @section('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('.select2').select2({
-            theme: 'bootstrap'
+            theme: 'bootstrap4',
+            width: '100%',
+            placeholder: 'Select an option',
+            allowClear: true
         });
-    //Initialize datetimepicker
-    $('#birth_date_picker, #date_hired_picker').datetimepicker({
-        format: 'YYYY-MM-DD',
-        icons: {
-            time: 'far fa-clock',
-            date: 'far fa-calendar',
-            up: 'fas fa-arrow-up',
-            down: 'fas fa-arrow-down',
-            previous: 'fas fa-chevron-left',
-            next: 'fas fa-chevron-right',
-            today: 'far fa-calendar-check',
-            clear: 'far fa-trash-alt',
-            close: 'fas fa-times'
-        }
-    });
 
-    //BS-custom-file-input
-    bsCustomFileInput.init();
+        //BS-custom-file-input
+        bsCustomFileInput.init();
 
-    // Add smooth scrolling to anchor links
-    $('a[href*="#"]').on('click', function(e) {
-        e.preventDefault();
-        $('html, body').animate({
-            scrollTop: $($(this).attr('href')).offset().top
-        }, 500, 'linear');
+        // Add smooth scrolling to anchor links
+        $('a[href*="#"]').on('click', function(e) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $($(this).attr('href')).offset().top
+            }, 500, 'linear');
+        });
     });
-});
 </script>
 @stop
 

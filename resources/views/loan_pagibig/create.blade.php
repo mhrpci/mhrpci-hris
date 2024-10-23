@@ -34,12 +34,17 @@
                     </div>
                     <div class="form-group">
                         <label for="loan_amount">Loan Amount</label>
-                        <input type="number" name="loan_amount" id="loan_amount" class="form-control" step="0.01" required>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">₱</span>
+                            </div>
+                            <input type="number" name="loan_amount" id="loan_amount" class="form-control" step="0.01" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="interest_rate">Interest Rate (%)</label>
-                        <input type="number" name="interest_rate" id="interest_rate" class="form-control" step="0.01" required>
-                    </div>
+                    {{-- <div class="form-group">
+                        <label for="interest_rate">Interest Rate (%) <small>(Optional)</small></label>
+                        <input type="number" name="interest_rate" id="interest_rate" class="form-control" step="0.01">
+                    </div> --}}
                     <div class="form-group">
                         <label for="loan_term_months">Loan Term (months)</label>
                         <input type="number" name="loan_term_months" id="loan_term_months" class="form-control" required>
@@ -50,3 +55,37 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loanTypeSelect = document.getElementById('loan_type');
+    const interestRateInput = document.getElementById('interest_rate');
+    const loanAmountInput = document.getElementById('loan_amount');
+
+    loanTypeSelect.addEventListener('change', function() {
+        if (this.value === 'HOUSING') {
+            interestRateInput.value = '';
+            interestRateInput.disabled = true;
+        } else {
+            interestRateInput.disabled = false;
+        }
+    });
+
+    loanAmountInput.addEventListener('input', function() {
+        if (loanTypeSelect.value === 'HOUSING') {
+            const amount = parseFloat(this.value);
+            let rate;
+            if (amount <= 500000) {
+                rate = 5.75;
+            } else if (amount <= 1000000) {
+                rate = 6.375;
+            } else if (amount <= 1500000) {
+                rate = 7.0;
+            } else {
+                rate = 8.0;
+            }
+            interestRateInput.value = rate;
+        }
+    });
+});
+</script>

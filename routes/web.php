@@ -42,6 +42,7 @@ use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CashAdvanceController;
 use App\Http\Controllers\PagibigLoanController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,37 @@ use App\Http\Controllers\PagibigLoanController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+
+// Careers routes
+Route::post('/save-job', [CareerController::class, 'saveJob'])->name('save.job');
+Route::post('/unsave-job', [CareerController::class, 'unsaveJob'])->name('unsave.job');
+Route::get('/saved-jobs', [CareerController::class, 'getSavedJobs'])->name('saved.jobs');
+Route::get('/careers', [CareerController::class, 'index'])->name('careers');
+Route::get('/applicants/{id}', [CareerController::class, 'showApplicant'])->name('showApplicant');
+Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
+Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
+Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
+Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
+Route::get('/saved-jobs', [CareerController::class, 'savedJobs'])->name('saved.jobs');
+Route::post('/toggle-save-job', [CareerController::class, 'toggleSaveJob'])->name('toggle.save.job');
+
+//GoogleAuth routes
+Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+Route::post('auth/google/logout', [GoogleAuthController::class, 'logout'])->name('google.logout');
+
+// Hiring routes
+Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->name('related.jobs');
+
+// Properties routes
+Route::get('/properties/{id}/details', [PropertyController::class, 'showDetails'])->name('properties.details');
+
+// Welcome routes
+Route::get('/mhrpci', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
+Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
+
+// Auth routes
 Route::middleware('auth')->group(function () {
     // Our resource routes
     Route::resource('roles', RoleController::class);
@@ -149,22 +181,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-contributions', [ContributionController::class, 'myContributions'])->name('contributions.my');
 
     // Loans routes
-    Route::get('/loans/employee/{employee_id}', [LoanController::class, 'employeeLoans'])->name('loans.employee');
+    Route::get('/loans-employee/{employee_id}', [LoanController::class, 'employeeLoans'])->name('loans.employee');
     Route::get('/loans-employees-list', [LoanController::class, 'allEmployeesLoan'])->name('loans.employees-list');
     Route::get('/my-loans', [LoanController::class, 'myLoans'])->name('loans.my-loans');
-
-    // Careers routes
-    Route::post('/save-job', [CareerController::class, 'saveJob'])->name('save.job');
-    Route::post('/unsave-job', [CareerController::class, 'unsaveJob'])->name('unsave.job');
-    Route::get('/saved-jobs', [CareerController::class, 'getSavedJobs'])->name('saved.jobs');
-    Route::get('/careers', [CareerController::class, 'index'])->name('careers');
-    Route::get('/applicants/{id}', [CareerController::class, 'showApplicant'])->name('showApplicant');
-    Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
-    Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
-    Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
-    Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
-    Route::get('/saved-jobs', [CareerController::class, 'savedJobs'])->name('saved.jobs');
-    Route::post('/toggle-save-job', [CareerController::class, 'toggleSaveJob'])->name('toggle.save.job');
 
     // Tasks routes
     Route::get('/tasks', [TaskController::class, 'checkUserAndShowTasks'])->name('checkUserAndShowTasks');
@@ -177,26 +196,24 @@ Route::middleware('auth')->group(function () {
     Route::post('/loan_sss/generate-payments', [SssLoanController::class, 'generatePayments'])->name('loan_sss.generate_payments');
     Route::post('/loan_sss/{id}/update_status', [SssLoanController::class, 'updateStatus'])->name('loan_sss.update_status');
     Route::post('/sss/destroy-multiple', [SssController::class, 'destroyMultiple'])->name('sss.destroy.multiple');
+    Route::post('/sss/store-all-active', [SssController::class, 'storeAllActive'])->name('sss.store-all-active');
 
     //Pagibig routes
     Route::get('/loan_pagibig/{id}/ledger', [PagibigLoanController::class, 'showLedger'])->name('loan_pagibig.ledger');
     Route::post('/loan_pagibig/generate-payments', [PagibigLoanController::class, 'generatePayments'])->name('loan_pagibig.generate_payments');
     Route::post('/loan_pagibig/{id}/update_status', [PagibigLoanController::class, 'updateStatus'])->name('loan_pagibig.update_status');
+    Route::post('/pagibig/store-all-active', [PagibigController::class, 'storeAllActive'])->name('pagibig.store-all-active');
 
-    //GoogleAuth routes
-    Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
-    Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
-    Route::post('auth/google/logout', [GoogleAuthController::class, 'logout'])->name('google.logout');
+    //Philhealth routes
+    Route::post('/philhealth/store-all-active', [PhilhealthController::class, 'storeAllActive'])->name('philhealth.store-all-active');
 
     // Cash Advances routes
     Route::get('/cash_advances/{id}/ledger', [CashAdvanceController::class, 'ledger'])->name('cash_advances.ledger');
     Route::post('/cash_advances/generate-payments', [CashAdvanceController::class, 'generatePayments'])->name('cash_advances.generate_payments');
+    Route::post('/cash-advances/generate-payment-for-employee', [CashAdvanceController::class, 'generatePaymentForEmployee'])->name('cash_advances.generate_payment_for_employee');
 
     // Post routes
     Route::get('/posts/show/{id}', [PostController::class, 'showPostById'])->name('posts.showById');
-
-    // Properties routes
-    Route::get('/properties/{id}/details', [PropertyController::class, 'showDetails'])->name('properties.details');
 
     // Calendar routes
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
@@ -206,22 +223,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/generate-text', [OpenAIController::class, 'generateText']);
     Route::post('/generate-image', [OpenAIController::class, 'generateImage']);
 
-    // Welcome routes
-    Route::get('/mhrpci', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
-    Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
-
     // Home routes
     Route::get('/fetch-leaves', [HomeController::class, 'fetchLeavesByAuthUserFirstName']);
-    Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    //Login routes
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    //Logout routes
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Policy routes
     Route::get('/policies-page', [PolicyController::class, 'showPolicy'])->name('policies.show-page');
-
-    // Hiring routes
-    Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->name('related.jobs');
 
     // Inventory routes
     Route::post('inventory/import', [ItInventoryController::class, 'import'])->name('inventory.import');
@@ -232,6 +242,16 @@ Route::middleware('auth')->group(function () {
     // Notifications routes
     Route::get('notifications/get',[NotificationsController::class, 'getNotificationsData'])->name('notifications.get');
     Route::get('/notifications/all', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
+
+    // Report routes
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/loans', [ReportController::class, 'generateLoanReport'])->name('reports.loans');
+    Route::post('/reports/contributions', [ReportController::class, 'generateContributionReport'])->name('reports.contributions');
+    Route::post('/reports/attendances', [ReportController::class, 'generateAttendanceReport'])->name('reports.attendances');
+    Route::post('/reports/leaves', [ReportController::class, 'generateLeaveReport'])->name('reports.leaves');
+    Route::post('/reports/hirings', [ReportController::class, 'generateHiringReport'])->name('reports.hirings');
+    Route::post('/reports/careers', [ReportController::class, 'generateCareerReport'])->name('reports.careers');
+    Route::get('/reports/detailed-loan', [ReportController::class, 'generateDetailedLoanReport'])->name('reports.detailed-loan');
 
     // Terms and Privacy routes
     Route::get('/terms', function () {
@@ -246,6 +266,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
     });
+});
 
-    });
     Auth::routes();
+
+
+
+
