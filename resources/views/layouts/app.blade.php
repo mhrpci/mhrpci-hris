@@ -435,11 +435,11 @@
                         <i class="fas fa-file-alt mr-2"></i> Our Policies
                     </a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
+                {{-- <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ url('/calendar') }}" class="nav-link" style="font-size: 1.2rem; font-weight: 200;">
                         <i class="fas fa-calendar"></i> Our Calendar
                     </a>
-                </li>
+                </li> --}}
                 <!-- Add more nav items here -->
             </ul>
 
@@ -535,7 +535,13 @@
                 @else
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                            <img src="{{ Auth::user()->adminlte_image() }}" class="user-image img-circle elevation-2" alt="User Image">
+                            @if(Auth::user()->adminlte_image())
+                                <img src="{{ Auth::user()->adminlte_image() }}" class="user-image img-circle elevation-2" alt="User Image">
+                            @else
+                                <div class="user-image img-circle elevation-2 d-flex justify-content-center align-items-center" style="width: 2.1rem; height: 2.1rem; background-color: #007bff; color: white; font-size: 0.8rem;">
+                                    {{ strtoupper(substr(Auth::user()->first_name, 0, 1) . substr(Auth::user()->last_name, 0, 1)) }}
+                                </div>
+                            @endif
                             <span class="d-none d-md-inline">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">

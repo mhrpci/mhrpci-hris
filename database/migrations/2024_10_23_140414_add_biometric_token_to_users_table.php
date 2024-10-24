@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('biometric_token')->nullable()->after('password');
+            $table->string('device_id')->nullable()->after('biometric_token');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('biometric_token');
+            $table->dropColumn(['biometric_token', 'device_id']);
         });
     }
 };

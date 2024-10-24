@@ -10,7 +10,7 @@ return [
     'company_city' => 'North Reclamation Area, Cebu City',
     'company_zip' => '6000',
     'company_phone' => '(032) 238-1887',
-    'company_email' => 'contact.mhrpci@mhrpci.ph',
+    'company_email' => 'contact@mhrpci.ph',
 
 
 

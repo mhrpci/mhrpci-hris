@@ -459,8 +459,7 @@
         }
     }
 </style>
-
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="row">
         <!-- Welcome section -->
         <div class="col-lg-6 mb-4">
@@ -571,7 +570,7 @@
     </div>
 
     <!-- Remaining Leave Balance section -->
-    @can('normal-employee')
+    @if(auth()->user()->hasRole('Employee'))
         <div class="row">
             <div class="col-lg-6 mb-4">
                 <div class="card">
@@ -594,7 +593,7 @@
                 </div>
             </div>
         </div>
-    @endcan
+    @endif
 
     <!-- Birthdays section -->
     <div class="row">
