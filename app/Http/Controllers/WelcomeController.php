@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Subsidiary;
 use App\Models\Post;
-use App\Models\Property;
 use Illuminate\Support\Carbon;
 
 class WelcomeController extends Controller
@@ -13,9 +12,8 @@ class WelcomeController extends Controller
     {
         $posts = Post::with('user')->latest()->take(6)->get();
         $todayPostsCount = $this->countTodayPosts();
-        $properties = Property::all();
         $subsidiaries = Subsidiary::all();
-        return view('welcome', compact('posts', 'todayPostsCount', 'properties', 'subsidiaries'));
+        return view('welcome', compact('posts', 'todayPostsCount', 'subsidiaries'));
     }
 
     public function showPost($id)

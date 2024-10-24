@@ -5,16 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $subsidiary->name }} - Portfolio</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Reset and base styles */
+        :root {
+            --primary-color: #8b09db;
+            --secondary-color: #6c757d;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --gradient-start: #8b09db;
+            --gradient-end: #4a90e2;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f4f4f4;
-            font-size: 16px;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            font-size: 18px;
             padding-top: 80px;
         }
         .container {
@@ -26,7 +36,7 @@
 
         /* Header styles */
         .header {
-            background-color: #4a148c; /* Deep Purple */
+            background-color: var(--primary-color);
             padding: 20px 0;
             position: fixed;
             width: 100%;
@@ -40,17 +50,36 @@
             align-items: center;
         }
         .logo {
-            color: #fff;
+            color: var(--white);
             font-size: 24px;
             font-weight: 700;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+        .logo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
         }
         .main-nav {
             display: flex;
             align-items: center;
         }
         .nav-link {
-            color: #fff;
+            color: var(--white);
             text-decoration: none;
             font-weight: 500;
             transition: opacity 0.3s;
@@ -63,15 +92,15 @@
             display: none;
             background: none;
             border: none;
-            color: #fff;
+            color: var(--white);
             font-size: 24px;
             cursor: pointer;
         }
 
-        /* Updated Hero section styles */
+        /* Hero section styles */
         .hero-section {
-            background: linear-gradient(135deg, #4a148c 0%, #1a237e 100%);
-            color: #fff;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: var(--white);
             padding: 120px 0 80px;
             margin-top: -80px;
             position: relative;
@@ -90,7 +119,7 @@
             margin-bottom: 40px;
         }
         .hero-text h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 20px;
             letter-spacing: -0.5px;
@@ -98,7 +127,7 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         .hero-text h3 {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 400;
             margin-bottom: 30px;
             opacity: 0.9;
@@ -126,8 +155,8 @@
         .hero-btn {
             display: inline-block;
             padding: 12px 24px;
-            background-color: #fff;
-            color: #4a148c; /* Deep Purple */
+            background-color: var(--white);
+            color: var(--primary-color);
             text-decoration: none;
             border-radius: 30px;
             font-weight: 600;
@@ -148,39 +177,6 @@
             background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
         }
 
-        /* Responsive styles for hero section */
-        @media (min-width: 768px) {
-            .hero-content {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .hero-text {
-                text-align: left;
-                margin-bottom: 0;
-                margin-right: 40px;
-            }
-            .hero-text h3 {
-                margin-left: 0;
-                margin-right: 0;
-            }
-        }
-        @media (max-width: 767px) {
-            .hero-section {
-                padding: 100px 0 60px;
-            }
-            .hero-text h1 {
-                font-size: 2.5rem;
-            }
-            .hero-text h3 {
-                font-size: 1.2rem;
-            }
-            .hero-image {
-                width: 250px;
-                height: 250px;
-            }
-        }
-
         /* Main content styles */
         .main-content {
             padding: 80px 0;
@@ -191,19 +187,20 @@
             gap: 60px;
         }
         .about-section, .image-slider-section, .related-subsidiaries {
-            background-color: #fff;
+            background-color: var(--white);
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
         h2 {
-            color: #4a148c; /* Deep Purple */
-            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-size: 2.2rem;
             margin-bottom: 25px;
         }
         p {
             margin-bottom: 15px;
+            font-size: 1.1rem;
         }
 
         /* Image slider styles */
@@ -240,7 +237,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             border: none;
             font-size: 1.5rem;
-            color: #fff;
+            color: var(--white);
             cursor: pointer;
             padding: 10px 15px;
             border-radius: 50%;
@@ -269,7 +266,7 @@
             transition: background-color 0.3s;
         }
         .slider-dot.active {
-            background-color: #fff;
+            background-color: var(--white);
         }
 
         /* Related subsidiaries styles */
@@ -292,7 +289,7 @@
             transform: translateY(-5px);
         }
         .subsidiary-card h3 {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             margin-bottom: 10px;
             text-align: center;
         }
@@ -310,21 +307,21 @@
         .btn-primary {
             display: inline-block;
             padding: 8px 16px;
-            background-color: #4a148c; /* Deep Purple */
-            color: #fff;
+            background-color: var(--primary-color);
+            color: var(--white);
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s ease;
             font-size: 0.9rem;
         }
         .btn-primary:hover {
-            background-color: #6a1b9a; /* Purple */
+            background-color: var(--gradient-end);
         }
 
         /* Footer styles */
         .footer {
-            background: linear-gradient(135deg, #4a148c 0%, #1a237e 100%);
-            color: #fff;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: var(--white);
             padding: 60px 0 30px;
         }
         .footer-content {
@@ -333,7 +330,7 @@
             gap: 50px;
         }
         .footer-section h2 {
-            color: #fff;
+            color: var(--white);
             font-size: 1.4rem;
             margin-bottom: 15px;
         }
@@ -341,7 +338,7 @@
             margin-bottom: 10px;
         }
         .footer-section a {
-            color: #fff;
+            color: var(--white);
             text-decoration: none;
             transition: opacity 0.3s;
         }
@@ -376,7 +373,7 @@
                 top: 100%;
                 left: 0;
                 right: 0;
-                background-color: #4a148c;
+                background-color: var(--primary-color);
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 20px;
@@ -401,44 +398,6 @@
             .hero-image {
                 margin-left: 40px;
             }
-        }
-
-        /* Add scroll-based header background */
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 50) {
-                header.style.backgroundColor = 'rgba(74, 20, 140, 0.9)'; /* Deep Purple with opacity */
-            } else {
-                header.style.backgroundColor = '#4a148c'; /* Deep Purple */
-            }
-        });
-
-        // Add this script at the end of your body tag or in your existing script section
-        function goBack() {
-            window.history.back();
-        }
-
-        /* Logo styles */
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        .logo-image {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 10px;
-        }
-        .logo-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .logo-text {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
         }
     </style>
 </head>
@@ -495,7 +454,7 @@
             <div class="content-grid">
                 <div class="content-column">
                     <div id="about" class="about-section">
-                        <h2>About {{ $subsidiary->name }}</h2>
+                        <h2>{{ $subsidiary->name }}</h2>
                         @php
                             $sentences = preg_split('/(?<=[.!?])\s+/', $subsidiary->description, -1, PREG_SPLIT_NO_EMPTY);
                             $paragraphs = array_chunk($sentences, 4);

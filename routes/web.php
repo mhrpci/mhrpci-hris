@@ -32,7 +32,6 @@ use App\Http\Controllers\HiringController;
 use App\Http\Controllers\SssController;
 use App\Http\Controllers\PagibigController;
 use App\Http\Controllers\PhilhealthController;
-use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\CalendarController;
@@ -77,9 +76,6 @@ Route::post('auth/google/logout', [GoogleAuthController::class, 'logout'])->name
 // Hiring routes
 Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->name('related.jobs');
 
-// Properties routes
-Route::get('/properties/{id}/details', [PropertyController::class, 'showDetails'])->name('properties.details');
-
 // Welcome routes
 Route::get('/mhrpci', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
 Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
@@ -109,7 +105,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('credentials', CredentialController::class);
     Route::resource('hirings', HiringController::class);
     Route::resource('pagibig', PagibigController::class);
-    Route::resource('properties', PropertyController::class);
     Route::resource('accountabilities', AccountabilityController::class);
     Route::resource('policies', PolicyController::class);
     Route::resource('subsidiaries', SubsidiaryController::class);

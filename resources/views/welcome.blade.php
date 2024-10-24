@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MHR Property Conglomerates, Inc. - Revolutionize Your Business</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -22,9 +21,69 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             line-height: 1.6;
             color: var(--text-color);
+            font-size: 18px; /* Increased base font size */
+        }
+
+        /* Increase font size for headings */
+        h1 {
+            font-size: 2.8rem; /* 50.4px if base font size is 18px */
+        }
+
+        h2 {
+            font-size: 2.2rem; /* 39.6px if base font size is 18px */
+        }
+
+        h3 {
+            font-size: 1.7rem; /* 30.6px if base font size is 18px */
+        }
+
+        /* Adjust paragraph and list item font sizes */
+        p, li {
+            font-size: 1.1rem; /* 19.8px */
+        }
+
+        /* Ensure buttons and inputs have readable text */
+        button, input, select, textarea {
+            font-size: 1.1rem; /* 19.8px */
+        }
+
+        /* Adjust navigation links */
+        .nav-links a {
+            font-size: 1.3rem; /* 23.4px */
+        }
+
+        /* Adjust footer text */
+        footer {
+            font-size: 1rem; /* 18px */
+        }
+
+        /* Responsive font sizes */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px; /* Slightly smaller base font size for mobile */
+            }
+
+            h1 {
+                font-size: 2.5rem; /* 40px if base font size is 16px */
+            }
+
+            h2 {
+                font-size: 2rem; /* 32px if base font size is 16px */
+            }
+
+            h3 {
+                font-size: 1.5rem; /* 24px if base font size is 16px */
+            }
+        }
+
+        /* Ensure minimum font size for very small screens */
+        @media (max-width: 320px) {
+            body {
+                font-size: 14px;
+            }
         }
 
         .container {
@@ -879,153 +938,19 @@
         }
 
         .subsidiary-name {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
         }
 
         .subsidiary-abbr {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--secondary-color);
             margin-bottom: 0.5rem;
         }
 
         .subsidiary-description {
-            font-size: 0.9rem;
-            color: var(--text-color);
-            line-height: 1.5;
-        }
-
-        .no-subsidiaries-message {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 2rem;
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .no-subsidiaries-message i {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .no-subsidiaries-message p {
             font-size: 1rem;
-            color: var(--text-color);
-        }
-
-        @media (max-width: 768px) {
-            .subsidiaries-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-        }
-
-        @media (max-width: 480px) {
-            .subsidiaries-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Subsidiaries Section Styles */
-        #subsidiaries {
-            background-color: var(--light-bg);
-            padding: 4rem 0;
-        }
-
-        .section-description {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-
-        .subsidiaries-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .subsidiary-card-wrapper {
-            display: flex;
-        }
-
-        .card-link {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-grow: 1;
-        }
-
-        .subsidiary-card {
-            background-color: var(--white);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .subsidiary-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .subsidiary-image {
-            position: relative;
-            width: 100%;
-            padding-top: 75%; /* 4:3 Aspect Ratio */
-            overflow: hidden;
-        }
-
-        .subsidiary-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-
-        .subsidiary-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f0f0f0;
-            color: #999;
-            font-size: 3rem;
-        }
-
-        .subsidiary-info {
-            padding: 1rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .subsidiary-name {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .subsidiary-abbr {
-            font-size: 0.9rem;
-            color: var(--secondary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .subsidiary-description {
-            font-size: 0.9rem;
             color: var(--text-color);
             line-height: 1.5;
         }
@@ -1086,11 +1011,13 @@
         }
 
         .post-card h3 {
+            font-size: 1.4rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
         }
 
         .post-card p {
+            font-size: 1.1rem;
             margin-bottom: 1rem;
         }
 
@@ -1235,13 +1162,13 @@
         }
 
         .subsidiary-info h3 {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
         }
 
         .subsidiary-info p {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-color);
             line-height: 1.5;
         }
@@ -1651,19 +1578,19 @@
         }
 
         .property-details h3 {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-bottom: 0.5rem;
             color: var(--primary-color);
         }
 
         .property-location {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-color);
             margin-bottom: 0.5rem;
         }
 
         .property-description {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-color);
             margin-bottom: 1rem;
         }
@@ -1676,7 +1603,7 @@
             border-radius: 5px;
             text-decoration: none;
             transition: background-color 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 600;
             margin-top: 1rem;
         }
@@ -2080,7 +2007,6 @@
                 <ul class="nav-links">
                     <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
                     <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
-                    <li><a href="#properties" class="nav-link" title="Our Properties">Properties</a></li>
                     <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
                     {{-- <li>
                         <a href="#latest-posts" class="nav-link" title="Read Our Announcements">
@@ -2139,7 +2065,6 @@
         <ul class="nav-links">
             <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
             <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
-            <li><a href="#properties" class="nav-link" title="Our Properties">Properties</a></li>
             <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
         </ul>
@@ -2254,56 +2179,6 @@
             </div>
         </section>
 
-        <section id="properties" class="parallax-section">
-            <div class="parallax-bg"></div>
-            <div class="container">
-                <div class="section-content">
-                    <h2 class="animate-on-scroll">Explore Our Properties <span></span></h2>
-                    <p class="section-description animate-on-scroll centered-text">Discover a wide range of properties for rent and sale, tailored to meet your unique needs and preferences.</p>
-                    <div class="properties-filter animate-on-scroll">
-                        <button class="filter-btn active" data-filter="all">
-                            <i class="fas fa-th-large"></i>
-                            <span>All Properties</span>
-                            <span class="property-count" data-count="all">{{ $properties->count() }}</span>
-                        </button>
-                        <button class="filter-btn" data-filter="rent">
-                            <i class="fas fa-key"></i>
-                            <span>For Rent</span>
-                            <span class="property-count" data-count="rent">{{ $properties->where('type', 'rent')->count() }}</span>
-                        </button>
-                        <button class="filter-btn" data-filter="sale">
-                            <i class="fas fa-home"></i>
-                            <span>For Sale</span>
-                            <span class="property-count" data-count="sale">{{ $properties->where('type', 'sale')->count() }}</span>
-                        </button>
-                    </div>
-                    <div class="properties-grid" style="{{ $properties->isEmpty() ? 'display: none;' : '' }}">
-                        @foreach($properties as $property)
-                            <div class="property-card animate-on-scroll" data-category="{{ $property->type }}">
-                                <div class="property-image">
-                                    <img src="{{ asset('storage/' . $property->main_image) }}" alt="{{ $property->property_name }}" class="img-fluid">
-                                    <div class="property-badge">{{ $property->type === 'rent' ? 'For Rent' : 'For Sale' }}</div>
-                                </div>
-                                <div class="property-details">
-                                    <h3>{{ $property->property_name }}</h3>
-                                    <p class="property-location"><i class="fas fa-map-marker-alt"></i> {{ $property->location }}</p>
-                                    <p class="property-description">{{ Str::limit($property->description, 100) }}</p>
-                                    <a href="{{ route('properties.details', $property->id) }}" class="read-more-btn">View Details</a>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <div class="no-properties-message animate-on-scroll" style="{{ $properties->isEmpty() ? '' : 'display: none;' }}">
-                        <i class="fas fa-home fa-3x"></i>
-                        <p>No properties available at the moment. Please check back later.</p>
-                    </div>
-                    <div class="load-more-container">
-                        <button id="load-more" class="cta-btn" style="{{ $properties->count() <= 6 ? 'display: none;' : '' }}">Load More</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <footer id="contact">
@@ -2318,7 +2193,6 @@
                     <ul>
                         <li><a href="#about">About Us</a></li>
                         <li><a href="#subsidiaries">Our Subsidiaries</a></li>
-                        <li><a href="#properties">Properties</a></li>
                         <li><a href="{{ route('careers') }}">Careers</a></li>
                     </ul>
                         </div>
@@ -2601,75 +2475,6 @@
 
             // Check on scroll
             window.addEventListener('scroll', checkScroll);
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const propertyCards = document.querySelectorAll('.property-card');
-            const loadMoreBtn = document.getElementById('load-more');
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const propertiesGrid = document.querySelector('.properties-grid');
-            const noPropertiesMessage = document.querySelector('.no-properties-message');
-            let visibleCards = 6;
-
-            // Initially hide cards beyond the visible limit
-            propertyCards.forEach((card, index) => {
-                if (index >= visibleCards) {
-                    card.style.display = 'none';
-                }
-            });
-
-            // Load More functionality
-            loadMoreBtn.addEventListener('click', function() {
-                const hiddenCards = document.querySelectorAll('.property-card[style="display: none;"]');
-                const cardsToShow = hiddenCards.length > 6 ? 6 : hiddenCards.length;
-
-                for (let i = 0; i < cardsToShow; i++) {
-                    hiddenCards[i].style.display = 'block';
-                }
-
-                visibleCards += cardsToShow;
-
-                if (hiddenCards.length <= 6) {
-                    loadMoreBtn.style.display = 'none';
-                }
-            });
-
-            // Filtering functionality
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const filter = this.getAttribute('data-filter');
-
-                    filterBtns.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-
-                    let visibleCount = 0;
-
-                    propertyCards.forEach((card, index) => {
-                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                            card.style.display = index < visibleCards ? 'block' : 'none';
-                            visibleCount++;
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-
-                    // Show/hide no properties message
-                    if (visibleCount === 0) {
-                        propertiesGrid.style.display = 'none';
-                        noPropertiesMessage.style.display = 'block';
-                        loadMoreBtn.style.display = 'none';
-                    } else {
-                        propertiesGrid.style.display = 'grid';
-                        noPropertiesMessage.style.display = 'none';
-                        loadMoreBtn.style.display = visibleCount > visibleCards ? 'inline-block' : 'none';
-                    }
-                });
-            });
-
-            // Initial check for load more button visibility
-            if (propertyCards.length <= visibleCards) {
-                loadMoreBtn.style.display = 'none';
-            }
         });
 
         document.addEventListener('DOMContentLoaded', function() {

@@ -810,7 +810,7 @@
                                 <li class="nav-item">
                                     <a href="{{ url('/inventory') }}" class="nav-link {{ Request::is('inventory*') ? 'active' : '' }}">
                                         <i class="fas fa-cubes nav-icon"></i>
-                                        <p>IT Inventory</p>
+                                        <p>Inventory</p>
                                     </a>
                                 </li>
                                 @endcanany
@@ -819,14 +819,6 @@
                                     <a href="{{ url('/subsidiaries') }}" class="nav-link {{ Request::is('subsidiaries*') ? 'active' : '' }}">
                                         <i class="fas fa-industry nav-icon"></i>
                                         <p>Subsidiaries</p>
-                                    </a>
-                                </li>
-                                @endcan
-                                @can('super-admin')
-                                <li class="nav-item">
-                                    <a href="{{ url('/properties') }}" class="nav-link {{ Request::is('properties*') ? 'active' : '' }}">
-                                        <i class="fas fa-building nav-icon"></i>
-                                        <p>Properties</p>
                                     </a>
                                 </li>
                                 @endcan
