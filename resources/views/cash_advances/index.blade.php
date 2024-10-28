@@ -33,7 +33,7 @@
                 <small class="description">Company Cash Advance</small>
             </div>
         </a>
-        <a href="{{ route('philhealth.index') }}" class="contribution-link {{ request()->routeIs('philhealth.index') ? 'active' : '' }}">
+        <a href="{{ route('loans.employees-list') }}" class="contribution-link {{ request()->routeIs('loans.employees-list') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-users"></i>
             </div>
