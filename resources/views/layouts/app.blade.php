@@ -856,9 +856,10 @@
                         </li>
                         @endif
                         @endauth
-                        <li class="nav-item d-none d-sm-inline-block">
-                            <a href="{{ url('/birthdays') }}" class="nav-link" style="font-size: 1.2rem; font-weight: 200;">
-                                <i class="fas fa-birthday-cake mr-2"></i> Birthdays
+                        <li class="nav-item">
+                            <a href="{{ url('/birthdays') }}" class="nav-link {{ Request::is('birthdays*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-birthday-cake"></i>
+                                <p>Birthdays</p>
                             </a>
                         </li>
                         @can('super-admin')
