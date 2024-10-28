@@ -8,6 +8,8 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Loan;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class CashAdvanceController extends Controller
 {
@@ -21,32 +23,106 @@ class CashAdvanceController extends Controller
     public function create()
     {
         $oneYearAgo = now()->subYear();
-        $employees = Employee::where('date_hired', '<=', $oneYearAgo)->get();
+
+        // Check if the authenticated user has the role of 'employee'
+        if (auth()->user()->hasRole('Employee')) {
+            // Get the employee with the same email address as the authenticated user
+            $employees = Employee::where('email_address', auth()->user()->email)
+                ->where('date_hired', '<=', $oneYearAgo)
+                ->get();
+        } else {
+            // For other roles, get all employees who are eligible
+            $employees = Employee::where('date_hired', '<=', $oneYearAgo)->get();
+        }
+
         return view('cash_advances.create', compact('employees'));
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'cash_advance_amount' => 'required|numeric|min:0',
-            'repayment_term' => 'required|integer|min:1',
+            'repayment_term' => 'required|integer|min:1|max:24',
+            'signature' => 'required|string',
+            'reference_number' => 'nullable|string|unique:cash_advances,reference_number'
         ]);
 
-        $employee = Employee::findOrFail($validatedData['employee_id']);
+        try {
+            $employee = Employee::findOrFail($request->input('employee_id'));
 
-        if (!$this->isEmployeeEligibleForCashAdvance($employee)) {
+            // Check if employee has an active cash advance
+            $hasActiveCashAdvance = CashAdvance::where('employee_id', $employee->id)
+                ->whereIn('status', ['pending', 'active'])
+                ->exists();
+
+            if ($hasActiveCashAdvance) {
+                return redirect()->route('cash_advances.create')
+                    ->with('error', 'Employee already has an active or pending cash advance.')
+                    ->withInput();
+            }
+
+            if (!$this->isEmployeeEligibleForCashAdvance($employee)) {
+                return redirect()->route('cash_advances.create')
+                    ->with('error', 'Employee must be hired for at least one year to be eligible for a cash advance.')
+                    ->withInput();
+            }
+
+            // Calculate monthly amortization and total repayment
+            $cashAdvanceAmount = $request->input('cash_advance_amount');
+            $repaymentTerm = $request->input('repayment_term');
+            $monthlyAmortization = $cashAdvanceAmount / $repaymentTerm;
+            $totalRepayment = $cashAdvanceAmount;
+
+            // Process and store signature
+            $signatureData = $request->input('signature');
+            $signatureFileName = null;
+
+            if ($signatureData) {
+                // Remove data:image/png;base64, from the beginning of the string
+                $signatureImage = substr($signatureData, strpos($signatureData, ',') + 1);
+
+                // Generate unique filename
+                $signatureFileName = 'signatures/cash-advance-' . uniqid() . '-' . time() . '.png';
+
+                // Ensure the signatures directory exists
+                Storage::disk('public')->makeDirectory('signatures');
+
+                // Store the signature
+                Storage::disk('public')->put($signatureFileName, base64_decode($signatureImage));
+            }
+
+            // Generate reference number
+            $referenceNumber = $this->generateUniqueReferenceNumber();
+
+            // Create cash advance record
+            $cashAdvance = CashAdvance::create([
+                'reference_number' => $referenceNumber,
+                'employee_id' => $request->input('employee_id'),
+                'cash_advance_amount' => $cashAdvanceAmount,
+                'repayment_term' => $repaymentTerm,
+                'monthly_amortization' => $monthlyAmortization,
+                'total_repayment' => $totalRepayment,
+                'status' => 'pending',
+                'signature' => $signatureFileName
+            ]);
+
+            if (auth()->user()->hasRole('Employee')) {
+                return redirect()->route('cash_advances.create')
+                    ->with('success', 'Cash advance application submitted successfully.');
+            } else {
+                return redirect()->route('cash_advances.index')
+                    ->with('success', 'Cash advance application submitted successfully.');
+            }
+
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Cash Advance Creation Error: ' . $e->getMessage());
+
             return redirect()->route('cash_advances.create')
-                ->with('error', 'Employee must be hired for at least one year to be eligible for a cash advance.')
+                ->with('error', 'An error occurred while processing your request. Please try again.')
                 ->withInput();
         }
-
-        $cashAdvance = new CashAdvance($validatedData);
-        $cashAdvance->status = 'active';
-        $cashAdvance->calculateLoanDetails();
-        $cashAdvance->save();
-
-        return redirect()->route('cash_advances.index')->with('success', 'Cash Advance created successfully.');
     }
 
     public function show(CashAdvance $cashAdvance)
@@ -79,6 +155,16 @@ class CashAdvanceController extends Controller
     public function ledger($id)
     {
         $cashAdvance = CashAdvance::with(['employee', 'payments'])->findOrFail($id);
+
+        // Check if user has Employee role and if the cash advance belongs to them
+        if (auth()->user()->hasRole('Employee')) {
+            $employee = Employee::where('email_address', auth()->user()->email)->first();
+
+            if (!$employee || $cashAdvance->employee_id !== $employee->id) {
+                abort(403, 'Unauthorized access to this cash advance ledger.');
+            }
+        }
+
         return view('cash_advances.ledger', compact('cashAdvance'));
     }
 
@@ -191,5 +277,15 @@ class CashAdvanceController extends Controller
         $today = Carbon::now();
 
         return $hireDate->diffInDays($today) >= 365;
+    }
+
+    private function generateUniqueReferenceNumber()
+    {
+        do {
+            // Format: CA-YYYYMMDD-XXXX (e.g., CA-20240318-1234)
+            $referenceNumber = 'CA-' . date('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        } while (CashAdvance::where('reference_number', $referenceNumber)->exists());
+
+        return $referenceNumber;
     }
 }

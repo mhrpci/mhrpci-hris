@@ -7,9 +7,15 @@
             <h1 class="h2 text-primary mb-0">SSS Loan Ledger: {{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</h1>
         </div>
         <div class="col-auto">
+            @if(auth()->user()->hasRole('Employee'))
+            <a href="{{ route('loans.my-loans') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left mr-2"></i>Back to My Loans
+            </a>
+            @else
             <a href="{{ route('loan_sss.index') }}" class="btn btn-outline-primary">
                 <i class="fas fa-arrow-left mr-2"></i>Back to SSS Loans
             </a>
+            @endif
         </div>
     </div>
 

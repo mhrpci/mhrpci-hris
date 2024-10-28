@@ -42,6 +42,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CashAdvanceController;
 use App\Http\Controllers\PagibigLoanController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\EmployeeBirthdayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,7 +117,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('philhealth', PhilhealthController::class)->except(['edit', 'update']);
 
     // Employees routes
-    Route::get('/employees/birthdays', [EmployeeController::class, 'birthdays'])->name('employees.birthdays');
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
     Route::post('/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
     Route::get('/employees/filter', [EmployeeController::class, 'filter'])->name('employees.filter');
@@ -261,9 +261,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
     });
+    Route::post('push-subscription', [NotificationsController::class, 'storePushSubscription'])
+    ->name('push-subscription.store');
+    Route::get('/birthdays', [EmployeeBirthdayController::class, 'index'])->name('birthdays');
 });
 
     Auth::routes();
+
+
+
+
 
 
 

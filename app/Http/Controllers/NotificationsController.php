@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Events\NewNotification;
 use Illuminate\Support\Facades\Cache;
-
+use App\Models\CashAdvance;
 class NotificationsController extends Controller
 {
     // Initialize notification counts for each category
@@ -22,7 +22,8 @@ class NotificationsController extends Controller
         'holidays' => [],
         'leave_requests' => [],
         'tasks' => [],
-        'job_applications' => [] // Add job applications to the notifications array
+        'job_applications' => [],
+        'cash_advances' => [] // Add cash advances to the notifications array
     ];
 
     // Method to fetch notifications data
@@ -64,6 +65,7 @@ class NotificationsController extends Controller
             $this->generateEmployeeLeaveNotifications();
             $this->generateTaskNotifications();
             $this->generateJobApplicationNotifications();
+            $this->generateCashAdvanceNotifications(); // Add this line
 
             $newCount = $this->countTotalNotifications();
 
@@ -289,6 +291,96 @@ class NotificationsController extends Controller
                     'details' => "Leave details: {$leave->reason}. Updated by: {$updaterName}"
                 ];
                 $this->notifications['leave_requests'][] = $notification;
+            }
+        }
+    }
+
+    // Add this new method
+    private function generateCashAdvanceNotifications()
+    {
+        $authUser = Auth::user();
+
+        // For admins - show pending cash advance requests
+        if ($authUser->hasRole(['Super Admin', 'Admin'])) {
+            $pendingAdvances = CashAdvance::with('employee')
+                ->where('status', 'pending')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            foreach ($pendingAdvances as $advance) {
+                $notification = [
+                    'icon' => 'fas fa-fw fa-money-bill-wave text-success',
+                    'text' => "{$advance->employee->first_name} {$advance->employee->last_name} requested a cash advance of " .
+                             number_format($advance->cash_advance_amount, 2),
+                    'time' => $advance->created_at->diffForHumans(),
+                    'details' => "Reference: {$advance->reference_number}\n" .
+                                "Amount: ₱" . number_format($advance->cash_advance_amount, 2) . "\n" .
+                                "Repayment Term: {$advance->repayment_term} months\n" .
+                                "Monthly Amortization: ₱" . number_format($advance->monthly_amortization, 2)
+                ];
+                $this->notifications['cash_advances'][] = $notification;
+            }
+
+            // Add notifications for cash advances with zero remaining balance but not yet marked as complete
+            $completedAdvances = CashAdvance::with('employee')
+                ->where('status', 'active')
+                ->get()
+                ->filter(function($advance) {
+                    return $advance->remainingBalance() == 0;
+                });
+
+            foreach ($completedAdvances as $advance) {
+                $notification = [
+                    'icon' => 'fas fa-fw fa-check-circle text-success',
+                    'text' => "Cash advance for {$advance->employee->first_name} {$advance->employee->last_name} has been fully paid",
+                    'time' => now()->diffForHumans(),
+                    'details' => "Reference: {$advance->reference_number}\n" .
+                                "Total Amount: ₱" . number_format($advance->cash_advance_amount, 2) . "\n" .
+                                "Status: Ready to mark as complete"
+                ];
+                $this->notifications['cash_advances'][] = $notification;
+            }
+        }
+
+        // For employees - show status updates of their cash advance requests
+        if ($authUser->hasRole('Employee')) {
+            $employee = Employee::where('email_address', $authUser->email)->first();
+            if ($employee) {
+                $cashAdvances = CashAdvance::where('employee_id', $employee->id)
+                    ->whereIn('status', ['active', 'rejected'])
+                    ->get();
+
+                foreach ($cashAdvances as $advance) {
+                    $notification = [
+                        'icon' => 'fas fa-fw fa-money-bill-wave text-success',
+                        'text' => "Your cash advance request (₱" . number_format($advance->cash_advance_amount, 2) . ") has been {$advance->status}",
+                        'time' => $advance->updated_at->diffForHumans(),
+                        'details' => "Reference: {$advance->reference_number}\n" .
+                                    "Amount: ₱" . number_format($advance->cash_advance_amount, 2) . "\n" .
+                                    "Status: " . ucfirst($advance->status)
+                    ];
+                    $this->notifications['cash_advances'][] = $notification;
+                }
+
+                // Add notifications for employee's cash advances with zero remaining balance but not yet marked as complete
+                $completedAdvances = CashAdvance::where('employee_id', $employee->id)
+                    ->where('status', 'active')
+                    ->get()
+                    ->filter(function($advance) {
+                        return $advance->remainingBalance() == 0;
+                    });
+
+                foreach ($completedAdvances as $advance) {
+                    $notification = [
+                        'icon' => 'fas fa-fw fa-check-circle text-success',
+                        'text' => "Congratulations! Your cash advance has been fully paid",
+                        'time' => now()->diffForHumans(),
+                        'details' => "Reference: {$advance->reference_number}\n" .
+                                    "Total Amount: ₱" . number_format($advance->cash_advance_amount, 2) . "\n" .
+                                    "Status: Ready to mark as complete"
+                    ];
+                    $this->notifications['cash_advances'][] = $notification;
+                }
             }
         }
     }

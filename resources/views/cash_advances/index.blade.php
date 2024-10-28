@@ -84,11 +84,13 @@
         <table id="cash_advances" class="table table-bordered table-striped">
             <thead>
             <tr>
+                <th>Reference Number</th>
                 <th>Employee Name</th>
                 <th>Loan Amount</th>
                 <th>Repayment Term</th>
                 <th>Monthly Amortization</th>
                 <th>Total Repayment</th>
+                <th>Remaining Balance</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -96,14 +98,18 @@
         <tbody>
             @foreach($cashAdvances as $loan)
                 <tr>
+                    <td>{{ $loan->reference_number }}</td>
                     <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
                     <td>₱{{ number_format($loan->cash_advance_amount, 2) }}</td>
                     <td>{{ $loan->repayment_term }} {{ $loan->repayment_term <= 1 ? 'Month' : 'Months' }}</td>
                     <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
                     <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
+                    <td>₱{{ number_format($loan->remainingBalance(), 2) }}</td>
                     <td>
                         @if($loan->status == 'active')
                             <span class="badge badge-success">{{ $loan->status }}</span>
+                        @elseif($loan->status == 'pending')
+                            <span class="badge badge-warning">{{ $loan->status }}</span>
                         @else
                             <span class="badge badge-primary">{{ $loan->status }}</span>
                         @endif
@@ -115,10 +121,15 @@
                                 <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
+                                    <a href="{{ route('cash_advances.show', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-eye"></i>&nbsp;View Details
+                                    </a>
+                                    @endif
                                     <a href="{{ route('cash_advances.ledger', $loan->id) }}" class="dropdown-item">
                                         <i class="fas fa-book"></i>&nbsp;Ledger
                                     </a>
-                                    @if($loan->remainingBalance() == 0)
+                                    @if((auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin')) && $loan->status === 'active')
                                         <a href="{{ route('cash_advances.edit', $loan->id) }}" class="dropdown-item">
                                             <i class="fas fa-edit"></i>&nbsp;Update Status
                                         </a>
@@ -343,3 +354,4 @@
     });
 </script>
 @endsection
+

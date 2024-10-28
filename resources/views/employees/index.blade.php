@@ -29,9 +29,6 @@
                                 Add Employee <i class="fas fa-plus-circle"></i>
                             </a>
                             @endcan
-                            <a href="{{ route('employees.birthdays') }}" class="btn btn-info btn-sm rounded-pill mr-2 mb-2">
-                                View Birthdays <i class="fas fa-calendar-alt"></i>
-                            </a>
                             <button class="btn btn-primary btn-sm rounded-pill mr-2 mb-2" data-toggle="modal" data-target="#importModal">
                                 Import Employees <i class="fas fa-file-import"></i>
                             </button>

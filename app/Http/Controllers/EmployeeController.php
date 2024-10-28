@@ -313,6 +313,7 @@ public function update(Request $request, $slug): RedirectResponse
             'bio' => $employee->position->name,
             'profile_image' => $employee->profile,
             'contact_no' => $employee->contact_no,
+            'date_hired' => $employee->date_hired,
         ];
 
         if ($request->hasFile('profile_image')) {
@@ -357,33 +358,6 @@ public function update(Request $request, $slug): RedirectResponse
     public function export()
     {
         return Excel::download(new EmployeesExport, 'employees.xlsx');
-    }
-
-    public function birthdays()
-    {
-        $employees = Employee::all();
-        $birthdays = [];
-
-        // Initialize the $birthdays array with all months
-        $months = [
-            'January', 'February', 'March', 'April',
-            'May', 'June', 'July', 'August',
-            'September', 'October', 'November', 'December'
-        ];
-
-        foreach ($months as $month) {
-            $birthdays[$month] = []; // Set each month to an empty array initially
-        }
-
-        foreach ($employees as $employee) {
-            $birthMonth = date('F', strtotime($employee->birth_date)); // Get the month name
-            $birthdays[$birthMonth][] = [
-                'name' => $employee->first_name . ' ' . $employee->last_name,
-                'date' => date('j', strtotime($employee->birth_date)), // Get the day of the month
-            ];
-        }
-
-        return view('employees.birthdays', compact('birthdays', 'months'));
     }
 
     public function getStatus($id)

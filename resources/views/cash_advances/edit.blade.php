@@ -9,12 +9,18 @@
         <div class="form-group">
             <label for="status">Status</label>
             <select name="status" id="status" class="form-control" required>
-                <option value="active" {{ $cashAdvance->status == 'active' ? 'selected' : '' }}>Active</option>
-                <option value="complete" {{ $cashAdvance->status == 'complete' ? 'selected' : '' }}>Complete</option>
+                @if($cashAdvance->status == 'complete')
+                    <option value="complete" selected>Complete</option>
+                @else
+                    <option value="pending" {{ $cashAdvance->status == 'pending' ? 'selected' : '' }} {{ $cashAdvance->status == 'active' ? 'disabled' : '' }}>Pending</option>
+                    <option value="active" {{ $cashAdvance->status == 'active' ? 'selected' : '' }}>Active</option>
+                    @if($cashAdvance->remainingBalance() == 0)
+                        <option value="complete" {{ $cashAdvance->status == 'complete' ? 'selected' : '' }}>Complete</option>
+                    @endif
+                @endif
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Update Status</button>
     </form>
 </div>
 @endsection
-

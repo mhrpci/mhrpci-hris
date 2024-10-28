@@ -40,30 +40,44 @@
         <div class="card-body">
             <div class="row mb-4">
                 <!-- Info Boxes -->
-                <div class="col">
-                    <div class="info-box bg-primary">
-                        <span class="info-box-icon"><i class="fas fa-money-bill-wave"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total SSS Loan</span>
-                            <span class="info-box-number">₱{{ number_format($totals['sss_loan'], 2) }}</span>
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <div class="info-box bg-primary h-100 shadow-sm">
+                        <span class="info-box-icon d-flex align-items-center justify-content-center">
+                            <i class="fas fa-money-bill-wave fa-lg"></i>
+                        </span>
+                        <div class="info-box-content p-3">
+                            <h5 class="info-box-text mb-2">Total SSS Loan</h5>
+                            <h4 class="info-box-number mb-0">₱{{ number_format($totals['sss_loan'], 2) }}</h4>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="info-box bg-success">
-                        <span class="info-box-icon"><i class="fas fa-home"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total Pag-IBIG Loan</span>
-                            <span class="info-box-number">₱{{ number_format($totals['pagibig_loan'], 2) }}</span>
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <div class="info-box bg-success h-100 shadow-sm">
+                        <span class="info-box-icon d-flex align-items-center justify-content-center">
+                            <i class="fas fa-home fa-lg"></i>
+                        </span>
+                        <div class="info-box-content p-3">
+                            <h5 class="info-box-text mb-2">Total Pag-IBIG Loan</h5>
+                            <h4 class="info-box-number mb-0">₱{{ number_format($totals['pagibig_loan'], 2) }}</h4>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="info-box bg-info">
-                        <span class="info-box-icon"><i class="fas fa-hand-holding-usd"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Total Cash Advance</span>
-                            <span class="info-box-number">₱{{ number_format($totals['cash_advance'], 2) }}</span>
+                <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <div class="info-box bg-info h-100 shadow-sm position-relative">
+                        <span class="info-box-icon d-flex align-items-center justify-content-center">
+                            <i class="fas fa-hand-holding-usd fa-lg"></i>
+                        </span>
+                        <div class="info-box-content p-3 d-flex flex-column">
+                            <div>
+                                <h5 class="info-box-text mb-2">Total Cash Advance</h5>
+                                <h4 class="info-box-number mb-0">₱{{ number_format($totals['cash_advance'], 2) }}</h4>
+                            </div>
+                            @if($employee->cashAdvances->isNotEmpty())
+                                <a href="{{ route('cash_advances.ledger', $employee->cashAdvances->first()->id) }}"
+                                   class="btn btn-light btn-sm mt-3 w-100 text-info">
+                                    <i class="fas fa-book"></i> View Ledger
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>

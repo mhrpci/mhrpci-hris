@@ -365,6 +365,7 @@
             debugger;
         }, 100);
     </script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -550,7 +551,13 @@
                                 <img src="{{ Auth::user()->adminlte_image() }}" class="img-circle elevation-2" alt="User Image">
                                 <p>
                                     {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
-                                    <small>Member since {{ Auth::user()->created_at->format('M. Y') }}</small>
+                                    <small>Member since
+                                        @if(Auth::user()->date_hired)
+                                            {{ Auth::user()->date_hired }}
+                                        @else
+                                            {{ Auth::user()->created_at->format('F d, Y') }}
+                                        @endif
+                                    </small>
                                 </p>
                             </li>
                             <!-- Menu Footer-->
@@ -755,13 +762,19 @@
                                 @auth
                                     @if(auth()->user()->hasRole('Employee'))
                                     <li class="nav-item">
+                                        <a href="{{ route('cash_advances.create') }}" class="nav-link {{ Request::is('cash_advances/create') ? 'active' : '' }}">
+                                            <i class="fas fa-money-bill-wave nav-icon"></i>
+                                            <p>Apply Company Loan</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="{{ url('/my-contributions') }}" class="nav-link {{ Request::is('my-contributions*') ? 'active' : '' }}">
                                             <i class="fas fa-solid fa-gift nav-icon"></i>
                                             <p>My Contribution</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url('/my-loans') }}" class="nav-link {{ Request::is('my-loans*') ? 'active' : '' }}">
+                                        <a href="{{ url('/my-loans') }}" class="nav-link {{ Request::is('my-loans*') || Request::is('cash_advances/*/ledger') ? 'active' : '' }}">
                                             <i class="fas fa-hand-holding-usd nav-icon"></i>
                                             <p>My Loan</p>
                                         </a>
@@ -843,6 +856,11 @@
                         </li>
                         @endif
                         @endauth
+                        <li class="nav-item d-none d-sm-inline-block">
+                            <a href="{{ url('/birthdays') }}" class="nav-link" style="font-size: 1.2rem; font-weight: 200;">
+                                <i class="fas fa-birthday-cake mr-2"></i> Birthdays
+                            </a>
+                        </li>
                         @can('super-admin')
                         <li class="nav-item">
                             <a href="{{ url('/backups') }}" class="nav-link {{ Request::is('backups*') ? 'active' : '' }}">

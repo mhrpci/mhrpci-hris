@@ -16,6 +16,8 @@ class CashAdvance extends Model
         'monthly_amortization',
         'total_repayment',
         'status',
+        'signature',
+        'reference_number',
     ];
 
     protected $casts = [

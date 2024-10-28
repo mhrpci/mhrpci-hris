@@ -2,28 +2,142 @@
 
 @section('content')
 <div class="container">
-    <h1>Cash Advance Details</h1>
-    <dl class="row">
-        <dt class="col-sm-3">Employee</dt>
-        <dd class="col-sm-9">{{ $cashAdvance->employee->name }}</dd>
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+            <h2><i class="fas fa-file-invoice-dollar me-2"></i> Cash Advance Details</h2>
+            <div>
+                <a href="{{ route('cash_advances.index') }}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back to List
+                </a>
+            </div>
+        </div>
 
-        <dt class="col-sm-3">Amount</dt>
-        <dd class="col-sm-9">{{ number_format($cashAdvance->cash_advance_amount, 2) }}</dd>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0"><i class="fas fa-user me-2"></i> Employee Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover">
+                                <tr>
+                                    <th class="bg-light" width="35%">Employee Name:</th>
+                                    <td>{{ $cashAdvance->employee->last_name }} {{ $cashAdvance->employee->first_name }}, {{ $cashAdvance->employee->middle_name ?? ' '}} {{ $cashAdvance->employee->suffix ?? ' ' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Employee ID:</th>
+                                    <td>{{ $cashAdvance->employee->company_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Department:</th>
+                                    <td>{{ $cashAdvance->employee->department->name }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-        <dt class="col-sm-3">Repayment Term</dt>
-        <dd class="col-sm-9">{{ $cashAdvance->repayment_term }} months</dd>
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0"><i class="fas fa-money-check-alt me-2"></i> Cash Advance Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover">
+                                <tr>
+                                    <th class="bg-light" width="35%">Reference Number:</th>
+                                    <td>{{ ($cashAdvance->reference_number) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Date Requested:</th>
+                                    <td>{{ $cashAdvance->created_at->format('F d, Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Cash Advance Amount:</th>
+                                    <td class="font-weight-bold">₱ {{ number_format($cashAdvance->cash_advance_amount, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Repayment Term:</th>
+                                    <td>{{ $cashAdvance->repayment_term }} months</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Monthly Amortization:</th>
+                                    <td>₱ {{ number_format($cashAdvance->monthly_amortization, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Total Repayment:</th>
+                                    <td>₱ {{ number_format($cashAdvance->total_repayment, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Status:</th>
+                                    <td>
+                                        <span class="badge bg-{{ $cashAdvance->status === 'active' ? 'success' : ($cashAdvance->status === 'pending' ? 'warning' : 'secondary') }} px-3 py-2">
+                                            <i class="fas fa-{{ $cashAdvance->status === 'active' ? 'check-circle' : ($cashAdvance->status === 'pending' ? 'clock' : 'times-circle') }} me-1"></i>
+                                            {{ ucfirst($cashAdvance->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Remaining Balance:</th>
+                                    <td class="font-weight-bold {{ $cashAdvance->remainingBalance() > 0 ? 'text-danger' : 'text-success' }}">
+                                        ₱ {{ number_format($cashAdvance->remainingBalance(), 2) }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
 
-        <dt class="col-sm-3">Monthly Amortization</dt>
-        <dd class="col-sm-9">{{ number_format($cashAdvance->monthly_amortization, 2) }}</dd>
+                    </div>
+                </div>
 
-        <dt class="col-sm-3">Total Repayment</dt>
-        <dd class="col-sm-9">{{ number_format($cashAdvance->total_repayment, 2) }}</dd>
+                <div class="col-md-6">
+                    @if($cashAdvance->signature)
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h4 class="mb-0"><i class="fas fa-signature me-2"></i> Signature</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <img src="{{ Storage::url($cashAdvance->signature) }}"
+                                     alt="Signature"
+                                     class="img-fluid border rounded p-2"
+                                     style="max-height: 150px;">
+                            </div>
+                        </div>
+                    @endif
 
-        <dt class="col-sm-3">Status</dt>
-        <dd class="col-sm-9">{{ ucfirst($cashAdvance->status) }}</dd>
-    </dl>
-    <a href="{{ route('cash_advances.index') }}" class="btn btn-secondary">Back to List</a>
-    <a href="{{ route('cash_advances.edit', $cashAdvance) }}" class="btn btn-primary">Edit</a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    @if($cashAdvance->status === 'pending')
+                        <form action="{{ route('cash_advances.update', $cashAdvance) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="status" value="active">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-1"></i>Approve Cash Advance
+                            </button>
+                        </form>
+                    @endif
+                </div>
+                <div>
+                    <a href="{{ route('cash_advances.edit', $cashAdvance) }}" class="btn btn-primary me-2">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </a>
+                    <form action="{{ route('cash_advances.destroy', $cashAdvance) }}" method="POST" class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this cash advance? This action cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-1"></i>Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 

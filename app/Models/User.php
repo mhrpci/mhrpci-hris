@@ -31,6 +31,7 @@ class User extends Authenticatable
         'email',
         'bio',
         'profile_image',
+        'date_hired',
         'password',
         'company_id',
         'status',

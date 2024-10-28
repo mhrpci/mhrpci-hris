@@ -36,3 +36,74 @@ const payload = JSON.stringify({
 });
 
 sendPushNotification(pushSubscription, payload);
+
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                // Registration was successful
+                console.log('ServiceWorker registration successful');
+
+                // Subscribe to push notifications
+                initPushNotifications(registration);
+            })
+            .catch(function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    });
+}
+
+function initPushNotifications(registration) {
+    if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+        console.log('Notifications aren\'t supported.');
+        return;
+    }
+
+    if (Notification.permission === 'denied') {
+        console.log('User has blocked notifications.');
+        return;
+    }
+
+    if (!('PushManager' in window)) {
+        console.log('Push messaging isn\'t supported.');
+        return;
+    }
+
+    subscribe(registration);
+}
+
+function subscribe(registration) {
+    registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array('YOUR_VAPID_PUBLIC_KEY')
+    })
+    .then(function(subscription) {
+        // Send subscription to server
+        return fetch('/push-subscription', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(subscription)
+        });
+    })
+    .catch(function(e) {
+        console.log('Failed to subscribe the user: ', e);
+    });
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}

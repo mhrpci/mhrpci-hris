@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('repayment_term');
             $table->decimal('monthly_amortization', 10, 2);
             $table->decimal('total_repayment', 10, 2);
-            $table->enum('status', ['active', 'complete'])->default('active');
+            $table->enum('status', ['pending', 'active', 'complete'])->default('pending');
+            $table->string('signature')->nullable();
             $table->timestamps(); // This will add created_at and updated_at columns
         });
     }

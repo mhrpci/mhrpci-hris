@@ -81,6 +81,23 @@ class SssLoanController extends Controller
     {
         $loan = SssLoan::with(['employee', 'payments'])->findOrFail($id);
 
+        // Check if user is authenticated and is an employee
+        if (auth()->check()) {
+            $employee = Employee::where('email_address', auth()->user()->email)->first();
+
+            // If user is an employee, verify they can only access their own loan records
+            if ($employee) {
+                if ($loan->employee_id !== $employee->id) {
+                    abort(403, 'Unauthorized access to this SSS loan ledger.');
+                }
+            } else {
+                // If user is not an employee, they must be an admin/super-admin to access
+                if (!auth()->user()->is_admin && !auth()->user()->is_super_admin) {
+                    abort(403, 'Unauthorized access to this SSS loan ledger.');
+                }
+            }
+        }
+
         // Calculate total paid amount
         $totalPaid = $loan->payments->sum('amount');
 

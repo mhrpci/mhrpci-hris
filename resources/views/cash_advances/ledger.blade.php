@@ -7,9 +7,15 @@
             <h1 class="h2 text-primary mb-0">Cash Advance Ledger: {{ $cashAdvance->employee->last_name }} {{ $cashAdvance->employee->first_name }}, {{ $cashAdvance->employee->middle_name ?? ' ' }} {{ $cashAdvance->employee->suffix ?? ' ' }}</h1>
         </div>
         <div class="col-auto">
+            @if(auth()->user()->hasRole('Employee'))
+            <a href="{{ route('loans.my-loans') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left mr-2"></i>Back to My Loans
+            </a>
+            @else
             <a href="{{ route('cash_advances.index') }}" class="btn btn-outline-primary">
                 <i class="fas fa-arrow-left mr-2"></i>Back to Cash Advances
             </a>
+            @endif
         </div>
     </div>
 

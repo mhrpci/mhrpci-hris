@@ -218,4 +218,9 @@ class Employee extends Model
             $employee->slug = $employee->company_id . '-' . Str::slug($lastName . '-' . $firstName . '-' . $middleName . '-' . $suffix) . '-' . Str::random(6);
         });
     }
+
+    public function cashAdvances()
+    {
+        return $this->hasMany(CashAdvance::class);
+    }
 }

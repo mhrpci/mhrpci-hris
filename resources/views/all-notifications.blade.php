@@ -14,7 +14,8 @@
                     @foreach($allNotifications as $category => $notifications)
                         @if(($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin'])) &&
                             ($category !== 'job_applications' || Auth::user()->hasRole('HR Hiring')) &&
-                            ($category !== 'leave_status' || Auth::user()->hasRole(['Employee'])))
+                            ($category !== 'leave_status' || Auth::user()->hasRole(['Employee'])) &&
+                            ($category !== 'cash_advances' || Auth::user()->hasRole(['Super Admin', 'Admin', 'Employee'])))
                             <div class="col-md-6 mb-4">
                                 <div class="notification-item h-100 border rounded p-3">
                                     <h4 class="d-flex align-items-center mb-3">
@@ -31,7 +32,9 @@
                                         @elseif($category === 'job_applications')
                                             <i class="fas fa-file-alt text-secondary mr-2"></i>
                                         @elseif($category === 'leave_status')
-                                            <i class="fas fa-user-clock text-warning mr-2"></i> <!-- Added icon for leave_status -->
+                                            <i class="fas fa-user-clock text-warning mr-2"></i>
+                                        @elseif($category === 'cash_advances')
+                                            <i class="fas fa-money-bill-wave text-success mr-2"></i>
                                         @endif
                                         {{ ucfirst(str_replace('_', ' ', $category)) }}
                                     </h4>
@@ -43,6 +46,9 @@
                                                 <li class="mb-2">
                                                     <span class="text-dark">{{ $notification['text'] }}</span>
                                                     <small class="text-muted d-block">{{ $notification['time'] }}</small>
+                                                    @if(isset($notification['details']))
+                                                        <small class="text-muted d-block">{{ $notification['details'] }}</small>
+                                                    @endif
                                                     @if($category === 'posts' && !Auth::user()->hasRole(['Super Admin', 'Admin']) && isset($notification['id']))
                                                         <a href="{{ route('posts.showById', $notification['id']) }}" class="btn btn-outline-info btn-sm mt-1">View Post</a>
                                                     @endif
@@ -65,6 +71,8 @@
                                                 <a href="{{ route('careers.all') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'tasks')
                                                 <a href="{{ route('tasks.myTasks') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                            @elseif($category === 'cash_advances')
+                                                <a href="{{ route('cash_advances.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @else
                                                 <a href="{{ route($category . '.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @endif
