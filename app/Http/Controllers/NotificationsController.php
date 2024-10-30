@@ -23,7 +23,8 @@ class NotificationsController extends Controller
         'leave_requests' => [],
         'tasks' => [],
         'job_applications' => [],
-        'cash_advances' => [] // Add cash advances to the notifications array
+        'cash_advances' => [],
+        'hr_comben_leaves' => [] // Add new notification type
     ];
 
     // Method to fetch notifications data
@@ -63,9 +64,10 @@ class NotificationsController extends Controller
             $this->generateHolidayNotifications();
             $this->generateLeaveRequestNotifications();
             $this->generateEmployeeLeaveNotifications();
+            $this->generateHRComBenLeaveNotifications();
             $this->generateTaskNotifications();
             $this->generateJobApplicationNotifications();
-            $this->generateCashAdvanceNotifications(); // Add this line
+            $this->generateCashAdvanceNotifications();
 
             $newCount = $this->countTotalNotifications();
 
@@ -385,6 +387,75 @@ class NotificationsController extends Controller
         }
     }
 
+    // Add this new method
+    private function generateHRComBenLeaveNotifications()
+    {
+        try {
+            // Only proceed if user has HR ComBen role
+            if (!Auth::user()->hasRole('HR ComBen')) {
+                return;
+            }
+
+            // Get approved leaves that need HR ComBen validation
+            $recentlyApprovedLeaves = Leave::with(['employee', 'type', 'approver'])
+                ->where('status', 'approved')
+                ->whereNull('validated_by_signature')
+                ->where('created_at', '>=', now()->subDays(30)) // Only show last 30 days
+                ->orderBy('updated_at', 'desc')
+                ->get();
+
+            \Log::info('HR ComBen Leaves found:', ['count' => $recentlyApprovedLeaves->count()]);
+
+            foreach ($recentlyApprovedLeaves as $leave) {
+                // Get approver details
+                $approverName = $leave->approver
+                    ? "{$leave->approver->first_name} {$leave->approver->last_name}"
+                    : 'System';
+
+                // Format dates for better readability
+                $startDate = Carbon::parse($leave->date_from)->format('M d, Y');
+                $endDate = Carbon::parse($leave->date_to)->format('M d, Y');
+
+                // Calculate number of days
+                $numberOfDays = Carbon::parse($leave->date_from)->diffInDays(Carbon::parse($leave->date_to)) + 1;
+
+                $notification = [
+                    'icon' => 'fas fa-fw fa-check-circle text-success',
+                    'text' => "Leave request approved for {$leave->employee->first_name} {$leave->employee->last_name} - Needs validation",
+                    'time' => $leave->updated_at->diffForHumans(),
+                    'details' => "Leave Type: {$leave->type->name}\n" .
+                                "Duration: {$numberOfDays} day(s)\n" .
+                                "Period: {$startDate} to {$endDate}\n" .
+                                "Reason: {$leave->reason_to_leave}\n" .
+                                "Approved by: {$approverName}\n" .
+                                "Department: {$leave->employee->department}\n" .
+                                "Status: Pending HR validation",
+                    'id' => $leave->id,
+                    'route' => route('leaves.show', $leave->id),
+                    'priority' => 'high', // Add priority for urgent items
+                    'category' => 'validation_required'
+                ];
+
+                $this->notifications['hr_comben_leaves'][] = $notification;
+            }
+
+            // Sort notifications by update time
+            usort($this->notifications['hr_comben_leaves'], function($a, $b) {
+                return strtotime($b['time']) - strtotime($a['time']);
+            });
+
+            \Log::info('HR ComBen notifications generated:', [
+                'count' => count($this->notifications['hr_comben_leaves'])
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error generating HR ComBen leave notifications: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
+    }
+
     // Count the total number of notifications
     private function countTotalNotifications()
     {
@@ -402,7 +473,12 @@ class NotificationsController extends Controller
             $time = "<span class='float-right text-muted text-sm'>{$not['time']}</span>";
             $details = htmlspecialchars($not['details'], ENT_QUOTES, 'UTF-8');
             $text = htmlspecialchars($not['text'], ENT_QUOTES, 'UTF-8');
-            $dropdownHtml .= "<a href='#' class='dropdown-item d-flex justify-content-between align-items-center flex-wrap text-right' data-toggle='modal' data-target='#notificationModal' data-details='{$details}' data-title='{$text}'>
+
+            // Check if notification has a route
+            $href = isset($not['route']) ? $not['route'] : '#';
+            $dataToggle = isset($not['route']) ? '' : "data-toggle='modal' data-target='#notificationModal'";
+
+            $dropdownHtml .= "<a href='{$href}' class='dropdown-item d-flex justify-content-between align-items-center flex-wrap text-right' {$dataToggle} data-details='{$details}' data-title='{$text}'>
                                 <div class='d-flex align-items-center w-100'>
                                     {$icon}
                                     <span class='text-truncate'>{$text}</span>
@@ -434,6 +510,14 @@ class NotificationsController extends Controller
     public function showAllNotifications(Request $request)
     {
         $this->generateNotifications();
+
+        // Add route information for each HR ComBen leave notification
+        foreach ($this->notifications['hr_comben_leaves'] as &$notification) {
+            if (isset($notification['id'])) {
+                $notification['route'] = route('leaves.show', $notification['id']);
+            }
+        }
+
         return view('all-notifications', ['allNotifications' => $this->notifications]);
     }
 }

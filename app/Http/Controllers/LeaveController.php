@@ -9,6 +9,8 @@ use App\Models\Type;
 use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use PDF;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class LeaveController extends Controller
 {
@@ -64,47 +66,149 @@ class LeaveController extends Controller
      */
     public function store(Request $request)
     {
-
         // Validate the request data
         $validatedData = $request->validate([
-            'employee_id' => 'required|integer',
-            'leave_type' => 'required|string|in:Leave,Undertime', // Add leave_type validation
+            'employee_id' => 'required|integer|exists:employees,id',
+            'leave_type' => 'required|string|in:Leave,Undertime',
             'date_from' => 'required|date',
             'date_to' => 'required|date|after_or_equal:date_from',
-            'type_id' => 'required',
-            'reason_to_leave' => 'required|string',
-            'approved_by' => 'nullable|integer',
+            'type_id' => 'required|exists:types,id',
+            'reason_to_leave' => 'required|string|max:1000',
+            'approved_by' => 'nullable|integer|exists:users,id',
+            'signature' => 'required|string',
         ]);
 
-        // Determine the payment status based on employee's employment status
+        // Add new validation for vacation leave (assuming type_id 1 is vacation leave)
+        if ($validatedData['leave_type'] === 'Leave' && $validatedData['type_id'] == 1) {
+            $dateFrom = \Carbon\Carbon::parse($validatedData['date_from']);
+            $twoWeeksFromNow = now()->addWeeks(2);
+
+            if ($dateFrom->lessThan($twoWeeksFromNow)) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['date_from' => 'Vacation leave must be filed at least 2 weeks before the start date.']);
+            }
+        }
+
+        // Get employee details first
         $employee = Employee::findOrFail($validatedData['employee_id']);
-        $validatedData['payment_status'] = $employee->employment_status === 'REGULAR' ? 'With Pay' : 'Without Pay';
 
-        // Create a new leave record using the validated data
-        Leave::create($validatedData);
+        try {
+            // Process signature
+            $signatureFileName = null;
+            if ($request->filled('signature')) {
+                $signatureData = $request->input('signature');
 
-        // Redirect back to the leaves.create view with a success message
-        if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Admin')) {
-            // Redirect back to the leaves.create view with a success message for Super Admin or Admin
-            return redirect()->route('leaves.create')->with('success', 'Leave request created successfully.');
-        } else {
-            // Redirect back to the leaves.create view with a different success message for other users
-            return redirect()->route('leaves.create')->with('success', 'Leave request sent successfully. Wait for the Admin confirmation.');
+                // Validate base64 image
+                if (!preg_match('/^data:image\/(\w+);base64,/', $signatureData)) {
+                    throw new \Exception('Invalid signature format');
+                }
+
+                // Extract image data
+                $signatureImage = substr($signatureData, strpos($signatureData, ',') + 1);
+                $decodedImage = base64_decode($signatureImage);
+
+                if ($decodedImage === false) {
+                    throw new \Exception('Failed to decode signature');
+                }
+
+                // Generate unique filename
+                $signatureFileName = 'signatures/leave-' . uniqid() . '.png';
+
+                // Ensure signatures directory exists
+                Storage::disk('public')->makeDirectory('signatures');
+
+                // Store the signature
+                if (!Storage::disk('public')->put($signatureFileName, $decodedImage)) {
+                    throw new \Exception('Failed to save signature');
+                }
+            }
+
+            // Create leave record with correct field names
+            $leave = Leave::create([
+                'employee_id' => $validatedData['employee_id'],
+                'leave_type' => $validatedData['leave_type'],
+                'date_from' => $validatedData['date_from'],
+                'date_to' => $validatedData['date_to'],
+                'type_id' => $validatedData['type_id'],
+                'status' => 'pending',
+                'reason_to_leave' => $validatedData['reason_to_leave'],
+                'signature' => $signatureFileName,
+                'payment_status' => $employee->employment_status === 'REGULAR' ? 'With Pay' : 'Without Pay'
+            ]);
+
+            // Redirect with success message
+            if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Admin')) {
+                return redirect()->route('leaves.create')
+                    ->with('success', 'Leave request created successfully.');
+            } else {
+                return redirect()->route('leaves.create')
+                    ->with('success', 'Leave request sent successfully. Wait for the Admin confirmation.');
+            }
+
+        } catch (\Exception $e) {
+            // Clean up signature file if it exists
+            if (isset($signatureFileName) && Storage::disk('public')->exists($signatureFileName)) {
+                Storage::disk('public')->delete($signatureFileName);
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Failed to create leave request: ' . $e->getMessage()]);
         }
     }
 
     public function show($id)
     {
-        // Find the leave record
-        $leave = Leave::findOrFail($id);
-        $this->markAsRead($leave);
-        $diff = $leave->diffdays;
+        try {
+            $leave = Leave::findOrFail($id);
+            $employees = Employee::all();
+            $this->markAsRead($leave);
 
-        // Load the user who approved the leave
-        $approvedByUser = $leave->approvedByUser;
+            // Calculate leave balances up to this leave ID
+            $vacationTaken = $leave->employee->leaves()
+                ->where('type_id', 1)
+                ->where('id', '<=', $id)
+                ->where('status', 'approved')
+                ->count();
 
-        // Pass the leave and approved by user details to the view
-        return view('leaves.show', compact('leave', 'approvedByUser','diff'));
+            $sickTaken = $leave->employee->leaves()
+                ->where('type_id', 2)
+                ->where('id', '<=', $id)
+                ->where('status', 'approved')
+                ->count();
+
+            $emergencyTaken = $leave->employee->leaves()
+                ->where('type_id', 3)
+                ->where('id', '<=', $id)
+                ->where('status', 'approved')
+                ->count();
+
+            // Calculate balances
+            $vacationBalance = 5 - $vacationTaken;
+            $sickBalance = 7 - $sickTaken;
+            $emergencyBalance = 3 - $emergencyTaken;
+
+            $diff = $leave->diffdays;
+            $approvedByUser = $leave->approvedByUser;
+
+            return view('leaves.show', compact(
+                'leave',
+                'approvedByUser',
+                'diff',
+                'employees',
+                'vacationTaken',
+                'sickTaken',
+                'emergencyTaken',
+                'vacationBalance',
+                'sickBalance',
+                'emergencyBalance'
+            ));
+        } catch (\Exception $e) {
+            \Log::error('Leave Show Error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            throw $e;
+        }
     }
 
     private function markAsRead(Leave $leave)
@@ -169,158 +273,231 @@ class LeaveController extends Controller
         return redirect()->route('leaves.index')->with('success', 'Leave request deleted successfully.');
     }
     public function updateStatus(Request $request, string $id)
-{
-    // Validate the request data
-    $validatedData = $request->validate([
-        'status' => 'required|in:pending,rejected,approved',
-    ]);
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'status' => 'required|in:pending,rejected,approved',
+            'approved_by_signature' => 'required|string',
+        ]);
 
-    // Find the leave request
-    $leave = Leave::findOrFail($id);
+        // Find the leave request or fail
+        $leave = Leave::findOrFail($id);
 
-    // Check the current status and apply the update rules
-    if ($leave->status == 'pending') {
-        // Pending can be updated to Approved or Rejected
-        if (!in_array($validatedData['status'], ['approved', 'rejected'])) {
-            return redirect()->route('leaves.show', $id)->with('error', 'Invalid status update.');
+        try {
+            // Process approved_by signature
+            $approvedSignatureFileName = null;
+
+            if ($request->filled('approved_by_signature')) {
+                $signatureData = $request->input('approved_by_signature');
+                $approvedSignatureFileName = $this->processSignature($signatureData, 'approved');
+            }
+
+            // Update leave status and signature
+            $leave->status = $validatedData['status'];
+            $leave->approved_by = Auth::id();
+            $leave->approved_by_signature = $approvedSignatureFileName;
+            $leave->save();
+
+            return redirect()->route('leaves.show', $id)
+                ->with('success', 'Leave status updated successfully.');
+
+        } catch (\Exception $e) {
+            // Clean up signature file if it exists
+            if ($approvedSignatureFileName && Storage::disk('public')->exists($approvedSignatureFileName)) {
+                Storage::disk('public')->delete($approvedSignatureFileName);
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Failed to update leave status: ' . $e->getMessage()]);
         }
-    } elseif ($leave->status == 'approved' || $leave->status == 'rejected') {
-        // Approved or Rejected cannot be updated to any other status
-        return redirect()->route('leaves.show', $id)->with('error', 'Status cannot be updated.');
     }
 
-    // Update its status and approved_by field
-    $leave->status = $validatedData['status'];
-    $leave->approved_by = Auth::id(); // Assuming you want to store the user's ID who approved the leave
+    // Add these helper methods
+    private function processSignature($signatureData, $prefix)
+    {
+        if (!preg_match('/^data:image\/(\w+);base64,/', $signatureData)) {
+            throw new \Exception('Invalid signature format');
+        }
 
-    // Save the leave record
-    $leave->save();
+        $signatureImage = substr($signatureData, strpos($signatureData, ',') + 1);
+        $decodedImage = base64_decode($signatureImage);
 
-    // Redirect back to the leave details page with a success message
-    return redirect()->route('leaves.show', $id)->with('success', 'Leave status updated successfully.');
-}
+        if ($decodedImage === false) {
+            throw new \Exception('Failed to decode signature');
+        }
 
-/**
- * Display the specified resource.
- */
-public function detail($id)
-{
-    // Find the leave by its ID
-    $leave = Leave::findOrFail($id);
+        $signatureFileName = "signatures/{$prefix}-" . uniqid() . '.png';
+        Storage::disk('public')->makeDirectory('signatures');
 
-    // Load any related models if needed
-    // $leave->load('relationName');
+        if (!Storage::disk('public')->put($signatureFileName, $decodedImage)) {
+            throw new \Exception('Failed to save signature');
+        }
 
-    // Pass the $leave object to the view
-    return view('leaves.detail', compact('leave'));
-}
+        return $signatureFileName;
+    }
 
- /**
-     * Display a listing of all employees with action to view leaves.
+    private function cleanupSignatureFiles($fileNames)
+    {
+        foreach ($fileNames as $fileName) {
+            if ($fileName && Storage::disk('public')->exists($fileName)) {
+                Storage::disk('public')->delete($fileName);
+            }
+        }
+    }
+
+    /**
+     * Display the specified resource.
      */
-    public function allEmployees(Request $request)
+    public function detail($id)
+    {
+        // Find the leave by its ID
+        $leave = Leave::findOrFail($id);
+
+        // Load any related models if needed
+        // $leave->load('relationName');
+
+        // Pass the $leave object to the view
+        return view('leaves.detail', compact('leave'));
+    }
+
+     /**
+         * Display a listing of all employees with action to view leaves.
+         */
+        public function allEmployees(Request $request)
+        {
+            $departmentId = $request->input('department_id');
+            $departments = Department::all();
+
+            if ($departmentId) {
+                $employees = Employee::where('department_id', $departmentId)->get();
+            } else {
+                $employees = Employee::all();
+            }
+
+            return view('leaves.all_employees', compact('employees', 'departments', 'departmentId'));
+        }
+
+        /**
+         * Display leaves for a specific employee and provide a downloadable PDF.
+         */
+        public function employeeLeaves($employee_id)
+        {
+            $employee = Employee::findOrFail($employee_id);
+            $leaves = Leave::where('employee_id', $employee_id)->get();
+
+            // Check if the request is for downloading the PDF
+            if (request()->has('download')) {
+                $pdf = PDF::loadView('leaves.pdf', compact('employee', 'leaves'));
+                return $pdf->download('employee_leaves.pdf');
+            }
+
+            return view('leaves.employee_leaves', compact('employee', 'leaves'));
+        }
+
+        public function report(Request $request)
     {
         $departmentId = $request->input('department_id');
         $departments = Department::all();
 
         if ($departmentId) {
-            $employees = Employee::where('department_id', $departmentId)->get();
+            $leaves = Leave::whereHas('employee', function ($query) use ($departmentId) {
+                $query->where('department_id', $departmentId);
+            })->get();
         } else {
-            $employees = Employee::all();
+            $leaves = Leave::all();
         }
-
-        return view('leaves.all_employees', compact('employees', 'departments', 'departmentId'));
-    }
-
-    /**
-     * Display leaves for a specific employee and provide a downloadable PDF.
-     */
-    public function employeeLeaves($employee_id)
-    {
-        $employee = Employee::findOrFail($employee_id);
-        $leaves = Leave::where('employee_id', $employee_id)->get();
 
         // Check if the request is for downloading the PDF
-        if (request()->has('download')) {
-            $pdf = PDF::loadView('leaves.pdf', compact('employee', 'leaves'));
-            return $pdf->download('employee_leaves.pdf');
+        if ($request->has('download')) {
+            $pdf = PDF::loadView('leaves.report_pdf', compact('leaves', 'departments', 'departmentId'));
+            return $pdf->download('all_leaves_report.pdf');
         }
 
-        return view('leaves.employee_leaves', compact('employee', 'leaves'));
+        return view('leaves.report', compact('leaves', 'departments', 'departmentId'));
     }
 
-    public function report(Request $request)
-{
-    $departmentId = $request->input('department_id');
-    $departments = Department::all();
+        /**
+         * Display the leave sheet and balances for the authenticated employee.
+         */
+        public function myLeaveSheet()
+        {
+            $user = Auth::user();
+            $employee = Employee::where('email_address', $user->email)->first();
 
-    if ($departmentId) {
-        $leaves = Leave::whereHas('employee', function ($query) use ($departmentId) {
-            $query->where('department_id', $departmentId);
-        })->get();
-    } else {
-        $leaves = Leave::all();
-    }
+            if ($employee) {
+                $leaves = Leave::where('employee_id', $employee->id)->get();
+                $sickLeaveBalance = $employee->sick_leave;
+                $emergencyLeaveBalance = $employee->emergency_leave;
+                $vacationLeaveBalance = $employee->vacation_leave;
 
-    // Check if the request is for downloading the PDF
-    if ($request->has('download')) {
-        $pdf = PDF::loadView('leaves.report_pdf', compact('leaves', 'departments', 'departmentId'));
-        return $pdf->download('all_leaves_report.pdf');
-    }
-
-    return view('leaves.report', compact('leaves', 'departments', 'departmentId'));
-}
-
-    /**
-     * Display the leave sheet and balances for the authenticated employee.
-     */
-    public function myLeaveSheet()
-    {
-        $user = Auth::user();
-        $employee = Employee::where('email_address', $user->email)->first();
-
-        if ($employee) {
-            $leaves = Leave::where('employee_id', $employee->id)->get();
-            $sickLeaveBalance = $employee->sick_leave;
-            $emergencyLeaveBalance = $employee->emergency_leave;
-            $vacationLeaveBalance = $employee->vacation_leave;
-
-            return view('leaves.my_leave_sheet', compact('employee', 'leaves', 'sickLeaveBalance', 'emergencyLeaveBalance', 'vacationLeaveBalance'));
-        } else {
-            return redirect()->route('leaves.index')->with('error', 'Employee not found.');
-        }
-    }
-
-    /**
-     * Display the leave details for the authenticated employee.
-     */
-    public function myLeaveDetail($id)
-    {
-        $leave = Leave::findOrFail($id);
-        $user = Auth::user();
-        $this->markAsView($leave);
-        $employee = Employee::where('email_address', $user->email)->first();
-
-        // Check if the employee exists and matches the leave ID
-        if ($employee) {
-            $leave = Leave::where('id', $id)->where('employee_id', $employee->id)->first();
-
-            if ($leave) {
-                return view('leaves.my_leave_detail', compact('leave'));
+                return view('leaves.my_leave_sheet', compact('employee', 'leaves', 'sickLeaveBalance', 'emergencyLeaveBalance', 'vacationLeaveBalance'));
             } else {
-                return redirect()->route('leaves.index')->with('error', 'Leave not found or does not belong to you.');
+                return redirect()->route('leaves.index')->with('error', 'Employee not found.');
             }
-        } else {
-            return redirect()->route('leaves.index')->with('error', 'Employee not found.');
         }
-    }
 
-    private function markAsView(Leave $leave)
-    {
-        if (!$leave->is_view) {
-            $leave->is_view = true;
-            $leave->view_at = now();
-            $leave->save();
+        /**
+         * Display the leave details for the authenticated employee.
+         */
+        public function myLeaveDetail($id)
+        {
+            $leave = Leave::findOrFail($id);
+            $user = Auth::user();
+            $this->markAsView($leave);
+            $employee = Employee::where('email_address', $user->email)->first();
+
+            // Check if the employee exists and matches the leave ID
+            if ($employee) {
+                $leave = Leave::where('id', $id)->where('employee_id', $employee->id)->first();
+
+                if ($leave) {
+                    return view('leaves.my_leave_detail', compact('leave'));
+                } else {
+                    return redirect()->route('leaves.index')->with('error', 'Leave not found or does not belong to you.');
+                }
+            } else {
+                return redirect()->route('leaves.index')->with('error', 'Employee not found.');
+            }
         }
-    }
+
+        private function markAsView(Leave $leave)
+        {
+            if (!$leave->is_view) {
+                $leave->is_view = true;
+                $leave->view_at = now();
+                $leave->save();
+            }
+        }
+
+        public function updateValidation(Request $request, string $id)
+        {
+            // Validate the request data
+            $validatedData = $request->validate([
+                'validated_by_signature' => 'required|string',
+            ]);
+
+            // Find the leave request
+            $leave = Leave::findOrFail($id);
+
+            try {
+                // Process validated_by signature
+                if ($request->filled('validated_by_signature')) {
+                    $signatureData = $request->input('validated_by_signature');
+                    $validatedSignatureFileName = $this->processSignature($signatureData, 'validated');
+
+                    // Update leave with validation signature
+                    $leave->validated_by_signature = $validatedSignatureFileName;
+                    $leave->save();
+                }
+
+                return redirect()->route('leaves.show', $id)
+                    ->with('success', 'Leave validation signature added successfully.');
+
+            } catch (\Exception $e) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['error' => 'Failed to add validation signature: ' . $e->getMessage()]);
+            }
+        }
 }

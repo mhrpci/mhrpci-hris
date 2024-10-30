@@ -94,6 +94,11 @@
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <a class="dropdown-item" href="{{ route('leaves.show',$leave->id) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                                        @canany(['HR ComBen', 'Admin', 'Super Admin'])
+                                                        <a class="dropdown-item" href="{{ route('leaves.edit', $leave->id) }}">
+                                                            <i class="fas fa-edit"></i> Edit
+                                                        </a>
+                                                        @endcanany
                                                         @can('leave-delete')
                                                             <form action="{{ route('leaves.destroy', $leave->id) }}" method="POST">
                                                                 @csrf

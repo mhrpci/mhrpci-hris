@@ -43,6 +43,7 @@ use App\Http\Controllers\CashAdvanceController;
 use App\Http\Controllers\PagibigLoanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -264,6 +265,8 @@ Route::middleware('auth')->group(function () {
     Route::post('push-subscription', [NotificationsController::class, 'storePushSubscription'])
     ->name('push-subscription.store');
     Route::get('/birthdays', [EmployeeBirthdayController::class, 'index'])->name('birthdays');
+    Route::put('/leaves/update-status/{id}', [LeaveController::class, 'updateStatus'])->name('leaves.update-status');
+    Route::put('/leaves/{id}/update-validation', [LeaveController::class, 'updateValidation'])->name('leaves.update-validation');
 });
 
     Auth::routes();

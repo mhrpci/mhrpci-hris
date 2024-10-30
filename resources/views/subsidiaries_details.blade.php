@@ -36,13 +36,14 @@
 
         /* Header styles */
         .header {
-            background-color: var(--primary-color);
+            background-color: var(--white);
             padding: 20px 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
             transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .header-content {
             display: flex;
@@ -50,7 +51,7 @@
             align-items: center;
         }
         .logo {
-            color: var(--white);
+            color: var(--primary-color);
             font-size: 24px;
             font-weight: 700;
             text-decoration: none;
@@ -72,14 +73,14 @@
         .logo-text {
             font-size: 1.2rem;
             font-weight: 700;
-            color: var(--white);
+            color: var(--primary-color);
         }
         .main-nav {
             display: flex;
             align-items: center;
         }
         .nav-link {
-            color: var(--white);
+            color: var(--primary-color);
             text-decoration: none;
             font-weight: 500;
             transition: opacity 0.3s;
@@ -92,7 +93,7 @@
             display: none;
             background: none;
             border: none;
-            color: var(--white);
+            color: var(--primary-color);
             font-size: 24px;
             cursor: pointer;
         }
@@ -416,7 +417,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <nav class="main-nav">
-                    <a href="#" class="nav-link" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</a>
+                    <a href="{{ route('welcome') }}" class="nav-link">Home</a>
                     <a href="#about" class="nav-link">About</a>
                     <a href="#gallery" class="nav-link">Gallery</a>
                     @if($relatedSubsidiaries->isNotEmpty())
@@ -617,9 +618,9 @@
         window.addEventListener('scroll', function() {
             const header = document.querySelector('.header');
             if (window.scrollY > 50) {
-                header.style.backgroundColor = 'rgba(74, 20, 140, 0.9)'; /* Deep Purple with opacity */
+                header.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'; /* White with opacity */
             } else {
-                header.style.backgroundColor = '#4a148c'; /* Deep Purple */
+                header.style.backgroundColor = '#ffffff'; /* White */
             }
         });
 

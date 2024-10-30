@@ -69,14 +69,16 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="date_from">Date From<span class="text-danger">*</span></label>
-                                        <input type="datetime-local" id="date_from" name="date_from" class="form-control" required>
+                                        <input type="datetime-local" id="date_from" name="date_from" class="form-control"
+                                            value="{{ old('date_from') }}" required>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="date_to">Date To<span class="text-danger">*</span></label>
-                                        <input type="datetime-local" id="date_to" name="date_to" class="form-control" required>
+                                        <input type="datetime-local" id="date_to" name="date_to" class="form-control"
+                                            value="{{ old('date_to') }}" required>
                                     </div>
                                 </div>
 
@@ -98,6 +100,26 @@
                                         <textarea id="reason_to_leave" name="reason_to_leave" class="form-control" required></textarea>
                                     </div>
                                 </div>
+                                <!-- Add signature pad for Employees -->
+                                @if(Auth::user()->hasRole('Employee') || Auth::user()->hasRole('Super Admin'))
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Employee Signature<span class="text-danger">*</span></label>
+                                        <div class="border rounded p-3">
+                                            <div class="d-flex justify-content-center">
+                                                <canvas id="signaturePad" class="border" width="500" height="200"></canvas>
+                                            </div>
+                                            <input type="hidden" name="signature" id="signature">
+                                            <div class="mt-2 text-center">
+                                                <button type="button" class="btn btn-secondary" id="clearSignature">Clear Signature</button>
+                                            </div>
+                                            @error('signature')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                          {{-- <!-- Add the following after the "Reason" textarea -->
                             <div class="row">
@@ -140,15 +162,84 @@
 @section('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    <style>
+        #signaturePad {
+            width: 100%;
+            max-width: 500px;
+            height: 200px;
+            touch-action: none;
+            background-color: #fff;
+        }
+        .signature-pad-container {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+        }
+    </style>
 @stop
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for all select elements
+            // Select2 initialization
             $('select').select2({
                 theme: 'bootstrap4',
                 width: '100%'
+            });
+
+            // Initialize signature pad
+            const canvas = document.getElementById('signaturePad');
+            if (canvas) {
+                const signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgb(255, 255, 255)',
+                    penColor: 'rgb(0, 0, 0)',
+                    minWidth: 1,
+                    maxWidth: 2.5
+                });
+
+                // Form submission handler
+                $('form').on('submit', function(e) {
+                    if (signaturePad.isEmpty()) {
+                        e.preventDefault();
+                        alert('Please provide your signature before submitting.');
+                        return false;
+                    }
+
+                    // Set the signature data
+                    const signatureData = signaturePad.toDataURL('image/png');
+                    document.getElementById('signature').value = signatureData;
+                    return true;
+                });
+
+                // Clear signature button
+                $('#clearSignature').on('click', function() {
+                    signaturePad.clear();
+                    document.getElementById('signature').value = '';
+                });
+
+                // Handle window resize
+                function resizeCanvas() {
+                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                    canvas.width = canvas.offsetWidth * ratio;
+                    canvas.height = canvas.offsetHeight * ratio;
+                    canvas.getContext("2d").scale(ratio, ratio);
+                    signaturePad.clear(); // Clear the canvas after resize
+                }
+
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas(); // Initial resize
+            }
+
+            // Date input validation
+            $('#date_from, #date_to').on('change', function() {
+                const dateFrom = new Date($('#date_from').val());
+                const dateTo = new Date($('#date_to').val());
+
+                if (dateFrom > dateTo) {
+                    alert('Date From cannot be later than Date To');
+                    $(this).val('');
+                }
             });
         });
     </script>

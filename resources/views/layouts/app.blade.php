@@ -506,7 +506,7 @@
                 <li class="nav-item dropdown" id="notification-dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge" id="notification-count">0</span>
+                        <span class="badge badge-danger navbar-badge" id="notification-count">0</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notification-menu">
                         <span class="dropdown-item dropdown-header" id="notification-header">0 Notifications</span>

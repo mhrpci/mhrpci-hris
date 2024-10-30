@@ -62,7 +62,7 @@
                                        (Auth::user()->hasRole('Employee') && $category === 'leave_status'))
                                         <div class="text-right mt-3">
                                             @if($category === 'birthdays')
-                                                <a href="{{ route('employees.birthdays') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                                <a href="{{ route('birthdays') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'leave_requests')
                                                 <a href="{{ route('leaves.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'leave_status')

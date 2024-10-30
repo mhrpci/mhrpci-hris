@@ -223,4 +223,9 @@ class Employee extends Model
     {
         return $this->hasMany(CashAdvance::class);
     }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
 }

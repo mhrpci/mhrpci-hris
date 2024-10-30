@@ -22,6 +22,9 @@ class Leave extends Model
         'approved_by',
         'status',
         'payment_status',
+        'signature',
+        'approved_by_signature',
+        'validated_by_signature',
     ];
 
     protected $primaryKey = 'id'; // This is already the default, but just to be explicit
@@ -99,6 +102,11 @@ class Leave extends Model
         }
 
         return null; // In case of unexpected status
+    }
+
+    public function getDiffdaysAttribute()
+    {
+        return Carbon::parse($this->date_from)->diffInDays(Carbon::parse($this->date_to)) + 1;
     }
 
 }
