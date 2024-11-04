@@ -366,6 +366,8 @@
         }, 100);
     </script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <meta name="vapid-key" content="{{ config('webpush.public_key') }}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -1131,6 +1133,142 @@
     </script>
 
     @yield('js')
+
+    <script src="{{ asset('js/push-notifications.js') }}"></script>
+
+    <script>
+    // Initialize notification system
+    document.addEventListener('DOMContentLoaded', function() {
+        class NotificationHandler {
+            constructor() {
+                this.button = null;
+                this.init();
+            }
+
+            async init() {
+                if (!('Notification' in window)) {
+                    console.log('This browser does not support notifications');
+                    return;
+                }
+
+                this.createButton();
+                this.updateButtonState(Notification.permission);
+
+                if (Notification.permission === 'granted') {
+                    await this.initializeServiceWorker();
+                }
+            }
+
+            createButton() {
+                this.button = document.createElement('button');
+                this.button.id = 'notification-button';
+                this.button.className = 'btn position-fixed';
+                this.button.style.cssText = 'bottom: 20px; right: 20px; z-index: 1050; border-radius: 20px; padding: 10px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);';
+                this.button.addEventListener('click', () => this.requestPermission());
+                document.body.appendChild(this.button);
+            }
+
+            updateButtonState(permission) {
+                if (permission === 'granted') {
+                    this.button.className = 'btn btn-success position-fixed';
+                    this.button.innerHTML = '<i class="fas fa-bell"></i> Notifications Enabled';
+                } else {
+                    this.button.className = 'btn btn-primary position-fixed';
+                    this.button.innerHTML = '<i class="fas fa-bell"></i> Enable Notifications';
+                }
+            }
+
+            async requestPermission() {
+                try {
+                    const permission = await Notification.requestPermission();
+                    this.updateButtonState(permission);
+
+                    if (permission === 'granted') {
+                        await this.initializeServiceWorker();
+                        // Show test notification
+                        new Notification('Notifications Enabled', {
+                            body: 'You will now receive notifications from our system',
+                            icon: '/favicon.ico'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error requesting permission:', error);
+                }
+            }
+
+            async initializeServiceWorker() {
+                if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                    console.error('Push notifications not supported');
+                    return;
+                }
+
+                try {
+                    const registration = await navigator.serviceWorker.register('/service-worker.js');
+                    console.log('ServiceWorker registered');
+
+                    const subscription = await registration.pushManager.getSubscription();
+                    if (subscription) {
+                        console.log('Already subscribed to push notifications');
+                        return;
+                    }
+
+                    const vapidPublicKey = document.querySelector('meta[name="vapid-key"]').content;
+                    if (!vapidPublicKey) {
+                        console.error('VAPID public key not found');
+                        return;
+                    }
+
+                    const convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey);
+                    const newSubscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: convertedVapidKey
+                    });
+
+                    await this.sendSubscriptionToServer(newSubscription);
+                    console.log('Push notification subscription successful');
+                } catch (error) {
+                    console.error('Error initializing push notifications:', error);
+                }
+            }
+
+            async sendSubscriptionToServer(subscription) {
+                try {
+                    const response = await fetch('/push/subscribe', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(subscription)
+                    });
+
+                    const data = await response.json();
+                    console.log('Subscription sent to server:', data);
+                } catch (error) {
+                    console.error('Error sending subscription to server:', error);
+                }
+            }
+
+            urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64 = (base64String + padding)
+                    .replace(/\-/g, '+')
+                    .replace(/_/g, '/');
+
+                const rawData = window.atob(base64);
+                const outputArray = new Uint8Array(rawData.length);
+
+                for (let i = 0; i < rawData.length; ++i) {
+                    outputArray[i] = rawData.charCodeAt(i);
+                }
+                return outputArray;
+            }
+        }
+
+        // Initialize the notification handler
+        new NotificationHandler();
+    });
+    </script>
 
 </body>
 </html>

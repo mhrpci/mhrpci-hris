@@ -16,6 +16,7 @@ return [
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
+        'login_path' => '/hris',  // Add this line
     ],
 
     /*
@@ -125,6 +126,6 @@ return [
     |
     */
 
-    'password_timeout' => 10800,
+    'password_timeout' => 120,
 
 ];

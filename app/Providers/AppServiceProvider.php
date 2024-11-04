@@ -21,5 +21,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Paginator::useBootstrapFive();
+
+        // Monitor notification performance
+        \DB::listen(function($query) {
+            if (str_contains($query->sql, 'notifications')) {
+                \Log::debug('Notification Query', [
+                    'time' => $query->time,
+                    'sql' => $query->sql
+                ]);
+            }
+        });
     }
 }

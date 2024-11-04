@@ -37,6 +37,7 @@ class User extends Authenticatable
         'status',
         'biometric_token',
         'device_id',
+        'device_token',
     ];
 
     /**

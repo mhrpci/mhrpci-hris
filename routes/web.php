@@ -55,6 +55,24 @@ use Illuminate\Support\Facades\Auth;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Define the login route first to ensure it shows error
+Route::any('/login', function() {
+    throw new \App\Exceptions\LoginRouteException('This route is not accessible');
+});
+
+// Define your HRIS routes
+Route::get('/hris', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);
+Route::post('/hris', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+
+// Other auth routes
+Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])
+    ->name('logout');
+
+// If you need password reset routes
+Route::get('/password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('password.request');
+Route::post('/password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 // Careers routes
@@ -81,6 +99,15 @@ Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->
 // Welcome routes
 Route::get('/mhrpci', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
 Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
+
+   // Terms and Privacy routes
+   Route::get('/terms', function () {
+    return view('terms');
+})->name('terms');
+
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
 
 // Auth routes
 Route::middleware('auth')->group(function () {
@@ -249,15 +276,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/careers', [ReportController::class, 'generateCareerReport'])->name('reports.careers');
     Route::get('/reports/detailed-loan', [ReportController::class, 'generateDetailedLoanReport'])->name('reports.detailed-loan');
 
-    // Terms and Privacy routes
-    Route::get('/terms', function () {
-        return view('terms');
-    })->name('terms');
-
-    Route::get('/privacy', function () {
-        return view('privacy');
-    })->name('privacy');
-
     // Server Time routes
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
@@ -267,6 +285,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/birthdays', [EmployeeBirthdayController::class, 'index'])->name('birthdays');
     Route::put('/leaves/update-status/{id}', [LeaveController::class, 'updateStatus'])->name('leaves.update-status');
     Route::put('/leaves/{id}/update-validation', [LeaveController::class, 'updateValidation'])->name('leaves.update-validation');
+    Route::post('/push/subscribe', [App\Http\Controllers\PushNotificationController::class, 'store'])->name('push.subscribe');
+    Route::get('/push/vapid-public-key', [App\Http\Controllers\PushNotificationController::class, 'getVapidPublicKey'])->name('push.key');
+    Route::get('/test-notification', [App\Http\Controllers\PushNotificationController::class, 'testNotification'])
+        ->name('test.notification');
 });
 
     Auth::routes();

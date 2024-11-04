@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Events\NewNotification;
 use Illuminate\Support\Facades\Cache;
 use App\Models\CashAdvance;
+use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\Subscription;
+use App\Models\PushSubscription;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
+use Predis\Connection\ConnectionException;
+use Illuminate\Support\Facades\DB;
+
 class NotificationsController extends Controller
 {
     // Initialize notification counts for each category
@@ -24,32 +32,84 @@ class NotificationsController extends Controller
         'tasks' => [],
         'job_applications' => [],
         'cash_advances' => [],
-        'hr_comben_leaves' => [] // Add new notification type
     ];
+
+    private $webPush;
+    private $hasNewNotifications = false;
+
+    public function __construct()
+    {
+        $this->initializeWebPush();
+    }
+
+    private function initializeWebPush()
+    {
+        $this->webPush = new WebPush([
+            'VAPID' => [
+                'subject' => config('app.url') . '/home',
+                'publicKey' => config('webpush.public_key'),
+                'privateKey' => config('webpush.private_key'),
+                'icon' => config('app.url') . '/vendor/adminlte/dist/img/LOGO4.png',
+                'name' => config('app.name')
+            ]
+        ]);
+    }
 
     // Method to fetch notifications data
     public function getNotificationsData(Request $request)
     {
-        $cacheKey = 'user_notifications_' . Auth::id();
+        $userId = Auth::id();
+        $cacheKey = 'user_notifications_' . $userId;
 
-        // Try to get notifications from cache first
-        $cachedNotifications = Cache::get($cacheKey);
+        try {
+            // Try Redis first
+            try {
+                if (Redis::connection()->ping()) {
+                    $cachedNotifications = Redis::get($cacheKey);
+                    if ($cachedNotifications) {
+                        $this->notifications = json_decode($cachedNotifications, true);
+                    } else {
+                        $this->generateNotifications();
+                        Redis::setex($cacheKey, 300, json_encode($this->notifications));
+                    }
+                }
+            } catch (ConnectionException $e) {
+                // Fallback to file cache if Redis is not available
+                Log::warning('Redis connection failed, falling back to file cache', [
+                    'error' => $e->getMessage()
+                ]);
 
-        if (!$cachedNotifications) {
-            $this->generateNotifications();
-        } else {
-            $this->notifications = $cachedNotifications;
+                $cachedNotifications = Cache::get($cacheKey);
+                if (!$cachedNotifications) {
+                    $this->generateNotifications();
+                } else {
+                    $this->notifications = $cachedNotifications;
+                }
+            }
+
+            $totalNotifications = $this->countTotalNotifications();
+            $dropdownHtml = $this->generateDropdownHtml();
+
+            return response()->json([
+                'label' => $totalNotifications,
+                'label_color' => 'danger',
+                'icon_color' => 'dark',
+                'dropdown' => $dropdownHtml,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error getting notifications data: ' . $e->getMessage(), [
+                'user_id' => $userId,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'label' => 0,
+                'label_color' => 'danger',
+                'icon_color' => 'dark',
+                'dropdown' => '<div class="dropdown-item">Error loading notifications</div>',
+            ]);
         }
-
-        $totalNotifications = $this->countTotalNotifications();
-        $dropdownHtml = $this->generateDropdownHtml();
-
-        return response()->json([
-            'label' => $totalNotifications,
-            'label_color' => 'danger',
-            'icon_color' => 'dark',
-            'dropdown' => $dropdownHtml,
-        ]);
     }
 
     // Generate all types of notifications
@@ -58,57 +118,218 @@ class NotificationsController extends Controller
         try {
             $oldCount = $this->countTotalNotifications();
 
+            // Use database transactions for consistency
+            DB::beginTransaction();
+
             // Generate notifications for each category
             $this->generateBirthdayNotifications();
             $this->generatePostNotifications();
             $this->generateHolidayNotifications();
             $this->generateLeaveRequestNotifications();
             $this->generateEmployeeLeaveNotifications();
-            $this->generateHRComBenLeaveNotifications();
             $this->generateTaskNotifications();
             $this->generateJobApplicationNotifications();
             $this->generateCashAdvanceNotifications();
 
-            $newCount = $this->countTotalNotifications();
+            DB::commit();
 
-            // If there are new notifications, broadcast them
-            if ($newCount > $oldCount) {
+            $newCount = $this->countTotalNotifications();
+            $this->hasNewNotifications = ($newCount > $oldCount);
+
+            if ($this->hasNewNotifications) {
                 $this->broadcastNewNotifications();
             }
 
-            // Log the count of notifications for debugging
-            \Log::info('Notification counts:', $this->notifications);
+            // Log notification counts for monitoring
+            Log::info('Notifications generated', [
+                'user_id' => Auth::id(),
+                'old_count' => $oldCount,
+                'new_count' => $newCount,
+                'types' => array_map('count', $this->notifications)
+            ]);
 
-            // Use environment-specific caching
-            $cacheKey = 'user_notifications_' . Auth::id();
-            $cacheDuration = now()->addMinutes(5);
-
-            Cache::put($cacheKey, $this->notifications, $cacheDuration);
         } catch (\Exception $e) {
-            // Log any exceptions that occur
-            \Log::error('Error generating notifications: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Error generating notifications: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
     }
 
     // Add a new method to broadcast notifications
     private function broadcastNewNotifications()
     {
-        $totalNotifications = $this->countTotalNotifications();
-        $dropdownHtml = $this->generateDropdownHtml();
-
-        $notificationData = [
-            'label' => $totalNotifications,
-            'label_color' => 'danger',
-            'icon_color' => 'dark',
-            'dropdown' => $dropdownHtml,
-        ];
-
-        // Use a try-catch block to handle potential broadcasting issues
-        try {
-            broadcast(new NewNotification($notificationData))->toOthers();
-        } catch (\Exception $e) {
-            \Log::error('Error broadcasting new notifications: ' . $e->getMessage());
+        if (!$this->hasNewNotifications) {
+            return;
         }
+
+        try {
+            $batch = [];
+            $newNotifications = $this->getNewNotifications();
+
+            // Filter out already sent notifications
+            $newNotifications = $this->filterAlreadySentNotifications($newNotifications);
+
+            if (empty($newNotifications)) {
+                return;
+            }
+
+            $subscriptions = PushSubscription::where('active', true)
+                ->select(['endpoint', 'p256dh_key', 'auth_token'])
+                ->chunk(100, function($subscriptions) use (&$batch, $newNotifications) {
+                    foreach ($subscriptions as $subscription) {
+                        $sub = Subscription::create([
+                            'endpoint' => $subscription->endpoint,
+                            'keys' => [
+                                'p256dh' => $subscription->p256dh_key,
+                                'auth' => $subscription->auth_token
+                            ]
+                        ]);
+
+                        // Process each new notification
+                        foreach ($newNotifications as $notification) {
+                            $payload = json_encode([
+                                'title' => $notification['title'],
+                                'body' => $notification['text'],
+                                'icon' => '/favicon.ico',
+                                'badge' => '/favicon.ico',
+                                'timestamp' => time(),
+                                'requireInteraction' => true,
+                                'vibrate' => [200, 100, 200],
+                                'data' => [
+                                    'type' => $notification['type'],
+                                    'details' => $notification['details'] ?? null,
+                                    'time' => now()->toIso8601String()
+                                ]
+                            ]);
+
+                            $batch[] = [
+                                'subscription' => $sub,
+                                'payload' => $payload,
+                                'notification' => $notification
+                            ];
+                        }
+                    }
+                });
+
+            // Process notifications in batches
+            foreach (array_chunk($batch, 50) as $batchItems) {
+                foreach ($batchItems as $item) {
+                    $this->webPush->queueNotification(
+                        $item['subscription'],
+                        $item['payload']
+                    );
+                }
+
+                // Send batch and handle results
+                $reports = $this->webPush->flush();
+
+                // If successful, mark notifications as sent
+                if ($this->handlePushReports($reports)) {
+                    foreach ($batchItems as $item) {
+                        $this->markNotificationAsSent($item['notification']);
+                    }
+                }
+            }
+
+            // Broadcast through Laravel's broadcasting system
+            broadcast(new NewNotification([
+                'label' => $this->countTotalNotifications(),
+                'label_color' => 'danger',
+                'icon_color' => 'dark',
+                'dropdown' => $this->generateDropdownHtml(),
+            ]))->toOthers();
+
+        } catch (\Exception $e) {
+            Log::error('Error broadcasting notifications: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Don't throw the exception - allow the application to continue
+            // but log it for monitoring
+            report($e);
+
+        }
+    }
+
+    private function getNewNotifications()
+    {
+        $newNotifications = [];
+
+        // Process birthdays
+        foreach ($this->notifications['birthdays'] as $notification) {
+            $newNotifications[] = [
+                'type' => 'birthday',
+                'title' => '🎂 Birthday Notification',
+                'text' => $notification['text'],
+                'details' => $notification['details']
+            ];
+        }
+
+        // Process posts
+        foreach ($this->notifications['posts'] as $notification) {
+            $newNotifications[] = [
+                'type' => 'post',
+                'title' => '📢 New Announcement',
+                'text' => $notification['text'],
+                'details' => $notification['details']
+            ];
+        }
+
+        // Process holidays
+        foreach ($this->notifications['holidays'] as $notification) {
+            $newNotifications[] = [
+                'type' => 'holiday',
+                'title' => '📅 Holiday Reminder',
+                'text' => $notification['text'],
+                'details' => $notification['details']
+            ];
+        }
+
+        // Process leave requests
+        foreach ($this->notifications['leave_requests'] as $notification) {
+            $newNotifications[] = [
+                'type' => 'leave_request',
+                'title' => '📝 Leave Request Update',
+                'text' => $notification['text'],
+                'details' => $notification['details']
+            ];
+        }
+
+        // Process tasks
+        foreach ($this->notifications['tasks'] as $notification) {
+            $newNotifications[] = [
+                'type' => 'task',
+                'title' => '📋 Task Update',
+                'text' => $notification['text'],
+                'details' => $notification['details']
+            ];
+        }
+
+        // Process job applications
+        foreach ($this->notifications['job_applications'] as $notification) {
+            $newNotifications[] = [
+                'type' => 'job_application',
+                'title' => '👔 New Job Application',
+                'text' => $notification['text'],
+                'details' => $notification['details']
+            ];
+        }
+
+        // Process cash advances
+        foreach ($this->notifications['cash_advances'] as $notification) {
+            $newNotifications[] = [
+                'type' => 'cash_advance',
+                'title' => '💰 Cash Advance Update',
+                'text' => $notification['text'],
+                'details' => $notification['details']
+            ];
+        }
+
+        return $newNotifications;
     }
 
     // Generate birthday notifications
@@ -135,7 +356,6 @@ class NotificationsController extends Controller
                 'time' => 'Today',
                 'details' => "Birthday celebration for {$employee->first_name} {$employee->last_name}"
             ];
-
             $this->notifications['birthdays'][] = $notification;
         }
     }
@@ -387,75 +607,6 @@ class NotificationsController extends Controller
         }
     }
 
-    // Add this new method
-    private function generateHRComBenLeaveNotifications()
-    {
-        try {
-            // Only proceed if user has HR ComBen role
-            if (!Auth::user()->hasRole('HR ComBen')) {
-                return;
-            }
-
-            // Get approved leaves that need HR ComBen validation
-            $recentlyApprovedLeaves = Leave::with(['employee', 'type', 'approver'])
-                ->where('status', 'approved')
-                ->whereNull('validated_by_signature')
-                ->where('created_at', '>=', now()->subDays(30)) // Only show last 30 days
-                ->orderBy('updated_at', 'desc')
-                ->get();
-
-            \Log::info('HR ComBen Leaves found:', ['count' => $recentlyApprovedLeaves->count()]);
-
-            foreach ($recentlyApprovedLeaves as $leave) {
-                // Get approver details
-                $approverName = $leave->approver
-                    ? "{$leave->approver->first_name} {$leave->approver->last_name}"
-                    : 'System';
-
-                // Format dates for better readability
-                $startDate = Carbon::parse($leave->date_from)->format('M d, Y');
-                $endDate = Carbon::parse($leave->date_to)->format('M d, Y');
-
-                // Calculate number of days
-                $numberOfDays = Carbon::parse($leave->date_from)->diffInDays(Carbon::parse($leave->date_to)) + 1;
-
-                $notification = [
-                    'icon' => 'fas fa-fw fa-check-circle text-success',
-                    'text' => "Leave request approved for {$leave->employee->first_name} {$leave->employee->last_name} - Needs validation",
-                    'time' => $leave->updated_at->diffForHumans(),
-                    'details' => "Leave Type: {$leave->type->name}\n" .
-                                "Duration: {$numberOfDays} day(s)\n" .
-                                "Period: {$startDate} to {$endDate}\n" .
-                                "Reason: {$leave->reason_to_leave}\n" .
-                                "Approved by: {$approverName}\n" .
-                                "Department: {$leave->employee->department}\n" .
-                                "Status: Pending HR validation",
-                    'id' => $leave->id,
-                    'route' => route('leaves.show', $leave->id),
-                    'priority' => 'high', // Add priority for urgent items
-                    'category' => 'validation_required'
-                ];
-
-                $this->notifications['hr_comben_leaves'][] = $notification;
-            }
-
-            // Sort notifications by update time
-            usort($this->notifications['hr_comben_leaves'], function($a, $b) {
-                return strtotime($b['time']) - strtotime($a['time']);
-            });
-
-            \Log::info('HR ComBen notifications generated:', [
-                'count' => count($this->notifications['hr_comben_leaves'])
-            ]);
-
-        } catch (\Exception $e) {
-            \Log::error('Error generating HR ComBen leave notifications: ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-        }
-    }
-
     // Count the total number of notifications
     private function countTotalNotifications()
     {
@@ -511,13 +662,65 @@ class NotificationsController extends Controller
     {
         $this->generateNotifications();
 
-        // Add route information for each HR ComBen leave notification
-        foreach ($this->notifications['hr_comben_leaves'] as &$notification) {
-            if (isset($notification['id'])) {
-                $notification['route'] = route('leaves.show', $notification['id']);
-            }
-        }
-
         return view('all-notifications', ['allNotifications' => $this->notifications]);
     }
+
+    private function filterAlreadySentNotifications($notifications)
+    {
+        return collect($notifications)->filter(function($notification) {
+            $notificationId = $this->generateNotificationId($notification);
+            return !DB::table('sent_notifications')
+                ->where('notification_type', $notification['type'])
+                ->where('notification_id', $notificationId)
+                ->exists();
+        })->all();
+    }
+
+    private function generateNotificationId($notification)
+    {
+        // Create a unique identifier based on the notification content
+        $idComponents = [
+            $notification['type'],
+            $notification['text'],
+            $notification['details'] ?? '',
+            // Add any other relevant fields that make the notification unique
+        ];
+
+        return md5(implode('|', $idComponents));
+    }
+
+    private function markNotificationAsSent($notification)
+    {
+        DB::table('sent_notifications')->insert([
+            'notification_type' => $notification['type'],
+            'notification_id' => $this->generateNotificationId($notification),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    private function handlePushReports($reports)
+    {
+        $success = true;
+        foreach ($reports as $report) {
+            if (!$report->isSuccess()) {
+                $endpoint = $report->getRequest()->getUri()->__toString();
+
+                // Update subscription status asynchronously
+                dispatch(function () use ($endpoint) {
+                    PushSubscription::where('endpoint', $endpoint)
+                        ->update(['active' => false]);
+                })->afterResponse();
+
+                Log::warning('Push notification failed', [
+                    'endpoint' => $endpoint,
+                    'reason' => $report->getReason()
+                ]);
+
+                $success = false;
+            }
+        }
+        return $success;
+    }
 }
+

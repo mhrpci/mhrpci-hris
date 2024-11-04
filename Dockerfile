@@ -56,6 +56,10 @@ RUN if [ "$APP_ENV" != "production" ]; then \
 # Create a non-root user to run the app
 RUN adduser --disabled-password --gecos '' appuser
 
+# Install Redis Extension
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+
 # Switch to non-root user
 USER appuser
 
