@@ -435,7 +435,7 @@
         }
 
         .app-name {
-            color: #333;
+            color: #8b09db;
             font-size: 1.5rem;
             font-weight: 600;
         }
@@ -584,14 +584,15 @@
         .sidebar {
             position: fixed;
             top: 0;
-            left: -250px;
-            width: 250px;
+            left: -280px;
+            width: 280px;
             height: 100%;
             background-color: var(--white);
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             transition: left 0.3s ease;
             z-index: 1001;
             overflow-y: auto;
+            padding-top: 1rem;
         }
 
         .sidebar.active {
@@ -686,6 +687,143 @@
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
         }
+
+        /* Add this new media query for header */
+        @media (max-width: 768px) {
+            header nav {
+                justify-content: space-between;
+                padding: 0.4rem 1rem;
+            }
+
+            /* Hide all nav elements except logo and hamburger in mobile */
+            header .nav-links,
+            header .auth-buttons {
+                display: none !important; /* Use !important to override other styles */
+            }
+
+            /* Ensure logo and hamburger are visible */
+            header .logo-container,
+            header .hamburger {
+                display: flex;
+                align-items: center;
+            }
+
+            header .hamburger {
+                margin-left: auto;
+                font-size: 1.5rem;
+                padding: 0.5rem;
+                cursor: pointer;
+            }
+        }
+
+        /* Enhanced sidebar styles for mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                padding-top: 2rem; /* More space at top */
+            }
+
+            .sidebar .nav-links {
+                display: flex !important; /* Always show nav links in sidebar */
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .sidebar .nav-links li {
+                margin: 0.5rem 0;
+                width: 100%;
+            }
+
+            .sidebar .nav-links a {
+                display: block;
+                padding: 1rem;
+                color: #333;
+                font-size: 1.1rem;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar .nav-links a:hover {
+                background-color: var(--light-bg);
+                color: var(--primary-color);
+                padding-left: 1.5rem;
+            }
+
+            /* Enhanced mobile auth buttons */
+            .sidebar .auth-buttons {
+                display: flex !important;
+                flex-direction: column;
+                padding: 1rem;
+                margin-top: 1rem;
+                border-top: 1px solid #eee;
+            }
+
+            .sidebar .google-login-btn,
+            .sidebar .user-info {
+                width: 100%;
+                justify-content: center;
+                padding: 0.75rem;
+                margin: 0.5rem 0;
+            }
+        }
+
+        /* Update the app-name class */
+        .app-name {
+            color: #8b09db;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Also update the sidebar version */
+        .sidebar .app-name {
+            color: #8b09db;
+        }
+
+        /* Add hover effect if desired */
+        .logo-link:hover .app-name {
+            color: #a64dff;
+        }
+
+        /* Update logo link styles */
+        .logo-link {
+            text-decoration: none; /* Remove underline */
+        }
+
+        .logo-link:hover {
+            text-decoration: none; /* Ensure no underline on hover */
+        }
+
+        /* Update nav link styles */
+        .nav-links a {
+            color: #333;
+            text-decoration: none; /* Remove underline */
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            text-decoration: none; /* Ensure no underline on hover */
+            opacity: 1;
+        }
+
+        /* Update sidebar nav link styles */
+        .sidebar .nav-links a {
+            text-decoration: none; /* Remove underline */
+            display: block;
+            padding: 1rem;
+            color: #333;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-links a:hover {
+            text-decoration: none; /* Ensure no underline on hover */
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            padding-left: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -744,10 +882,12 @@
             </div>
         </div>
         <ul class="nav-links">
-            <li><a href="{{ route('welcome') }}" title="Home">Home</a></li>
-            <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
-            <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
-            <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
+            <li><a href="{{ route('welcome') }}" class="nav-link" title="Home">Home</a></li>
+            <li><a href="#company-profile" class="nav-link" title="Company Profile">Company Profile</a></li>
+            <li><a href="#about" class="nav-link" title="About Us">About Us</a></li>
+            <li><a href="#brand" class="nav-link" title="Our Brand">Our Brand</a></li>
+            <li><a href="#partners" class="nav-link" title="Partners">Partners</a></li>
+            <li><a href="#milestones" class="nav-link" title="Milestones">Milestones</a></li>
         </ul>
         <div class="auth-buttons mobile-only">
             @if(Auth::guard('google')->check())

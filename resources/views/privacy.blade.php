@@ -79,32 +79,37 @@
 
         <div class="section">
             <h2>1. Information We Collect</h2>
-            <p>We collect information you provide directly to us, such as when you create an account, submit a job application, or communicate with us. This may include:</p>
+            <p>At MHR Property Conglomerates, Inc. (MHRPCI), we collect information necessary for our recruitment and business operations across our diverse portfolio of companies, including:</p>
             <ul>
-                <li>Personal identification information (Name, email address, phone number, etc.)</li>
-                <li>Professional information (Resume, work history, education, etc.)</li>
-                <li>Any other information you choose to provide</li>
+                <li>Personal identification information (Name, email address, phone number, address)</li>
+                <li>Professional credentials (Resume, work history, education, certifications, licenses)</li>
+                <li>Employment eligibility documentation</li>
+                <li>References and background check information</li>
+                <li>Technical information when you use our career portal (IP address, browser type, device information)</li>
             </ul>
         </div>
 
         <div class="section">
             <h2>2. How We Use Your Information</h2>
-            <p>We use the information we collect to:</p>
+            <p>As a conglomerate operating across multiple industries including healthcare, hospitality, petroleum, construction, and pharmaceuticals, we use your information to:</p>
             <ul>
-                <li>Process your job application</li>
-                <li>Communicate with you about potential opportunities</li>
-                <li>Improve our services and user experience</li>
-                <li>Comply with legal obligations</li>
+                <li>Process applications across our subsidiary companies (MHRHCI, VHI, BGPDI, MAX, MHRCONS, CIO, LUSCO, RCG)</li>
+                <li>Match candidates with appropriate positions within our group of companies</li>
+                <li>Conduct necessary background checks and verification processes</li>
+                <li>Communicate about opportunities within any of our subsidiary companies</li>
+                <li>Maintain and improve our recruitment processes</li>
+                <li>Comply with Philippine labor laws and regulations</li>
             </ul>
         </div>
 
         <div class="section">
             <h2>3. Information Sharing and Disclosure</h2>
-            <p>We do not share your personal information with third parties except as described in this policy or with your explicit consent. We may share information with:</p>
+            <p>As a conglomerate with multiple subsidiaries, we may share your information:</p>
             <ul>
-                <li>Potential employers (only with your permission)</li>
-                <li>Service providers who assist us in operating our platform</li>
-                <li>Law enforcement or other authorities if required by law</li>
+                <li>Among our subsidiary companies for relevant job opportunities</li>
+                <li>With our HR service providers and recruitment partners</li>
+                <li>With background checking agencies (with your consent)</li>
+                <li>With government authorities as required by Philippine law</li>
             </ul>
         </div>
 
@@ -129,6 +134,17 @@
         <div class="section">
             <h2>6. Changes to This Policy</h2>
             <p>We may update this privacy policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the new privacy policy on this page and updating the "Last Updated" date.</p>
+        </div>
+
+        <div class="section">
+            <h2>7. Contact Information</h2>
+            <p>For privacy-related inquiries or to exercise your rights, please contact us at:</p>
+            <p>MHR Property Conglomerates, Inc.<br>
+            MHR Building, Jose L. Briones St.,<br>
+            North Reclamation Area, Cebu City,<br>
+            Cebu, Philippines 6000<br>
+            Phone: (032) 238-1887<br>
+            Email: {{ config('app.company_email') }}</p>
         </div>
 
         <p class="last-updated">Last Updated: {{ date('F d, Y') }}</p>
