@@ -339,8 +339,8 @@
         <div class="signature-block">
             <div class="signature-container">
                 <div class="signature-line" data-signature="employee">
-                    @if($leave->signature)
-                        <img src="{{ Storage::url($leave->signature) }}"
+                    @if($leave->employee->signature)
+                        <img src="{{ Storage::url($leave->employee->signature) }}"
                              alt="Employee Signature"
                              class="signature-image">
                     @endif

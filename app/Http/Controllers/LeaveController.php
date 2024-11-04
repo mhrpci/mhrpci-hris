@@ -94,37 +94,14 @@ class LeaveController extends Controller
         $employee = Employee::findOrFail($validatedData['employee_id']);
 
         try {
-            // Process signature
-            $signatureFileName = null;
-            if ($request->filled('signature')) {
-                $signatureData = $request->input('signature');
-
-                // Validate base64 image
-                if (!preg_match('/^data:image\/(\w+);base64,/', $signatureData)) {
-                    throw new \Exception('Invalid signature format');
-                }
-
-                // Extract image data
-                $signatureImage = substr($signatureData, strpos($signatureData, ',') + 1);
-                $decodedImage = base64_decode($signatureImage);
-
-                if ($decodedImage === false) {
-                    throw new \Exception('Failed to decode signature');
-                }
-
-                // Generate unique filename
-                $signatureFileName = 'signatures/leave-' . uniqid() . '.png';
-
-                // Ensure signatures directory exists
-                Storage::disk('public')->makeDirectory('signatures');
-
-                // Store the signature
-                if (!Storage::disk('public')->put($signatureFileName, $decodedImage)) {
-                    throw new \Exception('Failed to save signature');
-                }
+            // Check if employee has a signature
+            if (!$employee->signature) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['signature' => 'No signature found. Please update your signature in your profile.']);
             }
 
-            // Create leave record with correct field names
+            // Create leave record with employee's signature
             $leave = Leave::create([
                 'employee_id' => $validatedData['employee_id'],
                 'leave_type' => $validatedData['leave_type'],
@@ -133,7 +110,7 @@ class LeaveController extends Controller
                 'type_id' => $validatedData['type_id'],
                 'status' => 'pending',
                 'reason_to_leave' => $validatedData['reason_to_leave'],
-                'signature' => $signatureFileName,
+                'signature' => $employee->signature,
                 'payment_status' => $employee->employment_status === 'REGULAR' ? 'With Pay' : 'Without Pay'
             ]);
 
@@ -147,11 +124,6 @@ class LeaveController extends Controller
             }
 
         } catch (\Exception $e) {
-            // Clean up signature file if it exists
-            if (isset($signatureFileName) && Storage::disk('public')->exists($signatureFileName)) {
-                Storage::disk('public')->delete($signatureFileName);
-            }
-
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['error' => 'Failed to create leave request: ' . $e->getMessage()]);

@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\BirthdayGreeting;
 use App\Mail\EmployeeResignationNotification;
 use App\Mail\UserAccountDisabledNotification;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
@@ -452,6 +454,84 @@ public function update(Request $request, $slug): RedirectResponse
         $employee->employment_status = $employee->employmentStatus();
 
         return view('employees.own-profile', compact('employee'));
+    }
+
+    public function updateSignature(Request $request)
+    {
+        try {
+            // Get authenticated user
+            $user = auth()->user();
+
+            // Find employee with matching email
+            $employee = Employee::where('email_address', $user->email)->first();
+
+            // Check if employee exists and matches the authenticated user
+            if (!$employee) {
+                Log::warning('Unauthorized signature update attempt by user: ' . $user->id);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to update this signature.'
+                ], 403);
+            }
+
+            // Validate the request
+            $request->validate([
+                'signature' => 'required|string'
+            ]);
+
+            // Decode base64 image
+            $image = $request->input('signature');
+
+            // Remove data:image/png;base64, from the beginning
+            $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
+            $image = str_replace(' ', '+', $image);
+
+            // Generate unique filename
+            $imageName = 'signature_' . $employee->id . '_' . time() . '.png';
+            $path = 'signatures/' . $imageName;
+
+            // Ensure the signatures directory exists
+            if (!Storage::disk('public')->exists('signatures')) {
+                Storage::disk('public')->makeDirectory('signatures');
+            }
+
+            // Delete old signature if exists
+            if ($employee->signature && Storage::disk('public')->exists($employee->signature)) {
+                Storage::disk('public')->delete($employee->signature);
+            }
+
+            // Store new signature
+            $stored = Storage::disk('public')->put($path, base64_decode($image));
+
+            if (!$stored) {
+                throw new \Exception('Failed to store signature file');
+            }
+
+            // Update employee record
+            $updated = $employee->update([
+                'signature' => $path
+            ]);
+
+            if (!$updated) {
+                throw new \Exception('Failed to update employee record');
+            }
+
+            Log::info('Signature saved successfully for employee ID: ' . $employee->id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Signature saved successfully',
+                'path' => Storage::url($path)
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Signature save failed: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save signature: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
 }

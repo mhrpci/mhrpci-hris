@@ -466,7 +466,7 @@ class NotificationsController extends Controller
     // Generate job application notifications for HR Hiring users
     private function generateJobApplicationNotifications()
     {
-        if (Auth::user()->hasRole('HR Hiring')) {
+        if (Auth::user()->hasRole(['HR Hiring', 'Super Admin', 'Admin'])) {
             $last24Hours = Carbon::now()->subDay();
             $newApplications = \App\Models\Career::where('created_at', '>=', $last24Hours)
                 ->where('is_read', false)  // Only fetch unread applications

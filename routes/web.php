@@ -271,6 +271,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/push/vapid-public-key', [App\Http\Controllers\PushNotificationController::class, 'getVapidPublicKey'])->name('push.key');
     Route::get('/test-notification', [App\Http\Controllers\PushNotificationController::class, 'testNotification'])
         ->name('test.notification');
+    Route::post('/employee/signature', [EmployeeController::class, 'updateSignature'])
+        ->name('employee.signature.update')
+        ->middleware(['auth', 'verified']);
 });
 
     Auth::routes();

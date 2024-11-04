@@ -22,12 +22,20 @@
 
         <!-- Right column with detailed information -->
         <div class="col-lg-9">
-            <div class="mb-4">
-                <button class="btn btn-primary mr-2" onclick="showSection('personal')">Personal Info</button>
-                <button class="btn btn-success mr-2" onclick="showSection('work')">Work Details</button>
-                <button class="btn btn-info mr-2" onclick="showSection('education')">Education</button>
-                <button class="btn btn-warning mr-2" onclick="showSection('address')">Address</button>
-                <button class="btn btn-secondary" onclick="showSection('government')">Government IDs</button>
+            <div class="mb-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <button class="btn btn-primary mr-2" onclick="showSection('personal')">Personal Info</button>
+                    <button class="btn btn-success mr-2" onclick="showSection('work')">Work Details</button>
+                    <button class="btn btn-info mr-2" onclick="showSection('education')">Education</button>
+                    <button class="btn btn-warning mr-2" onclick="showSection('address')">Address</button>
+                    <button class="btn btn-secondary mr-2" onclick="showSection('government')">Government IDs</button>
+                    <button class="btn btn-dark mr-2" onclick="showSection('signature')">Signature</button>
+                </div>
+                @if(auth()->user()->email === $employee->email_address && !$employee->signature)
+                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#signatureModal">
+                        <i class="fas fa-signature mr-1"></i> Add Signature
+                    </button>
+                @endif
             </div>
 
             <div id="infoSections">
@@ -114,6 +122,88 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Signature -->
+                <div id="signature" class="info-section">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-signature mr-2"></i>Digital Signature</h5>
+                            @if(auth()->user()->email === $employee->email_address && !$employee->signature)
+                                <button class="btn btn-sm btn-light" data-toggle="modal" data-target="#signatureModal">
+                                    <i class="fas fa-plus mr-1"></i> Add Signature
+                                </button>
+                            @endif
+                        </div>
+                        <div class="card-body">
+                            @if($employee->signature)
+                                <div class="text-center">
+                                    <div class="border rounded p-4 d-inline-block bg-white">
+                                        <img src="{{ Storage::url($employee->signature) }}"
+                                             alt="Employee Signature"
+                                             class="img-fluid"
+                                             style="max-height: 100px;">
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <small class="text-muted d-block">
+                                            Last updated: {{ \Carbon\Carbon::parse($employee->updated_at)->format('F d, Y h:i A') }}
+                                        </small>
+
+                                        @if(auth()->user()->email === $employee->email_address)
+                                            <button class="btn btn-outline-secondary mt-2" data-toggle="modal" data-target="#signatureModal">
+                                                <i class="fas fa-edit mr-1"></i> Update Signature
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <div class="text-muted mb-3">
+                                        <i class="fas fa-signature fa-2x"></i>
+                                        <p class="mt-2">No signature has been uploaded yet.</p>
+                                    </div>
+
+                                    @if(auth()->user()->email === $employee->email_address)
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#signatureModal">
+                                            <i class="fas fa-plus mr-1"></i> Add Your Signature
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Signature Modal -->
+<div class="modal fade" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signatureModalLabel">
+                    {{ $employee->signature ? 'Update Your Signature' : 'Add Your Signature' }}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if($employee->signature)
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Your existing signature will be replaced when you save a new one.
+                    </div>
+                @endif
+                <canvas id="signatureCanvas" class="border rounded" width="700" height="200"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="clearSignature()">Clear</button>
+                <button type="button" class="btn btn-primary" onclick="saveSignature()">
+                    {{ $employee->signature ? 'Update Signature' : 'Save Signature' }}
+                </button>
             </div>
         </div>
     </div>
@@ -136,6 +226,44 @@
     .info-section {
         display: none;
         transition: all 0.3s ease;
+    }
+    .btn {
+        border-radius: 5px;
+        padding: 8px 16px;
+        transition: all 0.3s ease;
+    }
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+    }
+    .modal-header {
+        background-color: #f8f9fa;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+    #signatureCanvas {
+        cursor: crosshair;
+        background-color: #fff;
+    }
+    .signature-display img {
+        filter: brightness(1.1) contrast(1.2);
+    }
+
+    .info-section {
+        display: none;
+        opacity: 0;
+        transform: translateX(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .info-section.active {
+        display: block;
+        opacity: 1;
+        transform: translateX(0);
     }
 </style>
 @endpush
@@ -165,5 +293,174 @@
     document.addEventListener('DOMContentLoaded', () => {
         showSection('personal');
     });
+
+    let canvas = null;
+    let ctx = null;
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        canvas = document.getElementById('signatureCanvas');
+        ctx = canvas.getContext('2d');
+
+        // Set up canvas drawing events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Set up touch events for mobile
+        canvas.addEventListener('touchstart', handleTouch);
+        canvas.addEventListener('touchmove', handleTouch);
+        canvas.addEventListener('touchend', stopDrawing);
+    });
+
+    function startDrawing(e) {
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    }
+
+    function stopDrawing() {
+        isDrawing = false;
+    }
+
+    function handleTouch(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const offsetX = touch.clientX - rect.left;
+        const offsetY = touch.clientY - rect.top;
+
+        const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+
+        canvas.dispatchEvent(mouseEvent);
+    }
+
+    function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveSignature() {
+        // Check if user is authorized
+        const userEmail = '{{ auth()->user()->email }}';
+        const employeeEmail = '{{ $employee->email_address }}';
+
+        if (userEmail !== employeeEmail) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Unauthorized',
+                text: 'You are not authorized to update this signature.'
+            });
+            return;
+        }
+
+        // Validate if signature is empty
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imageData.data;
+        let isEmpty = true;
+
+        for (let i = 0; i < pixels.length; i += 4) {
+            if (pixels[i + 3] !== 0) {
+                isEmpty = false;
+                break;
+            }
+        }
+
+        if (isEmpty) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Please draw your signature before saving.'
+            });
+            return;
+        }
+
+        // Confirm if updating existing signature
+        const hasExistingSignature = {{ $employee->signature ? 'true' : 'false' }};
+        if (hasExistingSignature) {
+            Swal.fire({
+                title: 'Update Signature?',
+                text: 'This will replace your existing signature. Continue?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitSignature();
+                }
+            });
+        } else {
+            submitSignature();
+        }
+    }
+
+    function submitSignature() {
+        // Get signature data
+        const signatureData = canvas.toDataURL('image/png');
+
+        // Show loading state
+        const saveButton = document.querySelector('[onclick="saveSignature()"]');
+        const originalText = saveButton.innerHTML;
+        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        saveButton.disabled = true;
+
+        // Add CSRF token to headers
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        // Send AJAX request
+        axios.post('/employee/signature', {
+            signature: signatureData
+        })
+        .then(response => {
+            if (response.data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Signature has been saved successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                // Close modal
+                $('#signatureModal').modal('hide');
+
+                // Refresh the page to update the UI
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Signature save error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: error.response?.data?.message || 'Failed to save signature'
+            });
+        })
+        .finally(() => {
+            // Reset button state
+            saveButton.innerHTML = originalText;
+            saveButton.disabled = false;
+        });
+    }
 </script>
 @endpush

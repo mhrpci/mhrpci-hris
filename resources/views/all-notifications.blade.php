@@ -13,7 +13,7 @@
                 <div class="row">
                     @foreach($allNotifications as $category => $notifications)
                         @if(($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin'])) &&
-                            ($category !== 'job_applications' || Auth::user()->hasRole('HR Hiring')) &&
+                            ($category !== 'job_applications' || Auth::user()->hasRole(['HR Hiring', 'Super Admin'])) &&
                             ($category !== 'leave_status' || Auth::user()->hasRole(['Employee'])) &&
                             ($category !== 'cash_advances' || Auth::user()->hasRole(['Super Admin', 'Admin', 'Employee'])))
                             <div class="col-md-6 mb-4">
@@ -57,7 +57,7 @@
                                         </ul>
                                     @endif
                                     @if(Auth::user()->hasRole(['Super Admin', 'Admin']) ||
-                                       (Auth::user()->hasRole('HR Hiring') && $category === 'job_applications') ||
+                                       (Auth::user()->hasRole(['HR Hiring','Super Admin', 'Admin']) && $category === 'job_applications') ||
                                        (Auth::user()->hasRole('Employee') && $category === 'tasks') ||
                                        (Auth::user()->hasRole('Employee') && $category === 'leave_status'))
                                         <div class="text-right mt-3">
