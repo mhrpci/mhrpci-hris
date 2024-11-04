@@ -550,16 +550,16 @@
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                             <!-- User image -->
                             <li class="user-header bg-primary">
-                                <img src="{{ Auth::user()->adminlte_image() }}" class="img-circle elevation-2" alt="User Image">
+                                @if(Auth::user()->adminlte_image())
+                                    <img src="{{ Auth::user()->adminlte_image() }}" class="img-circle elevation-2" alt="User Image">
+                                @else
+                                    <div class="img-circle elevation-2 d-flex justify-content-center align-items-center mx-auto" style="width: 90px; height: 90px; background-color: #007bff; color: white; font-size: 2rem;">
+                                        {{ strtoupper(substr(Auth::user()->first_name, 0, 1) . substr(Auth::user()->last_name, 0, 1)) }}
+                                    </div>
+                                @endif
                                 <p>
                                     {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
-                                    <small>Member since
-                                        @if(Auth::user()->date_hired)
-                                            {{ Auth::user()->date_hired }}
-                                        @else
-                                            {{ Auth::user()->created_at->format('F d, Y') }}
-                                        @endif
-                                    </small>
+                                    <small>Member since {{ Auth::user()->date_hired ?? Auth::user()->created_at->format('F d, Y') }}</small>
                                 </p>
                             </li>
                             <!-- Menu Footer-->
