@@ -43,6 +43,7 @@
             font-weight: 500;
             padding: 0.5rem 1rem;
             transition: color 0.3s ease;
+            font-size: 1.3rem;
         }
 
         .navbar-nav .nav-link:hover,
@@ -173,6 +174,10 @@
 
             .career-item {
                 margin-bottom: 1.5rem;
+            }
+
+            .navbar-nav .nav-link {
+                font-size: 1.1rem;
             }
         }
 
@@ -462,28 +467,16 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('careers*') ? 'active' : '' }}" href="{{ url('/careers') }}">Careers</a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link {{ request()->is('saved-jobs') ? 'active' : '' }}" href="{{ url('/saved-jobs') }}">
-                            Saved Jobs
-                            <span class="badge bg-primary saved-jobs-count">0</span>
-                        </a>
-                    </li> --}}
                 </ul>
                 <div class="ms-lg-3 mt-3 mt-lg-0">
                     @if(Auth::guard('google')->check())
-                        <div class="dropdown">
-                            <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="rounded-circle me-2" width="24" height="24">
-                                {{ Auth::guard('google')->user()->name }}
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li>
-                                    <form action="{{ route('google.logout') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ Auth::guard('google')->user()->avatar }}" alt="{{ Auth::guard('google')->user()->name }}" class="rounded-circle me-2" width="24" height="24">
+                            <span class="me-3">{{ Auth::guard('google')->user()->name }}</span>
+                            {{-- <form action="{{ route('google.logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-primary btn-sm">Logout</button>
+                            </form> --}}
                         </div>
                     @else
                         <a href="{{ route('google.login') }}" class="btn btn-google-auth">
@@ -563,12 +556,12 @@
                                         </button>
                                     @endif
                                 </div>
-                                @if(Auth::guard('google')->check())
+                                {{-- @if(Auth::guard('google')->check())
                                     <button class="btn btn-link btn-sm text-muted mt-2 save-job-btn" data-hiring-id="{{ $hiring->id }}" data-saved="{{ in_array($hiring->id, $savedJobs) ? 'true' : 'false' }}">
                                         <i class="fas {{ in_array($hiring->id, $savedJobs) ? 'fa-bookmark' : 'fa-bookmark-o' }} me-1"></i>
                                         {{ in_array($hiring->id, $savedJobs) ? 'Saved' : 'Save Job' }}
                                     </button>
-                                @endif
+                                @endif --}}
                             </div>
                         </div>
                     </div>

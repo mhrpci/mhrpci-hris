@@ -85,6 +85,7 @@
             font-weight: 500;
             transition: opacity 0.3s;
             margin-left: 20px;
+            font-size: 1.3rem;
         }
         .nav-link:hover {
             opacity: 0.8;
@@ -385,6 +386,8 @@
             }
             .nav-link {
                 margin: 10px 0;
+                font-size: 1.1rem;
+                color: var(--white);
             }
         }
         @media (min-width: 1024px) {

@@ -16,7 +16,6 @@ use App\Models\CashAdvance;
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use App\Models\PushSubscription;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Log;
 use Predis\Connection\ConnectionException;
 use Illuminate\Support\Facades\DB;
@@ -44,15 +43,26 @@ class NotificationsController extends Controller
 
     private function initializeWebPush()
     {
-        $this->webPush = new WebPush([
-            'VAPID' => [
-                'subject' => config('app.url') . '/home',
-                'publicKey' => config('webpush.public_key'),
-                'privateKey' => config('webpush.private_key'),
-                'icon' => config('app.url') . '/vendor/adminlte/dist/img/LOGO4.png',
-                'name' => config('app.name')
-            ]
-        ]);
+        try {
+            // Validate required configuration
+            if (!config('webpush.public_key') || !config('webpush.private_key')) {
+                Log::warning('WebPush configuration missing. Push notifications disabled.');
+                return;
+            }
+
+            $this->webPush = new WebPush([
+                'VAPID' => [
+                    'subject' => config('app.url') . '/home',
+                    'publicKey' => config('webpush.public_key'),
+                    'privateKey' => config('webpush.private_key'),
+                    'icon' => config('app.url') . '/vendor/adminlte/dist/img/LOGO4.png',
+                    'name' => config('app.name')
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('WebPush initialization failed: ' . $e->getMessage());
+            // Continue without web push functionality
+        }
     }
 
     // Method to fetch notifications data
@@ -62,29 +72,13 @@ class NotificationsController extends Controller
         $cacheKey = 'user_notifications_' . $userId;
 
         try {
-            // Try Redis first
-            try {
-                if (Redis::connection()->ping()) {
-                    $cachedNotifications = Redis::get($cacheKey);
-                    if ($cachedNotifications) {
-                        $this->notifications = json_decode($cachedNotifications, true);
-                    } else {
-                        $this->generateNotifications();
-                        Redis::setex($cacheKey, 300, json_encode($this->notifications));
-                    }
-                }
-            } catch (ConnectionException $e) {
-                // Fallback to file cache if Redis is not available
-                Log::warning('Redis connection failed, falling back to file cache', [
-                    'error' => $e->getMessage()
-                ]);
-
-                $cachedNotifications = Cache::get($cacheKey);
-                if (!$cachedNotifications) {
-                    $this->generateNotifications();
-                } else {
-                    $this->notifications = $cachedNotifications;
-                }
+            // Use Laravel's cache system
+            $cachedNotifications = Cache::get($cacheKey);
+            if (!$cachedNotifications) {
+                $this->generateNotifications();
+                Cache::put($cacheKey, $this->notifications, 300); // Cache for 5 minutes
+            } else {
+                $this->notifications = $cachedNotifications;
             }
 
             $totalNotifications = $this->countTotalNotifications();

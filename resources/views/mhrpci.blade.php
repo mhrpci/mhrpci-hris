@@ -61,7 +61,7 @@
             transition: all 0.3s;
             padding: 0.75rem 1.5rem;
             border-radius: 4px;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             letter-spacing: 0.5px;
         }
         .nav-link:hover {
@@ -462,7 +462,7 @@
             color: #333;
             text-decoration: none;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 1.3rem;
             transition: all 0.3s;
         }
 
@@ -797,7 +797,7 @@
             color: #333;
             text-decoration: none; /* Remove underline */
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 1.3rem;
             transition: all 0.3s;
         }
 

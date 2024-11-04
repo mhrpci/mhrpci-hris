@@ -26,14 +26,15 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            font-size: 16px;
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Times New Roman', Times, serif;
         }
 
         /* Enhanced Header Styles */
@@ -53,6 +54,7 @@
             font-weight: 600;
             font-size: 1.5rem;
             color: var(--primary-color);
+            font-family: 'Times New Roman', Times, serif;
         }
 
         .navbar-brand img {
@@ -66,6 +68,8 @@
             padding: 0.5rem 1rem;
             transition: color 0.2s ease, background-color 0.2s ease;
             border-radius: 4px;
+            font-size: 1.3rem;
+            font-family: 'Times New Roman', Times, serif;
         }
 
         .nav-link:hover, .nav-link:focus {
@@ -86,7 +90,7 @@
         }
 
         .job-title {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
             color: var(--text-color);
             margin-bottom: 1rem;
@@ -103,7 +107,7 @@
             display: flex;
             align-items: center;
             color: #5E6C84;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
         }
 
         .job-meta-item i {
@@ -164,7 +168,7 @@
         }
 
         .card-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
             color: var(--text-color);
             margin-bottom: 0;
@@ -187,6 +191,7 @@
             padding: 0.5rem;
             border-radius: 4px;
             transition: background-color 0.2s ease;
+            font-size: 1.2rem;
         }
 
         .custom-list li:hover {
@@ -255,7 +260,7 @@
 
         /* Enhanced Readability */
         .job-description, .list-group-item {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             line-height: 1.8;
         }
 
@@ -307,12 +312,16 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+            width: 100%;
+            max-width: 400px;
         }
 
-        .btn-group > .btn,
+        .btn-group > .btn {
+            flex: 2;
+        }
+
         .btn-group > .dropdown > .btn {
             flex: 1;
-            min-width: 120px;
         }
 
         /* Animated placeholder for images */
@@ -346,7 +355,7 @@
         }
 
         .footer-col h4 {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             margin-bottom: 1rem;
             color: #ffffff;
             font-weight: 600;
@@ -366,7 +375,7 @@
             text-decoration: none;
             transition: color 0.3s ease, padding-left 0.3s ease;
             display: inline-block;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
         }
 
         .footer-col a:hover {
@@ -404,7 +413,7 @@
         /* Footer text */
         .footer-text {
             color: rgba(255, 255, 255, 0.9);
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             line-height: 1.6;
         }
 
@@ -458,6 +467,137 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Update mobile styles */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+
+            .nav-link {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Enhanced Modal Styles */
+        .modal-header.bg-gradient {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #6a0dad 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .form-section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .form-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border-color: #e0e0e0;
+            background-color: #f8f9fa;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #fff;
+            box-shadow: 0 0 0 0.25rem rgba(139, 9, 219, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-color: #e0e0e0;
+            color: #6c757d;
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-weight: 600;
+        }
+
+        .application-intro {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .selected-file-info {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .selected-file-info i.fa-file-pdf {
+            color: #dc3545;
+        }
+
+        .selected-file-info i.fa-file-word {
+            color: #0d6efd;
+        }
+
+        .input-group .form-control[type="file"] {
+            padding: 0.75rem;
+            cursor: pointer;
+        }
+
+        .input-group .form-control[type="file"]::file-selector-button {
+            padding: 0.375rem 0.75rem;
+            margin: -0.375rem -0.75rem;
+            margin-inline-end: 0.75rem;
+            color: #212529;
+            background-color: #e9ecef;
+            pointer-events: none;
+            border-color: inherit;
+            border-style: solid;
+            border-width: 0;
+            border-inline-end-width: 1px;
+            border-radius: 0;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+                border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .input-group .form-control[type="file"]:hover:not(:disabled):not([readonly])::file-selector-button {
+            background-color: #dde0e3;
+        }
+
+        .form-text {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-text i {
+            color: var(--primary-color);
         }
     </style>
 </head>
@@ -530,18 +670,6 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#applyModal">
                     <i class="fas fa-paper-plane me-2"></i>Apply Now
                 </button>
-                @auth('google')
-                    <button class="btn btn-outline-primary save-job-btn" data-hiring-id="{{ $hiring->id }}" data-saved="{{ in_array($hiring->id, $savedJobs) ? 'true' : 'false' }}">
-                        <i class="fas fa-bookmark me-2"></i>
-                        <span class="save-job-text">
-                            {{ in_array($hiring->id, $savedJobs) ? 'Unsave Job' : 'Save Job' }}
-                        </span>
-                    </button>
-                @else
-                    <a href="{{ url('http://localhost:8080/auth/google') }}" class="btn btn-outline-primary">
-                        <i class="fab fa-google me-2"></i>Login with Google to save jobs
-                    </a>
-                @endauth
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-share-alt me-2"></i>Share
@@ -685,66 +813,126 @@
     <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="applyModalLabel">Apply for {{ $hiring->position }}</h5>
+                <div class="modal-header bg-gradient">
+                    <h5 class="modal-title" id="applyModalLabel">
+                        <i class="fas fa-paper-plane me-2"></i>Apply for {{ $hiring->position }}
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="application-intro mb-4">
+                        <p class="text-muted">Please fill out the form below with your professional details. Fields marked with an asterisk (*) are required.</p>
+                    </div>
                     <form action="{{ route('careers.apply') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                         @csrf
                         <input type="hidden" name="hiring_id" value="{{ $hiring->id }}">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" name="first_name" required>
-                                <div class="invalid-feedback">Please enter your first name.</div>
+
+                        <!-- Personal Information Section -->
+                        <div class="form-section mb-4">
+                            <h6 class="form-section-title mb-3">Personal Information</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="firstName" name="first_name"
+                                        placeholder="Enter your first name" required>
+                                    <div class="invalid-feedback">Please enter your first name.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="lastName" name="last_name"
+                                        placeholder="Enter your last name" required>
+                                    <div class="invalid-feedback">Please enter your last name.</div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" name="last_name" required>
-                                <div class="invalid-feedback">Please enter your last name.</div>
+                        </div>
+
+                        <!-- Contact Information Section -->
+                        <div class="form-section mb-4">
+                            <h6 class="form-section-title mb-3">Contact Information</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                            placeholder="name@example.com" required>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <input type="tel" class="form-control" id="phone" name="phone"
+                                            placeholder="+63 XXX XXX XXXX" required>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter your phone number.</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                            <div class="invalid-feedback">Please enter a valid email address.</div>
+
+                        <!-- Professional Information Section -->
+                        <div class="form-section mb-4">
+                            <h6 class="form-section-title mb-3">Professional Information</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="linkedin" class="form-label">LinkedIn Profile</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+                                        <input type="url" class="form-control" id="linkedin" name="linkedin"
+                                            placeholder="https://linkedin.com/in/yourprofile">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="experience" class="form-label">Years of Experience *</label>
+                                    <select class="form-select" id="experience" name="experience" required>
+                                        <option value="">Select your experience</option>
+                                        <option value="0-1">Less than 1 year</option>
+                                        <option value="1-3">1-3 years</option>
+                                        <option value="3-5">3-5 years</option>
+                                        <option value="5+">More than 5 years</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select your years of experience.</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" required>
-                            <div class="invalid-feedback">Please enter your phone number.</div>
+
+                        <!-- Documents Section -->
+                        <div class="form-section mb-4">
+                            <h6 class="form-section-title mb-3">Documents</h6>
+                            <div class="mb-3">
+                                <label for="resume" class="form-label">Resume (PDF/DOC/DOCX) *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                                    <input type="file" class="form-control" id="resume" name="resume"
+                                        accept=".pdf,.doc,.docx" required>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Accepted formats: PDF, DOC, DOCX | Maximum file size: 5MB
+                                </div>
+                                <div class="invalid-feedback">Please upload your resume in PDF, DOC, or DOCX format.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="coverLetter" class="form-label">Cover Letter</label>
+                                <textarea class="form-control" id="coverLetter" name="cover_letter" rows="4"
+                                    placeholder="Tell us why you're interested in this position and what makes you a great fit..."></textarea>
+                                <div class="form-text">Maximum 500 characters</div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="linkedin" class="form-label">LinkedIn Profile (optional)</label>
-                            <input type="url" class="form-control" id="linkedin" name="linkedin">
+
+                        <!-- Terms Section -->
+                        <div class="form-section mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="agreeTerms" name="agree_terms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    I agree to the <a href="#" target="_blank">terms and conditions</a> and consent to the processing of my personal data *
+                                </label>
+                                <div class="invalid-feedback">You must agree to the terms and conditions.</div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="experience" class="form-label">Years of Experience</label>
-                            <select class="form-select" id="experience" name="experience" required>
-                                <option value="">Select experience</option>
-                                <option value="0-1">0-1 years</option>
-                                <option value="1-3">1-3 years</option>
-                                <option value="3-5">3-5 years</option>
-                                <option value="5+">5+ years</option>
-                            </select>
-                            <div class="invalid-feedback">Please select your years of experience.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="resume" class="form-label">Resume (PDF)</label>
-                            <input type="file" class="form-control" id="resume" name="resume" accept=".pdf" required>
-                            <div class="invalid-feedback">Please upload your resume in PDF format.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="coverLetter" class="form-label">Cover Letter (optional)</label>
-                            <textarea class="form-control" id="coverLetter" name="cover_letter" rows="4"></textarea>
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="agreeTerms" name="agree_terms" required>
-                            <label class="form-check-label" for="agreeTerms">I agree to the <a href="#" target="_blank">terms and conditions</a></label>
-                            <div class="invalid-feedback">You must agree to the terms and conditions.</div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
+
+                        <button type="submit" class="btn btn-primary w-100 btn-lg">
                             <i class="fas fa-paper-plane me-2"></i>Submit Application
                         </button>
                     </form>
@@ -924,38 +1112,6 @@
                 img.src = src;
             }
 
-            // Save/Unsave Job Functionality
-            $('.save-job-btn').on('click', function() {
-                var button = $(this);
-                var hiringId = button.data('hiring-id');
-                var isSaved = button.data('saved') === 'true';
-
-                axios.post('{{ route("toggle.save.job") }}', {
-                    hiring_id: hiringId,
-                })
-                .then(function (response) {
-                    if (response.data.isSaved) {
-                        button.data('saved', 'true');
-                        button.find('.save-job-text').text('Unsave Job');
-                        button.removeClass('btn-outline-primary').addClass('btn-primary');
-                    } else {
-                        button.data('saved', 'false');
-                        button.find('.save-job-text').text('Save Job');
-                        button.removeClass('btn-primary').addClass('btn-outline-primary');
-                    }
-                    updateSavedJobsCount(response.data.savedJobsCount);
-                    showNotification('Success', response.data.message);
-                })
-                .catch(function (error) {
-                    console.error('Error toggling job save status:', error);
-                    showNotification('Error', 'An error occurred. Please try again.');
-                });
-            });
-
-            function updateSavedJobsCount(count) {
-                $('.saved-jobs-count').text(count);
-            }
-
             // Enhanced form validation
             const form = document.querySelector('form');
             form.addEventListener('submit', function(event) {
@@ -970,9 +1126,52 @@
             const resumeInput = document.getElementById('resume');
             resumeInput.addEventListener('change', function(event) {
                 const file = event.target.files[0];
-                if (file && file.type !== 'application/pdf') {
-                    resumeInput.value = '';
-                    showNotification('Error', 'Please upload a PDF file.');
+                const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+
+                if (file) {
+                    // Check file type
+                    if (!allowedTypes.includes(file.type)) {
+                        this.value = '';
+                        showNotification('Error', 'Please upload a PDF, DOC, or DOCX file.');
+                        return;
+                    }
+
+                    // Check file size
+                    if (file.size > maxSize) {
+                        this.value = '';
+                        showNotification('Error', 'File size must be less than 5MB.');
+                        return;
+                    }
+
+                    // Show file name in a user-friendly way
+                    const fileName = file.name;
+                    const fileExtension = fileName.split('.').pop().toLowerCase();
+                    let fileIcon = 'fa-file-pdf';
+
+                    if (fileExtension === 'doc' || fileExtension === 'docx') {
+                        fileIcon = 'fa-file-word';
+                    }
+
+                    // Update the input group with file information
+                    const fileInfo = `
+                        <div class="selected-file-info">
+                            <i class="fas ${fileIcon} me-2"></i>
+                            ${fileName}
+                        </div>
+                    `;
+
+                    const fileInfoContainer = document.createElement('div');
+                    fileInfoContainer.className = 'selected-file-feedback mt-2';
+                    fileInfoContainer.innerHTML = fileInfo;
+
+                    // Remove any existing file info
+                    const existingFileInfo = this.parentElement.querySelector('.selected-file-feedback');
+                    if (existingFileInfo) {
+                        existingFileInfo.remove();
+                    }
+
+                    this.parentElement.appendChild(fileInfoContainer);
                 }
             });
 
