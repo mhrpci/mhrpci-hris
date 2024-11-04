@@ -29,6 +29,7 @@
                                 Add Employee <i class="fas fa-plus-circle"></i>
                             </a>
                             @endcan
+                            @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
                             <button class="btn btn-primary btn-sm rounded-pill mr-2 mb-2" data-toggle="modal" data-target="#importModal">
                                 Import Employees <i class="fas fa-file-import"></i>
                             </button>
@@ -36,6 +37,7 @@
                                 @csrf
                                 <button type="submit" class="btn btn-secondary btn-sm rounded-pill">Export Employees <i class="fas fa-file-export"></i></button>
                             </form>
+                            @endif
                             <div class="dropdown mr-2 mb-2">
                                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Filter <i class="fas fa-filter"></i>

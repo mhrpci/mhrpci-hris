@@ -55,24 +55,6 @@ use Illuminate\Support\Facades\Auth;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-// Define the login route first to ensure it shows error
-Route::get('/login', function() {
-    throw new \App\Exceptions\LoginRouteException('This route is not accessible');
-});
-
-// Define your HRIS routes
-Route::get('/hris', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm']);
-Route::post('/hris', [App\Http\Controllers\Auth\LoginController::class, 'login']);
-
-// Other auth routes
-Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])
-    ->name('logout');
-
-// If you need password reset routes
-Route::get('/password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])
-    ->name('password.request');
-Route::post('/password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])
-    ->name('password.email');
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 // Careers routes
