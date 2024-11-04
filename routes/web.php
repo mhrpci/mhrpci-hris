@@ -56,7 +56,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 // Define the login route first to ensure it shows error
-Route::any('/login', function() {
+Route::get('/login', function() {
     throw new \App\Exceptions\LoginRouteException('This route is not accessible');
 });
 
