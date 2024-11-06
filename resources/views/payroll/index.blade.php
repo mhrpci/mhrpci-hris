@@ -44,14 +44,14 @@
                     <h3 class="card-title">Payroll Records</h3>
                     <div class="card-tools">
                         <!-- Download Payrolls Form -->
-                        <form action="{{ route('payroll.index') }}" method="GET" class="form-inline">
-                            <div class="input-group input-group-sm mr-2">
+                        <form action="{{ route('payroll.index') }}" method="GET" class="form-inline flex-wrap">
+                            <div class="input-group input-group-sm mr-2 mb-2 mb-sm-0">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Start Date</span>
                                 </div>
                                 <input type="date" name="start_date" id="start_date" class="form-control" required>
                             </div>
-                            <div class="input-group input-group-sm mr-2">
+                            <div class="input-group input-group-sm mr-2 mb-2 mb-sm-0">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">End Date</span>
                                 </div>
@@ -72,50 +72,52 @@
                     @if ($message = Session::get('error'))
                         <div class="alert alert-danger">{{ $message }}</div>
                     @endif
-                    <table id="payroll-table" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Employee Name</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Gross Salary</th>
-                                <th>Net Salary</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($payrolls as $payroll)
-                            <tr>
-                                <td>{{ $payroll->id }}</td>
-                                <td>{{ $payroll->employee->first_name }} {{ $payroll->employee->last_name }}</td>
-                                <td>{{ \Carbon\Carbon::parse($payroll->start_date)->format('F j, Y') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($payroll->end_date)->format('F j, Y') }}</td>
-                                <td>{{ number_format($payroll->gross_salary, 2) }}</td>
-                                <td>{{ number_format($payroll->net_salary, 2) }}</td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="{{ route('payroll.show', ['id' => $payroll->id]) }}">
-                                                <i class="fas fa-eye"></i>&nbsp;View
-                                            </a>
-                                            @can('payroll-delete')
-                                            <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this payroll?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                            </form>
-                                        @endcan
+                    <div class="table-responsive">
+                        <table id="payroll-table" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Employee Name</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Gross Salary</th>
+                                    <th>Net Salary</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($payrolls as $payroll)
+                                <tr>
+                                    <td>{{ $payroll->id }}</td>
+                                    <td>{{ $payroll->employee->first_name }} {{ $payroll->employee->last_name }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($payroll->start_date)->format('F j, Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($payroll->end_date)->format('F j, Y') }}</td>
+                                    <td>{{ number_format($payroll->gross_salary, 2) }}</td>
+                                    <td>{{ number_format($payroll->net_salary, 2) }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{{ route('payroll.show', ['id' => $payroll->id]) }}">
+                                                    <i class="fas fa-eye"></i>&nbsp;View
+                                                </a>
+                                                @can('payroll-delete')
+                                                <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this payroll?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                </form>
+                                            @endcan
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -128,10 +130,100 @@
 <!-- /.container-fluid -->
 @endsection
 
+@section('css')
+<style>
+    /* Make the contribution nav responsive */
+    .contribution-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .contribution-link {
+        flex: 1 1 250px;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+    }
+
+    .contribution-link:hover {
+        background-color: #f8f9fa;
+        text-decoration: none;
+    }
+
+    .contribution-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .icon-wrapper {
+        margin-right: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .text-wrapper {
+        min-width: 0;
+    }
+
+    .text-wrapper .title {
+        display: block;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .text-wrapper .description {
+        display: block;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Responsive table adjustments */
+    @media (max-width: 768px) {
+        #payroll-table {
+            font-size: 0.875rem;
+        }
+
+        .card-tools form {
+            width: 100%;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+        .btn-sm {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+@endsection
+
 @section('js')
 <script>
     $(document).ready(function () {
-        $('#payroll-table').DataTable();
+        $('#payroll-table').DataTable({
+            responsive: true,
+            scrollX: true,
+            autoWidth: false,
+            language: {
+                searchPlaceholder: "Search records"
+            },
+            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                 "<'row'<'col-sm-12'tr>>" +
+                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        });
 
         // Function to set end date based on start date
         function setEndDate(startDateInput, endDateInput) {

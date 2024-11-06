@@ -4,57 +4,61 @@
 <br>
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Policies List</h3>
-        <div class="card-tools">
-            <a href="{{ route('policies.create') }}" class="btn btn-success btn-sm rounded-pill">
-                Add New Policy <i class="fas fa-plus-circle"></i>
-            </a>
-            <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
-                Export to Excel <i class="fas fa-file-excel"></i>
-            </button>
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
+            <h3 class="card-title mb-2 mb-md-0">Policies List</h3>
+            <div class="card-tools">
+                <a href="{{ route('policies.create') }}" class="btn btn-success btn-sm rounded-pill mb-2 mb-md-0">
+                    Add New Policy <i class="fas fa-plus-circle"></i>
+                </a>
+                <button id="export-excel" class="btn btn-primary btn-sm rounded-pill">
+                    Export to Excel <i class="fas fa-file-excel"></i>
+                </button>
+            </div>
         </div>
     </div>
     <div class="card-body">
         @if ($message = Session::get('success'))
         <div class="alert alert-success">{{ $message }}</div>
         @endif
-        <table id="policies-table" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Section</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($policies as $policy)
+        <div class="table-responsive">
+            <table id="policies-table" class="table table-bordered table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $policy->title }}</td>
-                        <td>{{ $policy->section->name }}</td>
-                        <td>
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="{{ route('policies.show', $policy) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
-                                        <a class="dropdown-item" href="{{ route('policies.edit', $policy) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                        @if(auth()->user()->hasRole('Super Admin'))
-                                            <form action="{{ route('policies.destroy', $policy->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this policy?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                            </form>
-                                        @endif
+                        <th>Title</th>
+                        <th>Section</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($policies as $policy)
+                        <tr>
+                            <td>{{ $policy->title }}</td>
+                            <td>{{ $policy->section->name }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="{{ route('policies.show', $policy) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                            <a class="dropdown-item" href="{{ route('policies.edit', $policy) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                            @if(auth()->user()->hasRole('Super Admin'))
+                                                <form action="{{ route('policies.destroy', $policy->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this policy?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -69,9 +73,16 @@
 <script>
     $(document).ready(function () {
         var table = $('#policies-table').DataTable({
-            "pageLength": 10,
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "order": [[2, "asc"]]
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            order: [[2, "asc"]],
+            autoWidth: false,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 }, // Title
+                { responsivePriority: 2, targets: -1 }, // Actions
+                { responsivePriority: 3, targets: 1 }  // Section
+            ]
         });
 
         $('#export-excel').on('click', function() {

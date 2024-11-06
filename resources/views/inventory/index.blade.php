@@ -9,15 +9,16 @@
                     <div class="card-header">
                         <h3 class="card-title">Inventory List</h3>
                         <div class="card-tools">
-                            @can('inventory-create')
-                            <a href="{{ route('inventory.create') }}" class="btn btn-success btn-sm rounded-pill">
-                                Add Inventory <i class="fas fa-plus-circle"></i>
-                            </a>
-                            @endcan
-                            <!-- Trigger Modal for Import -->
-                            <button type="button" class="btn btn-primary btn-sm rounded-pill" data-toggle="modal" data-target="#importModal">
-                                Import Inventory <i class="fas fa-file-import"></i>
-                            </button>
+                            <div class="button-group">
+                                @can('inventory-create')
+                                <a href="{{ route('inventory.create') }}" class="btn btn-success btn-sm rounded-pill mb-2 mb-sm-0">
+                                    Add Inventory <i class="fas fa-plus-circle"></i>
+                                </a>
+                                @endcan
+                                <button type="button" class="btn btn-primary btn-sm rounded-pill" data-toggle="modal" data-target="#importModal">
+                                    Import Inventory <i class="fas fa-file-import"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -53,44 +54,46 @@
                         @if ($message = Session::get('success'))
                             <div class="alert alert-success">{{ $message }}</div>
                         @endif
-                        <table id="inventory-table" class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($inventory as $inventory)
+                        <div class="table-responsive">
+                            <table id="inventory-table" class="table table-bordered table-hover">
+                                <thead>
                                     <tr>
-                                        <td>{{ $inventory->id }}</td>
-                                        <td>{{ $inventory->name }}</td>
-                                        <td>{{ $inventory->description }}</td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    @can('inventory-edit')
-                                                        <a class="dropdown-item" href="{{ route('inventory.edit',$inventory->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                                    @endcan
-                                                    @can('inventory-delete')
-                                                        <form action="{{ route('inventory.destroy', $inventory->id) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this inventory?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                                        </form>
-                                                    @endcan
-                                                </div>
-                                            </div>
-                                        </td>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Action</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($inventory as $inventory)
+                                        <tr>
+                                            <td>{{ $inventory->id }}</td>
+                                            <td>{{ $inventory->name }}</td>
+                                            <td>{{ $inventory->description }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        @can('inventory-edit')
+                                                            <a class="dropdown-item" href="{{ route('inventory.edit',$inventory->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                                        @endcan
+                                                        @can('inventory-delete')
+                                                            <form action="{{ route('inventory.destroy', $inventory->id) }}" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this inventory?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                            </form>
+                                                        @endcan
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -103,10 +106,55 @@
     <!-- /.container-fluid -->
 @endsection
 
+@section('css')
+<style>
+    @media (max-width: 768px) {
+        .card-header {
+            flex-direction: column;
+            align-items: start !important;
+        }
+        .card-tools {
+            margin-top: 10px;
+            width: 100%;
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+        }
+        .btn {
+            width: 100%;
+        }
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+    }
+</style>
+@endsection
+
 @section('js')
-    <script>
-        $(document).ready(function () {
-            $('#inventory-table').DataTable();
+<script>
+    $(document).ready(function () {
+        $('#inventory-table').DataTable({
+            responsive: true,
+            scrollX: true,
+            autoWidth: false,
+            columnDefs: [
+                { responsivePriority: 1, targets: 1 }, // Name
+                { responsivePriority: 2, targets: -1 }, // Action
+                { responsivePriority: 3, targets: 0 }, // ID
+                { responsivePriority: 4, targets: '_all' }
+            ],
+            language: {
+                emptyTable: "No inventory items available at the moment."
+            }
         });
-    </script>
+
+        // Improve modal behavior on mobile
+        $('#importModal').on('shown.bs.modal', function () {
+            $(this).find('[type="file"]').focus();
+        });
+    });
+</script>
 @endsection

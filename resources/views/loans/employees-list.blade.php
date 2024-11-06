@@ -47,28 +47,30 @@
             <h3 class="card-title">Contribution Employee List</h3>
         </div>
         <div class="card-body">
-            <table id="employeeTable" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Employee ID</th>
-                        <th>Employee Name</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($employees as $employee)
+            <div class="table-responsive">
+                <table id="employeeTable" class="table table-bordered table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ $employee->company_id }} </td>
-                            <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
-                            <td>
-                                <a href="{{ route('loans.employee', $employee->id) }}" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-coins"></i> View Loans
-                                </a>
-                            </td>
+                            <th>Employee ID</th>
+                            <th>Employee Name</th>
+                            <th>Action</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($employees as $employee)
+                            <tr>
+                                <td data-label="Employee ID">{{ $employee->company_id }}</td>
+                                <td data-label="Employee Name">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle ?? ' ' }} {{ $employee->suffix ?? ' ' }}</td>
+                                <td data-label="Action">
+                                    <a href="{{ route('loans.employee', $employee->id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-coins"></i> View Loans
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
@@ -79,4 +81,42 @@
             $('#employeeTable').DataTable();
         });
     </script>
+@endsection
+
+@section('css')
+<style>
+    @media screen and (max-width: 767px) {
+        .table-responsive {
+            border: 0;
+        }
+
+        #employeeTable thead {
+            display: none;
+        }
+
+        #employeeTable tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+        }
+
+        #employeeTable td {
+            display: block;
+            text-align: right;
+            padding: 0.5rem;
+            border: none;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        #employeeTable td:last-child {
+            border-bottom: 0;
+        }
+
+        #employeeTable td::before {
+            content: attr(data-label);
+            float: left;
+            font-weight: bold;
+        }
+    }
+</style>
 @endsection

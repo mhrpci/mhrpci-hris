@@ -5,7 +5,7 @@
 <div class="container-fluid">
 <!-- Enhanced professional-looking link buttons -->
 <div class="mb-4">
-    <div class="contribution-nav" role="navigation" aria-label="Contribution Types">
+    <div class="contribution-nav d-flex flex-wrap gap-2" role="navigation" aria-label="Contribution Types">
         <a href="{{ route('attendances.index') }}" class="contribution-link {{ request()->routeIs('attendances.index') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-clock"></i>
@@ -58,20 +58,20 @@
 
                     <!-- Date range filter form -->
                     <form id="date-range-form" class="mb-3">
-                        <div class="row">
-                            <div class="col-md-3">
+                        <div class="row g-2">
+                            <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label for="start_date">Start Date:</label>
                                     <input type="date" id="start_date" name="start_date" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-12 col-md-3">
                                 <div class="form-group">
                                     <label for="end_date">End Date:</label>
                                     <input type="date" id="end_date" name="end_date" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-12 col-md-2">
                                 <div class="form-group">
                                     <label>&nbsp;</label>
                                     <button type="submit" class="btn btn-primary form-control">Filter</button>
@@ -80,53 +80,55 @@
                         </div>
                     </form>
 
-                    <table id="attendances-table" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Employee</th>
-                                <th>Date</th>
-                                <th>Time In</th>
-                                <th>Time Out</th>
-                                <th>Remark</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($attendances as $attendance)
+                    <div class="table-responsive">
+                        <table id="attendances-table" class="table table-bordered table-hover">
+                            <thead>
                                 <tr>
-                                    <td>{{ $attendance->employee->company_id }} {{ $attendance->employee->last_name }} {{ $attendance->employee->first_name }}, {{ $attendance->employee->middle_name ?? ' '}} {{ $attendance->employee->suffix ?? ' '}}</td>
-                                    <td data-sort="{{ date('Y-m-d', strtotime($attendance->date_attended)) }}">
-                                        {{ date('F d, Y', strtotime($attendance->date_attended)) }}
-                                    </td>
-                                    <td>{{ $attendance->time_in ? date('h:i A', strtotime($attendance->time_in)) : '--:-- --' }}</td>
-                                    <td>
-                                        {{ $attendance->time_out ? date('h:i A', strtotime($attendance->time_out)) : '--:-- --' }}
-                                    </td>
-                                    <td>{{ $attendance->remarks }}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="{{ route('attendances.show',$attendance->id) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
-                                                @can('attendance-edit')
-                                                    <a class="dropdown-item" href="{{ route('attendances.edit',$attendance->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                                @endcan
-                                                @can('attendance-delete')
-                                                    <form action="{{ route('attendances.destroy', $attendance->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this attendance?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                                    </form>
-                                                @endcan
-                                            </div>
-                                        </div>
-                                    </td>
+                                    <th>Employee</th>
+                                    <th>Date</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
+                                    <th>Remark</th>
+                                    <th>Action</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($attendances as $attendance)
+                                    <tr>
+                                        <td>{{ $attendance->employee->company_id }} {{ $attendance->employee->last_name }} {{ $attendance->employee->first_name }}, {{ $attendance->employee->middle_name ?? ' '}} {{ $attendance->employee->suffix ?? ' '}}</td>
+                                        <td data-sort="{{ date('Y-m-d', strtotime($attendance->date_attended)) }}">
+                                            {{ date('F d, Y', strtotime($attendance->date_attended)) }}
+                                        </td>
+                                        <td>{{ $attendance->time_in ? date('h:i A', strtotime($attendance->time_in)) : '--:-- --' }}</td>
+                                        <td>
+                                            {{ $attendance->time_out ? date('h:i A', strtotime($attendance->time_out)) : '--:-- --' }}
+                                        </td>
+                                        <td>{{ $attendance->remarks }}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="{{ route('attendances.show',$attendance->id) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                                    @can('attendance-edit')
+                                                        <a class="dropdown-item" href="{{ route('attendances.edit',$attendance->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                                    @endcan
+                                                    @can('attendance-delete')
+                                                        <form action="{{ route('attendances.destroy', $attendance->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this attendance?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                        </form>
+                                                    @endcan
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -143,19 +145,27 @@
 <script>
     $(document).ready(function () {
         var table = $('#attendances-table').DataTable({
-            "order": [[1, "desc"]], // Sort by date column (index 1) in descending order
-            "columnDefs": [
+            responsive: true,
+            order: [[1, "desc"]],
+            columnDefs: [
                 {
-                    "targets": 1, // Target the date column (index 1)
-                    "render": function(data, type, row) {
-                        // Convert the date to YYYY-MM-DD format for sorting and filtering
+                    targets: 1,
+                    render: function(data, type, row) {
                         var date = new Date(data);
                         return date.getFullYear() + '-' +
                                ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
                                ('0' + date.getDate()).slice(-2);
                     }
                 }
-            ]
+            ],
+            // Add responsive breakpoints
+            responsive: {
+                breakpoints: [
+                    {name: 'desktop', width: Infinity},
+                    {name: 'tablet',  width: 1024},
+                    {name: 'phone',   width: 480}
+                ]
+            }
         });
 
         // Date range filter

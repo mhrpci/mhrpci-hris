@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ProfileUpdated; // Import the ProfileUpdated Mailable class
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -27,8 +29,9 @@ class ProfileController extends Controller
             'suffix' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // added image validation
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'bio' => 'nullable|string|max:255',
+            'signature' => 'nullable|string',
         ]);
 
         $originalData = $user->toArray();
@@ -50,17 +53,91 @@ class ProfileController extends Controller
         }
 
         $user->bio = $request->bio;
+
+        if ($request->has('signature')) {
+            $image = $request->input('signature');
+            $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
+            $image = str_replace(' ', '+', $image);
+
+            $imageName = 'signature_' . $user->id . '_' . time() . '.png';
+            $path = 'signatures/' . $imageName;
+
+            if (!Storage::disk('public')->exists('signatures')) {
+                Storage::disk('public')->makeDirectory('signatures');
+            }
+
+            if ($user->signature && Storage::disk('public')->exists($user->signature)) {
+                Storage::disk('public')->delete($user->signature);
+            }
+
+            if (Storage::disk('public')->put($path, base64_decode($image))) {
+                $user->signature = $path;
+            }
+        }
+
         $user->save();
 
-        // Check if any data has changed
         $updatedData = $user->fresh()->toArray();
         $changedData = array_diff_assoc($updatedData, $originalData);
 
         if (!empty($changedData)) {
-            // Send email notification
             Mail::to($user->email)->send(new ProfileUpdated($user, $changedData));
         }
 
         return redirect()->back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function updateSignature(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $request->validate([
+                'signature' => 'required|string'
+            ]);
+
+            $image = $request->input('signature');
+            $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
+            $image = str_replace(' ', '+', $image);
+
+            $imageName = 'signature_' . $user->id . '_' . time() . '.png';
+            $path = 'signatures/' . $imageName;
+
+            if (!Storage::disk('public')->exists('signatures')) {
+                Storage::disk('public')->makeDirectory('signatures');
+            }
+
+            if ($user->signature && Storage::disk('public')->exists($user->signature)) {
+                Storage::disk('public')->delete($user->signature);
+            }
+
+            $stored = Storage::disk('public')->put($path, base64_decode($image));
+
+            if (!$stored) {
+                throw new \Exception('Failed to store signature file');
+            }
+
+            $updated = $user->update([
+                'signature' => $path
+            ]);
+
+            if (!$updated) {
+                throw new \Exception('Failed to update user record');
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Signature saved successfully',
+                'path' => Storage::url($path)
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Signature save failed: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save signature: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

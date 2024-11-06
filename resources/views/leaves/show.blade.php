@@ -372,10 +372,12 @@
                     @endif
                     <br>
                     <span data-name="validated">
-                        @php
-                            $hrComben = App\Models\User::role('HR ComBen')->first();
-                        @endphp
-                        {{ $hrComben->first_name ?? '' }} {{ $hrComben->last_name ?? '' }}
+                        @if($leave->validated_by_signature)
+                            @php
+                                $hrComben = App\Models\User::role('HR ComBen')->first();
+                            @endphp
+                            {{ $hrComben->first_name ?? '' }} {{ $hrComben->last_name ?? '' }}
+                        @endif
                     </span>
                 </div>
             </div>

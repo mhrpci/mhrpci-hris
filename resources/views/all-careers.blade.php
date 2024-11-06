@@ -45,42 +45,44 @@
                             </select>
                         </div>
                     </div>
-                    <table id="careers-table" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Position</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Experience</th>
-                                <th>Applied At</th>
-                                <th>Read</th>
-                                <th>Action</th> <!-- New column -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($careers as $career)
+                    <div class="table-responsive">
+                        <table id="careers-table" class="table table-bordered table-hover">
+                            <thead>
                                 <tr>
-                                    <td>{{ $career->hiring->position ?? 'N/A' }}</td>
-                                    <td>{{ $career->first_name }}</td>
-                                    <td>{{ $career->last_name }}</td>
-                                    <td>{{ $career->email }}</td>
-                                    <td>{{ $career->experience }} years</td>
-                                    <td>{{ $career->created_at->format('F j, Y \a\t g:i A') }}</td>
-                                    <td>
-                                        @if($career->is_read)
-                                            <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Read</span>
-                                        @else
-                                            <span class="badge badge-info"><i class="fas fa-bell mr-1"></i> New</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('showApplicant', $career->id) }}" class="btn btn-primary btn-sm">View Details</a>
-                                    </td>
+                                    <th>Position</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Experience</th>
+                                    <th>Applied At</th>
+                                    <th>Read</th>
+                                    <th>Action</th> <!-- New column -->
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach($careers as $career)
+                                    <tr>
+                                        <td>{{ $career->hiring->position ?? 'N/A' }}</td>
+                                        <td>{{ $career->first_name }}</td>
+                                        <td>{{ $career->last_name }}</td>
+                                        <td>{{ $career->email }}</td>
+                                        <td>{{ $career->experience }} years</td>
+                                        <td>{{ $career->created_at->format('F j, Y \a\t g:i A') }}</td>
+                                        <td>
+                                            @if($career->is_read)
+                                                <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Read</span>
+                                            @else
+                                                <span class="badge badge-info"><i class="fas fa-bell mr-1"></i> New</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('showApplicant', $career->id) }}" class="btn btn-primary btn-sm">View Details</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -103,6 +105,20 @@
         color: white;
         border: 1px solid #007bff;
     }
+
+    /* Add responsive styles for the contribution nav */
+    @media (max-width: 768px) {
+        .contribution-nav {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .contribution-link {
+            width: 100%;
+        }
+        #read-filter {
+            max-width: 100%;
+        }
+    }
 </style>
 @endsection
 
@@ -110,12 +126,26 @@
 <script>
     $(document).ready(function () {
         var table = $('#careers-table').DataTable({
-            "language": {
-                "emptyTable": "No applicants available at the moment."
+            responsive: true,
+            scrollX: true,
+            autoWidth: false,
+            language: {
+                emptyTable: "No applicants available at the moment."
             },
-            "columnDefs": [
-                { "orderable": false, "targets": 7 }
-            ]
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 }, // Position
+                { responsivePriority: 2, targets: 6 }, // Read status
+                { responsivePriority: 3, targets: 7 }, // Action
+                { responsivePriority: 4, targets: '_all' },
+                { orderable: false, targets: 7 }
+            ],
+            // Maintain the filter functionality
+            drawCallback: function() {
+                var status = $('#read-filter').val();
+                if (status !== "") {
+                    table.draw();
+                }
+            }
         });
 
         $('#read-filter').on('change', function() {

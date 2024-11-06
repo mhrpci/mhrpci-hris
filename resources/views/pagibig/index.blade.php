@@ -78,50 +78,52 @@
                 </button>
             </div>
         @endif
-        <table id="pagibig-table" class="table table-bordered table-striped">
-            <thead>
-            <tr>
-                <th>PAGIBIG NO.</th>
-                <th>Employee</th>
-                <th>Contribution Date</th>
-                <th>Employee Share</th>
-                <th>Employer Share</th>
-                <th>Total Contribution</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($contributions as $contribution)
+        <div class="table-responsive">
+            <table id="pagibig-table" class="table table-bordered table-striped">
+                <thead>
                 <tr>
-                    <td>{{ $contribution->employee->pagibig_no}}</td>
-                    <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
-                    <td>{{ $contribution->contribution_date->format('F Y') }}</td>
-                    <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
-                    <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
-                    <td>{{ number_format($contribution->total_contribution, 2) }}</td>
-                    <td>
-                        <div class="btn-group">
-                            <div class="dropdown">
-                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="{{ route('pagibig.show', $contribution) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
-                                    @if(auth()->user()->hasRole('Super Admin'))
-                                        <form action="{{ route('pagibig.destroy', $contribution->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this pagibig?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                        </form>
-                                    @endif
+                    <th>PAGIBIG NO.</th>
+                    <th>Employee</th>
+                    <th>Contribution Date</th>
+                    <th>Employee Share</th>
+                    <th>Employer Share</th>
+                    <th>Total Contribution</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($contributions as $contribution)
+                    <tr>
+                        <td>{{ $contribution->employee->pagibig_no}}</td>
+                        <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
+                        <td>{{ $contribution->contribution_date->format('F Y') }}</td>
+                        <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
+                        <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
+                        <td>{{ number_format($contribution->total_contribution, 2) }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="{{ route('pagibig.show', $contribution) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                        @if(auth()->user()->hasRole('Super Admin'))
+                                            <form action="{{ route('pagibig.destroy', $contribution->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this pagibig?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="createAllModal" tabindex="-1" role="dialog" aria-labelledby="createAllModalLabel" aria-hidden="true">
@@ -158,7 +160,9 @@
         gap: 15px;
         justify-content: flex-start;
         flex-wrap: wrap;
+        padding: 10px;
     }
+
     .contribution-link {
         display: flex;
         align-items: center;
@@ -169,7 +173,87 @@
         background-color: #f8f9fa;
         transition: all 0.3s ease;
         border: 1px solid #dee2e6;
+        /* Make links more flexible */
+        flex: 1 1 calc(50% - 15px); /* 2 columns on tablet */
+        min-width: 250px;
     }
+
+    /* Card tools responsiveness */
+    .card-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .card-tools .btn {
+        white-space: nowrap;
+        margin: 5px 0;
+    }
+
+    /* Table responsiveness */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Modal responsiveness */
+    .modal-dialog {
+        max-width: 95%;
+        margin: 1.75rem auto;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+        .contribution-link {
+            flex: 1 1 100%; /* 1 column on mobile */
+        }
+
+        .card-header {
+            flex-direction: column;
+        }
+
+        .card-tools {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .card-title {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Adjust table for mobile */
+        #pagibig-table {
+            font-size: 14px;
+        }
+
+        .dropdown-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            margin: 0;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .contribution-link {
+            flex: 1 1 calc(50% - 15px); /* 2 columns on tablet */
+        }
+    }
+
+    @media (min-width: 1025px) {
+        .contribution-link {
+            flex: 1 1 calc(25% - 15px); /* 4 columns on desktop */
+        }
+
+        .modal-dialog {
+            max-width: 500px;
+        }
+    }
+
     .contribution-link:hover {
         background-color: #e9ecef;
         text-decoration: none;

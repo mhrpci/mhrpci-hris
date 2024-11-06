@@ -315,6 +315,73 @@
     width: 100%; /* Ensure the image takes the full width of the container */
     height: auto; /* Maintain aspect ratio */
 }
+
+/* Add these styles to your existing CSS */
+.theme-option-wrapper .custom-switch {
+    padding-left: 2.25rem;
+}
+
+.theme-option-wrapper .custom-control-label {
+    padding-top: 2px;
+}
+
+.theme-option-wrapper .custom-switch .custom-control-label::before {
+    width: 2rem;
+    height: 1.25rem;
+    border-radius: 1rem;
+}
+
+.theme-option-wrapper .custom-switch .custom-control-label::after {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 1rem;
+}
+
+.custom-switch .custom-control-label::before {
+    background-color: #6c757d;
+}
+
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #007bff;
+}
+
+.dark-mode-label {
+    color: #ced4da;
+}
+
+.theme-option-wrapper small {
+    color: #6c757d !important;
+}
+
+/* Add these styles to your existing CSS */
+.theme-option-wrapper .custom-switch {
+    padding-left: 2.25rem;
+}
+
+.theme-option-wrapper .custom-control-label {
+    padding-top: 2px;
+}
+
+.theme-option-wrapper .custom-switch .custom-control-label::before {
+    width: 2rem;
+    height: 1.25rem;
+    border-radius: 1rem;
+}
+
+.theme-option-wrapper .custom-switch .custom-control-label::after {
+    width: calc(1.25rem - 4px);
+    height: calc(1.25rem - 4px);
+    border-radius: 50%;
+}
+
+.theme-option-wrapper .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+    transform: translateX(0.75rem);
+}
+
+.theme-option-wrapper small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -342,32 +409,11 @@
             });
         });
     </script>
-    <script>
-        // Disable right-click
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-        document.onkeydown = function(e) {
-            if (
-                event.keyCode === 123 || // F12
-                (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
-                (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
-                (e.ctrlKey && e.keyCode === 85) // Ctrl+U
-            ) {
-                return false;
-            }
-        };
-
-        // Disable developer tools
-        setInterval(function() {
-            debugger;
-        }, 100);
-    </script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <meta name="vapid-key" content="{{ config('webpush.public_key') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -418,6 +464,18 @@
                         <option value="sticky">Sticky Top</option>
                     </select>
                 </div>
+                <div class="theme-option-wrapper mb-4">
+                    <label class="d-block mb-2 text-light">Dark Mode</label>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="dark-mode-toggle">
+                        <label class="custom-control-label text-light" for="dark-mode-toggle">
+                            <span class="dark-mode-label">Light Mode</span>
+                        </label>
+                    </div>
+                    <small class="text-muted d-block mt-1">
+                        Toggle between light and dark theme
+                    </small>
+                </div>
             </div>
         </aside>
         <!-- /.control-sidebar -->
@@ -448,16 +506,22 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Add this line -->
+                <!-- Tour Guide Button -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="start-tour" role="button">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="d-none d-sm-inline-block ml-1">Tour Guide</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                        <i class="fas fa-paint-brush"></i>
+                        <i class="fas fa-cogs"></i>
                     </a>
                 </li>
                 @canany(['admin', 'super-admin', 'hrcomben', 'hrcompliance', 'hrpolicy'])
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="fas fa-cogs"></i>
+                        <i class="fas fa-bullhorn"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         @canany(['admin', 'super-admin'])
@@ -519,13 +583,6 @@
                         <div class="dropdown-divider"></div>
                         <a href="{{ route('notifications.all') }}" class="dropdown-item dropdown-footer">See All Notifications</a>
                     </div>
-                </li>
-
-                <!-- Dark Mode Toggle -->
-                <li class="nav-item">
-                    <a class="nav-link" id="dark-mode-toggle" href="#" role="button">
-                        <i class="fas fa-moon"></i>
-                    </a>
                 </li>
 
                 @guest
@@ -985,29 +1042,42 @@
 
             // Dark Mode Toggle
             function toggleDarkMode() {
-                $('body').toggleClass('dark-mode');
-                localStorage.setItem('darkMode', $('body').hasClass('dark-mode'));
-                updateDarkModeIcon();
+                const isDarkMode = $('#dark-mode-toggle').prop('checked');
+                $('body').toggleClass('dark-mode', isDarkMode);
+                localStorage.setItem('darkMode', isDarkMode);
+                updateDarkModeLabel(isDarkMode);
             }
 
-            function updateDarkModeIcon() {
-                if ($('body').hasClass('dark-mode')) {
-                    $('#dark-mode-toggle i').removeClass('fa-moon').addClass('fa-sun');
-                } else {
-                    $('#dark-mode-toggle i').removeClass('fa-sun').addClass('fa-moon');
+            function updateDarkModeLabel(isDarkMode) {
+                $('.dark-mode-label').text(isDarkMode ? 'Dark Mode' : 'Light Mode');
+
+                // Update icon in the control sidebar if needed
+                const $icon = $('#dark-mode-toggle').closest('.custom-switch').find('i');
+                if ($icon.length) {
+                    $icon.removeClass('fa-sun fa-moon').addClass(isDarkMode ? 'fa-moon' : 'fa-sun');
                 }
             }
 
-            // Check for saved dark mode preference
-            if (localStorage.getItem('darkMode') === 'true') {
-                $('body').addClass('dark-mode');
-                updateDarkModeIcon();
-            }
+            // Initialize dark mode on page load
+            $(document).ready(function() {
+                // Check for saved dark mode preference
+                const savedDarkMode = localStorage.getItem('darkMode') === 'true';
 
-            // Dark mode toggle click event
-            $('#dark-mode-toggle').on('click', function(e) {
-                e.preventDefault();
-                toggleDarkMode();
+                // Set initial state of the toggle
+                $('#dark-mode-toggle').prop('checked', savedDarkMode);
+
+                // Apply dark mode if it was saved
+                if (savedDarkMode) {
+                    $('body').addClass('dark-mode');
+                }
+
+                // Update the label
+                updateDarkModeLabel(savedDarkMode);
+
+                // Dark mode toggle change event
+                $('#dark-mode-toggle').on('change', function() {
+                    toggleDarkMode();
+                });
             });
 
             // Theme customization
@@ -1272,6 +1342,294 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tour = new Shepherd.Tour({
+            useModalOverlay: true,
+            defaultStepOptions: {
+                classes: 'shadow-md bg-purple-dark',
+                scrollTo: true,
+                cancelIcon: {
+                    enabled: true
+                }
+            }
+        });
+
+        // Welcome Step
+        tour.addStep({
+            id: 'welcome',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">Welcome to MHRPCI-HRIS! 👋</h3>
+                <p>Welcome to your personalized Human Resource Information System. This guided tour will walk you through:</p>
+                <ul>
+                    <li>Navigation and basic controls</li>
+                    <li>Key features and functionalities</li>
+                    <li>Important tools and shortcuts</li>
+                    <li>Personalization options</li>
+                </ul>
+                <p class="mt-2"><strong>Note:</strong> You can restart this tour anytime using the Tour Guide button in the top menu.</p>
+            </div>`,
+            attachTo: {
+                element: '.wrapper',
+                on: 'center'
+            },
+            buttons: [
+                {
+                    text: 'Skip Tour',
+                    action: tour.cancel,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Start Tour',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Navigation Controls
+        tour.addStep({
+            id: 'navigation-controls',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">Navigation Controls</h3>
+                <p>The top navigation bar contains several important controls:</p>
+                <ul>
+                    <li><strong>Menu Toggle</strong> <i class="fas fa-bars"></i> - Collapse/expand the sidebar</li>
+                    <li><strong>Policies</strong> <i class="fas fa-file-alt"></i> - Access company policies</li>
+                    <li><strong>Tour Guide</strong> <i class="fas fa-question-circle"></i> - Restart this tour</li>
+                    <li><strong>Theme Settings</strong> <i class="fas fa-cogs"></i> - Customize appearance</li>
+                </ul>
+            </div>`,
+            attachTo: {
+                element: '.main-header',
+                on: 'bottom'
+            },
+            buttons: getNavigationButtons()
+        });
+
+        // Sidebar Navigation
+        tour.addStep({
+            id: 'sidebar-navigation',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">Main Navigation Menu</h3>
+                <p>The sidebar contains all main features grouped by category:</p>
+                <ul>
+                    <li><strong>Dashboard</strong> - Overview and quick access</li>
+                    <li><strong>Employee Management</strong> - Personnel records and data</li>
+                    <li><strong>Attendance</strong> - Time tracking and records</li>
+                    <li><strong>Leave Management</strong> - Leave requests and balances</li>
+                    <li><strong>Payroll</strong> - Salary and compensation</li>
+                </ul>
+                <p class="mt-2"><strong>Tip:</strong> Menu items with arrows <i class="fas fa-angle-left"></i> contain sub-menus.</p>
+            </div>`,
+            attachTo: {
+                element: '.main-sidebar',
+                on: 'right'
+            },
+            buttons: getNavigationButtons()
+        });
+
+        // Notifications Center
+        tour.addStep({
+            id: 'notifications',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">Notifications Center</h3>
+                <p>Stay updated with real-time notifications about:</p>
+                <ul>
+                    <li><strong>Leave Requests</strong> - Approvals and updates</li>
+                    <li><strong>Tasks</strong> - New assignments and deadlines</li>
+                    <li><strong>Announcements</strong> - Company news and updates</li>
+                    <li><strong>System Alerts</strong> - Important reminders</li>
+                </ul>
+                <p class="mt-2"><strong>Tip:</strong> Click the bell icon <i class="far fa-bell"></i> to view all notifications.</p>
+            </div>`,
+            attachTo: {
+                element: '#notification-dropdown',
+                on: 'bottom'
+            },
+            buttons: getNavigationButtons()
+        });
+
+        // User Profile & Settings
+        tour.addStep({
+            id: 'user-profile',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">Your Profile & Account</h3>
+                <p>Manage your personal account settings:</p>
+                <ul>
+                    <li><strong>Profile</strong> - View and update your information</li>
+                    <li><strong>Settings</strong> - Customize your preferences</li>
+                    <li><strong>Security</strong> - Change password and security options</li>
+                    <li><strong>Sign Out</strong> - Securely log out of the system</li>
+                </ul>
+                <p class="mt-2"><strong>Note:</strong> Keep your profile information up to date!</p>
+            </div>`,
+            attachTo: {
+                element: '.user-menu',
+                on: 'bottom'
+            },
+            buttons: getNavigationButtons()
+        });
+
+        // Theme Customization
+        tour.addStep({
+            id: 'theme-settings',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">Personalize Your Experience</h3>
+                <p>Click the gear icon <i class="fas fa-cogs"></i> to customize:</p>
+                <ul>
+                    <li><strong>Color Themes</strong> - Choose from multiple color schemes</li>
+                    <li><strong>Navigation Style</strong> - Adjust menu positioning</li>
+                    <li><strong>Dark/Light Mode</strong> - Toggle display mode</li>
+                    <li><strong>Layout Options</strong> - Customize the interface layout</li>
+                </ul>
+                <p class="mt-2"><strong>Tip:</strong> Your settings are saved automatically!</p>
+            </div>`,
+            attachTo: {
+                element: '[data-widget="control-sidebar"]',
+                on: 'left'
+            },
+            buttons: getNavigationButtons()
+        });
+
+        // Notifications Button
+        tour.addStep({
+            id: 'notifications-button',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">Enable Push Notifications</h3>
+                <p>Stay informed with real-time push notifications:</p>
+                <ul>
+                    <li><strong>Important Updates</strong> - Never miss critical announcements</li>
+                    <li><strong>Task Reminders</strong> - Get notified of pending tasks</li>
+                    <li><strong>Leave Status</strong> - Receive updates on leave requests</li>
+                    <li><strong>System Alerts</strong> - Stay informed of system changes</li>
+                </ul>
+                <p class="mt-2"><strong>Tip:</strong> Click the "Enable Notifications" button to activate browser notifications!</p>
+            </div>`,
+            attachTo: {
+                element: '#notification-button',
+                on: 'top'
+            },
+            buttons: getNavigationButtons()
+        });
+
+        // Tour End
+        tour.addStep({
+            id: 'tour-end',
+            text: `<div class="tour-content">
+                <h3 class="tour-title">You're All Set! 🎉</h3>
+                <p>You've completed the tour of MHRPCI-HRIS!</p>
+                <p>Remember:</p>
+                <ul>
+                    <li>You can restart this tour anytime using the Tour Guide button</li>
+                    <li>Explore each section to familiarize yourself with the features</li>
+                    <li>Contact IT support if you need additional assistance</li>
+                </ul>
+                <p>Thank you for using MHRPCI-HRIS!</p>
+            </div>`,
+            attachTo: {
+                element: '.wrapper',
+                on: 'center'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back
+                },
+                {
+                    text: 'Finish',
+                    action: tour.complete,
+                    classes: 'shepherd-button-primary'
+                }
+            ]
+        });
+
+        // Helper function for navigation buttons
+        function getNavigationButtons() {
+            return [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ];
+        }
+
+        // Enhanced tour styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .tour-content {
+                padding: 1rem;
+            }
+            .tour-title {
+                color: #8e44ad;
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                border-bottom: 2px solid #8e44ad;
+                padding-bottom: 0.5rem;
+            }
+            .shepherd-content {
+                border-radius: 8px !important;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .shepherd-text {
+                font-size: 14px;
+                padding: 0;
+            }
+            .shepherd-text ul {
+                margin: 0.5rem 0;
+                padding-left: 1.5rem;
+            }
+            .shepherd-text li {
+                margin: 0.25rem 0;
+            }
+            .shepherd-footer {
+                padding: 0.75rem;
+                border-top: 1px solid rgba(0,0,0,0.1);
+                display: flex;
+                justify-content: flex-end;
+            }
+            .shepherd-button {
+                margin: 0.25rem;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+            .shepherd-button-primary {
+                background-color: #8e44ad;
+                color: white;
+            }
+            .shepherd-button-secondary {
+                background-color: #6c757d;
+                color: white;
+            }
+            .shepherd-button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .shepherd-cancel-icon {
+                color: rgba(0,0,0,0.5);
+                transition: color 0.3s ease;
+            }
+            .shepherd-cancel-icon:hover {
+                color: rgba(0,0,0,0.8);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Start tour button click handler
+        document.getElementById('start-tour').addEventListener('click', function(e) {
+            e.preventDefault();
+            tour.start();
+        });
+    });
+    </script>
 
 </body>
 </html>

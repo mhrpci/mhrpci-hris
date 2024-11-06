@@ -156,6 +156,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        // New signature route
+        Route::post('/profile/signature', [ProfileController::class, 'updateSignature'])
+        ->name('profile.signature.update');
 
     // Leave routes
     Route::put('/leaves/{id}/status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
@@ -277,7 +280,6 @@ Route::middleware('auth')->group(function () {
 });
 
     Auth::routes();
-
 
 
 

@@ -56,10 +56,99 @@
 
         .birthday-item {
             animation: slideIn 0.5s ease-in-out;
-            background-color: #ffe4b5; /* Moccasin color */
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            /* Light mode defaults */
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+
+        .birthday-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .birthday-item-content {
+            flex: 1;
+        }
+
+        .birthday-item-date {
+            font-weight: 500;
+            margin-left: 1rem;
+            color: #718096; /* Subtle text color for dates */
+        }
+
+        /* Dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            .birthday-item {
+                background-color: #2d3748;
+                border-color: #4a5568;
+                color: #e2e8f0;
+            }
+
+            .birthday-item:hover {
+                background-color: #353f4f;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+            .birthday-item-date {
+                color: #a0aec0; /* Lighter color for dates in dark mode */
+            }
+        }
+
+        /* Animation for new items */
+        .birthday-item {
+            animation: slideIn 0.5s ease-in-out;
+            animation-fill-mode: both;
+        }
+
+        .birthday-item:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .birthday-item:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        /* Accessibility - disable animations if user prefers reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .birthday-item {
+                animation: none;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .birthday-item {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+
+            .birthday-item-date {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .birthday-item {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .birthday-item-date {
+                margin-left: 0;
+                margin-top: 0.25rem;
+                font-size: 0.8rem;
+            }
         }
 
         @keyframes fadeIn {
@@ -458,8 +547,219 @@
             height: 60px;
         }
     }
+
+    /* Enhanced Card Design */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        overflow: hidden;
+    }
+
+    .card:hover {
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+
+    /* Enhanced Welcome Message */
+    .welcome-message {
+        background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+        border-radius: 15px;
+        padding: 2rem;
+    }
+
+    .welcome-heading {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(to right, #fff, #e0e0e0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+
+    /* Enhanced Clock Container */
+    .clock-container {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 15px;
+        padding: 2rem;
+    }
+
+    #clock {
+        font-size: 3.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        margin: 1rem 0;
+    }
+
+    /* Enhanced Dashboard Cards */
+    .dashboard-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+    }
+
+    .dashboard-card:hover::before {
+        transform: translateX(100%);
+    }
+
+    .card-icon {
+        font-size: 2.5rem;
+        margin-right: 1rem;
+        opacity: 0.9;
+        transition: transform 0.3s;
+    }
+
+    .dashboard-card:hover .card-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    /* Enhanced Analytics Dashboard */
+    .analytics-dashboard {
+        background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .analytics-card {
+        border-radius: 15px;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .analytics-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #2193b0, #6dd5ed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Enhanced Progress Bars */
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        transition: width 1s ease-in-out;
+        background: linear-gradient(45deg, #2193b0, #6dd5ed);
+    }
+
+    /* Enhanced Birthday Section */
+    .birthday-item {
+        background: linear-gradient(45deg, #fff, #f8f9fa);
+        border-left: 4px solid #6B73FF;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .birthday-item:hover {
+        transform: translateX(10px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Enhanced Alerts */
+    .alert {
+        border: none;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(45deg, #4CAF50, #45a049);
+        color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .alert-info {
+        background: linear-gradient(45deg, #2196F3, #1976D2);
+    }
+
+    /* Enhanced Charts */
+    .chart-container {
+        position: relative;
+        height: 120px;
+        margin-top: 1.5rem;
+    }
+
+    /* Responsive Enhancements */
+    @media (max-width: 768px) {
+        .welcome-heading {
+            font-size: 2rem;
+        }
+
+        #clock {
+            font-size: 2.5rem;
+        }
+
+        .analytics-number {
+            font-size: 1.2rem;
+        }
+
+        .chart-container {
+            height: 100px;
+        }
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+        body {
+            background: #1a1a1a;
+        }
+
+        .card {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        .analytics-dashboard {
+            background: linear-gradient(to bottom, #2d2d2d, #1a1a1a);
+        }
+
+        .analytics-card {
+            background: #2d2d2d;
+        }
+
+        .birthday-item {
+            background: linear-gradient(45deg, #2d2d2d, #252525);
+            border-left-color: #6B73FF;
+        }
+    }
 </style>
 <div class="container-fluid">
+<!-- Add signature reminder alert -->
+    @if(!Auth::user()->hasRole('Employee') && empty(Auth::user()->signature))
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>Reminder!</strong> You can set up your user signature in your profile settings.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+    <!-- Add signature reminder alert -->
+    @if(Auth::user()->hasRole('Employee'))
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>Reminder!</strong> You can set up your employee signature in your my profile setting.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <div class="row">
         <!-- Welcome section -->
         <div class="col-lg-6 mb-4">
@@ -737,18 +1037,8 @@
 <script>
     (function() {
         function updateClock() {
-            fetch('https://worldtimeapi.org/api/timezone/Asia/Manila')
-                .then(response => response.json())
-                .then(data => {
-                    const dateTime = new Date(data.datetime);
-                    updateClockDisplay(dateTime);
-                })
-                .catch(error => {
-                    console.error('Error fetching time:', error);
-                    // Fallback to local time if API fails
-                    updateClockDisplay(new Date());
-                });
-
+            const now = new Date();
+            updateClockDisplay(now);
             setTimeout(updateClock, 1000);
         }
 
@@ -756,13 +1046,38 @@
             const clock = document.getElementById('clock');
             const dateElement = document.getElementById('date');
 
-            const timeOptions = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
-            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            if (!clock || !dateElement) return;
 
-            clock.textContent = dateTime.toLocaleTimeString('en-US', timeOptions);
-            dateElement.textContent = dateTime.toLocaleDateString('en-US', dateOptions);
+            try {
+                // Format time: 12:34:56 PM
+                const timeOptions = {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true,
+                    timeZone: 'Asia/Manila'
+                };
+
+                // Format date: Monday, January 1, 2024
+                const dateOptions = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    timeZone: 'Asia/Manila'
+                };
+
+                clock.textContent = dateTime.toLocaleTimeString('en-US', timeOptions);
+                dateElement.textContent = dateTime.toLocaleDateString('en-US', dateOptions);
+            } catch (error) {
+                console.error('Error updating clock display:', error);
+                // Fallback to basic format if there's an error
+                clock.textContent = dateTime.toLocaleTimeString('en-US');
+                dateElement.textContent = dateTime.toLocaleDateString('en-US');
+            }
         }
 
+        // Start the clock
         updateClock();
     })();
 
@@ -806,9 +1121,33 @@
             <div class="row">
                 @php
                     $contributionItems = [
-                        ['title' => 'SSS', 'icon' => 'fas fa-shield-alt', 'color' => 'primary', 'total' => $analytics['sss']['total_contributions'], 'count' => $analytics['sss']['contribution_count'], 'chartId' => 'sssChart'],
-                        ['title' => 'Pagibig', 'icon' => 'fas fa-home', 'color' => 'success', 'total' => $analytics['pagibig']['total_contributions'], 'count' => $analytics['pagibig']['contribution_count'], 'chartId' => 'pagibigChart'],
-                        ['title' => 'Philhealth', 'icon' => 'fas fa-heartbeat', 'color' => 'danger', 'total' => $analytics['philhealth']['total_contributions'], 'count' => $analytics['philhealth']['contribution_count'], 'chartId' => 'philhealthChart'],
+                        [
+                            'title' => 'SSS',
+                            'icon' => 'fas fa-shield-alt',
+                            'color' => 'primary',
+                            'total' => $analytics['sss']['total_contributions'],
+                            'count' => $analytics['sss']['contribution_count'],
+                            'chartId' => 'sssChart',
+                            'data' => $analytics['sss']['monthly_trend']
+                        ],
+                        [
+                            'title' => 'Pagibig',
+                            'icon' => 'fas fa-home',
+                            'color' => 'success',
+                            'total' => $analytics['pagibig']['total_contributions'],
+                            'count' => $analytics['pagibig']['contribution_count'],
+                            'chartId' => 'pagibigChart',
+                            'data' => $analytics['pagibig']['monthly_trend']
+                        ],
+                        [
+                            'title' => 'Philhealth',
+                            'icon' => 'fas fa-heartbeat',
+                            'color' => 'danger',
+                            'total' => $analytics['philhealth']['total_contributions'],
+                            'count' => $analytics['philhealth']['contribution_count'],
+                            'chartId' => 'philhealthChart',
+                            'data' => $analytics['philhealth']['monthly_trend']
+                        ],
                     ];
                 @endphp
 
@@ -820,15 +1159,14 @@
                                 <i class="{{ $item['icon'] }} analytics-icon"></i>{{ $item['title'] }}
                             </h6>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="analytics-label">Total</span>
+                                <span class="analytics-label">Total Contributions</span>
                                 <span class="analytics-number text-{{ $item['color'] }}">₱{{ number_format($item['total'], 2) }}</span>
                             </div>
-                            <div class="progress mb-2" style="height: 5px;">
-                                <div class="progress-bar bg-{{ $item['color'] }}" role="progressbar" style="width: {{ min(100, ($item['count'] / 1000) * 100) }}%" aria-valuenow="{{ $item['count'] }}" aria-valuemin="0" aria-valuemax="1000"></div>
-                            </div>
-                            <small class="text-muted">{{ $item['count'] }} contributions</small>
-                            <div class="chart-container mt-3" style="height: 100px;">
+                            <div class="chart-container mt-3">
                                 <canvas id="{{ $item['chartId'] }}"></canvas>
+                            </div>
+                            <div class="text-center mt-2">
+                                <small class="text-muted">Monthly Trend - {{ $item['count'] }} contributions</small>
                             </div>
                         </div>
                     </div>
@@ -847,9 +1185,33 @@
             <div class="row">
                 @php
                     $loanItems = [
-                        ['title' => 'SSS Loans', 'icon' => 'fas fa-money-bill-wave', 'color' => 'warning', 'total' => $analytics['loans']['sss_loans']['total_amount'], 'count' => $analytics['loans']['sss_loans']['loan_count'], 'chartId' => 'sssLoanChart'],
-                        ['title' => 'Pagibig Loans', 'icon' => 'fas fa-hand-holding-usd', 'color' => 'info', 'total' => $analytics['loans']['pagibig_loans']['total_amount'], 'count' => $analytics['loans']['pagibig_loans']['loan_count'], 'chartId' => 'pagibigLoanChart'],
-                        ['title' => 'Cash Advances', 'icon' => 'fas fa-hand-holding-usd', 'color' => 'secondary', 'total' => $analytics['loans']['cash_advances']['total_amount'], 'count' => $analytics['loans']['cash_advances']['advance_count'], 'chartId' => 'cashAdvanceDoughnutChart'],
+                        [
+                            'title' => 'SSS Loans',
+                            'icon' => 'fas fa-money-bill-wave',
+                            'color' => 'warning',
+                            'total' => $analytics['loans']['sss_loans']['total_amount'],
+                            'count' => $analytics['loans']['sss_loans']['loan_count'],
+                            'chartId' => 'sssLoanChart',
+                            'data' => $analytics['loans']['sss_loans']['monthly_trend'] ?? []
+                        ],
+                        [
+                            'title' => 'Pagibig Loans',
+                            'icon' => 'fas fa-hand-holding-usd',
+                            'color' => 'info',
+                            'total' => $analytics['loans']['pagibig_loans']['total_amount'],
+                            'count' => $analytics['loans']['pagibig_loans']['loan_count'],
+                            'chartId' => 'pagibigLoanChart',
+                            'data' => $analytics['loans']['pagibig_loans']['monthly_trend'] ?? []
+                        ],
+                        [
+                            'title' => 'Cash Advances',
+                            'icon' => 'fas fa-hand-holding-usd',
+                            'color' => 'secondary',
+                            'total' => $analytics['loans']['cash_advances']['total_amount'],
+                            'count' => $analytics['loans']['cash_advances']['advance_count'],
+                            'chartId' => 'cashAdvanceChart',
+                            'data' => $analytics['loans']['cash_advances']['monthly_trend'] ?? []
+                        ],
                     ];
                 @endphp
 
@@ -861,15 +1223,14 @@
                                 <i class="{{ $item['icon'] }} analytics-icon"></i>{{ $item['title'] }}
                             </h6>
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="analytics-label">Total</span>
+                                <span class="analytics-label">Total Amount</span>
                                 <span class="analytics-number text-{{ $item['color'] }}">₱{{ number_format($item['total'], 2) }}</span>
                             </div>
-                            <div class="progress mb-2" style="height: 5px;">
-                                <div class="progress-bar bg-{{ $item['color'] }}" role="progressbar" style="width: {{ min(100, ($item['count'] / 100) * 100) }}%" aria-valuenow="{{ $item['count'] }}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small class="text-muted">{{ $item['count'] }} {{ $item['title'] == 'Cash Advances' ? 'advances' : 'active loans' }}</small>
-                            <div class="chart-container mt-3" style="height: 100px;">
+                            <div class="chart-container mt-3">
                                 <canvas id="{{ $item['chartId'] }}"></canvas>
+                            </div>
+                            <div class="text-center mt-2">
+                                <small class="text-muted">Monthly Trend - {{ $item['count'] }} active</small>
                             </div>
                         </div>
                     </div>
@@ -886,62 +1247,58 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Function to create a line chart
-    function createLineChart(elementId, label, data) {
+    function createLineChart(elementId, label, data, color) {
         const ctx = document.getElementById(elementId).getContext('2d');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: months,
                 datasets: [{
                     label: label,
                     data: data,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1,
-                    fill: false
+                    borderColor: color,
+                    backgroundColor: color + '20', // Add transparency to background
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        display: false // Hide Y axis for more compact view
-                    },
-                    x: {
-                        display: false // Hide X axis for more compact view
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false // Hide legend for more compact view
-                    }
-                }
-            }
-        });
-    }
-
-    // Function to create a doughnut chart for loans
-    function createDoughnutChart(elementId, label, data) {
-        const ctx = document.getElementById(elementId).getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Active', 'Available'],
-                datasets: [{
-                    data: [data, 100 - data],
-                    backgroundColor: ['#007bff', '#e9ecef']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '₱' + context.raw.toLocaleString();
+                            }
+                        }
                     }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₱' + value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
                 }
             }
         });
@@ -949,13 +1306,15 @@
 
     // Create charts when the page loads
     document.addEventListener('DOMContentLoaded', function() {
-        createLineChart('sssChart', 'SSS Contributions', @json($analytics['sss']['monthly_trend']));
-        createLineChart('pagibigChart', 'Pagibig Contributions', @json($analytics['pagibig']['monthly_trend']));
-        createLineChart('philhealthChart', 'Philhealth Contributions', @json($analytics['philhealth']['monthly_trend']));
-        createDoughnutChart('sssLoanChart', 'SSS Loans', {{ min(100, ($analytics['loans']['sss_loans']['loan_count'] / 100) * 100) }});
-        createDoughnutChart('pagibigLoanChart', 'Pagibig Loans', {{ min(100, ($analytics['loans']['pagibig_loans']['loan_count'] / 100) * 100) }});
-        createLineChart('cashAdvanceChart', 'Cash Advances', @json($analytics['cash_advance']['monthly_trend']));
-        createDoughnutChart('cashAdvanceDoughnutChart', 'Cash Advances', {{ min(100, ($analytics['loans']['cash_advances']['advance_count'] / 100) * 100) }});
+        // Contribution Charts
+        createLineChart('sssChart', 'SSS Contributions', @json($analytics['sss']['monthly_trend']), '#0d6efd');
+        createLineChart('pagibigChart', 'Pagibig Contributions', @json($analytics['pagibig']['monthly_trend']), '#198754');
+        createLineChart('philhealthChart', 'Philhealth Contributions', @json($analytics['philhealth']['monthly_trend']), '#dc3545');
+
+        // Loan Charts
+        createLineChart('sssLoanChart', 'SSS Loans', @json($analytics['loans']['sss_loans']['monthly_trend'] ?? []), '#ffc107');
+        createLineChart('pagibigLoanChart', 'Pagibig Loans', @json($analytics['loans']['pagibig_loans']['monthly_trend'] ?? []), '#0dcaf0');
+        createLineChart('cashAdvanceChart', 'Cash Advances', @json($analytics['loans']['cash_advances']['monthly_trend'] ?? []), '#6c757d');
     });
 </script>
 @endsection

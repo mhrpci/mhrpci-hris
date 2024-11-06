@@ -38,6 +38,7 @@ class User extends Authenticatable
         'biometric_token',
         'device_id',
         'device_token',
+        'signature',
     ];
 
     /**

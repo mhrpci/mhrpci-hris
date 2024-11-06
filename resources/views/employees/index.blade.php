@@ -22,34 +22,38 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Employee Management</h3>
-                        <div class="card-tools d-flex flex-wrap justify-content-end">
-                            @can('employee-create')
-                            <a href="{{ route('employees.create') }}" class="btn btn-success btn-sm rounded-pill mr-2 mb-2">
-                                Add Employee <i class="fas fa-plus-circle"></i>
-                            </a>
-                            @endcan
-                            @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
-                            <button class="btn btn-primary btn-sm rounded-pill mr-2 mb-2" data-toggle="modal" data-target="#importModal">
-                                Import Employees <i class="fas fa-file-import"></i>
-                            </button>
-                            <form action="{{ route('employees.export') }}" method="POST" target="_blank" class="mr-2 mb-2">
-                                @csrf
-                                <button type="submit" class="btn btn-secondary btn-sm rounded-pill">Export Employees <i class="fas fa-file-export"></i></button>
-                            </form>
-                            @endif
-                            <div class="dropdown mr-2 mb-2">
-                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Filter <i class="fas fa-filter"></i>
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                            <h3 class="card-title mb-2 mb-md-0">Employee Management</h3>
+                            <div class="card-tools d-flex flex-wrap justify-content-center justify-content-md-end">
+                                @can('employee-create')
+                                <a href="{{ route('employees.create') }}" class="btn btn-success btn-sm rounded-pill m-1">
+                                    <i class="fas fa-plus-circle"></i> <span class="d-none d-sm-inline">Add Employee</span>
+                                </a>
+                                @endcan
+                                @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
+                                <button class="btn btn-primary btn-sm rounded-pill m-1" data-toggle="modal" data-target="#importModal">
+                                    <i class="fas fa-file-import"></i> <span class="d-none d-sm-inline">Import</span>
                                 </button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#monthModal">Month</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#yearModal">Year</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#statusModal">Status</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a>
-                                    @if(auth()->user()->hasAnyRole(['Super Admin', 'Admin', 'Finance']))
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
-                                    @endif
+                                <form action="{{ route('employees.export') }}" method="POST" target="_blank" class="m-1">
+                                    @csrf
+                                    <button type="submit" class="btn btn-secondary btn-sm rounded-pill">
+                                        <i class="fas fa-file-export"></i> <span class="d-none d-sm-inline">Export</span>
+                                    </button>
+                                </form>
+                                @endif
+                                <div class="dropdown m-1">
+                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown">
+                                        <i class="fas fa-filter"></i> <span class="d-none d-sm-inline">Filter</span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#monthModal">Month</a>
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#yearModal">Year</a>
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#statusModal">Status</a>
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a>
+                                        @if(auth()->user()->hasAnyRole(['Super Admin', 'Admin', 'Finance']))
+                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -63,108 +67,110 @@
                             <div class="alert alert-danger">{{ $message }}</div>
                         @endif
 
-                        <table id="employees-table" class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Employee ID</th>
-                                    <th>Employee Name</th>
-                                    <th>Department</th>
-                                    <th>Position</th>
-                                    <th>Status</th>
-                                    <th>Rank</th>
-                                    <th>Joined Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($employees as $employee)
+                        <div class="table-responsive">
+                            <table id="employees-table" class="table table-bordered table-hover">
+                                <thead>
                                     <tr>
-                                        <td>{{ $employee->company_id }}</td>
-                                        <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }} {{ $employee->suffix }}</td>
-                                        <td>{{ $employee->department->name }}</td>
-                                        <td>{{ $employee->position->name }}</td>
-                                        <td align="center" style="color: {{ $employee->employee_status === 'Active' ? 'green' : 'red' }}; font-weight: bold;">
-                                            {{ $employee->employee_status }}
-                                        </td>
-                                        <td align="center" style="color: {{ $employee->rank === 'Rank File' ? 'green' : 'blue' }}; font-weight: bold;">
-                                            {{ $employee->rank }}
-                                        </td>
-                                        <td>{{ $employee->date_hired ? \Carbon\Carbon::parse($employee->date_hired)->format('F j, Y') : '' }}</td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}">
-                                                        <i class="fas fa-eye"></i>&nbsp;Preview
-                                                    </a>
+                                        <th class="text-nowrap">ID</th>
+                                        <th class="text-nowrap">Name</th>
+                                        <th class="text-nowrap">Dept</th>
+                                        <th class="text-nowrap">Position</th>
+                                        <th class="text-nowrap">Status</th>
+                                        <th class="text-nowrap">Rank</th>
+                                        <th class="text-nowrap">Joined</th>
+                                        <th class="text-nowrap">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($employees as $employee)
+                                        <tr>
+                                            <td>{{ $employee->company_id }}</td>
+                                            <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }} {{ $employee->suffix }}</td>
+                                            <td>{{ $employee->department->name }}</td>
+                                            <td>{{ $employee->position->name }}</td>
+                                            <td align="center" style="color: {{ $employee->employee_status === 'Active' ? 'green' : 'red' }}; font-weight: bold;">
+                                                {{ $employee->employee_status }}
+                                            </td>
+                                            <td align="center" style="color: {{ $employee->rank === 'Rank File' ? 'green' : 'blue' }}; font-weight: bold;">
+                                                {{ $employee->rank }}
+                                            </td>
+                                            <td>{{ $employee->date_hired ? \Carbon\Carbon::parse($employee->date_hired)->format('F j, Y') : '' }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}">
+                                                            <i class="fas fa-eye"></i>&nbsp;Preview
+                                                        </a>
 
-                                                    @if($employee->employee_status !== 'Resigned')
-                                                    @can('employee-edit')
-                                                    <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}">
-                                                        <i class="fas fa-edit"></i>&nbsp;Edit
-                                                    </a>
-                                                @endcan
-                                                @can('user-create')
-                                                <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
-                                                </form>
-                                                @elsecan('hrcompliance')
+                                                        @if($employee->employee_status !== 'Resigned')
+                                                        @can('employee-edit')
+                                                        <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}">
+                                                            <i class="fas fa-edit"></i>&nbsp;Edit
+                                                        </a>
+                                                    @endcan
+                                                    @can('user-create')
                                                     <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
                                                     </form>
-                                                @endcan
-                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</a>
-                                                        @canany(['super-admin', 'admin'])
-                                                            <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                @method('PATCH')
-                                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure that this employee is resigned?')"><i class="fas fa-sign-out-alt"></i>&nbsp;Resigned</button>
-                                                            </form>
-                                                        @endcanany
-                                                    @endif
-                                                    @can('super-admin')
-                                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this employee?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                                    </form>
-                                                @endcan
+                                                    @elsecan('hrcompliance')
+                                                        <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
+                                                        </form>
+                                                    @endcan
+                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</a>
+                                                            @canany(['super-admin', 'admin'])
+                                                                <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure that this employee is resigned?')"><i class="fas fa-sign-out-alt"></i>&nbsp;Resigned</button>
+                                                                </form>
+                                                            @endcanany
+                                                        @endif
+                                                        @can('super-admin')
+                                                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this employee?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                        </form>
+                                                    @endcan
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
+                                            </td>
 
-                                    </tr>
-                                        <!-- Additional Details Modal -->
-                                    <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-primary text-white">
-                                                    <h5 class="modal-title" id="additionalDetailsModalLabel">Leave Balance</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="col-md-12">
-                                                        <div class="card border-secondary mb-3">
-                                                            <div class="card-body">
-                                                                <p><strong>Sick Leave:</strong> {{$employee->sick_leave}} Hours - is equivalent - {{($employee->sick_leave) / 24}} Day</p>
-                                                                <p><strong>Vacation Leave:</strong> {{$employee->vacation_leave}} Hours - is equivalent - {{($employee->vacation_leave) / 24}} Day</p>
-                                                                <p><strong>Emergency Leave:</strong> {{$employee->emergency_leave}} Hours - is equivalent - {{($employee->emergency_leave) / 24}} Day</p>
+                                        </tr>
+                                            <!-- Additional Details Modal -->
+                                        <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-primary text-white">
+                                                        <h5 class="modal-title" id="additionalDetailsModalLabel">Leave Balance</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="col-md-12">
+                                                            <div class="card border-secondary mb-3">
+                                                                <div class="card-body">
+                                                                    <p><strong>Sick Leave:</strong> {{$employee->sick_leave}} Hours - is equivalent - {{($employee->sick_leave) / 24}} Day</p>
+                                                                    <p><strong>Vacation Leave:</strong> {{$employee->vacation_leave}} Hours - is equivalent - {{($employee->vacation_leave) / 24}} Day</p>
+                                                                    <p><strong>Emergency Leave:</strong> {{$employee->emergency_leave}} Hours - is equivalent - {{($employee->emergency_leave) / 24}} Day</p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -363,12 +369,35 @@
     <script>
        $(document).ready(function () {
     let table = $('#employees-table').DataTable({
+        responsive: true,
         columnDefs: [
             {
-                targets: 6, // Targeting the "Joined Date" column (0-based index)
+                targets: 6,
                 type: 'date'
             }
-        ]
+        ],
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.modal({
+                    header: function (row) {
+                        var data = row.data();
+                        return 'Employee Details: ' + data[1];
+                    }
+                }),
+                renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                    tableClass: 'table'
+                })
+            }
+        },
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        scrollX: true
+    });
+
+    $(window).resize(function() {
+        table.columns.adjust().responsive.recalc();
     });
 
     // Target only the import form
@@ -520,7 +549,79 @@
             return true;
         }
     );
-});
+    });
 
     </script>
+@endsection
+
+@section('css')
+<style>
+@media (max-width: 768px) {
+    .card-tools {
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .btn {
+        margin: 0.2rem;
+        white-space: nowrap;
+    }
+
+    .table-responsive {
+        margin-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .toast-container {
+        width: 100%;
+        padding: 0.5rem;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+    }
+}
+
+/* Improve table readability on mobile */
+.table td, .table th {
+    padding: 0.5rem;
+    white-space: nowrap;
+}
+
+/* Make modals more mobile-friendly */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0.5rem;
+        padding: 0;
+    }
+
+    .modal-content {
+        border-radius: 0;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+}
+
+/* Improve button spacing */
+.btn-group-sm > .btn, .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Improve dropdown menu usability on mobile */
+.dropdown-menu {
+    font-size: 0.875rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+}
+</style>
 @endsection

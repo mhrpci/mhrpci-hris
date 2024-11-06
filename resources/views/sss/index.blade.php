@@ -67,50 +67,52 @@
         @if ($message = Session::get('error'))
         <div class="alert alert-danger">{{ $message }}</div>
         @endif
-        <table id="sss-table" class="table table-bordered table-striped">
-            <thead>
-            <tr>
-                <th>SSS NO.</th>
-                <th>Employee</th>
-                <th>Contribution Date</th>
-                <th>Employee Share</th>
-                <th>Employer Share</th>
-                <th>Total Contribution</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($contributions as $contribution)
+        <div class="table-responsive">
+            <table id="sss-table" class="table table-bordered table-striped">
+                <thead>
                 <tr>
-                    <td>{{ $contribution->employee->sss_no}}</td>
-                    <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
-                    <td>{{ $contribution->contribution_date->format('F Y') }}</td>
-                    <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
-                    <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
-                    <td>{{ number_format($contribution->total_contribution, 2) }}</td>
-                    <td>
-                        <div class="btn-group">
-                            <div class="dropdown">
-                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="{{ route('sss.show', $contribution) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
-                                    @if(auth()->user()->hasRole('Super Admin'))
-                                        <form action="{{ route('sss.destroy', $contribution->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this sss?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                        </form>
-                                    @endif
+                    <th>SSS NO.</th>
+                    <th>Employee</th>
+                    <th>Contribution Date</th>
+                    <th>Employee Share</th>
+                    <th>Employer Share</th>
+                    <th>Total Contribution</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($contributions as $contribution)
+                    <tr>
+                        <td>{{ $contribution->employee->sss_no}}</td>
+                        <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
+                        <td>{{ $contribution->contribution_date->format('F Y') }}</td>
+                        <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
+                        <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
+                        <td>{{ number_format($contribution->total_contribution, 2) }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="{{ route('sss.show', $contribution) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                        @if(auth()->user()->hasRole('Super Admin'))
+                                            <form action="{{ route('sss.destroy', $contribution->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this sss?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal -->
@@ -149,7 +151,9 @@
         gap: 15px;
         justify-content: flex-start;
         flex-wrap: wrap;
+        padding: 10px;
     }
+
     .contribution-link {
         display: flex;
         align-items: center;
@@ -160,18 +164,24 @@
         background-color: #f8f9fa;
         transition: all 0.3s ease;
         border: 1px solid #dee2e6;
+        /* Make links more flexible */
+        flex: 1 1 calc(50% - 15px);
+        min-width: 250px;
     }
+
     .contribution-link:hover {
         background-color: #e9ecef;
         text-decoration: none;
         color: #333;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+
     .contribution-link.active {
         background-color: #007bff;
         color: #fff;
         border-color: #007bff;
     }
+
     .contribution-link .icon-wrapper {
         display: flex;
         align-items: center;
@@ -182,26 +192,95 @@
         background-color: rgba(0,0,0,0.1);
         margin-right: 10px;
     }
+
     .contribution-link.active .icon-wrapper {
         background-color: rgba(255,255,255,0.2);
     }
+
     .contribution-link .icon-wrapper i {
         font-size: 1.2rem;
     }
+
     .contribution-link .text-wrapper {
         display: flex;
         flex-direction: column;
     }
+
     .contribution-link .title {
         font-weight: bold;
         font-size: 1rem;
     }
+
     .contribution-link .description {
         font-size: 0.75rem;
         opacity: 0.8;
     }
+
     .contribution-link.active .description {
         opacity: 0.9;
+    }
+
+    /* Add responsive card styles */
+    .card {
+        margin: 10px;
+    }
+
+    .card-header {
+        padding: 15px;
+    }
+
+    .card-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    /* Responsive table container */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Mobile-specific styles */
+    @media (max-width: 768px) {
+        .contribution-link {
+            flex: 1 1 100%;
+        }
+
+        .card-header {
+            flex-direction: column;
+        }
+
+        .card-title {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .card-tools {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        /* Adjust table for mobile */
+        .table th, .table td {
+            white-space: nowrap;
+            min-width: 100px;
+        }
+
+        .table td:last-child {
+            min-width: 80px;
+        }
+
+        /* Modal adjustments for mobile */
+        .modal-dialog {
+            margin: 10px;
+        }
     }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
