@@ -2145,35 +2145,172 @@
                     <h2 class="animate-on-scroll">Our Subsidiaries</h2>
                     <p class="section-description animate-on-scroll">Discover the diverse portfolio of companies that make up MHR Property Conglomerates, Inc.</p>
                     <div class="subsidiaries-grid">
-                        @forelse($subsidiaries as $subsidiary)
-                            <div class="subsidiary-card-wrapper animate-on-scroll">
-                                <a href="{{ route('subsidiaries_details', $subsidiary->id) }}" class="card-link">
-                                    <div class="subsidiary-card">
-                                        <div class="subsidiary-image">
-                                            @if($subsidiary->main_image)
-                                                <img src="{{ asset('storage/' . $subsidiary->main_image) }}"
-                                                     alt="{{ $subsidiary->name }}"
-                                                     class="subsidiary-img"
-                                                     loading="lazy">
-                                            @else
-                                                <div class="subsidiary-placeholder">
-                                                    <i class="fas fa-building"></i>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="subsidiary-info">
-                                            <h3 class="subsidiary-name">{{ $subsidiary->abbr }}</h3>
-                                            <p class="subsidiary-description">{{ Str::limit($subsidiary->description, 100) }}</p>
-                                        </div>
+                        <!-- Subsidiary 1 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('cio') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/cebic.png') }}"
+                                             alt="Cebic Industries OPC"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
                                     </div>
-                                </a>
-                            </div>
-                        @empty
-                            <div class="no-subsidiaries-message">
-                                <i class="fas fa-building fa-3x"></i>
-                                <p>We're currently updating our subsidiary information. Please check back soon for exciting updates!</p>
-                            </div>
-                        @endforelse
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">CIO</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('Cebic Trading is the original business that laid the foundation for MHRPCI. Initially focused on hospital and office medical supplies, the company now deals in a wide range of products and continues to be a trusted supplier to healthcare providers.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Subsidiary 2 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('mhrhci') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}"
+                                             alt="MHRHCI"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
+                                    </div>
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">MHRHCI</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('MHRHCI (Medical & Hospital Resources Health Care, Inc.) MHRHCI specializes in the importation and distribution of hospital and medical supplies. With a network that spans Cebu, Bicol, Iloilo, and Manila, the company has become a leading supplier to hospitals, clinics, and healthcare facilities across the Philippines.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Subsidiary 3 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('bgpdi') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/baygas.jpg') }}"
+                                             alt="BGPDI"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
+                                    </div>
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">BGPDI</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('BGPDI (Bay Gas Petroleum Distribution Inc.) Founded in 2015, BGPDI started as a small fuel distribution business catering to local transport needs in Cebu. Over time, the company expanded its services and became a key player in providing fuel to various sectors, including public transport and government agencies.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Subsidiary 4 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('vhi') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/verbena.jpg') }}"
+                                             alt="VHI"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
+                                    </div>
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">VHI</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('VHI (Valued Healthcare Innovations) VHI focuses on providing innovative solutions for the healthcare industry, offering a range of medical devices, equipment, and software designed to enhance the efficiency and effectiveness of healthcare services.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Subsidiary 5 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('max') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/max.png') }}"
+                                             alt="MAX"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
+                                    </div>
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">MAX</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('MAX (Max Hauling and Logistics) MAX was born out of necessity during the pandemic, turning a challenging situation into an opportunity. The company specializes in hauling, quarrying, and logistics services, offering efficient and reliable solutions to meet the demands of various industries. With a focus on resource management and transportation, MAX plays a critical role in the supply chain, ensuring the smooth movement of goods and materials across different regions.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Subsidiary 6 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('rcg') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/rcg.png') }}"
+                                             alt="RCG"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
+                                    </div>
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">RCG</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('RCG is an investment arm under MHRPCI, responsible for managing the conglomerates financial assets, acquiring strategic business interests, and overseeing key partnerships in various industries.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Subsidiary 7 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('lus') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/lus.png') }}"
+                                             alt="LUCIOUS"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
+                                    </div>
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">LUCIOUS</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('Luscious Co. operates in the food and hospitality sector, offering high-quality dining experiences and catering services. The company is known for its focus on customer satisfaction and premium products.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Subsidiary 8 -->
+                        <div class="subsidiary-card-wrapper animate-on-scroll">
+                            <a href="{{ route('mhrcons') }}" class="card-link">
+                                <div class="subsidiary-card">
+                                    <div class="subsidiary-image">
+                                        <img src="{{ asset('vendor/adminlte/dist/img/mhrconstruction.jpg') }}"
+                                             alt="MHRCONS"
+                                             class="subsidiary-img"
+                                             loading="lazy"
+                                             loading="lazy"
+                                             width="200"
+                                             height="200">
+                                    </div>
+                                    <div class="subsidiary-info">
+                                        <h3 class="subsidiary-name">MHRCONS</h3>
+                                        <p class="subsidiary-description">{{ Str::limit('MHR Construction handles various infrastructure projects, including the development of commercial, residential, and industrial properties. The company also manages construction projects for internal expansion and external clients, contributing to the rapid urbanization of key cities in the Philippines.', 100) }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

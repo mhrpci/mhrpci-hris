@@ -30,3 +30,10 @@ Route::middleware('auth')->post('/save-device-token', function (Request $request
 
     return response()->json(['message' => 'Token saved successfully']);
 });
+
+Route::get('/employees/{employee}/signature', function (App\Models\Employee $employee) {
+    return response()->json([
+        'signature' => $employee->signature ? Storage::url($employee->signature) : null,
+        'signature_path' => $employee->signature
+    ]);
+});

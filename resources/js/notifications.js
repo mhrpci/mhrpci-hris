@@ -39,3 +39,37 @@ if (Notification.permission === 'default') {
     console.log('Notification permission already granted.');
 }
 
+window.Echo.private(`notifications`)
+    .listen('RealTimeNotification', (e) => {
+        // Update notification badge
+        updateNotificationBadge(e.notification);
+
+        // Show desktop notification if permitted
+        if (Notification.permission === 'granted') {
+            showDesktopNotification(e.notification);
+        }
+
+        // Play notification sound
+        playNotificationSound();
+    });
+
+function updateNotificationBadge(notification) {
+    const badge = document.getElementById('notification-badge');
+    const count = parseInt(badge.textContent || '0');
+    badge.textContent = count + 1;
+
+    // Add notification to dropdown
+    addNotificationToDropdown(notification);
+}
+
+function showDesktopNotification(notification) {
+    const options = {
+        body: notification.text,
+        icon: '/path/to/icon.png',
+        badge: '/path/to/badge.png',
+        vibrate: [200, 100, 200]
+    };
+
+    new Notification(notification.title, options);
+}
+

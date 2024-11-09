@@ -11,6 +11,7 @@
         "firebase/php-jwt": "^6.10",
         "guzzlehttp/guzzle": "^7.9",
         "haruncpi/laravel-user-activity": "^1.0",
+        "intervention/image": "^3.9",
         "kreait/laravel-firebase": "^5.9",
         "laravel-notification-channels/webpush": "^9.0",
         "laravel/framework": "^10.10",
@@ -27,6 +28,7 @@
         "predis/predis": "^2.2",
         "psr/http-message": "^2.0",
         "pusher/pusher-php-server": "^7.2",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.0"
     },
     "require-dev": {

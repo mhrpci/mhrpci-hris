@@ -45,4 +45,9 @@ return [
         'sender_id' => env('FIREBASE_SENDER_ID'),
     ],
 
+    'indeed' => [
+        'publisher_id' => env('INDEED_PUBLISHER_ID'),
+        'api_token' => env('INDEED_API_TOKEN'),
+    ],
+
 ];

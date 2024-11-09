@@ -3,24 +3,24 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Career;
 
 class InterviewScheduled extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $content;
+    public $career;
 
-    public function __construct($content)
+    public function __construct(Career $career)
     {
-        $this->content = $content;
+        $this->career = $career;
     }
 
     public function build()
     {
-        return $this->subject('Interview Scheduled - MHRPCI')
-                    ->view('emails.interview-scheduled');
+        return $this->view('emails.interview-scheduled')
+                    ->subject('Interview Scheduled - ' . $this->career->hiring->position);
     }
 }

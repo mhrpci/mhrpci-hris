@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\InterviewScheduled;
 
 class CareerController extends Controller
 {
@@ -45,9 +46,9 @@ class CareerController extends Controller
         return view('careers', compact('hirings', 'savedJobs', 'googleUserId'));
     }
 
-    public function show($id)
+    public function show($slug)
     {
-        $hiring = Hiring::findOrFail($id);
+        $hiring = Hiring::where('slug', $slug)->firstOrFail();
         $googleUserId = $this->getGoogleUserId();
         $savedJobs = [];
 
@@ -55,7 +56,7 @@ class CareerController extends Controller
             $savedJobs = SavedJob::where('google_user_id', $googleUserId)->pluck('hiring_id')->toArray();
         }
 
-        $relatedJobs = Hiring::where('id', '!=', $id)->take(5)->get();
+        $relatedJobs = Hiring::where('id', '!=', $hiring->id)->take(5)->get();
 
         return view('career_details', compact('hiring', 'savedJobs', 'relatedJobs', 'googleUserId'));
     }
@@ -219,27 +220,8 @@ class CareerController extends Controller
     private function sendApplicationConfirmationEmail(Career $application)
     {
         $hiringDetails = $application->hiring;
-        $emailContent = "
-            Dear {$application->first_name} {$application->last_name},
-
-            Thank you for submitting your application for the position of {$hiringDetails->position} at our company.
-
-            Application Details:
-            - Position: {$hiringDetails->position}
-            - Email: {$application->email}
-            - Phone: {$application->phone}
-            - Experience: {$application->experience} years
-            - LinkedIn: {$application->linkedin}
-
-            We have received your resume and cover letter. Our hiring team will review your application and get back to you if your qualifications match our requirements.
-
-            If you have any questions, please don't hesitate to contact us.
-
-            Best regards,
-            MHRPCI Hiring Team
-        ";
-
-        Mail::to($application->email)->send(new \App\Mail\ApplicationConfirmation($emailContent));
+        // Create a Mailable class instead of sending raw view
+        Mail::to($application->email)->send(new \App\Mail\ApplicationConfirmation($application, $hiringDetails));
     }
 
     public function getAllCareers()
@@ -270,10 +252,12 @@ class CareerController extends Controller
     {
         $validatedData = $request->validate([
             'interview_date' => 'required|date_format:Y-m-d\TH:i',
+            'interview_location' => 'required|string|max:255',
         ]);
 
         $career = Career::findOrFail($id);
         $career->interview_date = $validatedData['interview_date'];
+        $career->interview_location = $validatedData['interview_location'];
         $career->save();
 
         // Send email notification to the applicant
@@ -284,21 +268,6 @@ class CareerController extends Controller
 
     private function sendInterviewScheduleEmail(Career $career)
     {
-        $emailContent = "
-            Dear {$career->first_name} {$career->last_name},
-
-            We are pleased to inform you that an interview has been scheduled for your application.
-
-            Interview Details:
-            - Position: {$career->hiring->position}
-            - Date and Time: " . $career->interview_date->format('F j, Y, g:i A') . "
-
-            Please make sure to be available at the scheduled time. If you need to reschedule or have any questions, please contact us as soon as possible.
-
-            Best regards,
-            MHRPCI Hiring Team
-        ";
-
-        Mail::to($career->email)->send(new \App\Mail\InterviewScheduled($emailContent));
+        Mail::to($career->email)->send(new InterviewScheduled($career));
     }
 }

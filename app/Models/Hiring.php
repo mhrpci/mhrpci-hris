@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Hiring extends Model
 {
@@ -15,10 +16,34 @@ class Hiring extends Model
         'requirements',
         'benefits',
         'location',
+        'slug',
     ];
 
     public function career()
     {
         return $this->hasMany(Career::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($hiring) {
+            $hiring->slug = Hiring::generateUniqueSlug($hiring->position);
+        });
+
+        static::updating(function ($hiring) {
+            if ($hiring->isDirty('position')) {
+                $hiring->slug = Hiring::generateUniqueSlug($hiring->position);
+            }
+        });
+    }
+
+    private static function generateUniqueSlug($position)
+    {
+        $slug = Str::slug($position);
+        $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+
+        return $count ? "{$slug}-{$count}" : $slug;
     }
 }

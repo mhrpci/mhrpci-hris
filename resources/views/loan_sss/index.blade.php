@@ -77,40 +77,39 @@
         </div>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table id="loan_sss" class="table table-bordered table-striped">
-                <thead>
+        <table id="loan_sss" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Sss No.</th>
+                <th>Employee Name</th>
+                <th>Loan Amount</th>
+                <th>Repayment Term</th>
+                <th>Monthly Amortization</th>
+                <th>Total Repayment</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($loan_sss as $loan)
                 <tr>
-                    <th>Sss No.</th>
-                    <th>Employee Name</th>
-                    <th>Loan Amount</th>
-                    <th>Repayment Term</th>
-                    <th>Monthly Amortization</th>
-                    <th>Total Repayment</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($loan_sss as $loan)
-                    <tr>
-                        <td>{{ $loan->employee->sss_no }}</td>
-                        <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
-                        <td>₱{{ number_format($loan->loan_amount, 2) }}</td>
-                        <td>{{ $loan->repayment_term }} {{ $loan->repayment_term <= 1 ? 'Month' : 'Months' }}</td>
-                        <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
-                        <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
-                        <td>
-                            @if($loan->status == 'active')
-                                <span class="badge badge-success">{{ $loan->status }}</span>
-                            @else
-                                <span class="badge badge-primary">{{ $loan->status }}</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <td>{{ $loan->employee->sss_no }}</td>
+                    <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
+                    <td>₱{{ number_format($loan->loan_amount, 2) }}</td>
+                    <td>{{ $loan->repayment_term }} {{ $loan->repayment_term <= 1 ? 'Month' : 'Months' }}</td>
+                    <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
+                    <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
+                    <td>
+                        @if($loan->status == 'active')
+                            <span class="badge badge-success">{{ $loan->status }}</span>
+                        @else
+                            <span class="badge badge-primary">{{ $loan->status }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <div class="dropdown">
+                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -131,89 +130,41 @@
             </tbody>
         </table>
     </div>
-</div>
+    </div>
 
-@include('loan_sss.create')
-@endsection
+    @include('loan_sss.create')
+    @endsection
 
-@section('css')
-<style>
-    .contribution-nav {
-        display: flex;
-        gap: 15px;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
-    .contribution-link {
-        display: flex;
-        align-items: center;
-        padding: 10px 15px;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #333;
-        background-color: #f8f9fa;
-        transition: all 0.3s ease;
-        border: 1px solid #dee2e6;
-        width: calc(50% - 8px); /* Two columns on tablet */
-    }
-
-    /* Mobile-specific styles */
-    @media (max-width: 768px) {
-        .contribution-link {
-            width: 100%; /* Full width on mobile */
-            margin-bottom: 10px;
-        }
-
-        .card-tools {
+    @section('css')
+    <style>
+        .contribution-nav {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 15px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
         }
-
-        .card-tools button,
-        .card-tools form {
-            width: 100%;
-            margin-right: 0 !important;
+        .contribution-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+            border: 1px solid #dee2e6;
         }
-
-        .table-responsive {
-            margin-bottom: 15px;
+        .contribution-link:hover {
+            background-color: #e9ecef;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        /* Adjust table for mobile */
-        #loan_sss {
-            display: block;
-            width: 100%;
-            overflow-x: auto;
+        .contribution-link.active {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
         }
-
-        .dropdown-menu {
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            width: 90% !important;
-            max-width: 300px;
-        }
-
-        .dropdown-item {
-            padding: 12px 20px;
-            font-size: 16px;
-        }
-    }
-
-    .contribution-link:hover {
-        background-color: #e9ecef;
-        text-decoration: none;
-        color: #333;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .contribution-link.active {
-        background-color: #007bff;
-        color: #fff;
-        border-color: #007bff;
-    }
     .contribution-link .icon-wrapper {
         display: flex;
         align-items: center;

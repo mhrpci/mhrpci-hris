@@ -538,7 +538,7 @@
                                 </div>
                                 <div class="d-flex gap-2 mt-auto">
                                     @if(Auth::guard('google')->check())
-                                    <a href="{{ route('careers.show', $hiring->id) }}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                    <a href="{{ route('careers.show', $hiring->slug) }}" class="btn btn-outline-primary btn-sm flex-grow-1">
                                         <i class="fas fa-info-circle me-1"></i> View Details
                                     </a>
                                     @else

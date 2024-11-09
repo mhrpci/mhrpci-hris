@@ -37,10 +37,22 @@
                             </ul>
                         </div>
                         <div class="col-md-6 mb-4">
-                            <h3 class="h5 border-bottom pb-2 mb-3">career Details</h3>
+                            <h3 class="h5 border-bottom pb-2 mb-3">Career Details</h3>
                             <ul class="list-unstyled">
                                 <li class="mb-2"><i class="fas fa-briefcase text-primary mr-2"></i> {{ $career->experience }} years of experience</li>
                                 <li class="mb-2"><i class="fas fa-calendar-alt text-primary mr-2"></i> Applied on {{ $career->created_at->format('M d, Y') }}</li>
+                                @if($career->interview_date)
+                                    <li class="mb-2">
+                                        <i class="fas fa-calendar-check text-success mr-2"></i>
+                                        Interview scheduled for {{ $career->interview_date->format('M d, Y g:i A') }}
+                                    </li>
+                                    @if($career->interview_location)
+                                        <li class="mb-2">
+                                            <i class="fas fa-map-marker-alt text-success mr-2"></i>
+                                            {{ $career->interview_location }}
+                                        </li>
+                                    @endif
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -105,6 +117,10 @@
                     <div class="form-group">
                         <label for="interview_date">Interview Date and Time</label>
                         <input type="datetime-local" class="form-control" id="interview_date" name="interview_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="interview_location">Interview Location (Optional)</label>
+                        <input type="text" class="form-control" id="interview_location" name="interview_location" placeholder="e.g., Conference Room A or Video Call Link">
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -946,6 +946,12 @@
                                 <p>Reports</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('controller.analysis') }}" class="nav-link {{ request()->routeIs('controller.analysis*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-sitemap"></i>
+                                <p>System Routes Reports</p>
+                            </a>
+                        </li>
                     </ul>
                     @endcanany
                 </nav>

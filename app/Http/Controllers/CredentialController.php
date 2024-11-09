@@ -47,7 +47,7 @@ class CredentialController extends Controller
             'employee_id' => 'required|exists:employees,id',
             'company_number' => 'nullable|numeric',
             'company_email' => 'nullable|email',
-            'email_password' => 'nullable|text',
+            'email_password' => 'nullable|string',
         ]);
 
         $credential = Credentials::create($validatedData);

@@ -62,107 +62,87 @@
     <div class="card-header">
         <h3 class="card-title">Cash Advance List</h3>
         <div class="card-tools">
-            <div class="btn-group-vertical btn-group-sm d-md-none"> <!-- Mobile buttons -->
-                <a href="{{ route('cash_advances.create') }}" class="btn btn-success rounded-pill mb-2">
-                    <i class="fas fa-plus"></i> Apply for Cash Advance
-                </a>
-                <button id="export-excel" class="btn btn-primary rounded-pill mb-2">
-                    <i class="fas fa-file-excel"></i> Export to Excel
+            <a href="{{ route('cash_advances.create') }}" class="btn btn-success btn-sm rounded-pill">
+                Apply for Cash Advance
+            </a>
+            <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
+                Export to Excel <i class="fas fa-file-excel"></i>
+            </button>
+            <form action="{{ route('cash_advances.generate_payments') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn btn-info btn-sm rounded-pill mr-2">
+                    Generate Payments <i class="fas fa-money-bill-wave"></i>
                 </button>
-                <form action="{{ route('cash_advances.generate_payments') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-info rounded-pill mb-2 w-100">
-                        <i class="fas fa-money-bill-wave"></i> Generate Payments
-                    </button>
-                </form>
-                <button type="button" class="btn btn-warning rounded-pill" data-toggle="modal" data-target="#generatePaymentModal">
-                    <i class="fas fa-user-cog"></i> Generate Payment for Employee
-                </button>
-            </div>
-            <div class="btn-group btn-group-sm d-none d-md-inline-flex"> <!-- Desktop buttons -->
-                <a href="{{ route('cash_advances.create') }}" class="btn btn-success btn-sm rounded-pill">
-                    Apply for Cash Advance
-                </a>
-                <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
-                    Export to Excel <i class="fas fa-file-excel"></i>
-                </button>
-                <form action="{{ route('cash_advances.generate_payments') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="btn btn-info btn-sm rounded-pill mr-2">
-                        Generate Payments <i class="fas fa-money-bill-wave"></i>
-                    </button>
-                </form>
-                <!-- New button for generating payment for specific employee -->
-                <button type="button" class="btn btn-warning btn-sm rounded-pill" data-toggle="modal" data-target="#generatePaymentModal">
-                    Generate Payment for Employee <i class="fas fa-user-cog"></i>
-                </button>
-            </div>
+            </form>
+            <!-- New button for generating payment for specific employee -->
+            <button type="button" class="btn btn-warning btn-sm rounded-pill" data-toggle="modal" data-target="#generatePaymentModal">
+                Generate Payment for Employee <i class="fas fa-user-cog"></i>
+            </button>
         </div>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table id="cash_advances" class="table table-bordered table-striped">
-                <thead>
+        <table id="cash_advances" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Reference Number</th>
+                <th>Employee Name</th>
+                <th>Loan Amount</th>
+                <th>Repayment Term</th>
+                <th>Monthly Amortization</th>
+                <th>Total Repayment</th>
+                <th>Remaining Balance</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($cashAdvances as $loan)
                 <tr>
-                    <th>Reference Number</th>
-                    <th>Employee Name</th>
-                    <th>Loan Amount</th>
-                    <th>Repayment Term</th>
-                    <th>Monthly Amortization</th>
-                    <th>Total Repayment</th>
-                    <th>Remaining Balance</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($cashAdvances as $loan)
-                    <tr>
-                        <td>{{ $loan->reference_number }}</td>
-                        <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
-                        <td>₱{{ number_format($loan->cash_advance_amount, 2) }}</td>
-                        <td>{{ $loan->repayment_term }} {{ $loan->repayment_term <= 1 ? 'Month' : 'Months' }}</td>
-                        <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
-                        <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
-                        <td>₱{{ number_format($loan->remainingBalance(), 2) }}</td>
-                        <td>
-                            @if($loan->status == 'active')
-                                <span class="badge badge-success">{{ $loan->status }}</span>
-                            @elseif($loan->status == 'pending')
-                                <span class="badge badge-warning">{{ $loan->status }}</span>
+                    <td>{{ $loan->reference_number }}</td>
+                    <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
+                    <td>₱{{ number_format($loan->cash_advance_amount, 2) }}</td>
+                    <td>{{ $loan->repayment_term }} {{ $loan->repayment_term <= 1 ? 'Month' : 'Months' }}</td>
+                    <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
+                    <td>₱{{ number_format($loan->total_repayment, 2) }}</td>
+                    <td>₱{{ number_format($loan->remainingBalance(), 2) }}</td>
+                    <td>
+                        @if($loan->status == 'active')
+                            <span class="badge badge-success">{{ $loan->status }}</span>
+                        @elseif($loan->status == 'pending')
+                            <span class="badge badge-warning">{{ $loan->status }}</span>
                             @else
-                                <span class="badge badge-primary">{{ $loan->status }}</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
-                                        <a href="{{ route('cash_advances.show', $loan->id) }}" class="dropdown-item">
-                                            <i class="fas fa-eye"></i>&nbsp;View Details
+                            <span class="badge badge-primary">{{ $loan->status }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <div class="dropdown">
+                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
+                                    <a href="{{ route('cash_advances.show', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-eye"></i>&nbsp;View Details
+                                    </a>
+                                    @endif
+                                    <a href="{{ route('cash_advances.ledger', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-book"></i>&nbsp;Ledger
+                                    </a>
+                                    @if((auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin')) && $loan->status === 'active')
+                                        <a href="{{ route('cash_advances.edit', $loan->id) }}" class="dropdown-item">
+                                            <i class="fas fa-edit"></i>&nbsp;Update Status
                                         </a>
-                                        @endif
-                                        <a href="{{ route('cash_advances.ledger', $loan->id) }}" class="dropdown-item">
-                                            <i class="fas fa-book"></i>&nbsp;Ledger
-                                        </a>
-                                        @if((auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin')) && $loan->status === 'active')
-                                            <a href="{{ route('cash_advances.edit', $loan->id) }}" class="dropdown-item">
-                                                <i class="fas fa-edit"></i>&nbsp;Update Status
-                                            </a>
-                                        @endif
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 </div>
 @include('cash_advances.generate_payments')
 @endsection
@@ -174,12 +154,8 @@
         gap: 15px;
         justify-content: flex-start;
         flex-wrap: wrap;
-        padding: 10px;
     }
-
     .contribution-link {
-        flex: 1 1 calc(25% - 15px); /* 4 items per row on desktop */
-        min-width: 200px; /* Minimum width before wrapping */
         display: flex;
         align-items: center;
         padding: 10px 15px;
@@ -190,101 +166,47 @@
         transition: all 0.3s ease;
         border: 1px solid #dee2e6;
     }
-
-    /* Mobile styles */
-    @media (max-width: 768px) {
-        .contribution-link {
-            flex: 1 1 100%; /* Full width on mobile */
-            margin-bottom: 10px;
-        }
-
-        .card-tools {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .card-tools .btn {
-            width: 100%;
-            margin: 0 !important;
-        }
-
-        .card-header {
-            flex-direction: column;
-        }
-
-        .card-title {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        /* Make table scrollable horizontally */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Adjust table for mobile */
-        #cash_advances {
-            font-size: 14px;
-        }
-
-        #cash_advances th,
-        #cash_advances td {
-            white-space: nowrap;
-            min-width: 100px;
-        }
-
-        /* Stack form elements */
-        form[style*="display: inline"] {
-            display: block !important;
-            width: 100%;
-        }
+    .contribution-link:hover {
+        background-color: #e9ecef;
+        text-decoration: none;
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
-    /* Tablet styles */
-    @media (min-width: 769px) and (max-width: 1024px) {
-        .contribution-link {
-            flex: 1 1 calc(50% - 15px); /* 2 items per row on tablet */
-        }
+    .contribution-link.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
     }
-
-    /* Additional responsive improvements */
-    .dropdown-menu {
-        min-width: 200px;
+    .contribution-link .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(0,0,0,0.1);
+        margin-right: 10px;
     }
-
-    .alert {
-        margin: 10px;
-        border-radius: 8px;
+    .contribution-link.active .icon-wrapper {
+        background-color: rgba(255,255,255,0.2);
     }
-
-    /* Improve table responsiveness */
-    .table-responsive {
-        margin: 0;
-        padding: 0;
-        border: none;
+    .contribution-link .icon-wrapper i {
+        font-size: 1.2rem;
     }
-
-    /* Improve button spacing */
-    .btn {
-        margin: 2px;
-        white-space: nowrap;
+    .contribution-link .text-wrapper {
+        display: flex;
+        flex-direction: column;
     }
-
-    /* Improve modal responsiveness */
-    .modal-dialog {
-        margin: 10px;
-        max-width: 98%;
+    .contribution-link .title {
+        font-weight: bold;
+        font-size: 1rem;
     }
-
-    @media (min-width: 576px) {
-        .modal-dialog {
-            max-width: 500px;
-            margin: 1.75rem auto;
-        }
+    .contribution-link .description {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+    .contribution-link.active .description {
+        opacity: 0.9;
     }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
@@ -308,11 +230,10 @@
 
         // Initialize DataTable
         var table = $('#cash_advances').DataTable({
-            responsive: true, // Enable responsive features
-            pageLength: 10,
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            order: [[1, "desc"]],
-            language: {
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[1, "desc"]],
+            "language": {
                 "search": "Search:",
                 "lengthMenu": "Show _MENU_ entries",
                 "info": "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -324,22 +245,7 @@
                     "next": "Next",
                     "previous": "Previous"
                 }
-            },
-            // Add responsive breakpoints
-            responsive: {
-                breakpoints: [
-                    {name: 'desktop', width: Infinity},
-                    {name: 'tablet', width: 1024},
-                    {name: 'phone', width: 768}
-                ]
-            },
-            // Customize column visibility for different screen sizes
-            columnDefs: [
-                {
-                    targets: [3, 4, 5, 6], // Hide these columns on mobile
-                    className: 'd-none d-md-table-cell'
-                }
-            ]
+            }
         });
 
         // Export to Excel functionality
@@ -448,4 +354,3 @@
     });
 </script>
 @endsection
-

@@ -43,6 +43,8 @@ use App\Http\Controllers\CashAdvanceController;
 use App\Http\Controllers\PagibigLoanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
+use App\Http\Controllers\ControllerAnalysisController;
+use App\Http\Controllers\IdGeneratorController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -65,7 +67,7 @@ Route::get('/careers', [CareerController::class, 'index'])->name('careers');
 Route::get('/applicants/{id}', [CareerController::class, 'showApplicant'])->name('showApplicant');
 Route::post('/careers/apply', [CareerController::class, 'apply'])->name('careers.apply');
 Route::get('/all-careers', [CareerController::class, 'getAllCareers'])->name('careers.all');
-Route::get('/careers/{id}', [CareerController::class, 'show'])->name('careers.show');
+Route::get('/careers/{slug}', [CareerController::class, 'show'])->name('careers.show');
 Route::post('/careers/{id}/schedule-interview', [CareerController::class, 'scheduleInterview'])->name('careers.schedule-interview');
 Route::get('/saved-jobs', [CareerController::class, 'savedJobs'])->name('saved.jobs');
 Route::post('/toggle-save-job', [CareerController::class, 'toggleSaveJob'])->name('toggle.save.job');
@@ -79,7 +81,15 @@ Route::post('auth/google/logout', [GoogleAuthController::class, 'logout'])->name
 Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->name('related.jobs');
 
 // Welcome routes
-Route::get('/mhrpci', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
+Route::get('/mhrpropertyconglomeratesinc', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
+Route::get('/baygaspetroleumdistributioninc', [WelcomeController::class, 'showBgpdi'])->name('bgpdi');
+Route::get('/mhrhealthcareinc', [WelcomeController::class, 'showMhrhci'])->name('mhrhci');
+Route::get('/cebicindustries', [WelcomeController::class, 'showCio'])->name('cio');
+Route::get('/verbenahotelinc', [WelcomeController::class, 'showVhi'])->name('vhi');
+Route::get('/maximumhandlingresources', [WelcomeController::class, 'showMax'])->name('max');
+Route::get('/lusciousco', [WelcomeController::class, 'showLus'])->name('lus');
+Route::get('/mhrconstruction', [WelcomeController::class, 'showMhrcons'])->name('mhrcons');
+Route::get('/rcgpharmaceutical', [WelcomeController::class, 'showRcg'])->name('rcg');
 Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
 
    // Terms and Privacy routes
@@ -90,6 +100,10 @@ Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'sho
 Route::get('/privacy', function () {
     return view('privacy');
 })->name('privacy');
+
+
+// Public Profile routes
+Route::get('/employees-public/{slug}', [EmployeeController::class, 'publicProfile'])->name('employees.public');
 
 // Auth routes
 Route::middleware('auth')->group(function () {
@@ -277,13 +291,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/employee/signature', [EmployeeController::class, 'updateSignature'])
         ->name('employee.signature.update')
         ->middleware(['auth', 'verified']);
+        Route::get('/controller-analysis', [ControllerAnalysisController::class, 'index'])->name('controller.analysis');
+        Route::get('/controller-analysis/pdf', [ControllerAnalysisController::class, 'downloadPdf'])->name('controller.analysis.pdf');
+        Route::get('/controller-analysis/excel', [ControllerAnalysisController::class, 'downloadExcel'])->name('controller.analysis.excel');
+        Route::get('/controller-analysis/word', [ControllerAnalysisController::class, 'downloadWord'])->name('controller.analysis.word');
 });
 
     Auth::routes();
-
-
-
-
-
 
 

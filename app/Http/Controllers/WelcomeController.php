@@ -63,4 +63,42 @@ class WelcomeController extends Controller
         $subsidiaries = Subsidiary::all();
         return view('mhrpci', compact('subsidiaries'));
     }
+
+    public function showBgpdi()
+    {
+        return view('bgpdi');
+    }
+
+    public function showCio()
+    {
+        return view('cio');
+    }
+
+    public function showVhi()
+    {
+        return view('vhi');
+    }
+
+    public function showMhrhci()
+    {
+        return view('mhrhci');
+    }
+    public function showMax()
+    {
+        return view('max');
+    }
+
+    public function showRcg()
+    {
+        return view('rcg');
+    }
+    public function showLus()
+    {
+        return view('lus');
+    }
+
+    public function showMhrcons()
+    {
+        return view('mhrcons');
+    }
 }

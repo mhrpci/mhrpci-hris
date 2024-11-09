@@ -49,276 +49,168 @@
     <div class="card-header">
         <h3 class="card-title">Philhealth Contributions List</h3>
         <div class="card-tools">
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('philhealth.create') }}" class="btn btn-success btn-sm rounded-pill">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add Contribution</span>
-                </a>
-                <button id="export-excel" class="btn btn-primary btn-sm rounded-pill">
-                    <i class="fas fa-file-excel"></i>
-                    <span>Export to Excel</span>
-                </button>
-                <button type="button" class="btn btn-info btn-sm rounded-pill" data-toggle="modal" data-target="#createAllModal">
-                    <i class="fas fa-users"></i>
-                    <span>Create for All Active ({{ $activeEmployeesCount }})</span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="card-body">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ $message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
-        @if ($message = Session::get('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ $message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
-        <div class="table-responsive">
-            <table id="philhealth-table" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>PHILHEALTH NO.</th>
-                    <th>Employee</th>
-                    <th>Contribution Date</th>
-                    <th>Employee Share</th>
-                    <th>Employer Share</th>
-                    <th>Total Contribution</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($contributions as $contribution)
-                    <tr>
-                        <td>{{ $contribution->employee->philhealth_no}}</td>
-                        <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
-                        <td>{{ $contribution->contribution_date->format('F Y') }}</td>
-                        <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
-                        <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
-                        <td>{{ number_format($contribution->total_contribution, 2) }}</td>
-                        <td>
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="{{ route('philhealth.show', $contribution) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
-                                        @if(auth()->user()->hasRole('Super Admin'))
-                                            <form action="{{ route('philhealth.destroy', $contribution->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this philhealth?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+            <a href="{{ route('philhealth.create') }}" class="btn btn-success btn-sm rounded-pill">
+                Add Philhealth Contribution <i class="fas fa-plus-circle"></i>
+            </a>
+            <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
+                Export to Excel <i class="fas fa-file-excel"></i>
+            </button>
+            <!-- Add the new button here -->
+           <button type="button" class="btn btn-info btn-sm rounded-pill" data-toggle="modal" data-target="#createAllModal">
+               Create for All Active ({{ $activeEmployeesCount }}) <i class="fas fa-users"></i>
+           </button>
+       </div>
+   </div>
+   <div class="card-body">
+       @if ($message = Session::get('success'))
+           <div class="alert alert-success alert-dismissible fade show" role="alert">
+               {{ $message }}
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+           </div>
+       @endif
+       @if ($message = Session::get('error'))
+           <div class="alert alert-danger alert-dismissible fade show" role="alert">
+               {{ $message }}
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+           </div>
+       @endif
+       <table id="philhealth-table" class="table table-bordered table-striped">
+           <thead>
+           <tr>
+               <th>PHILHEALTH NO.</th>
+               <th>Employee</th>
+               <th>Contribution Date</th>
+               <th>Employee Share</th>
+               <th>Employer Share</th>
+               <th>Total Contribution</th>
+               <th>Actions</th>
+           </tr>
+       </thead>
+       <tbody>
+           @foreach($contributions as $contribution)
+               <tr>
+                   <td>{{ $contribution->employee->philhealth_no}}</td>
+                   <td>{{ $contribution->employee->last_name }} {{ $contribution->employee->first_name }}, {{ $contribution->employee->middle_name ?? ' ' }} {{ $contribution->employee->suffix ?? ' ' }}</td>
+                   <td>{{ $contribution->contribution_date->format('F Y') }}</td>
+                   <td>{{ number_format($contribution->employee_contribution, 2) }}</td>
+                   <td>{{ number_format($contribution->employer_contribution, 2) }}</td>
+                   <td>{{ number_format($contribution->total_contribution, 2) }}</td>
+                   <td>
+                       <div class="btn-group">
+                           <div class="dropdown">
+                               <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               <i class="fas fa-ellipsis-v"></i>
+                               </button>
+                               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                   <a class="dropdown-item" href="{{ route('philhealth.show', $contribution) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                   @if(auth()->user()->hasRole('Super Admin'))
+                                       <form action="{{ route('philhealth.destroy', $contribution->id) }}" method="POST">
+                                           @csrf
+                                           @method('DELETE')
+                                           <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this philhealth?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                       </form>
+                                   @endif
+                               </div>
+                           </div>
+                       </div>
+                   </td>
+               </tr>
+           @endforeach
+       </tbody>
+   </table>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="createAllModal" tabindex="-1" role="dialog" aria-labelledby="createAllModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createAllModalLabel">Create Contributions for All Active Employees</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('philhealth.store-all-active') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="contribution_date">Contribution Date</label>
-                        <input type="month" class="form-control" id="contribution_date" name="contribution_date" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create Contributions</button>
-                </div>
-            </form>
-        </div>
-    </div>
+   <div class="modal-dialog" role="document">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title" id="createAllModalLabel">Create Contributions for All Active Employees</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+           </div>
+           <form action="{{ route('philhealth.store-all-active') }}" method="POST">
+               @csrf
+               <div class="modal-body">
+                   <div class="form-group">
+                       <label for="contribution_date">Contribution Date</label>
+                       <input type="month" class="form-control" id="contribution_date" name="contribution_date" required>
+                   </div>
+               </div>
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                   <button type="submit" class="btn btn-primary">Create Contributions</button>
+               </div>
+           </form>
+       </div>
+   </div>
 </div>
 @stop
 
 @section('css')
 <style>
-    .contribution-nav {
-        display: flex;
-        gap: 15px;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        padding: 10px;
+   .contribution-nav {
+       display: flex;
+       gap: 15px;
+       justify-content: flex-start;
+       flex-wrap: wrap;
+   }
+   .contribution-link {
+       display: flex;
+       align-items: center;
+       padding: 10px 15px;
+       border-radius: 8px;
+       text-decoration: none;
+       color: #333;
+       background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
     }
-
-    .contribution-link {
-        flex: 1 1 auto;
-        min-width: 250px;
-        max-width: 300px;
-        display: flex;
-        align-items: center;
-        padding: 12px 20px;
-        border-radius: 10px;
+    .contribution-link:hover {
+        background-color: #e9ecef;
         text-decoration: none;
         color: #333;
-        background-color: #f8f9fa;
-        transition: all 0.3s ease;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
-    /* Mobile styles */
-    @media (max-width: 768px) {
-        .contribution-link {
-            min-width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .card-tools {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .card-tools .btn {
-            width: 100%;
-            margin: 5px 0;
-        }
-
-        .card-header {
-            flex-direction: column;
-        }
-
-        .card-title {
-            margin-bottom: 15px;
-            text-align: center;
-        }
+    .contribution-link.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
     }
-
-    /* Table responsive styles */
-    @media (max-width: 992px) {
-        .table-responsive {
-            display: block;
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        #philhealth-table th,
-        #philhealth-table td {
-            white-space: nowrap;
-            min-width: 120px;
-        }
-
-        #philhealth-table td:last-child {
-            min-width: 100px;
-        }
-    }
-
-    /* Enhanced card styles */
-    .card {
-        border: none;
-        box-shadow: 0 0 20px rgba(0,0,0,0.08);
-        border-radius: 15px;
-    }
-
-    .card-header {
-        background-color: #fff;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-        padding: 20px;
+    .contribution-link .icon-wrapper {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        border-radius: 15px 15px 0 0 !important;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(0,0,0,0.1);
+        margin-right: 10px;
     }
-
-    .card-body {
-        padding: 20px;
+    .contribution-link.active .icon-wrapper {
+        background-color: rgba(255,255,255,0.2);
     }
-
-    /* Enhanced table styles */
-    .table {
-        margin-bottom: 0;
+    .contribution-link .icon-wrapper i {
+        font-size: 1.2rem;
     }
-
-    .table thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        padding: 15px;
+    .contribution-link .text-wrapper {
+        display: flex;
+        flex-direction: column;
     }
-
-    .table tbody td {
-        padding: 15px;
-        vertical-align: middle;
+    .contribution-link .title {
+        font-weight: bold;
+        font-size: 1rem;
     }
-
-    /* Enhanced button styles */
-    .btn {
-        font-weight: 500;
-        padding: 8px 16px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+    .contribution-link .description {
+        font-size: 0.75rem;
+        opacity: 0.8;
     }
-
-    .btn i {
-        font-size: 0.9rem;
-    }
-
-    /* Modal enhancements */
-    .modal-content {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.1);
-    }
-
-    .modal-header {
-        border-radius: 15px 15px 0 0;
-        background-color: #f8f9fa;
-        padding: 20px;
-    }
-
-    .modal-body {
-        padding: 20px;
-    }
-
-    .modal-footer {
-        padding: 20px;
-        border-top: 1px solid rgba(0,0,0,0.05);
-    }
-
-    /* Form control enhancements */
-    .form-control {
-        padding: 10px 15px;
-        border-radius: 8px;
-        border: 1px solid #dee2e6;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    .contribution-link.active .description {
+        opacity: 0.9;
     }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
@@ -329,7 +221,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-
 <script>
     $(document).ready(function () {
         var table = $('#philhealth-table').DataTable({

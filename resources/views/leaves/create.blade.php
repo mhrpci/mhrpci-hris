@@ -123,6 +123,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                @else
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Employee Signature<span class="text-danger">*</span></label>
+                                        <div class="border rounded p-3" id="signatureContainer">
+                                            <div class="text-center mb-3">
+                                                <!-- Signature will be loaded here dynamically -->
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="signature" id="signature" value="">
+                                        @error('signature')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
                                 @endif
                             </div>
                          {{-- <!-- Add the following after the "Reason" textarea -->
@@ -187,6 +202,42 @@
                     $(this).val('');
                 }
             });
+
+            // Add event listener for employee selection if user is not an Employee
+            @if(!Auth::user()->hasRole('Employee'))
+            $('#employee_id').on('change', function() {
+                const employeeId = $(this).val();
+                if (employeeId) {
+                    // Fetch employee signature
+                    fetch(`/api/employees/${employeeId}/signature`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const container = $('#signatureContainer .text-center');
+                            if (data.signature) {
+                                container.html(`
+                                    <img src="${data.signature}" alt="Employee Signature" class="img-fluid" style="max-height: 200px;">
+                                `);
+                                $('#signature').val(data.signature_path);
+                            } else {
+                                container.html(`
+                                    <div class="alert alert-warning">No signature found for this employee.</div>
+                                `);
+                                $('#signature').val('');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching signature:', error);
+                            $('#signatureContainer .text-center').html(`
+                                <div class="alert alert-danger">Error loading signature.</div>
+                            `);
+                            $('#signature').val('');
+                        });
+                } else {
+                    $('#signatureContainer .text-center').empty();
+                    $('#signature').val('');
+                }
+            });
+            @endif
         });
     </script>
 @stop

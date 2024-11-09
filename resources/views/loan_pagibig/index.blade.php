@@ -62,107 +62,87 @@
     <div class="card-header">
         <h3 class="card-title">PAGIBIG Loan List</h3>
         <div class="card-tools">
-            <!-- Mobile buttons -->
-            <div class="btn-group-vertical btn-group-sm d-md-none">
-                <button type="button" class="btn btn-success rounded-pill mb-2" data-toggle="modal" data-target="#loanModal">
-                    <i class="fas fa-plus"></i> Apply for PAGIBIG Loan
+            <button type="button" class="btn btn-success btn-sm rounded-pill" data-toggle="modal" data-target="#loanModal">
+                Apply for PAGIBIG Loan
+            </button>
+            <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
+                Export to Excel <i class="fas fa-file-excel"></i>
+            </button>
+            <form action="{{ route('loan_pagibig.generate_payments') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn btn-info btn-sm rounded-pill mr-2">
+                    Generate Payments <i class="fas fa-money-bill-wave"></i>
                 </button>
-                <button id="export-excel" class="btn btn-primary rounded-pill mb-2">
-                    <i class="fas fa-file-excel"></i> Export to Excel
-                </button>
-                <form action="{{ route('loan_pagibig.generate_payments') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-info rounded-pill w-100">
-                        <i class="fas fa-money-bill-wave"></i> Generate Payments
-                    </button>
-                </form>
-            </div>
-            <!-- Desktop buttons -->
-            <div class="btn-group btn-group-sm d-none d-md-inline-flex">
-                <button type="button" class="btn btn-success btn-sm rounded-pill" data-toggle="modal" data-target="#loanModal">
-                    Apply for PAGIBIG Loan
-                </button>
-                <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
-                    Export to Excel <i class="fas fa-file-excel"></i>
-                </button>
-                <form action="{{ route('loan_pagibig.generate_payments') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="btn btn-info btn-sm rounded-pill">
-                        Generate Payments <i class="fas fa-money-bill-wave"></i>
-                    </button>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table id="loan_pagibig" class="table table-bordered table-striped">
-                <thead>
+        <table id="loan_pagibig" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Pagibig No.</th>
+                <th>Employee Name</th>
+                <th>Loan Amount</th>
+                <th>Loan Term</th>
+                <th>Monthly Amortization</th>
+                <th>Interest Rate</th>
+                <th>Loan Type</th>
+                <th>Status</th>
+                <th>Remaining Balance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($loans as $loan)
                 <tr>
-                    <th>Pagibig No.</th>
-                    <th>Employee Name</th>
-                    <th>Loan Amount</th>
-                    <th>Loan Term</th>
-                    <th>Monthly Amortization</th>
-                    <th>Interest Rate</th>
-                    <th>Loan Type</th>
-                    <th>Status</th>
-                    <th>Remaining Balance</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($loans as $loan)
-                    <tr>
-                        <td>{{ $loan->employee->pagibig_no }}</td>
-                        <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
-                        <td>₱{{ number_format($loan->loan_amount, 2) }}</td>
-                        <td>{{ $loan->loan_term_months }} {{ $loan->loan_term_months <= 1 ? 'Month' : 'Months' }}</td>
-                        <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
-                        <td>{{ $loan->interest_rate }}%</td>
-                        <td>{{ $loan->loan_type->value }}</td>
-                        <td>
-                            @if($loan->status == 'active')
-                                <span class="badge badge-success">{{ $loan->status }}</span>
-                            @else
-                                <span class="badge badge-primary">{{ $loan->status }}</span>
-                            @endif
-                        </td>
-                        <td>₱{{ number_format($loan->calculateRemainingBalance(), 2) }}</td>
-                        <td>
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a href="{{ route('loan_pagibig.ledger', $loan->id) }}" class="dropdown-item">
-                                            <i class="fas fa-book"></i>&nbsp;Ledger
-                                        </a>
-                                        @if($loan->calculateRemainingBalance() == 0)
-                                        <a href="{{ route('loan_pagibig.edit', $loan->id) }}" class="dropdown-item">
-                                            <i class="fas fa-edit"></i>&nbsp;Update Status
-                                        </a>
-                                        @endif
-                                        @can('super-admin')
-                                        <form action="{{ route('loan_pagibig.destroy', $loan->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this loan?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-trash"></i>&nbsp;Delete
-                                            </button>
-                                        </form>
-                                        @endcan
-                                    </div>
+                    <td>{{ $loan->employee->pagibig_no }}</td>
+                    <td>{{ $loan->employee->last_name }} {{ $loan->employee->first_name }}, {{ $loan->employee->middle_name ?? ' ' }} {{ $loan->employee->suffix ?? ' ' }}</td>
+                    <td>₱{{ number_format($loan->loan_amount, 2) }}</td>
+                    <td>{{ $loan->loan_term_months }} {{ $loan->loan_term_months <= 1 ? 'Month' : 'Months' }}</td>
+                    <td>₱{{ number_format($loan->monthly_amortization, 2) }}</td>
+                    <td>{{ $loan->interest_rate }}%</td>
+                    <td>{{ $loan->loan_type->value }}</td>
+                    <td>
+                        @if($loan->status == 'active')
+                            <span class="badge badge-success">{{ $loan->status }}</span>
+                        @else
+                            <span class="badge badge-primary">{{ $loan->status }}</span>
+                        @endif
+                    </td>
+                    <td>₱{{ number_format($loan->calculateRemainingBalance(), 2) }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <div class="dropdown">
+                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a href="{{ route('loan_pagibig.ledger', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-book"></i>&nbsp;Ledger
+                                    </a>
+                                    @if($loan->calculateRemainingBalance() == 0)
+                                    <a href="{{ route('loan_pagibig.edit', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-edit"></i>&nbsp;Update Status
+                                    </a>
+                                    @endif
+                                    @can('super-admin')
+                                    <form action="{{ route('loan_pagibig.destroy', $loan->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this loan?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-trash"></i>&nbsp;Delete
+                                        </button>
+                                    </form>
+                                    @endcan
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        </div>
-    </div>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 </div>
 
 @include('loan_pagibig.create')
@@ -229,102 +209,6 @@
     .contribution-link.active .description {
         opacity: 0.9;
     }
-
-    /* Mobile styles */
-    @media (max-width: 768px) {
-        .contribution-link {
-            flex: 1 1 100%; /* Full width on mobile */
-            margin-bottom: 10px;
-        }
-
-        .card-tools {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .card-tools .btn {
-            width: 100%;
-            margin: 0 !important;
-        }
-
-        .card-header {
-            flex-direction: column;
-        }
-
-        .card-title {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        /* Make table scrollable horizontally */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Adjust table for mobile */
-        #loan_pagibig {
-            font-size: 14px;
-        }
-
-        #loan_pagibig th,
-        #loan_pagibig td {
-            white-space: nowrap;
-            min-width: 100px;
-        }
-
-        /* Stack form elements */
-        form[style*="display: inline"] {
-            display: block !important;
-            width: 100%;
-        }
-    }
-
-    /* Tablet styles */
-    @media (min-width: 769px) and (max-width: 1024px) {
-        .contribution-link {
-            flex: 1 1 calc(50% - 15px); /* 2 items per row on tablet */
-        }
-    }
-
-    /* Additional responsive improvements */
-    .dropdown-menu {
-        min-width: 200px;
-    }
-
-    .alert {
-        margin: 10px;
-        border-radius: 8px;
-    }
-
-    /* Improve table responsiveness */
-    .table-responsive {
-        margin: 0;
-        padding: 0;
-        border: none;
-    }
-
-    /* Improve button spacing */
-    .btn {
-        margin: 2px;
-        white-space: nowrap;
-    }
-
-    /* Improve modal responsiveness */
-    .modal-dialog {
-        margin: 10px;
-        max-width: 98%;
-    }
-
-    @media (min-width: 576px) {
-        .modal-dialog {
-            max-width: 500px;
-            margin: 1.75rem auto;
-        }
-    }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -337,7 +221,6 @@
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
     $(document).ready(function () {
 
@@ -348,37 +231,11 @@
             });
 
         var table = $('#loan_pagibig').DataTable({
-            responsive: true, // Enable responsive features
-            pageLength: 10,
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            order: [[1, "desc"]],
-            language: {
-                "search": "Search:",
-                "lengthMenu": "Show _MENU_ entries",
-                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                "infoEmpty": "Showing 0 to 0 of 0 entries",
-                "infoFiltered": "(filtered from _MAX_ total entries)",
-                "paginate": {
-                    "first": "First",
-                    "last": "Last",
-                    "next": "Next",
-                    "previous": "Previous"
-                }
-            },
-            // Add responsive breakpoints
-            responsive: {
-                breakpoints: [
-                    {name: 'desktop', width: Infinity},
-                    {name: 'tablet', width: 1024},
-                    {name: 'phone', width: 768}
-                ]
-            },
-            // Customize column visibility for different screen sizes
-            columnDefs: [
-                {
-                    targets: [3, 4, 5, 6], // Hide these columns on mobile
-                    className: 'd-none d-md-table-cell'
-                }
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[1, "desc"]],
+            "columnDefs": [
+                { "orderable": false, "targets": 9 }
             ]
         });
 

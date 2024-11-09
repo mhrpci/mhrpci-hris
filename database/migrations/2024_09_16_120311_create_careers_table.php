@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('cover_letter')->nullable();
             $table->boolean('agree_terms');
             $table->date('interview_date')->nullable();
+            $table->string('interview_location')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@
         "@fullcalendar/core": "^6.1.15",
         "@fullcalendar/daygrid": "^6.1.15",
         "bs-stepper": "^1.7.0",
+        "interactjs": "^1.10.27",
         "jquery": "^3.7.1",
         "laravel-echo": "^1.16.1",
         "pusher-js": "^8.4.0-rc2",

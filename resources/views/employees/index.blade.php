@@ -22,44 +22,40 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-                            <h3 class="card-title mb-2 mb-md-0">Employee Management</h3>
-                            <div class="card-tools d-flex flex-wrap justify-content-center justify-content-md-end">
-                                @can('employee-create')
-                                <a href="{{ route('employees.create') }}" class="btn btn-success btn-sm rounded-pill m-1">
-                                    <i class="fas fa-plus-circle"></i> <span class="d-none d-sm-inline">Add Employee</span>
-                                </a>
-                                @endcan
-                                @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
-                                <button class="btn btn-primary btn-sm rounded-pill m-1" data-toggle="modal" data-target="#importModal">
-                                    <i class="fas fa-file-import"></i> <span class="d-none d-sm-inline">Import</span>
+                        <h3 class="card-title">Employee Management</h3>
+                        <div class="card-tools d-flex flex-wrap justify-content-end">
+                            @can('employee-create')
+                            <a href="{{ route('employees.create') }}" class="btn btn-success btn-sm rounded-pill mr-2 mb-2">
+                                Add Employee <i class="fas fa-plus-circle"></i>
+                            </a>
+                            @endcan
+                            @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
+                            <button class="btn btn-primary btn-sm rounded-pill mr-2 mb-2" data-toggle="modal" data-target="#importModal">
+                                Import Employees <i class="fas fa-file-import"></i>
+                            </button>
+                            <form action="{{ route('employees.export') }}" method="POST" target="_blank" class="mr-2 mb-2">
+                                @csrf
+                                <button type="submit" class="btn btn-secondary btn-sm rounded-pill">Export Employees <i class="fas fa-file-export"></i></button>
+                            </form>
+                            @endif
+                            <div class="dropdown mr-2 mb-2">
+                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Filter <i class="fas fa-filter"></i>
                                 </button>
-                                <form action="{{ route('employees.export') }}" method="POST" target="_blank" class="m-1">
-                                    @csrf
-                                    <button type="submit" class="btn btn-secondary btn-sm rounded-pill">
-                                        <i class="fas fa-file-export"></i> <span class="d-none d-sm-inline">Export</span>
-                                    </button>
-                                </form>
-                                @endif
-                                <div class="dropdown m-1">
-                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown">
-                                        <i class="fas fa-filter"></i> <span class="d-none d-sm-inline">Filter</span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#monthModal">Month</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#yearModal">Year</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#statusModal">Status</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a>
-                                        @if(auth()->user()->hasAnyRole(['Super Admin', 'Admin', 'Finance']))
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
-                                        @endif
-                                    </div>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#monthModal">Month</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#yearModal">Year</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#statusModal">Status</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a>
+                                    @if(auth()->user()->hasAnyRole(['Super Admin', 'Admin', 'Finance']))
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
+                     <!-- /.card-header -->
+                     <div class="card-body">
                         @if ($message = Session::get('success'))
                             <div class="alert alert-success">{{ $message }}</div>
                         @endif
@@ -67,59 +63,58 @@
                             <div class="alert alert-danger">{{ $message }}</div>
                         @endif
 
-                        <div class="table-responsive">
-                            <table id="employees-table" class="table table-bordered table-hover">
-                                <thead>
+                        <table id="employees-table" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Employee Name</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>Rank</th>
+                                    <th>Joined Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($employees as $employee)
                                     <tr>
-                                        <th class="text-nowrap">ID</th>
-                                        <th class="text-nowrap">Name</th>
-                                        <th class="text-nowrap">Dept</th>
-                                        <th class="text-nowrap">Position</th>
-                                        <th class="text-nowrap">Status</th>
-                                        <th class="text-nowrap">Rank</th>
-                                        <th class="text-nowrap">Joined</th>
-                                        <th class="text-nowrap">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($employees as $employee)
-                                        <tr>
-                                            <td>{{ $employee->company_id }}</td>
-                                            <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }} {{ $employee->suffix }}</td>
-                                            <td>{{ $employee->department->name }}</td>
-                                            <td>{{ $employee->position->name }}</td>
-                                            <td align="center" style="color: {{ $employee->employee_status === 'Active' ? 'green' : 'red' }}; font-weight: bold;">
-                                                {{ $employee->employee_status }}
-                                            </td>
-                                            <td align="center" style="color: {{ $employee->rank === 'Rank File' ? 'green' : 'blue' }}; font-weight: bold;">
-                                                {{ $employee->rank }}
-                                            </td>
-                                            <td>{{ $employee->date_hired ? \Carbon\Carbon::parse($employee->date_hired)->format('F j, Y') : '' }}</td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fas fa-ellipsis-v"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}">
-                                                            <i class="fas fa-eye"></i>&nbsp;Preview
-                                                        </a>
+                                        <td>{{ $employee->company_id }}</td>
+                                        <td>{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }} {{ $employee->suffix }}</td>
+                                        <td>{{ $employee->department->name }}</td>
+                                        <td>{{ $employee->position->name }}</td>
+                                        <td align="center" style="color: {{ $employee->employee_status === 'Active' ? 'green' : 'red' }}; font-weight: bold;">
+                                            {{ $employee->employee_status }}
+                                        </td>
+                                        <td align="center" style="color: {{ $employee->rank === 'Rank File' ? 'green' : 'blue' }}; font-weight: bold;">
+                                            {{ $employee->rank }}
+                                        </td>
+                                        <td>{{ $employee->date_hired ? \Carbon\Carbon::parse($employee->date_hired)->format('F j, Y') : '' }}</td>
+                                        {{-- <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}">
+                                                        <i class="fas fa-eye"></i>&nbsp;Preview
+                                                    </a>
 
-                                                        @if($employee->employee_status !== 'Resigned')
-                                                        @can('employee-edit')
-                                                        <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}">
-                                                            <i class="fas fa-edit"></i>&nbsp;Edit
-                                                        </a>
+                                                    @if($employee->employee_status !== 'Resigned')
+                                                    @can('employee-edit')
+                                                    <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}">
+                                                        <i class="fas fa-edit"></i>&nbsp;Edit
+                                                    </a>
                                                     @endcan
-                                                    @can('user-create')
-                                                    <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
-                                                        @csrf
-                                                        <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
+                                                @can('user-create')
+                                                <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</butt>
                                                     </form>
                                                     @elsecan('hrcompliance')
                                                         <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
                                                             @csrf
-                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</button>
+                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</>
                                                         </form>
                                                     @endcan
                                                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</a>
@@ -127,7 +122,7 @@
                                                                 <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">
                                                                     @csrf
                                                                     @method('PATCH')
-                                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure that this employee is resigned?')"><i class="fas fa-sign-out-alt"></i>&nbsp;Resigned</button>
+                                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure that this employee is resigned?')"><i class="fas fa-sign-out-alt"></i>&nbsp;Resigned</butto>
                                                                 </form>
                                                             @endcanany
                                                         @endif
@@ -140,8 +135,48 @@
                                                     @endcan
                                                     </div>
                                                 </div>
+                                            </td> --}}
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
+                                                    @if($employee->employee_status !== 'Resigned')
+                                                        @can('employee-edit')
+                                                            <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                                        @endcan
+                                                        @can('user-create')
+                                                            <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</butt>
+                                                            </form>
+                                                            @elsecan('hrcompliance')
+                                                            <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</>
+                                                            </form>
+                                                        @endcan
+                                                        <button class="dropdown-item" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</button>
+                                                        @canany(['super-admin', 'admin'])
+                                                                <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure that this employee is resigned?')"><i class="fas fa-sign-out-alt"></i>&nbsp;Resigned</butto>
+                                                                </form>
+                                                            @endcanany
+                                                        @endif
+                                                        @can('super-admin')
+                                                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this employee?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                        </form>
+                                                        @endcan
+                                                    </div>
+                                                </div>
                                             </td>
-
                                         </tr>
                                             <!-- Additional Details Modal -->
                                         <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
@@ -171,97 +206,69 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card-body -->
+                    <!-- /.card -->
                 </div>
-                <!-- /.card -->
+                <!-- /.col-md-12 -->
             </div>
-            <!-- /.col-md-12 -->
+            <!-- /.row -->
         </div>
-        <!-- /.row -->
-    </div>
-    <!-- /.container-fluid -->
+        <!-- /.container-fluid -->
 
-    <!-- Import Modal -->
-    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="importModalLabel"><i class="fas fa-file-import"></i> Import Employees</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('employees.import') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="inputGroupFile" class="form-label">Choose file</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupFileAddon"><i class="fas fa-upload"></i></span>
+        <!-- Import Modal -->
+        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="importModalLabel"><i class="fas fa-file-import"></i> Import Employees</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('employees.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="inputGroupFile" class="form-label">Choose file</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroupFileAddon"><i class="fas fa-upload"></i></span>
+                                    </div>
+                                    <input type="file" class="form-control" id="inputGroupFile" name="file" required aria-describedby="inputGroupFileAddon">
                                 </div>
-                                <input type="file" class="form-control" id="inputGroupFile" name="file" required aria-describedby="inputGroupFileAddon">
+                            </div>
+                            <div class="form-group">
+                                <div class="progress">
+                                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small class="form-text text-muted">Please upload a valid CSV or Excel file.</small>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="progress">
-                                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
-                            </div>
-                            <small class="form-text text-muted">Please upload a valid CSV or Excel file.</small>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> Import Employees</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> Import Employees</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-        <!-- Month Modal -->
-<div class="modal fade" id="monthModal" tabindex="-1" role="dialog" aria-labelledby="monthModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="monthModalLabel">Filter by Month</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="monthForm">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="month">Month</label>
-                        <input type="month" class="form-control" id="month" name="month" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Apply Filter</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-    <!-- Year Modal -->
-    <div class="modal fade" id="yearModal" tabindex="-1" role="dialog" aria-labelledby="yearModalLabel" aria-hidden="true">
+            <!-- Month Modal -->
+    <div class="modal fade" id="monthModal" tabindex="-1" role="dialog" aria-labelledby="monthModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="yearModalLabel">Filter by Year</h5>
+                    <h5 class="modal-title" id="monthModalLabel">Filter by Month</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="yearForm">
+                <form id="monthForm">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="year">Year</label>
-                            <input type="number" class="form-control" id="year" name="year" min="1900" max="2099" step="1" required>
+                            <label for="month">Month</label>
+                            <input type="month" class="form-control" id="month" name="month" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -272,73 +279,100 @@
             </div>
         </div>
     </div>
-    <!-- Status Modal -->
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="statusModalLabel">Filter by Employment Status</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="statusForm">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="employee_status">Employment Status</label>
-                        <select class="form-control" id="employee_status" name="employee_status" required>
-                            <option value="">Select Status</option>
-                            <option value="Active">Active</option>
-                            <option value="Resigned">Resigned</option>
-                        </select>
+
+
+        <!-- Year Modal -->
+        <div class="modal fade" id="yearModal" tabindex="-1" role="dialog" aria-labelledby="yearModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="yearModalLabel">Filter by Year</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
+                    <form id="yearForm">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="year">Year</label>
+                                <input type="number" class="form-control" id="year" name="year" min="1900" max="2099" step="1" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Apply Filter</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Apply Filter</button>
+            </div>
+        </div>
+        <!-- Status Modal -->
+    <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="statusModalLabel">Filter by Employment Status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </form>
+                <form id="statusForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="employee_status">Employment Status</label>
+                            <select class="form-control" id="employee_status" name="employee_status" required>
+                                <option value="">Select Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Resigned">Resigned</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Department Modal -->
-<div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="departmentModalLabel">Filter by Department</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="departmentForm">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="department">Department</label>
-                        <select class="form-control" id="department" name="department" required>
-                            <option value="">Select Department</option>
-                            @foreach ($departments as $department)
-                                <option value="{{ $department->name }}">{{ $department->name }}</option>
-                            @endforeach
-                        </select>
+    <!-- Department Modal -->
+    <div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="departmentModalLabel">Filter by Department</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="departmentForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <select class="form-control" id="department" name="department" required>
+                                <option value="">Select Department</option>
+                                @foreach ($departments as $department)
+                                    <option value="{{ $department->name }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Apply Filter</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Rank Modal -->
-<div class="modal fade" id="rankModal" tabindex="-1" role="dialog" aria-labelledby="rankModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="rankModalLabel">Filter by Rank</h5>
+    <!-- Rank Modal -->
+    <div class="modal fade" id="rankModal" tabindex="-1" role="dialog" aria-labelledby="rankModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="rankModalLabel">Filter by Rank</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -369,35 +403,12 @@
     <script>
        $(document).ready(function () {
     let table = $('#employees-table').DataTable({
-        responsive: true,
         columnDefs: [
             {
-                targets: 6,
+                targets: 6, // Targeting the "Joined Date" column (0-based index)
                 type: 'date'
             }
-        ],
-        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-             '<"row"<"col-sm-12"tr>>' +
-             '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        responsive: {
-            details: {
-                display: $.fn.dataTable.Responsive.display.modal({
-                    header: function (row) {
-                        var data = row.data();
-                        return 'Employee Details: ' + data[1];
-                    }
-                }),
-                renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-                    tableClass: 'table'
-                })
-            }
-        },
-        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        scrollX: true
-    });
-
-    $(window).resize(function() {
-        table.columns.adjust().responsive.recalc();
+        ]
     });
 
     // Target only the import form
@@ -549,79 +560,7 @@
             return true;
         }
     );
-    });
+});
 
     </script>
-@endsection
-
-@section('css')
-<style>
-@media (max-width: 768px) {
-    .card-tools {
-        margin-top: 1rem;
-        width: 100%;
-    }
-
-    .btn {
-        margin: 0.2rem;
-        white-space: nowrap;
-    }
-
-    .table-responsive {
-        margin-bottom: 1rem;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-
-    .toast-container {
-        width: 100%;
-        padding: 0.5rem;
-    }
-
-    .dropdown-menu {
-        width: 100%;
-    }
-}
-
-/* Improve table readability on mobile */
-.table td, .table th {
-    padding: 0.5rem;
-    white-space: nowrap;
-}
-
-/* Make modals more mobile-friendly */
-@media (max-width: 576px) {
-    .modal-dialog {
-        margin: 0.5rem;
-        padding: 0;
-    }
-
-    .modal-content {
-        border-radius: 0;
-    }
-
-    .modal-body {
-        padding: 1rem;
-    }
-}
-
-/* Improve button spacing */
-.btn-group-sm > .btn, .btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-}
-
-/* Improve dropdown menu usability on mobile */
-.dropdown-menu {
-    font-size: 0.875rem;
-}
-
-.dropdown-item {
-    padding: 0.5rem 1rem;
-}
-</style>
 @endsection

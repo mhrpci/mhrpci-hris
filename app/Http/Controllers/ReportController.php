@@ -16,9 +16,18 @@ use PDF;
 use App\Models\SssLoan;
 use App\Models\PagibigLoan;
 use App\Models\CashAdvance;
+use Illuminate\Support\Facades\View;
 
 class ReportController extends Controller
 {
+    private $pdfConfig = [
+        'format' => 'A4',
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'margin_top' => 20,
+        'margin_bottom' => 20,
+    ];
+
     public function index()
     {
         return view('reports.index');
@@ -35,14 +44,45 @@ class ReportController extends Controller
         $endDate = Carbon::parse($request->end_date);
 
         $loans = Loan::whereBetween('date', [$startDate, $endDate])
-                     ->with('employee')
+                     ->with(['employee', 'employee.department'])
                      ->get();
 
-        $totalAmount = $loans->sum('sss_loan') + $loans->sum('pagibig_loan') + $loans->sum('cash_advance');
+        $reportData = [
+            'loans' => $loans,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'totalAmount' => $loans->sum('sss_loan') + $loans->sum('pagibig_loan') + $loans->sum('cash_advance'),
+            'summary' => [
+                'total_loans' => $loans->count(),
+                'by_department' => $loans->groupBy('employee.department.name')->map->count(),
+                'average_amount' => $loans->average('amount'),
+                'highest_loan' => $loans->max('amount'),
+                'lowest_loan' => $loans->min('amount'),
+            ],
+            'generated_at' => now(),
+            'generated_by' => auth()->user()->name ?? 'System',
+            'company_details' => [
+                'name' => config('app.company_name', 'Your Company Name'),
+                'address' => config('app.company_address', 'Company Address'),
+                'contact' => config('app.company_contact', 'Contact Information'),
+            ]
+        ];
 
-        $pdf = PDF::loadView('reports.loans', compact('loans', 'startDate', 'endDate', 'totalAmount'));
+        $pdf = PDF::loadView('reports.loans', $reportData)
+                  ->setPaper('A4')
+                  ->setOptions([
+                      'isHtml5ParserEnabled' => true,
+                      'isPhpEnabled' => true,
+                      'isRemoteEnabled' => true,
+                      'margin_top' => 20,
+                      'margin_bottom' => 20,
+                      'margin_left' => 10,
+                      'margin_right' => 10,
+                      'dpi' => 150,
+                  ]);
 
-        return $pdf->download('loan_report_' . $startDate->format('Y-m-d') . '_to_' . $endDate->format('Y-m-d') . '.pdf');
+        $filename = 'loan_report_' . $startDate->format('Y-m-d') . '_to_' . $endDate->format('Y-m-d') . '.pdf';
+        return $pdf->download($filename);
     }
 
     public function generateContributionReport(Request $request)
