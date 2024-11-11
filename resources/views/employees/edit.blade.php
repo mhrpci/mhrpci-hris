@@ -87,9 +87,6 @@
                                 <div class="text-center">
                                     @if($employee->profile)
                                         <p class="mb-1"><small>Current: {{ basename($employee->profile) }}</small></p>
-                                        <button type="button" class="btn btn-sm btn-danger" id="remove_profile_btn">
-                                            <i class="fas fa-trash-alt"></i> Remove
-                                        </button>
                                     @else
                                         <p class="text-muted"><small>No custom profile picture set</small></p>
                                     @endif
@@ -586,73 +583,191 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 <style>
-.card-outline {
-    border-top: 3px solid;
-}
-.form-group label {
-    font-weight: bold;
-    color: #495057;
-}
-.custom-file-label::after {
-    content: "Browse";
-}
-.select2-container--default .select2-selection--single {
-    height: calc(2.25rem + 2px);
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: calc(2.25rem + 2px);
-}
+/* Enhanced Card Styling */
 .card {
     transition: all 0.3s ease;
+    border: none;
+    margin-bottom: 1.5rem;
 }
+
+.card-outline {
+    border-top: 3px solid;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
 .card:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
+
+.card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.card-header .card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.card-header .card-title i {
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Form Elements Enhancement */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    border-radius: 0.375rem;
+    border: 1px solid #dce4ec;
+    padding: 0.625rem 0.875rem;
+    transition: all 0.2s ease;
+    height: calc(2.5rem + 2px);
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52,152,219,0.25);
+}
+
+.input-group-text {
+    min-width: 45px;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border: 1px solid #dce4ec;
+}
+
+/* Select2 Customization */
+.select2-container--bootstrap4 .select2-selection {
+    height: calc(2.5rem + 2px) !important;
+    border: 1px solid #dce4ec;
+    border-radius: 0.375rem;
+}
+
+.select2-container--bootstrap4 .select2-selection__rendered {
+    line-height: calc(2.5rem + 2px) !important;
+    padding-left: 0.875rem;
+}
+
+.select2-container--bootstrap4 .select2-selection__arrow {
+    height: calc(2.5rem + 2px) !important;
+}
+
+/* Profile Image Section */
+.profile-img-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #3498db;
+    transition: all 0.3s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .row {
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+    }
+
+    [class*="col-"] {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Button Styling */
+.btn {
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+/* Error States */
+.is-invalid {
+    border-color: #e74c3c !important;
+}
+
+.invalid-feedback {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Custom File Input */
+.custom-file-label {
+    height: calc(2.5rem + 2px);
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.375rem;
+}
+
+.custom-file-label::after {
+    height: calc(2.5rem + 2px);
+    padding: 0.625rem 0.875rem;
+    background-color: #f8f9fa;
+    border-left: 1px solid #dce4ec;
+}
+
+/* Grid System Improvements */
+.row + .row {
+    margin-top: 1rem;
+}
+
+/* Typography */
 input:not([type="file"]) {
     text-transform: capitalize;
 }
-.form-control:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-}
-.input-group-text {
-    min-width: 40px;
-    justify-content: center;
-}
-.select2-container--bootstrap4 .select2-selection--single {
-    height: calc(2.25rem + 2px) !important;
-}
-.select2-container--bootstrap4 .select2-selection--single .select2-selection__placeholder {
-    color: #757575;
-    line-height: 2.25rem;
-}
-.select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
-    position: absolute;
-    top: 50%;
-    right: 3px;
-    width: 20px;
-}
-.select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
-    top: 60%;
-    border-color: #343a40 transparent transparent transparent;
-    border-style: solid;
-    border-width: 5px 4px 0 4px;
-    width: 0;
-    height: 0;
-    left: 50%;
-    margin-left: -4px;
-    margin-top: -2px;
-    position: absolute;
+
+/* Accessibility */
+.form-control:focus,
+.btn:focus,
+.custom-file-input:focus ~ .custom-file-label {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(52,152,219,0.25);
 }
 </style>
 @stop

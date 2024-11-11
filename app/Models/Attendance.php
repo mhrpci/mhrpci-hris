@@ -40,6 +40,7 @@ class Attendance extends Model
         'remarks',
         'hours_worked',
         'leave_payment_status',
+        'overtime_hours',
     ];
 
     public function employee(): BelongsTo
@@ -70,7 +71,16 @@ class Attendance extends Model
         }
 
         if ($dayOfWeek == Carbon::SATURDAY) {
-            $this->remarks = 'Saturday';
+            $timeOut = $this->time_out ? Carbon::parse($this->time_out) : null;
+            $overtimeThreshold = Carbon::parse('18:00:00');
+
+            if ($timeOut && $timeOut->gte($overtimeThreshold)) {
+                $this->remarks = 'Overtime';
+                $this->overtime_hours = $this->calculateOvertimeHours();
+            } else {
+                $this->remarks = 'Saturday';
+            }
+
             $this->hours_worked = $this->getHoursWorkedAttribute();
             return;
         }
@@ -96,11 +106,12 @@ class Attendance extends Model
 
     private function setNoWorkDay($reason)
     {
-        $this->time_in = null;
-        $this->time_out = null;
-        $this->remarks = $reason;
-        $this->hours_worked = '00:00:00';
-        $this->leave_payment_status = null;
+        $this->time_in = $this->time_in ?? null;
+        $this->time_out = $this->time_out ?? null;
+        $this->remarks = ($this->time_in !== null && $this->time_out !== null) ? 'Overtime' : $reason;
+        $this->hours_worked = $this->hours_worked ?? '00:00:00';
+        $this->leave_payment_status = $this->leave_payment_status ?? null;
+        $this->overtime_hours = $this->hours_worked ?? '00:00:00';
     }
 
     private function setHolidayAttendance()
@@ -149,6 +160,7 @@ class Attendance extends Model
             $this->remarks = 'UnderTime';
         } elseif ($this->isOvertime()) {
             $this->remarks = 'Overtime';
+            $this->overtime_hours = $this->calculateOvertimeHours();
         } else {
             $this->remarks = 'Present';
         }
@@ -195,6 +207,26 @@ class Attendance extends Model
     protected static function boot()
     {
         parent::boot();
+
+        static::saved(function ($model) {
+            // Create overtime pay record if remarks is Overtime
+            if ($model->remarks === 'Overtime' && $model->overtime_hours) {
+                // Convert overtime hours from HH:MM:SS to decimal hours
+                $overtimeHoursArray = explode(':', $model->overtime_hours);
+                $decimalHours = $overtimeHoursArray[0] + ($overtimeHoursArray[1] / 60) + ($overtimeHoursArray[2] / 3600);
+
+                OvertimePay::updateOrCreate(
+                    [
+                        'employee_id' => $model->employee_id,
+                        'date' => $model->date_attended,
+                    ],
+                    [
+                        'overtime_hours' => $decimalHours,
+                        'overtime_rate' => 1.25, // Default overtime rate, adjust as needed
+                    ]
+                );
+            }
+        });
 
         static::saving(function ($model) {
             $model->calculateRemarksAndHoursWorked();
@@ -246,5 +278,28 @@ class Attendance extends Model
         $this->remarks = 'Absent';
         $this->hours_worked = '00:00:00';
         $this->leave_payment_status = null;
+    }
+
+    public function calculateOvertimeHours(): string
+    {
+        // Only calculate if remarks is Overtime and time_out exists
+        if ($this->remarks !== 'Overtime' || !$this->time_out) {
+            return '00:00:00';
+        }
+
+        // Set overtime start time to 17:00:00 (5:00 PM)
+        $overtimeStart = Carbon::parse('17:00:00');
+        $timeOut = Carbon::parse($this->time_out);
+
+        // If time_out is before overtime start, return 0
+        if ($timeOut->lte($overtimeStart)) {
+            return '00:00:00';
+        }
+
+        // Calculate the difference between overtime start and time_out
+        $overtimeDuration = $overtimeStart->diff($timeOut);
+
+        // Format the duration as HH:MM:SS
+        return $overtimeDuration->format('%H:%I:%S');
     }
 }

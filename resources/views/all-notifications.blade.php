@@ -37,23 +37,24 @@
                                             <i class="fas fa-money-bill-wave text-success mr-2"></i>
                                         @endif
                                         {{ ucfirst(str_replace('_', ' ', $category)) }}
+                                        @if(count($notifications) > 1)
+                                            <span class="badge badge-pill badge-danger ml-2">{{ count($notifications) }}+</span>
+                                        @endif
                                     </h4>
                                     @if(empty($notifications))
                                         <p class="text-muted">No available {{ str_replace('_', ' ', $category) }}.</p>
                                     @else
                                         <ul class="list-unstyled">
-                                            @foreach($notifications as $notification)
-                                                <li class="mb-2">
-                                                    <span class="text-dark">{{ $notification['text'] }}</span>
-                                                    <small class="text-muted d-block">{{ $notification['time'] }}</small>
-                                                    @if(isset($notification['details']))
-                                                        <small class="text-muted d-block">{{ $notification['details'] }}</small>
-                                                    @endif
-                                                    @if($category === 'posts' && !Auth::user()->hasRole(['Super Admin', 'Admin']) && isset($notification['id']))
-                                                        <a href="{{ route('posts.showById', $notification['id']) }}" class="btn btn-outline-info btn-sm mt-1">View Post</a>
-                                                    @endif
-                                                </li>
-                                            @endforeach
+                                            <li class="mb-2">
+                                                <span class="text-dark">{{ $notifications[0]['text'] }}</span>
+                                                <small class="text-muted d-block">{{ $notifications[0]['time'] }}</small>
+                                                @if(isset($notifications[0]['details']))
+                                                    <small class="text-muted d-block">{{ $notifications[0]['details'] }}</small>
+                                                @endif
+                                                @if($category === 'posts' && !Auth::user()->hasRole(['Super Admin', 'Admin']) && isset($notifications[0]['id']))
+                                                    <a href="{{ route('posts.showById', $notifications[0]['id']) }}" class="btn btn-outline-info btn-sm mt-1">View Post</a>
+                                                @endif
+                                            </li>
                                         </ul>
                                     @endif
                                     @if(Auth::user()->hasRole(['Super Admin', 'Admin']) ||
@@ -142,6 +143,18 @@
         .card-header h3 {
             font-size: 1.25rem;
         }
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+        font-size: 0.75rem;
+    }
+
+    .badge-pill {
+        padding-right: 0.6em;
+        padding-left: 0.6em;
+        border-radius: 10rem;
     }
 </style>
 @endpush

@@ -24,7 +24,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = department::all();
+        $departments = Department::all();
         return view('departments.index', compact('departments'));
     }
 
@@ -90,9 +90,9 @@ class DepartmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Department $department)
     {
-        $deparment->delete();
+        $department->delete();
 
         return redirect()->route('departments.index')
             ->with('success', 'Deparment deleted successfully');

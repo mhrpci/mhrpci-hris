@@ -33,11 +33,23 @@
         </ul>
     </div>
         @if ($message = Session::get('success'))
-                            <div class="alert alert-success">{{ $message }}</div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @endif
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{{ $message }}',
+                });
+            </script>
+        @endif
+        @if ($message = Session::get('error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{{ $message }}',
+                });
+            </script>
+        @endif
         <div class="row">
             <div class="col-md-12">
                 <div class="card">

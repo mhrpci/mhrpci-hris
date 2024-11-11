@@ -3,10 +3,22 @@
 @section('content')
 <br>
 @if ($message = Session::get('success'))
-    <div class="alert alert-success">{{ $message }}</div>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ $message }}',
+        });
+    </script>
 @endif
 @if ($message = Session::get('error'))
-    <div class="alert alert-danger">{{ $message }}</div>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ $message }}',
+        });
+    </script>
 @endif
 
 <div class="container-fluid">

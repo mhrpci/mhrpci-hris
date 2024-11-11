@@ -62,22 +62,6 @@
        </div>
    </div>
    <div class="card-body">
-       @if ($message = Session::get('success'))
-           <div class="alert alert-success alert-dismissible fade show" role="alert">
-               {{ $message }}
-               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                   <span aria-hidden="true">&times;</span>
-               </button>
-           </div>
-       @endif
-       @if ($message = Session::get('error'))
-           <div class="alert alert-danger alert-dismissible fade show" role="alert">
-               {{ $message }}
-               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                   <span aria-hidden="true">&times;</span>
-               </button>
-           </div>
-       @endif
        <table id="philhealth-table" class="table table-bordered table-striped">
            <thead>
            <tr>
@@ -111,7 +95,7 @@
                                        <form action="{{ route('philhealth.destroy', $contribution->id) }}" method="POST">
                                            @csrf
                                            @method('DELETE')
-                                           <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this philhealth?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                           <button type="submit" class="dropdown-item"><i class="fas fa-trash"></i>&nbsp;Delete</button>
                                        </form>
                                    @endif
                                </div>
@@ -212,6 +196,13 @@
     .contribution-link.active .description {
         opacity: 0.9;
     }
+    /* Toast styles */
+    .colored-toast.swal2-icon-success {
+        box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+    }
+    .colored-toast.swal2-icon-error {
+        box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+    }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
 @endsection
@@ -223,6 +214,67 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 <script>
     $(document).ready(function () {
+        // SweetAlert toast configuration
+        const toastConfig = {
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            color: '#424242',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            }
+        };
+
+        // Success toast
+        @if(Session::has('success'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'success',
+                title: 'Success',
+                text: "{{ Session::get('success') }}",
+                background: '#28a745',
+                color: '#fff'
+            });
+        @endif
+
+        // Error toast
+        @if(Session::has('error'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'error',
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                background: '#dc3545',
+                color: '#fff'
+            });
+        @endif
+
+        // Delete confirmation
+        $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
         var table = $('#philhealth-table').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],

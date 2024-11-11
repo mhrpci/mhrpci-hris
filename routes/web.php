@@ -44,7 +44,6 @@ use App\Http\Controllers\PagibigLoanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
 use App\Http\Controllers\ControllerAnalysisController;
-use App\Http\Controllers\IdGeneratorController;
 use Illuminate\Support\Facades\Auth;
 
 /*

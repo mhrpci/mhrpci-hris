@@ -6,15 +6,12 @@
         <div class="card-header">
             <h3 class="card-title">Task List</h3>
             <div class="card-tools">
-            <a href="{{ route('tasks.create') }}" class="btn btn-success btn-sm rounded-pill">
-                Add Task <i class="fas fa-plus-circle"></i>
-            </a>
+                <a href="{{ route('tasks.create') }}" class="btn btn-success btn-sm rounded-pill">
+                    Add Task <i class="fas fa-plus-circle"></i>
+                </a>
             </div>
         </div>
         <div class="card-body">
-            @if ($message = Session::get('success'))
-            <div class="alert alert-success">{{ $message }}</div>
-        @endif
             <table id="tasks-table" class="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -55,7 +52,9 @@
                                                         <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this tasks?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fas fa-trash"></i>&nbsp;Delete
+                                                            </button>
                                                         </form>
                                                     @endcan
                                                 </div>
@@ -72,16 +71,72 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+    <style>
+        .rotating {
+            animation: rotate 2s infinite linear;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast styles */
+        .colored-toast.swal2-icon-success {
+            box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+        }
+        .colored-toast.swal2-icon-error {
+            box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+        }
+    </style>
 @stop
 
 @section('js')
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Common toast configuration
+            const toastConfig = {
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end',
+                background: '#fff',
+                color: '#424242',
+                iconColor: 'white',
+                customClass: {
+                    popup: 'colored-toast'
+                }
+            };
+
+            // Success toast
+            @if(Session::has('success'))
+                Swal.fire({
+                    ...toastConfig,
+                    icon: 'success',
+                    title: 'Success',
+                    text: "{{ Session::get('success') }}",
+                    background: '#28a745',
+                    color: '#fff'
+                });
+            @endif
+
+            // Error toast
+            @if(Session::has('error'))
+                Swal.fire({
+                    ...toastConfig,
+                    icon: 'error',
+                    title: 'Error',
+                    text: "{{ Session::get('error') }}",
+                    background: '#dc3545',
+                    color: '#fff'
+                });
+            @endif
+
+            // Initialize DataTable
             $('#tasks-table').DataTable({
                 "paging": true,
                 "lengthChange": true,
@@ -91,18 +146,28 @@
                 "autoWidth": false,
                 "responsive": true,
             });
+
+            // Delete confirmation
+            $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
+                e.preventDefault();
+                let form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
         });
     </script>
 @stop
-@section('css')
-<style>
-    .rotating {
-        animation: rotate 2s infinite linear;
-    }
-
-    @keyframes rotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-</style>
-@endsection

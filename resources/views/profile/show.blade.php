@@ -9,10 +9,6 @@
                     <h2 class="card-title">Profile Update</h2>
                 </div>
                 <div class="card-body">
-                    @if (session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-
                     <div id="stepper" class="bs-stepper">
                         <div class="bs-stepper-header" role="tablist">
                             <div class="step" data-target="#personal-info">
@@ -207,6 +203,14 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Add navigation and submit buttons -->
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-secondary" onclick="stepper.previous()">Previous</button>
+                                        <button type="submit" class="btn btn-success float-right">
+                                            <i class="fas fa-save mr-1"></i> Save Profile
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -274,13 +278,59 @@
     .signature-display img {
         filter: brightness(1.1) contrast(1.2);
     }
+    /* Toast styles */
+    .colored-toast.swal2-icon-success {
+        box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+    }
+    .colored-toast.swal2-icon-error {
+        box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+    }
 </style>
 @endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
+        // SweetAlert toast configuration
+        const toastConfig = {
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            color: '#424242',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            }
+        };
+
+        // Success toast
+        @if(Session::has('success'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'success',
+                title: 'Success',
+                text: "{{ Session::get('success') }}",
+                background: '#28a745',
+                color: '#fff'
+            });
+        @endif
+
+        // Error toast
+        @if(Session::has('error'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'error',
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                background: '#dc3545',
+                color: '#fff'
+            });
+        @endif
+
         window.stepper = new Stepper(document.querySelector('#stepper'), {
             animation: true
         });
@@ -300,6 +350,50 @@
             if (input) {
                 input.addEventListener('input', capitalizeInput);
             }
+        });
+
+        // Add form submission handler
+        $('form').on('submit', function(e) {
+            e.preventDefault();
+
+            // Show loading state
+            const submitBtn = $(this).find('button[type="submit"]');
+            const originalText = submitBtn.html();
+            submitBtn.html('<i class="fas fa-spinner fa-spin mr-1"></i> Saving...').prop('disabled', true);
+
+            // Submit form
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    Swal.fire({
+                        ...toastConfig,
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Profile updated successfully',
+                        background: '#28a745',
+                        color: '#fff'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        ...toastConfig,
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'Failed to update profile',
+                        background: '#dc3545',
+                        color: '#fff'
+                    });
+                },
+                complete: function() {
+                    submitBtn.html(originalText).prop('disabled', false);
+                }
+            });
         });
     });
 
@@ -394,7 +488,9 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: 'Please draw your signature before saving.'
+                text: 'Please draw your signature before saving.',
+                background: '#dc3545',
+                color: '#fff'
             });
             return;
         }
@@ -437,10 +533,13 @@
                     title: 'Success!',
                     text: 'Signature has been saved successfully.',
                     timer: 2000,
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    background: '#28a745',
+                    color: '#fff'
+                }).then(() => {
+                    location.reload();
                 });
                 $('#signatureModal').modal('hide');
-                location.reload();
             }
         })
         .catch(error => {
@@ -448,7 +547,9 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: error.response?.data?.message || 'Failed to save signature'
+                text: error.response?.data?.message || 'Failed to save signature',
+                background: '#dc3545',
+                color: '#fff'
             });
         })
         .finally(() => {

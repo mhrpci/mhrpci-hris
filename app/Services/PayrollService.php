@@ -111,7 +111,8 @@ class PayrollService
 
         // Fetch Overtime Pay records and calculate total overtime pay
         $overtime_pay_records = OvertimePay::where('employee_id', $employee_id)
-            ->whereBetween('date', [$start, $end])
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
             ->get();
 
         foreach ($overtime_pay_records as $record) {

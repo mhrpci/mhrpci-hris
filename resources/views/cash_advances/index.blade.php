@@ -47,24 +47,32 @@
 
 <!-- Add success and error message display -->
 @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: "{{ session('success') }}",
+        });
+    </script>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: "{{ session('error') }}",
+        });
+    </script>
 @endif
 
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Cash Advance List</h3>
         <div class="card-tools">
-            <a href="{{ route('cash_advances.create') }}" class="btn btn-success btn-sm rounded-pill">
+            {{-- <a href="{{ route('cash_advances.create') }}" class="btn btn-success btn-sm rounded-pill">
                 Apply for Cash Advance
-            </a>
+            </a> --}}
             <button id="export-excel" class="btn btn-primary btn-sm rounded-pill mr-2">
                 Export to Excel <i class="fas fa-file-excel"></i>
             </button>
@@ -207,6 +215,12 @@
     }
     .contribution-link.active .description {
         opacity: 0.9;
+    }
+    .colored-toast.swal2-icon-success {
+        box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+    }
+    .colored-toast.swal2-icon-error {
+        box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
     }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
@@ -351,6 +365,43 @@
         //         }
         //     });
         // });
+
+        // Common toast configuration
+        const toastConfig = {
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            color: '#424242',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            }
+        };
+
+        @if(Session::has('success'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'success',
+                title: 'Success',
+                text: "{{ Session::get('success') }}",
+                background: '#28a745',
+                color: '#fff'
+            });
+        @endif
+
+        @if(Session::has('error'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'error',
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                background: '#dc3545',
+                color: '#fff'
+            });
+        @endif
     });
 </script>
 @endsection

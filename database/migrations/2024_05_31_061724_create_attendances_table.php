@@ -21,6 +21,7 @@ return new class extends Migration
             $table->time('time_out')->nullable();
             $table->string('remarks')->nullable();
             $table->string('hours_worked')->nullable();
+            $table->time('overtime_hours')->nullable();
             $table->timestamps();
         });
     }

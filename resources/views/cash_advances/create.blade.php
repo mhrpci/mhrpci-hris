@@ -23,28 +23,6 @@
                 </div>
 
                 <div class="card-body">
-                    @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-                    @if (session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
-                    @if (count($errors) > 0)
-                        <div class="alert alert-danger">
-                            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     @if ($employees->isEmpty())
                         <div class="ineligible-message text-center py-5">
                             <div class="marker-icon mb-4">
@@ -298,8 +276,46 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
+            // Show success message if exists
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#3085d6'
+                });
+            @endif
+
+            // Show error message if exists
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#d33'
+                });
+            @endif
+
+            // Show validation errors if exist
+            @if(count($errors) > 0)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    html: `<div class="text-left">
+                            <strong>Please correct the following errors:</strong><br><br>
+                            <ul style="list-style-type: disc; padding-left: 20px;">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                           </div>`,
+                    confirmButtonColor: '#d33'
+                });
+            @endif
+
             // Initialize Select2
             $('.select2').select2({
                 theme: 'bootstrap4',
@@ -351,28 +367,105 @@
                 }
             });
 
-            // Handle form submission
+            // Modified form validation alert
+            $('#agreementModal').on('show.bs.modal', function(e) {
+                if (!$('#cashAdvanceForm')[0].checkValidity()) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Form Validation',
+                        text: 'Please fill in all required fields before proceeding.',
+                        confirmButtonColor: '#3085d6'
+                    });
+                    return;
+                }
+
+                const selectedOption = $('#employee_id option:selected');
+                const employeeName = selectedOption.text();
+                // Extract company_id from the option text (it's the first part before the name)
+                const companyId = selectedOption.text().split(' ')[0];
+                const amount = parseFloat($('#cash_advance_amount').val()) || 0;
+                const term = parseInt($('#repayment_term').val()) || 1;
+                const monthlyRepayment = amount / term;
+                const totalRepayment = amount;
+
+                // Generate reference number
+                const date = new Date();
+                const dateString = date.getFullYear() +
+                    String(date.getMonth() + 1).padStart(2, '0') +
+                    String(date.getDate()).padStart(2, '0');
+                const randomNum = String(Math.floor(Math.random() * 9999) + 1).padStart(4, '0');
+                const referenceNumber = `CA-${dateString}-${randomNum}`;
+
+                $('#modal-employee-name, #modal-employee-name-confirm').text(employeeName);
+                $('#modal-employee-id').text(companyId);  // Use company_id instead of employee ID
+                $('#modal-advance-amount').text(amount.toFixed(2));
+                $('#modal-repayment-term, #modal-term-text').text(term);
+                $('#modal-monthly-repayment, #modal-payment-text').text(monthlyRepayment.toFixed(2));
+                $('#modal-total-repayment, #modal-total-text').text(totalRepayment.toFixed(2));
+
+                $('#modal-reference-number').text(referenceNumber);
+
+                // Add hidden input for reference number
+                if (!$('#reference_number').length) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        id: 'reference_number',
+                        name: 'reference_number',
+                        value: referenceNumber
+                    }).appendTo('#cashAdvanceForm');
+                } else {
+                    $('#reference_number').val(referenceNumber);
+                }
+
+                $('#agreementCheckbox').prop('checked', false);
+                $('#confirmSubmit').prop('disabled', true);
+            });
+
+            // Modified agreement checkbox validation
             $('#confirmSubmit').click(function(e) {
                 e.preventDefault();
 
                 if (!$('#agreementCheckbox').is(':checked')) {
-                    alert('Please accept the terms and conditions.');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Terms & Conditions',
+                        text: 'Please accept the terms and conditions to proceed.',
+                        confirmButtonColor: '#3085d6'
+                    });
                     return;
                 }
 
                 if (signaturePad && signaturePad.isEmpty()) {
-                    alert('Please provide your signature before submitting.');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Signature Required',
+                        text: 'Please provide your digital signature before submitting.',
+                        confirmButtonColor: '#3085d6'
+                    });
                     return;
                 }
 
-                // Get signature data
-                if (signaturePad) {
-                    const signatureData = signaturePad.toDataURL('image/png');
-                    $('#signature').val(signatureData);
-                }
-
-                // Submit the form
-                $('#cashAdvanceForm').submit();
+                // Show confirmation dialog before submitting
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Confirm Submission',
+                    text: 'Are you sure you want to submit this loan application?',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Get signature data and submit form
+                        if (signaturePad) {
+                            const signatureData = signaturePad.toDataURL('image/png');
+                            $('#signature').val(signatureData);
+                        }
+                        $('#cashAdvanceForm').submit();
+                    }
+                });
             });
 
             // Agreement checkbox
@@ -384,7 +477,12 @@
             $('#agreementModal').on('show.bs.modal', function(e) {
                 if (!$('#cashAdvanceForm')[0].checkValidity()) {
                     e.preventDefault();
-                    $('#cashAdvanceForm')[0].reportValidity();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Form Validation',
+                        text: 'Please fill in all required fields before proceeding.',
+                        confirmButtonColor: '#3085d6'
+                    });
                     return;
                 }
 

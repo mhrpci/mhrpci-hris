@@ -5,7 +5,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
     .then(function(registration) {
         return registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array('your-public-key') // Replace with your public key
+            applicationServerKey: urlBase64ToUint8Array('BEVq1eiyhw-3VzECWiQDDKDLL5b2bzmkh6Pw1AQt-k6Xv0YD5hCsTobhlH-YURsAApNZjJPIlmbUJ-g4Z0qqN2M') // Replace with your public key
         });
     })
     .then(function(subscription) {
@@ -61,8 +61,8 @@ function updateNotificationsUI(notifications) {
         `;
         notificationMenu.appendChild(notificationItem);
     });
-
     // Update the notification count
     const notificationCount = document.getElementById('notification-count');
     notificationCount.textContent = notifications.length;
 }
+

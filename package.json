@@ -21,6 +21,9 @@
         "jquery": "^3.7.1",
         "laravel-echo": "^1.16.1",
         "pusher-js": "^8.4.0-rc2",
-        "vercel": "^34.3.0"
+        "vercel": "^34.3.0",
+        "vue": "^3.5.12",
+        "vue-loader": "^17.4.2",
+        "vue-template-compiler": "^2.7.16"
     }
 }

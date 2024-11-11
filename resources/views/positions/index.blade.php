@@ -67,9 +67,6 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success">{{ $message }}</div>
-                    @endif
                     <table id="positions-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
@@ -98,7 +95,7 @@
                                                     <form action="{{ route('positions.destroy', $position->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this position?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
+                                                        <button type="submit" class="dropdown-item"><i class="fas fa-trash"></i>&nbsp;Delete</button>
                                                     </form>
                                                 @endcan
                                             </div>
@@ -123,7 +120,79 @@
 @section('js')
 <script>
     $(document).ready(function () {
+        // SweetAlert toast configuration
+        const toastConfig = {
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            color: '#424242',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            }
+        };
+
+        // Success toast
+        @if(Session::has('success'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'success',
+                title: 'Success',
+                text: "{{ Session::get('success') }}",
+                background: '#28a745',
+                color: '#fff'
+            });
+        @endif
+
+        // Error toast
+        @if(Session::has('error'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'error',
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                background: '#dc3545',
+                color: '#fff'
+            });
+        @endif
+
+        // Delete confirmation
+        $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        // Initialize DataTable
         $('#positions-table').DataTable();
     });
 </script>
+
+<style>
+    /* Toast styles */
+    .colored-toast.swal2-icon-success {
+        box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+    }
+    .colored-toast.swal2-icon-error {
+        box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+    }
+</style>
 @endsection

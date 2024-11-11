@@ -38,8 +38,14 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        Type::create($request->all());
-        return redirect()->route('types.index');
+        try {
+            Type::create($request->all());
+            return redirect()->route('types.index')
+                ->with('success', 'Type created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('types.index')
+                ->with('error', 'Failed to create type.');
+        }
     }
 
     /**
@@ -63,8 +69,14 @@ class TypeController extends Controller
      */
     public function update(Request $request, Type $type)
     {
-        $type->update($request->all());
-        return redirect()->route('types.index');
+        try {
+            $type->update($request->all());
+            return redirect()->route('types.index')
+                ->with('success', 'Type updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('types.index')
+                ->with('error', 'Failed to update type.');
+        }
     }
 
     /**
@@ -72,7 +84,13 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
-        $type->delete();
-        return redirect()->route('types.index');
+        try {
+            $type->delete();
+            return redirect()->route('types.index')
+                ->with('success', 'Type deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('types.index')
+                ->with('error', 'Failed to delete type.');
+        }
     }
 }

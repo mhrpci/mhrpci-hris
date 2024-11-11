@@ -45,19 +45,6 @@
     </div>
 </div>
 
-<!-- Add success and error message display -->
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">PAGIBIG Loan List</h3>
@@ -209,6 +196,13 @@
     .contribution-link.active .description {
         opacity: 0.9;
     }
+    /* Toast styles */
+    .colored-toast.swal2-icon-success {
+        box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+    }
+    .colored-toast.swal2-icon-error {
+        box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+    }
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -223,6 +217,44 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Add SweetAlert toast configuration
+        const toastConfig = {
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            color: '#424242',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
+            }
+        };
+
+        // Success toast
+        @if(Session::has('success'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'success',
+                title: 'Success',
+                text: "{{ Session::get('success') }}",
+                background: '#28a745',
+                color: '#fff'
+            });
+        @endif
+
+        // Error toast
+        @if(Session::has('error'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'error',
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                background: '#dc3545',
+                color: '#fff'
+            });
+        @endif
 
         // Initialize Select2 for all select elements
         $('select').select2({

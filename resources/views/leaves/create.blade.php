@@ -15,20 +15,6 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                    @if ($message = Session::get('success'))
-                            <div class="alert alert-success">{{ $message }}</div>
-                        @endif
-                        @if (count($errors) > 0)
-                            <div class="alert alert-danger">
-                                <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
                         <form action="{{ route('leaves.store') }}" method="POST">
                             @csrf
                             <div class="row">
@@ -238,8 +224,57 @@
                 }
             });
             @endif
+
+            // Common toast configuration
+            const toastConfig = {
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end',
+                background: '#fff',
+                color: '#424242',
+                iconColor: 'white',
+                customClass: {
+                    popup: 'colored-toast'
+                }
+            };
+
+            // Success toast
+            @if(Session::has('success'))
+                Swal.fire({
+                    ...toastConfig,
+                    icon: 'success',
+                    title: 'Success',
+                    text: "{{ Session::get('success') }}",
+                    background: '#28a745',
+                    color: '#fff'
+                });
+            @endif
+
+            // Error toast for validation errors
+            @if(count($errors) > 0)
+                Swal.fire({
+                    ...toastConfig,
+                    icon: 'error',
+                    title: 'Error',
+                    text: "There were some problems with your input",
+                    background: '#dc3545',
+                    color: '#fff'
+                });
+            @endif
         });
     </script>
+
+    <style>
+        /* Toast styles */
+        .colored-toast.swal2-icon-success {
+            box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+        }
+        .colored-toast.swal2-icon-error {
+            box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+        }
+    </style>
 @stop
 <script>
     // document.getElementById('employee_id').addEventListener('change', function() {

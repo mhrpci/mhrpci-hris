@@ -74,6 +74,16 @@ class PayrollController extends Controller
                 }
 
                 $this->payrollService->calculatePayroll($employee->id, $start_date, $end_date);
+
+                // Send email notification to employee
+                if ($employee->email_address) {
+                    \Mail::to($employee->email_address)->send(new \App\Mail\PayrollAvailable([
+                        'employee_name' => $employee->first_name . ' ' . $employee->last_name,
+                        'start_date' => Carbon::parse($start_date)->format('F d, Y'),
+                        'end_date' => Carbon::parse($end_date)->format('F d, Y')
+                    ]));
+                }
+
                 $successCount++;
             } catch (\Exception $e) {
                 \Log::error("Failed to calculate payroll for employee ID {$employee->id}: " . $e->getMessage());

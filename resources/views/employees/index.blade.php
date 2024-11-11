@@ -2,21 +2,6 @@
 
 @section('content')
     <br>
-    <div class="toast-container position-fixed p-3" style="z-index: 9999; right: 0; bottom: 0;">
-        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
-            <div class="toast-header bg-primary text-white">
-                <strong class="mr-auto">Notification</strong>
-                <small>Just now</small>
-                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="toast-body bg-light text-dark">
-                Filter applied successfully!
-            </div>
-        </div>
-    </div>
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -324,6 +309,7 @@
                                 <option value="">Select Status</option>
                                 <option value="Active">Active</option>
                                 <option value="Resigned">Resigned</option>
+                                <option value="Terminated">Terminated</option>
                             </select>
                         </div>
                     </div>
@@ -411,14 +397,75 @@
         ]
     });
 
-    // Target only the import form
+    // Enhanced showToast function with green background and white text
+    function showToast(message) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#28a745', // Green background
+            color: '#ffffff',      // White text
+            customClass: {
+                popup: 'colored-toast',
+                title: 'toast-title',
+                timerProgressBar: 'toast-progress'
+            },
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        Toast.fire({
+            icon: 'success',
+            iconColor: '#ffffff', // White icon
+            title: message,
+            padding: '10px 20px'
+        });
+    }
+
+    // Enhanced success alert
+    function showSuccessAlert(message) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: message,
+            timer: 3000,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'alert-popup',
+                title: 'alert-title',
+                content: 'alert-content'
+            },
+            backdrop: `rgba(0,0,0,0.4)`
+        });
+    }
+
+    // Enhanced error alert
+    function showErrorAlert(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: message,
+            timer: 3000,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'alert-popup',
+                title: 'alert-title',
+                content: 'alert-content'
+            },
+            backdrop: `rgba(0,0,0,0.4)`
+        });
+    }
+
+    // Import form submission with enhanced alerts
     $('#importModal form').on('submit', function(e) {
         e.preventDefault();
-
         let form = this;
         let progressBar = $('#progressBar');
         progressBar.css('width', '0%');
-
         let formData = new FormData(form);
 
         $.ajax({
@@ -438,25 +485,24 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                alert('Import successful');
                 $('#importModal').modal('hide');
-                // Optionally refresh the page or update the table
-                location.reload();
+                showSuccessAlert('Import completed successfully');
+                setTimeout(() => location.reload(), 2000);
             },
             error: function(data) {
-                alert('Import failed');
+                showErrorAlert('Import failed. Please try again.');
             }
         });
     });
 
-    // Function to show toast notification
-    function showToast(message) {
-        $('#toast .toast-body').text(message);
-        $('#toast').toast({
-            autohide: true,
-            delay: 3000
-        }).toast('show');
-    }
+    // Session alerts
+    @if(Session::has('success'))
+        showSuccessAlert("{{ Session::get('success') }}");
+    @endif
+
+    @if(Session::has('error'))
+        showErrorAlert("{{ Session::get('error') }}");
+    @endif
 
     // Status Filter
     $('#statusForm').on('submit', function (e) {

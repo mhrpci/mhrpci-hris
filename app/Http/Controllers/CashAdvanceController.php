@@ -30,7 +30,12 @@ class CashAdvanceController extends Controller
             $employees = Employee::where('email_address', auth()->user()->email)
                 ->where('date_hired', '<=', $oneYearAgo)
                 ->get();
-        } else {
+        }
+        // Check if user is Super Admin - they can create for anyone without date restriction
+        elseif (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Admin')) {
+            $employees = Employee::all();
+        }
+        else {
             // For other roles, get all employees who are eligible
             $employees = Employee::where('date_hired', '<=', $oneYearAgo)->get();
         }

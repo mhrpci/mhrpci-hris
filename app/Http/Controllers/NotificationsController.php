@@ -162,17 +162,16 @@ class NotificationsController extends Controller
         try {
             $batch = [];
             $newNotifications = $this->getNewNotifications();
-
-            // Filter out already sent notifications
             $newNotifications = $this->filterAlreadySentNotifications($newNotifications);
 
             if (empty($newNotifications)) {
                 return;
             }
 
+            // Enhanced real-time notification handling
             $subscriptions = PushSubscription::where('active', true)
-                ->select(['endpoint', 'p256dh_key', 'auth_token'])
-                ->chunk(100, function($subscriptions) use (&$batch, $newNotifications) {
+                ->select(['endpoint', 'p256dh_key', 'auth_token', 'user_id'])
+                ->chunk(50, function($subscriptions) use (&$batch, $newNotifications) {
                     foreach ($subscriptions as $subscription) {
                         $sub = Subscription::create([
                             'endpoint' => $subscription->endpoint,
@@ -182,21 +181,25 @@ class NotificationsController extends Controller
                             ]
                         ]);
 
-                        // Process each new notification
+                        // Enhanced payload for each notification
                         foreach ($newNotifications as $notification) {
                             $payload = json_encode([
                                 'title' => $notification['title'],
                                 'body' => $notification['text'],
-                                'icon' => '/favicon.ico',
-                                'badge' => '/favicon.ico',
-                                'timestamp' => time(),
+                                'icon' => config('app.url') . '/favicon.ico',
+                                'badge' => config('app.url') . '/favicon.ico',
+                                'timestamp' => now()->timestamp,
                                 'requireInteraction' => true,
-                                'vibrate' => [200, 100, 200],
+                                'vibrate' => [100, 50, 100],
                                 'data' => [
                                     'type' => $notification['type'],
                                     'details' => $notification['details'] ?? null,
-                                    'time' => now()->toIso8601String()
-                                ]
+                                    'time' => now()->toIso8601String(),
+                                    'url' => $this->getNotificationUrl($notification),
+                                    'priority' => $this->getNotificationPriority($notification),
+                                    'user_id' => $subscription->user_id
+                                ],
+                                'actions' => $this->getNotificationActions($notification)
                             ]);
 
                             $batch[] = [
@@ -208,44 +211,104 @@ class NotificationsController extends Controller
                     }
                 });
 
-            // Process notifications in batches
-            foreach (array_chunk($batch, 50) as $batchItems) {
-                foreach ($batchItems as $item) {
-                    $this->webPush->queueNotification(
-                        $item['subscription'],
-                        $item['payload']
-                    );
-                }
-
-                // Send batch and handle results
-                $reports = $this->webPush->flush();
-
-                // If successful, mark notifications as sent
-                if ($this->handlePushReports($reports)) {
-                    foreach ($batchItems as $item) {
-                        $this->markNotificationAsSent($item['notification']);
-                    }
-                }
+            // Process notifications in smaller batches for better performance
+            foreach (array_chunk($batch, 25) as $batchItems) {
+                $this->processBatchNotifications($batchItems);
             }
 
-            // Broadcast through Laravel's broadcasting system
-            broadcast(new NewNotification([
+            // Enhanced real-time broadcasting
+            $broadcastData = [
                 'label' => $this->countTotalNotifications(),
                 'label_color' => 'danger',
                 'icon_color' => 'dark',
                 'dropdown' => $this->generateDropdownHtml(),
-            ]))->toOthers();
+                'timestamp' => now()->toIso8601String(),
+                'sound' => 'notification.mp3'
+            ];
+
+            broadcast(new NewNotification($broadcastData))->toOthers();
 
         } catch (\Exception $e) {
             Log::error('Error broadcasting notifications: ' . $e->getMessage(), [
                 'user_id' => Auth::id(),
                 'trace' => $e->getTraceAsString()
             ]);
-
-            // Don't throw the exception - allow the application to continue
-            // but log it for monitoring
             report($e);
+        }
+    }
 
+    // New helper methods for enhanced notifications
+    private function getNotificationUrl($notification)
+    {
+        $urls = [
+            'birthday' => '/employees',
+            'post' => '/posts',
+            'holiday' => '/holidays',
+            'leave_request' => '/leaves',
+            'task' => '/tasks',
+            'job_application' => '/careers',
+            'cash_advance' => '/cash-advances'
+        ];
+
+        return config('app.url') . ($urls[$notification['type']] ?? '/dashboard');
+    }
+
+    private function getNotificationPriority($notification)
+    {
+        $priorities = [
+            'task' => 'high',
+            'leave_request' => 'high',
+            'cash_advance' => 'high',
+            'birthday' => 'normal',
+            'post' => 'normal',
+            'holiday' => 'normal',
+            'job_application' => 'normal'
+        ];
+
+        return $priorities[$notification['type']] ?? 'normal';
+    }
+
+    private function getNotificationActions($notification)
+    {
+        $actions = [];
+
+        switch ($notification['type']) {
+            case 'task':
+                $actions[] = ['action' => 'view', 'title' => 'View Task'];
+                $actions[] = ['action' => 'complete', 'title' => 'Mark Complete'];
+                break;
+            case 'leave_request':
+                $actions[] = ['action' => 'approve', 'title' => 'Approve'];
+                $actions[] = ['action' => 'reject', 'title' => 'Reject'];
+                break;
+            default:
+                $actions[] = ['action' => 'view', 'title' => 'View'];
+        }
+
+        return $actions;
+    }
+
+    private function processBatchNotifications($batchItems)
+    {
+        foreach ($batchItems as $item) {
+            $this->webPush->queueNotification(
+                $item['subscription'],
+                $item['payload']
+            );
+        }
+
+        $reports = $this->webPush->flush();
+
+        if ($this->handlePushReports($reports)) {
+            foreach ($batchItems as $item) {
+                $this->markNotificationAsSent($item['notification']);
+
+                // Log successful notification delivery
+                Log::info('Notification sent successfully', [
+                    'type' => $item['notification']['type'],
+                    'timestamp' => now()->toIso8601String()
+                ]);
+            }
         }
     }
 
