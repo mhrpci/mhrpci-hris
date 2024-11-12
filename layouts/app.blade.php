@@ -133,3 +133,111 @@
         padding: 0 !important;
     }
 </style>
+
+<!-- Add these in the head section -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
+<script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+
+<!-- Add this before closing body tag -->
+<script>
+    function initTour() {
+        const tour = new Shepherd.Tour({
+            defaultStepOptions: {
+                cancelIcon: {
+                    enabled: true
+                },
+                classes: 'shepherd-theme-custom',
+                scrollTo: true
+            }
+        });
+
+        // Add steps based on data attributes in your blade files
+        document.querySelectorAll('[data-tour]').forEach(element => {
+            const tourData = JSON.parse(element.dataset.tour);
+            tour.addStep({
+                text: tourData.text,
+                attachTo: {
+                    element: element,
+                    on: tourData.position || 'bottom'
+                },
+                buttons: [
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+        });
+
+        // Start the tour
+        tour.start();
+    }
+
+    // You can trigger the tour with a button or automatically
+    // document.addEventListener('DOMContentLoaded', initTour);
+</script>
+
+    .shepherd-element {
+        background: var(--background-color, #ffffff) !important;
+        color: var(--text-color, #333333) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .shepherd-element {
+            --background-color: #2d3748;
+            --text-color: #ffffff;
+        }
+    }
+
+    .shepherd-button {
+        background: #4299e1 !important;
+        color: white !important;
+        border-radius: 4px !important;
+        padding: 8px 12px !important;
+    }
+
+    .shepherd-button:hover {
+        background: #3182ce !important;
+    }
+</style>
+
+<!-- Add this before closing body tag -->
+<script>
+    function initTour() {
+        const tour = new Shepherd.Tour({
+            defaultStepOptions: {
+                cancelIcon: {
+                    enabled: true
+                },
+                classes: 'shepherd-theme-custom',
+                scrollTo: true
+            }
+        });
+
+        // Add steps based on data attributes in your blade files
+        document.querySelectorAll('[data-tour]').forEach(element => {
+            const tourData = JSON.parse(element.dataset.tour);
+            tour.addStep({
+                text: tourData.text,
+                attachTo: {
+                    element: element,
+                    on: tourData.position || 'bottom'
+                },
+                buttons: [
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+        });
+
+        // Start the tour
+        tour.start();
+    }
+
+    // You can trigger the tour with a button or automatically
+    // document.addEventListener('DOMContentLoaded', initTour);
+</script>

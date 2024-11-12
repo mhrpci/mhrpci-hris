@@ -32,9 +32,7 @@
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#yearModal">Year</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#statusModal">Status</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a>
-                                    @if(auth()->user()->hasAnyRole(['Super Admin', 'Admin', 'Finance']))
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
-                                    @endif
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
                                 </div>
                             </div>
                         </div>
@@ -129,9 +127,11 @@
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
                                                     @if($employee->employee_status !== 'Resigned')
-                                                        @can('employee-edit')
+                                                            @if ($employee->rank !== 'Rank File' && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin')))
+                                                                <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                                            @elseif ($employee->rank === 'Rank File' && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('HR Compliance')))
                                                             <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                                        @endcan
+                                                            @endif
                                                         @can('user-create')
                                                             <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
                                                             @csrf
@@ -144,7 +144,7 @@
                                                             </form>
                                                         @endcan
                                                         <button class="dropdown-item" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</button>
-                                                        @canany(['super-admin', 'admin'])
+                                                        @canany(['super-admin', 'admin', 'hrcompliance'])
                                                                 <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">
                                                                     @csrf
                                                                     @method('PATCH')
@@ -163,26 +163,110 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                            <!-- Additional Details Modal -->
+                                            <!-- Enhanced Leave Balance Modal -->
                                         <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-primary text-white">
-                                                        <h5 class="modal-title" id="additionalDetailsModalLabel">Leave Balance</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <h5 class="modal-title" id="additionalDetailsModalLabel">
+                                                            <i class="fas fa-calendar-check"></i> Employee Leave Balance
+                                                        </h5>
+                                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="col-md-12">
-                                                            <div class="card border-secondary mb-3">
-                                                                <div class="card-body">
-                                                                    <p><strong>Sick Leave:</strong> {{$employee->sick_leave}} Hours - is equivalent - {{($employee->sick_leave) / 24}} Day</p>
-                                                                    <p><strong>Vacation Leave:</strong> {{$employee->vacation_leave}} Hours - is equivalent - {{($employee->vacation_leave) / 24}} Day</p>
-                                                                    <p><strong>Emergency Leave:</strong> {{$employee->emergency_leave}} Hours - is equivalent - {{($employee->emergency_leave) / 24}} Day</p>
+                                                        <div class="employee-info mb-3">
+                                                            <h6 class="font-weight-bold">{{ $employee->last_name }} {{ $employee->first_name }}</h6>
+                                                            <small class="text-muted">{{ $employee->company_id }} - {{ $employee->position->name }}</small>
+                                                        </div>
+                                                        <div class="row">
+                                                            <!-- Sick Leave Card -->
+                                                            <div class="col-md-12 mb-3">
+                                                                <div class="card border-left-danger h-100 py-2">
+                                                                    <div class="card-body">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <div class="col mr-2">
+                                                                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                                                    Sick Leave Balance</div>
+                                                                                <div class="row no-gutters align-items-center">
+                                                                                    <div class="col-auto">
+                                                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                                                            {{ number_format($employee->sick_leave, 2) }} Hours
+                                                                                        </div>
+                                                                                        <small class="text-muted">
+                                                                                            Equivalent to {{ number_format($employee->sick_leave / 24, 2) }} Days
+                                                                                        </small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-auto">
+                                                                                <i class="fas fa-hospital text-gray-300 fa-2x"></i>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Vacation Leave Card -->
+                                                            <div class="col-md-12 mb-3">
+                                                                <div class="card border-left-primary h-100 py-2">
+                                                                    <div class="card-body">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <div class="col mr-2">
+                                                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                                    Vacation Leave Balance</div>
+                                                                                <div class="row no-gutters align-items-center">
+                                                                                    <div class="col-auto">
+                                                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                                                            {{ number_format($employee->vacation_leave, 2) }} Hours
+                                                                                        </div>
+                                                                                        <small class="text-muted">
+                                                                                            Equivalent to {{ number_format($employee->vacation_leave / 24, 2) }} Days
+                                                                                        </small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-auto">
+                                                                                <i class="fas fa-umbrella-beach text-gray-300 fa-2x"></i>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Emergency Leave Card -->
+                                                            <div class="col-md-12">
+                                                                <div class="card border-left-warning h-100 py-2">
+                                                                    <div class="card-body">
+                                                                        <div class="row no-gutters align-items-center">
+                                                                            <div class="col mr-2">
+                                                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                                                    Emergency Leave Balance</div>
+                                                                                <div class="row no-gutters align-items-center">
+                                                                                    <div class="col-auto">
+                                                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                                                            {{ number_format($employee->emergency_leave, 2) }} Hours
+                                                                                        </div>
+                                                                                        <small class="text-muted">
+                                                                                            Equivalent to {{ number_format($employee->emergency_leave / 24, 2) }} Days
+                                                                                        </small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-auto">
+                                                                                <i class="fas fa-exclamation-circle text-gray-300 fa-2x"></i>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                            <i class="fas fa-times"></i> Close
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>

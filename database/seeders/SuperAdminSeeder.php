@@ -36,7 +36,7 @@ class SuperAdminSeeder extends Seeder
             'email' => 'admin@administrator.com',
             'bio' => 'Admin',
             'password' => Hash::make('Letmein@2024'),
-            'profile_image' => 'profile_images/IXd0wu98U3pcXpQY5DN5vlbns8VAcGFEys9pFpdt.png',
+            'profile_image' => '',
         ]);
         $admin->assignRole('Admin');
 
@@ -49,7 +49,7 @@ class SuperAdminSeeder extends Seeder
             'email' => 'finance@head.com',
             'bio' => 'HR Compliance',
             'password' => Hash::make('Finance@2024'),
-            'profile_image' => 'profile_images/Xc6zeykiblGemJME7XQ89GkS88QAl89IN00CRd4p.png',
+            'profile_image' => '',
         ]);
         $finance->assignRole('Finance');
 
@@ -62,7 +62,7 @@ class SuperAdminSeeder extends Seeder
             'email' => 'hr@compliance.com',
             'bio' => 'HR Compliance',
             'password' => Hash::make('HrCompliance@2024'),
-            'profile_image' => 'profile_images/XS2ujV6rEFPG6dwoSS5ITDo8cBuXGkOHI97FaasF.png',
+            'profile_image' => '',
         ]);
         $hrcompliance->assignRole('HR  Compliance');
 
@@ -75,7 +75,7 @@ class SuperAdminSeeder extends Seeder
             'email' => 'hr@comben.com',
             'bio' => 'HR ComBen',
             'password' => Hash::make('HrComben@2024'),
-            'profile_image' => 'profile_images/1o5JGmFUqymf6PRajUs8DW3Eesh9cICirLgbArwV.png',
+            'profile_image' => '',
         ]);
         $hrcomben->assignRole('HR ComBen');
 
@@ -89,7 +89,7 @@ class SuperAdminSeeder extends Seeder
            'email' => 'it@staff.inventory',
            'bio' => 'IT Inventory',
            'password' => Hash::make('Edssa#081021'),
-           'profile_image' => 'profile_images/TR74WnsnJvyAYhuATgshTm4jysLNzwZba4OP3u7R.png',
+           'profile_image' => '',
        ]);
        $it->assignRole('IT Staff');
 
@@ -102,7 +102,7 @@ class SuperAdminSeeder extends Seeder
         'email' => 'hr@policy.com',
         'bio' => 'HR Policy',
         'password' => Hash::make('HrPolicy@2024'),
-        'profile_image' => 'profile_images/WSR2ZQQHWrmIwwZ9DeeFC2XxcGd9HhPoEl52hE4A.png',
+        'profile_image' => '',
     ]);
     $hrpolicy->assignRole('HR Policy');
 
@@ -115,7 +115,7 @@ class SuperAdminSeeder extends Seeder
         'email' => 'hr@hiring.com',
         'bio' => 'HR Hiring',
         'password' => Hash::make('HrHiring@2024'),
-        'profile_image' => 'profile_images/lPdE7GIKbJ165tDe5z17nqvmEV1iYZW4tDAzUaMd.png',
+        'profile_image' => '',
     ]);
     $hrhiring->assignRole('HR Hiring');
     }

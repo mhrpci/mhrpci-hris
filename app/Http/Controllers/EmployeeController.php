@@ -53,7 +53,7 @@ public function index()
         $employees = Employee::all();
     } else {
         // If not Super Admin, only get employees with Rank File rank
-        $employees = Employee::where('rank', 'Rank File')->get();
+        $employees = Employee::all();
     }
 
     // Determine employment status for each employee

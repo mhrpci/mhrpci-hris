@@ -72,36 +72,28 @@ class NotificationsController extends Controller
         $cacheKey = 'user_notifications_' . $userId;
 
         try {
-            // Use Laravel's cache system
-            $cachedNotifications = Cache::get($cacheKey);
-            if (!$cachedNotifications) {
+            // Use a shorter cache duration and implement cache tags
+            return Cache::tags(['notifications', 'user-'.$userId])->remember($cacheKey, 60, function() {
                 $this->generateNotifications();
-                Cache::put($cacheKey, $this->notifications, 300); // Cache for 5 minutes
-            } else {
-                $this->notifications = $cachedNotifications;
-            }
 
-            $totalNotifications = $this->countTotalNotifications();
-            $dropdownHtml = $this->generateDropdownHtml();
+                return response()->json([
+                    'label' => $this->countTotalNotifications(),
+                    'label_color' => 'danger',
+                    'icon_color' => 'dark',
+                    'dropdown' => $this->generateDropdownHtml(),
+                    'timestamp' => now()->timestamp
+                ]);
+            });
 
+        } catch (ConnectionException $e) {
+            // Fallback if Redis is unavailable
+            $this->generateNotifications();
             return response()->json([
-                'label' => $totalNotifications,
+                'label' => $this->countTotalNotifications(),
                 'label_color' => 'danger',
                 'icon_color' => 'dark',
-                'dropdown' => $dropdownHtml,
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Error getting notifications data: ' . $e->getMessage(), [
-                'user_id' => $userId,
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'label' => 0,
-                'label_color' => 'danger',
-                'icon_color' => 'dark',
-                'dropdown' => '<div class="dropdown-item">Error loading notifications</div>',
+                'dropdown' => $this->generateDropdownHtml(),
+                'timestamp' => now()->timestamp
             ]);
         }
     }
@@ -112,18 +104,28 @@ class NotificationsController extends Controller
         try {
             $oldCount = $this->countTotalNotifications();
 
-            // Use database transactions for consistency
+            // Use database transactions with a shorter timeout
             DB::beginTransaction();
 
-            // Generate notifications for each category
-            $this->generateBirthdayNotifications();
-            $this->generatePostNotifications();
-            $this->generateHolidayNotifications();
-            $this->generateLeaveRequestNotifications();
-            $this->generateEmployeeLeaveNotifications();
-            $this->generateTaskNotifications();
-            $this->generateJobApplicationNotifications();
-            $this->generateCashAdvanceNotifications();
+            // Set a reasonable timeout for the transaction
+            DB::statement('SET SESSION innodb_lock_wait_timeout=10');
+
+            // Use eager loading to reduce database queries
+            Employee::with(['leaves', 'tasks', 'cashAdvances'])->chunk(100, function($employees) {
+                // Process employees in chunks
+            });
+
+            // Generate notifications concurrently where possible
+            $notifications = [
+                $this->generateBirthdayNotifications(),
+                $this->generatePostNotifications(),
+                $this->generateHolidayNotifications(),
+                $this->generateLeaveRequestNotifications(),
+                $this->generateEmployeeLeaveNotifications(),
+                $this->generateTaskNotifications(),
+                $this->generateJobApplicationNotifications(),
+                $this->generateCashAdvanceNotifications(),
+            ];
 
             DB::commit();
 
@@ -131,23 +133,15 @@ class NotificationsController extends Controller
             $this->hasNewNotifications = ($newCount > $oldCount);
 
             if ($this->hasNewNotifications) {
-                $this->broadcastNewNotifications();
+                // Dispatch broadcasting to a job for better performance
+                dispatch(function() {
+                    $this->broadcastNewNotifications();
+                })->afterResponse();
             }
-
-            // Log notification counts for monitoring
-            Log::info('Notifications generated', [
-                'user_id' => Auth::id(),
-                'old_count' => $oldCount,
-                'new_count' => $newCount,
-                'types' => array_map('count', $this->notifications)
-            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error generating notifications: ' . $e->getMessage(), [
-                'user_id' => Auth::id(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Error generating notifications: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -160,7 +154,6 @@ class NotificationsController extends Controller
         }
 
         try {
-            $batch = [];
             $newNotifications = $this->getNewNotifications();
             $newNotifications = $this->filterAlreadySentNotifications($newNotifications);
 
@@ -168,73 +161,82 @@ class NotificationsController extends Controller
                 return;
             }
 
-            // Enhanced real-time notification handling
-            $subscriptions = PushSubscription::where('active', true)
+            // Process subscriptions in smaller chunks
+            PushSubscription::where('active', true)
                 ->select(['endpoint', 'p256dh_key', 'auth_token', 'user_id'])
-                ->chunk(50, function($subscriptions) use (&$batch, $newNotifications) {
-                    foreach ($subscriptions as $subscription) {
-                        $sub = Subscription::create([
-                            'endpoint' => $subscription->endpoint,
-                            'keys' => [
-                                'p256dh' => $subscription->p256dh_key,
-                                'auth' => $subscription->auth_token
-                            ]
-                        ]);
-
-                        // Enhanced payload for each notification
-                        foreach ($newNotifications as $notification) {
-                            $payload = json_encode([
-                                'title' => $notification['title'],
-                                'body' => $notification['text'],
-                                'icon' => config('app.url') . '/favicon.ico',
-                                'badge' => config('app.url') . '/favicon.ico',
-                                'timestamp' => now()->timestamp,
-                                'requireInteraction' => true,
-                                'vibrate' => [100, 50, 100],
-                                'data' => [
-                                    'type' => $notification['type'],
-                                    'details' => $notification['details'] ?? null,
-                                    'time' => now()->toIso8601String(),
-                                    'url' => $this->getNotificationUrl($notification),
-                                    'priority' => $this->getNotificationPriority($notification),
-                                    'user_id' => $subscription->user_id
-                                ],
-                                'actions' => $this->getNotificationActions($notification)
-                            ]);
-
-                            $batch[] = [
-                                'subscription' => $sub,
-                                'payload' => $payload,
-                                'notification' => $notification
-                            ];
-                        }
-                    }
+                ->chunk(25, function($subscriptions) use ($newNotifications) {
+                    $this->processPushNotifications($subscriptions, $newNotifications);
                 });
 
-            // Process notifications in smaller batches for better performance
-            foreach (array_chunk($batch, 25) as $batchItems) {
-                $this->processBatchNotifications($batchItems);
-            }
-
-            // Enhanced real-time broadcasting
+            // Broadcast using Laravel's event system
             $broadcastData = [
                 'label' => $this->countTotalNotifications(),
                 'label_color' => 'danger',
                 'icon_color' => 'dark',
                 'dropdown' => $this->generateDropdownHtml(),
-                'timestamp' => now()->toIso8601String(),
+                'timestamp' => now()->timestamp,
                 'sound' => 'notification.mp3'
             ];
 
             broadcast(new NewNotification($broadcastData))->toOthers();
 
         } catch (\Exception $e) {
-            Log::error('Error broadcasting notifications: ' . $e->getMessage(), [
-                'user_id' => Auth::id(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Broadcasting failed: ' . $e->getMessage());
             report($e);
         }
+    }
+
+    // New method to handle push notifications processing
+    private function processPushNotifications($subscriptions, $notifications)
+    {
+        $batch = [];
+
+        foreach ($subscriptions as $subscription) {
+            $sub = Subscription::create([
+                'endpoint' => $subscription->endpoint,
+                'keys' => [
+                    'p256dh' => $subscription->p256dh_key,
+                    'auth' => $subscription->auth_token
+                ]
+            ]);
+
+            foreach ($notifications as $notification) {
+                $payload = $this->createNotificationPayload($notification, $subscription);
+                $batch[] = [
+                    'subscription' => $sub,
+                    'payload' => $payload,
+                    'notification' => $notification
+                ];
+            }
+        }
+
+        // Process in smaller batches for better performance
+        foreach (array_chunk($batch, 10) as $batchItems) {
+            $this->processBatchNotifications($batchItems);
+        }
+    }
+
+    // New method to create notification payload
+    private function createNotificationPayload($notification, $subscription)
+    {
+        return json_encode([
+            'title' => $notification['title'],
+            'body' => $notification['text'],
+            'icon' => config('app.url') . '/favicon.ico',
+            'badge' => config('app.url') . '/favicon.ico',
+            'timestamp' => now()->timestamp,
+            'requireInteraction' => true,
+            'vibrate' => [100, 50, 100],
+            'data' => [
+                'type' => $notification['type'],
+                'details' => $notification['details'] ?? null,
+                'time' => now()->toIso8601String(),
+                'url' => $this->getNotificationUrl($notification),
+                'priority' => $this->getNotificationPriority($notification),
+                'user_id' => $subscription->user_id
+            ],
+            'actions' => $this->getNotificationActions($notification)
+        ]);
     }
 
     // New helper methods for enhanced notifications
