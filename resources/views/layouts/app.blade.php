@@ -621,7 +621,7 @@
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
-                                <a href="/profile" class="btn btn-default btn-flat">Profile</a>
+                                <a href="/profile/details" class="btn btn-default btn-flat">Profile</a>
                                 <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                                     @csrf
                                     <button type="submit" class="btn btn-default btn-flat float-right">Sign out</button>

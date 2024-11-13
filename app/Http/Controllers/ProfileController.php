@@ -140,4 +140,10 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+
+    public function details()
+    {
+        $user = Auth::user();
+        return view('profile.details', compact('user'));
+    }
 }

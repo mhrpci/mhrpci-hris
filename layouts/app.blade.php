@@ -241,3 +241,78 @@
     // You can trigger the tour with a button or automatically
     // document.addEventListener('DOMContentLoaded', initTour);
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let lastTimestamp = Date.now() / 1000;
+
+    // Initialize Pusher
+    const pusher = new Pusher('{{ config('broadcasting.connections.pusher.key') }}', {
+        cluster: '{{ config('broadcasting.connections.pusher.options.cluster') }}',
+        encrypted: true
+    });
+
+    // Subscribe to notifications channel
+    const channel = pusher.subscribe('notifications');
+
+    // Listen for new notifications
+    channel.bind('App\\Events\\NewNotification', function(data) {
+        updateNotificationsUI(data);
+        playNotificationSound();
+        showToast('You have new notifications');
+    });
+
+    // Poll for updates every 30 seconds
+    setInterval(checkForUpdates, 30000);
+
+    function checkForUpdates() {
+        fetch('/notifications/check-updates', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ lastTimestamp: lastTimestamp })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.hasUpdates) {
+                updateNotificationsUI(data.notifications);
+                lastTimestamp = data.notifications.timestamp;
+                playNotificationSound();
+                showToast('You have new notifications');
+            }
+        })
+        .catch(error => console.error('Error checking for updates:', error));
+    }
+
+    function updateNotificationsUI(notifications) {
+        // Update notification count
+        const countElement = document.querySelector('#notification-count');
+        if (countElement) {
+            countElement.textContent = notifications.label;
+        }
+
+        // Update dropdown content
+        const dropdownElement = document.querySelector('#notification-dropdown');
+        if (dropdownElement) {
+            dropdownElement.innerHTML = notifications.dropdown;
+        }
+    }
+
+    function playNotificationSound() {
+        const audio = new Audio('/path/to/notification.mp3');
+        audio.play().catch(e => console.log('Sound play failed:', e));
+    }
+
+    function showToast(message) {
+        // If you're using toastr
+        if (typeof toastr !== 'undefined') {
+            toastr.info(message);
+        } else {
+            // Fallback to alert
+            console.log(message);
+        }
+    }
+});
+</script>

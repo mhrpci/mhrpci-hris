@@ -73,52 +73,6 @@
                                             {{ $employee->rank }}
                                         </td>
                                         <td>{{ $employee->date_hired ? \Carbon\Carbon::parse($employee->date_hired)->format('F j, Y') : '' }}</td>
-                                        {{-- <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}">
-                                                        <i class="fas fa-eye"></i>&nbsp;Preview
-                                                    </a>
-
-                                                    @if($employee->employee_status !== 'Resigned')
-                                                    @can('employee-edit')
-                                                    <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}">
-                                                        <i class="fas fa-edit"></i>&nbsp;Edit
-                                                    </a>
-                                                    @endcan
-                                                @can('user-create')
-                                                <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</butt>
-                                                    </form>
-                                                    @elsecan('hrcompliance')
-                                                        <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-user-plus"></i>&nbsp;Create User</>
-                                                        </form>
-                                                    @endcan
-                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>&nbsp;Leave Balance</a>
-                                                            @canany(['super-admin', 'admin'])
-                                                                <form action="{{ route('employees.disable', $employee->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('PATCH')
-                                                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure that this employee is resigned?')"><i class="fas fa-sign-out-alt"></i>&nbsp;Resigned</butto>
-                                                                </form>
-                                                            @endcanany
-                                                        @endif
-                                                        @can('super-admin')
-                                                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this employee?')"><i class="fas fa-trash"></i>&nbsp;Delete</button>
-                                                        </form>
-                                                    @endcan
-                                                    </div>
-                                                </div>
-                                            </td> --}}
                                             <td>
                                                 <div class="dropdown">
                                                     <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -127,9 +81,9 @@
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <a class="dropdown-item" href="{{ route('employees.show', $employee->slug) }}"><i class="fas fa-eye"></i>&nbsp;Preview</a>
                                                     @if($employee->employee_status !== 'Resigned')
-                                                            @if ($employee->rank !== 'Rank File' && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin')))
+                                                            @if ($employee->rank !== 'Rank File' && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Finance')))
                                                                 <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                                            @elseif ($employee->rank === 'Rank File' && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('HR Compliance')))
+                                                            @elseif ($employee->rank === 'Rank File' && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('HR Compliance') || Auth::user()->hasRole('Finance')))
                                                             <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
                                                             @endif
                                                         @can('user-create')

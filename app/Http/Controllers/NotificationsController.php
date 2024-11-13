@@ -11,13 +11,11 @@ use App\Models\Task; // Assuming you have a Task model
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Events\NewNotification;
-use Illuminate\Support\Facades\Cache;
 use App\Models\CashAdvance;
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use App\Models\PushSubscription;
 use Illuminate\Support\Facades\Log;
-use Predis\Connection\ConnectionException;
 use Illuminate\Support\Facades\DB;
 
 class NotificationsController extends Controller
@@ -68,34 +66,15 @@ class NotificationsController extends Controller
     // Method to fetch notifications data
     public function getNotificationsData(Request $request)
     {
-        $userId = Auth::id();
-        $cacheKey = 'user_notifications_' . $userId;
+        $this->generateNotifications();
 
-        try {
-            // Use a shorter cache duration and implement cache tags
-            return Cache::tags(['notifications', 'user-'.$userId])->remember($cacheKey, 60, function() {
-                $this->generateNotifications();
-
-                return response()->json([
-                    'label' => $this->countTotalNotifications(),
-                    'label_color' => 'danger',
-                    'icon_color' => 'dark',
-                    'dropdown' => $this->generateDropdownHtml(),
-                    'timestamp' => now()->timestamp
-                ]);
-            });
-
-        } catch (ConnectionException $e) {
-            // Fallback if Redis is unavailable
-            $this->generateNotifications();
-            return response()->json([
-                'label' => $this->countTotalNotifications(),
-                'label_color' => 'danger',
-                'icon_color' => 'dark',
-                'dropdown' => $this->generateDropdownHtml(),
-                'timestamp' => now()->timestamp
-            ]);
-        }
+        return response()->json([
+            'label' => $this->countTotalNotifications(),
+            'label_color' => 'danger',
+            'icon_color' => 'dark',
+            'dropdown' => $this->generateDropdownHtml(),
+            'timestamp' => now()->timestamp
+        ]);
     }
 
     // Generate all types of notifications
@@ -189,25 +168,45 @@ class NotificationsController extends Controller
     // New method to handle push notifications processing
     private function processPushNotifications($subscriptions, $notifications)
     {
+        if (!$this->webPush) {
+            Log::warning('WebPush not initialized. Skipping push notifications.');
+            return;
+        }
+
         $batch = [];
 
         foreach ($subscriptions as $subscription) {
-            $sub = Subscription::create([
-                'endpoint' => $subscription->endpoint,
-                'keys' => [
-                    'p256dh' => $subscription->p256dh_key,
-                    'auth' => $subscription->auth_token
-                ]
-            ]);
+            try {
+                $sub = Subscription::create([
+                    'endpoint' => $subscription->endpoint,
+                    'keys' => [
+                        'p256dh' => $subscription->p256dh_key,
+                        'auth' => $subscription->auth_token
+                    ]
+                ]);
 
-            foreach ($notifications as $notification) {
-                $payload = $this->createNotificationPayload($notification, $subscription);
-                $batch[] = [
-                    'subscription' => $sub,
-                    'payload' => $payload,
-                    'notification' => $notification
-                ];
+                foreach ($notifications as $notification) {
+                    $payload = $this->createNotificationPayload($notification, $subscription);
+                    if ($payload) {
+                        $batch[] = [
+                            'subscription' => $sub,
+                            'payload' => $payload,
+                            'notification' => $notification
+                        ];
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to create subscription', [
+                    'error' => $e->getMessage(),
+                    'endpoint' => $subscription->endpoint
+                ]);
+                continue;
             }
+        }
+
+        if (empty($batch)) {
+            Log::info('No notifications to send in batch');
+            return;
         }
 
         // Process in smaller batches for better performance
@@ -292,25 +291,36 @@ class NotificationsController extends Controller
 
     private function processBatchNotifications($batchItems)
     {
-        foreach ($batchItems as $item) {
-            $this->webPush->queueNotification(
-                $item['subscription'],
-                $item['payload']
-            );
+        if (!$this->webPush) {
+            return;
         }
 
-        $reports = $this->webPush->flush();
-
-        if ($this->handlePushReports($reports)) {
+        try {
             foreach ($batchItems as $item) {
-                $this->markNotificationAsSent($item['notification']);
-
-                // Log successful notification delivery
-                Log::info('Notification sent successfully', [
-                    'type' => $item['notification']['type'],
-                    'timestamp' => now()->toIso8601String()
-                ]);
+                $this->webPush->queueNotification(
+                    $item['subscription'],
+                    $item['payload'],
+                    ['timeout' => 5] // Add timeout to prevent hanging
+                );
             }
+
+            $reports = $this->webPush->flush();
+            $success = $this->handlePushReports($reports);
+
+            if ($success) {
+                foreach ($batchItems as $item) {
+                    $this->markNotificationAsSent($item['notification']);
+                    Log::info('Push notification sent successfully', [
+                        'type' => $item['notification']['type'],
+                        'endpoint' => $item['subscription']->getEndpoint()
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to process batch notifications', [
+                'error' => $e->getMessage(),
+                'batch_size' => count($batchItems)
+            ]);
         }
     }
 
@@ -762,21 +772,34 @@ class NotificationsController extends Controller
     {
         $success = true;
         foreach ($reports as $report) {
+            $endpoint = $report->getRequest()->getUri()->__toString();
+
             if (!$report->isSuccess()) {
-                $endpoint = $report->getRequest()->getUri()->__toString();
+                $reason = $report->getReason();
 
-                // Update subscription status asynchronously
-                dispatch(function () use ($endpoint) {
-                    PushSubscription::where('endpoint', $endpoint)
-                        ->update(['active' => false]);
-                })->afterResponse();
+                // Handle expired subscriptions
+                if (strpos($reason, 'expired') !== false || strpos($reason, '410') !== false) {
+                    dispatch(function () use ($endpoint) {
+                        PushSubscription::where('endpoint', $endpoint)->delete();
+                    })->afterResponse();
 
-                Log::warning('Push notification failed', [
-                    'endpoint' => $endpoint,
-                    'reason' => $report->getReason()
-                ]);
+                    Log::info('Removed expired subscription', ['endpoint' => $endpoint]);
+                } else {
+                    // Mark subscription as inactive for other failures
+                    dispatch(function () use ($endpoint) {
+                        PushSubscription::where('endpoint', $endpoint)
+                            ->update(['active' => false]);
+                    })->afterResponse();
+
+                    Log::warning('Push notification failed', [
+                        'endpoint' => $endpoint,
+                        'reason' => $reason
+                    ]);
+                }
 
                 $success = false;
+            } else {
+                Log::info('Push notification succeeded', ['endpoint' => $endpoint]);
             }
         }
         return $success;

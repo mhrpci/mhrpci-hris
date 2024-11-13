@@ -822,7 +822,7 @@
                             @foreach ($todayPosts as $post)
                                 <li class="mb-3">
                                     <h6 class="mb-1">
-                                        <a href="#" data-toggle="modal" data-target="#todayPostModal{{ $post->id }}" class="text-decoration-none text-primary">
+                                        <a href="{{ route('posts.showById', $post->id) }}" class="text-decoration-none text-primary">
                                             {{ $post->title }}
                                         </a>
                                     </h6>
