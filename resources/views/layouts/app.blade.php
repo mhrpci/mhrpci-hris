@@ -693,7 +693,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @canany(['admin', 'super-admin', 'hrcomben'])
+                            @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
                                     <a href="{{ url('/attendances') }}" class="nav-link {{ Request::is('attendances*') || Request::is('timesheets*') ? 'active' : '' }}">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
