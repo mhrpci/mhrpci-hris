@@ -35,7 +35,6 @@ use App\Http\Controllers\PhilhealthController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\SubsidiaryController;
 use App\Http\Controllers\SssLoanController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\Auth\LoginController;
@@ -45,7 +44,6 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
 use App\Http\Controllers\ControllerAnalysisController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,7 +88,6 @@ Route::get('/maximumhandlingresources', [WelcomeController::class, 'showMax'])->
 Route::get('/lusciousco', [WelcomeController::class, 'showLus'])->name('lus');
 Route::get('/mhrconstruction', [WelcomeController::class, 'showMhrcons'])->name('mhrcons');
 Route::get('/rcgpharmaceutical', [WelcomeController::class, 'showRcg'])->name('rcg');
-Route::get('/subsidiaries/{subsidiary}/details', [WelcomeController::class, 'showDetails'])->name('subsidiaries_details');
 
    // Terms and Privacy routes
    Route::get('/terms', function () {
@@ -132,7 +129,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('pagibig', PagibigController::class);
     Route::resource('accountabilities', AccountabilityController::class);
     Route::resource('policies', PolicyController::class);
-    Route::resource('subsidiaries', SubsidiaryController::class);
     Route::resource('loan_sss', SssLoanController::class);
     Route::resource('cash_advances', CashAdvanceController::class);
     Route::resource('loan_pagibig', PagibigLoanController::class);
