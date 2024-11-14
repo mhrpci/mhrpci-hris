@@ -886,14 +886,6 @@
                                     </a>
                                 </li>
                                 @endcanany
-                                @can('super-admin', 'it-staff')
-                                <li class="nav-item">
-                                    <a href="{{ url('/subsidiaries') }}" class="nav-link {{ Request::is('subsidiaries*') ? 'active' : '' }}">
-                                        <i class="fas fa-industry nav-icon"></i>
-                                        <p>Subsidiaries</p>
-                                    </a>
-                                </li>
-                                @endcan
                                 @canany(['admin', 'super-admin', 'hrpolicy'])
                                 <li class="nav-item">
                                     <a href="{{ route('policies.index') }}" class="nav-link {{ Request::is('policies*') ? 'active' : '' }}">

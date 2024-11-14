@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -32,9 +32,9 @@ WORKDIR /var/www
 # Copy composer files and install dependencies
 COPY composer.json composer.lock ./
 RUN if [ "$APP_ENV" = "production" ]; then \
-        composer install --no-dev --no-scripts --no-autoloader; \
+        composer install --no-dev --no-scripts --no-autoloader --prefer-dist; \
     else \
-        composer install --no-scripts --no-autoloader; \
+        composer install --no-scripts --no-autoloader --prefer-dist; \
     fi
 
 # Copy the rest of the application code
