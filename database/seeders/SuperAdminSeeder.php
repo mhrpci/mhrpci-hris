@@ -23,7 +23,7 @@ class SuperAdminSeeder extends Seeder
             'email' => 'system@admin.com',
             'bio' => 'Sys Admin',
             'password' => Hash::make('mhrpci-admin@2024'),
-            'profile_image' => 'profile_images/NaAuqoGCFtWNmvR67s0eHu64bkqiqDgMeus7kv8S.jpg',
+            'profile_image' => '',
         ]);
         $superAdmin->assignRole('Super Admin');
 
