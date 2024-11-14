@@ -143,12 +143,11 @@
 <script>
     $(document).ready(function () {
         var table = $('#attendances-table').DataTable({
-            "order": [[1, "desc"]], // Sort by date column (index 1) in descending order
+            "order": [[1, "desc"]],
             "columnDefs": [
                 {
-                    "targets": 1, // Target the date column (index 1)
+                    "targets": 1,
                     "render": function(data, type, row) {
-                        // Convert the date to YYYY-MM-DD format for sorting and filtering
                         var date = new Date(data);
                         return date.getFullYear() + '-' +
                                ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
@@ -164,9 +163,34 @@
             var startDate = $('#start_date').val();
             var endDate = $('#end_date').val();
 
+            // Validate dates
+            if (!startDate && !endDate) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Please select at least one date',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                return;
+            }
+
+            if (startDate && endDate && startDate > endDate) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Start date cannot be later than end date',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                return;
+            }
+
             // Custom filtering function
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                var date = data[1]; // Use index 1 for the date column (now in YYYY-MM-DD format)
+                var date = data[1];
 
                 if (
                     (startDate === "" && endDate === "") ||
@@ -179,7 +203,17 @@
                 return false;
             });
 
-            table.draw(); // Redraw the table with the filter applied
+            table.draw();
+
+            // Show success toast
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Date filter applied successfully',
+                showConfirmButton: false,
+                timer: 2000
+            });
 
             // Clear the custom filter
             $.fn.dataTable.ext.search.pop();

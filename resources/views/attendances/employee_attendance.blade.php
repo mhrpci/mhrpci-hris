@@ -56,6 +56,7 @@
                                 <th>Time In</th>
                                 <th>Time Out</th>
                                 <th>Remarks</th>
+                                <th>Late Time</th>
                                 <th>Hours Worked</th>
                             </tr>
                         </thead>
@@ -68,6 +69,7 @@
                                     <td>{{ \Carbon\Carbon::parse($attendance->time_in)->format('h:i A') }}</td>
                                     <td>{{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('h:i A') : '--:-- --' }}</td>
                                     <td>{{ $attendance->remarks }}</td>
+                                    <td>{{ $attendance->calculateLateTime() }}</td>
                                     <td>{{ $attendance->hours_worked }}</td>
                                 </tr>
                             @endforeach
@@ -94,7 +96,8 @@ function printAttendance() {
             timeIn: cells[1].innerText,
             timeOut: cells[2].innerText,
             remarks: cells[3].innerText,
-            hoursWorked: cells[4].innerText
+            lateTime: cells[4].innerText,
+            hoursWorked: cells[5].innerText
         };
     });
 
@@ -206,6 +209,7 @@ function printAttendance() {
                                 <th>Time In</th>
                                 <th>Time Out</th>
                                 <th>Remarks</th>
+                                <th>Late Time</th>
                                 <th>Hours Worked</th>
                             </tr>
                         </thead>
@@ -216,6 +220,7 @@ function printAttendance() {
                                     <td>${row.timeIn}</td>
                                     <td>${row.timeOut}</td>
                                     <td>${row.remarks}</td>
+                                    <td>${row.lateTime}</td>
                                     <td>${row.hoursWorked}</td>
                                 </tr>
                             `).join('')}
@@ -264,6 +269,31 @@ function printAttendance() {
             var startDate = $('#start_date').val();
             var endDate = $('#end_date').val();
 
+            // Validate dates
+            if (!startDate && !endDate) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Please select at least one date',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                return;
+            }
+
+            if (startDate && endDate && startDate > endDate) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Start date cannot be later than end date',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                return;
+            }
+
             // Custom filtering function
             $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                 var date = data[0]; // Use index 0 for the date column (now in YYYY-MM-DD format)
@@ -280,6 +310,16 @@ function printAttendance() {
             });
 
             table.draw(); // Redraw the table with the filter applied
+
+            // Show success toast
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Date filter applied successfully',
+                showConfirmButton: false,
+                timer: 2000
+            });
 
             // Clear the custom filter
             $.fn.dataTable.ext.search.pop();

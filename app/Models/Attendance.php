@@ -302,4 +302,20 @@ class Attendance extends Model
         // Format the duration as HH:MM:SS
         return $overtimeDuration->format('%H:%I:%S');
     }
+
+    public function calculateLateTime(): string
+    {
+        if ($this->remarks === 'Late' && $this->time_in) {
+            $shiftStart = Carbon::parse('08:00:00');
+            $timeIn = Carbon::parse($this->time_in);
+
+            // Calculate the difference in minutes
+            $lateDuration = $timeIn->diffInMinutes($shiftStart);
+
+            // Format the late duration as HH:MM
+            return sprintf('%02d:%02d', floor($lateDuration / 60), $lateDuration % 60);
+        }
+
+        return '00:00'; // No late time if not late
+    }
 }
