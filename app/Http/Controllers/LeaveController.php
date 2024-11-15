@@ -138,23 +138,26 @@ class LeaveController extends Controller
             $this->markAsRead($leave);
 
             // Calculate leave balances up to this leave ID
-            $vacationTaken = $leave->employee->leaves()
+            $vacationTaken = min(5, $leave->employee->leaves()
                 ->where('type_id', 1)
                 ->where('id', '<=', $id)
                 ->where('status', 'approved')
-                ->count();
+                ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
+                ->value('days_taken') ?? 0);
 
-            $sickTaken = $leave->employee->leaves()
+            $sickTaken = min(7, $leave->employee->leaves()
                 ->where('type_id', 2)
                 ->where('id', '<=', $id)
                 ->where('status', 'approved')
-                ->count();
+                ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
+                ->value('days_taken') ?? 0);
 
-            $emergencyTaken = $leave->employee->leaves()
+            $emergencyTaken = min(3, $leave->employee->leaves()
                 ->where('type_id', 3)
                 ->where('id', '<=', $id)
                 ->where('status', 'approved')
-                ->count();
+                ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
+                ->value('days_taken') ?? 0);
 
             // Calculate balances
             $vacationBalance = 5 - $vacationTaken;
@@ -414,22 +417,68 @@ class LeaveController extends Controller
          */
         public function myLeaveDetail($id)
         {
-            $leave = Leave::findOrFail($id);
-            $user = Auth::user();
-            $this->markAsView($leave);
-            $employee = Employee::where('email_address', $user->email)->first();
+            try {
+                $user = Auth::user();
+                $employee = Employee::where('email_address', $user->email)->first();
 
-            // Check if the employee exists and matches the leave ID
-            if ($employee) {
-                $leave = Leave::where('id', $id)->where('employee_id', $employee->id)->first();
-
-                if ($leave) {
-                    return view('leaves.my_leave_detail', compact('leave'));
-                } else {
-                    return redirect()->route('leaves.index')->with('error', 'Leave not found or does not belong to you.');
+                if (!$employee) {
+                    return redirect()->route('leaves.my_leave_sheet')
+                        ->with('error', 'Employee not found.');
                 }
-            } else {
-                return redirect()->route('leaves.index')->with('error', 'Employee not found.');
+
+                // Find the leave and ensure it belongs to the authenticated employee
+                $leave = Leave::where('id', $id)
+                    ->where('employee_id', $employee->id)
+                    ->firstOrFail();
+
+                // Mark the leave as read
+                $this->markAsRead($leave);
+
+                // Calculate leave balances up to this leave ID
+                $vacationTaken = min(5, $leave->employee->leaves()
+                    ->where('type_id', 1)
+                    ->where('id', '<=', $id)
+                    ->where('status', 'approved')
+                    ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
+                    ->value('days_taken') ?? 0);
+
+                $sickTaken = min(7, $leave->employee->leaves()
+                    ->where('type_id', 2)
+                    ->where('id', '<=', $id)
+                    ->where('status', 'approved')
+                    ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
+                    ->value('days_taken') ?? 0);
+
+                $emergencyTaken = min(3, $leave->employee->leaves()
+                    ->where('type_id', 3)
+                    ->where('id', '<=', $id)
+                    ->where('status', 'approved')
+                    ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
+                    ->value('days_taken') ?? 0);
+
+                // Calculate balances
+                $vacationBalance = 5 - $vacationTaken;
+                $sickBalance = 7 - $sickTaken;
+                $emergencyBalance = 3 - $emergencyTaken;
+
+                $diff = $leave->diffdays;
+                $approvedByUser = $leave->approvedByUser;
+
+                return view('leaves.my_leave_detail', compact(
+                    'leave',
+                    'approvedByUser',
+                    'diff',
+                    'vacationTaken',
+                    'sickTaken',
+                    'emergencyTaken',
+                    'vacationBalance',
+                    'sickBalance',
+                    'emergencyBalance'
+                ));
+            } catch (\Exception $e) {
+                \Log::error('Leave Detail Error: ' . $e->getMessage());
+                \Log::error($e->getTraceAsString());
+                throw $e;
             }
         }
 

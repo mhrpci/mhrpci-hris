@@ -58,11 +58,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($leave->is_view)
+                                        {{-- @if($leave->is_view)
                                             <span class="text-white badge badge-success">Viewed</span> <!-- Updated design for viewed -->
-                                        @else
+                                        @else --}}
                                             <a href="{{ route('leaves.myLeaveDetail', $leave->id) }}" class="btn btn-info btn-sm">Preview</a> <!-- Original button -->
-                                        @endif
+                                        {{-- @endif --}}
                                     </td>
                                 </tr>
                                 @endforeach

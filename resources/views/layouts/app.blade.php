@@ -412,8 +412,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <meta name="vapid-key" content="{{ config('webpush.public_key') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+    <meta name="user-id" content="{{ Auth::id() }}">
+    <meta name="app-env" content="{{ config('app.env') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/css/shepherd.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/js/shepherd.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -715,8 +717,8 @@
                         </li>
                     @endcanany
                     @canany(['admin', 'super-admin', 'hrcomben','normal-employee'])
-                        <li class="nav-item has-treeview {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Request::is('leaves*', 'leaves-employees*', 'my-leave-sheet*') ? 'active' : '' }}">
+                    <li class="nav-item has-treeview {{ Request::is('leaves*') || Request::is('leaves-employees*') || Request::is('my-leave-sheet*') || Request::is('my-leave-detail*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ Request::is('leaves*') || Request::is('leaves-employees*') || Request::is('my-leave-sheet*') || Request::is('my-leave-detail*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-calendar"></i>
                                 <p>
                                     Leave Management
@@ -726,7 +728,7 @@
                             <ul class="nav nav-treeview">
                                 @canany(['admin', 'super-admin', 'hrcomben'])
                                 <li class="nav-item">
-                                    <a href="{{ url('/leaves') }}" class="nav-link {{ Request::is('leaves') || Request::is('leaves/[0-9]*') ? 'active' : '' }}">
+                                    <a href="{{ url('/leaves') }}" class="nav-link {{ Request::is('leaves') || request()->routeIs('leaves.show*') ? 'active' : '' }}">
                                         <i class="fas fa-list nav-icon"></i>
                                         <p>Leave List</p>
                                     </a>
@@ -753,7 +755,7 @@
                                 @auth
                                     @if(auth()->user()->hasRole('Employee'))
                                 <li class="nav-item">
-                                    <a href="{{ url('/my-leave-sheet') }}" class="nav-link {{ Request::is('my-leave-sheet*') ? 'active' : '' }}">
+                                    <a href="{{ route('leaves.my_leave_sheet') }}" class="nav-link {{ request()->routeIs('leaves.my_leave_sheet') || request()->routeIs('leaves.myLeaveDetail') ? 'active' : '' }}">
                                         <i class="fas fa-print nav-icon"></i>
                                         <p>My Leaves</p>
                                     </a>
@@ -993,35 +995,134 @@
 
     <script>
         $(document).ready(function() {
-            function updateNotifications() {
-                $.ajax({
-                    url: '{{ route("notifications.get") }}',
-                    method: 'GET',
-                    success: function(response) {
+            let lastNotificationTimestamp = 0;
+            let notificationSound = new Audio('/sounds/notification.mp3');
+
+            // Enhanced notification update function
+            async function updateNotifications() {
+                try {
+                    const response = await $.ajax({
+                        url: '{{ route("notifications.get") }}',
+                        method: 'GET',
+                        headers: {
+                            'X-Socket-ID': window.Echo?.socketId()
+                        },
+                        data: {
+                            last_timestamp: lastNotificationTimestamp
+                        }
+                    });
+
+                    // Update only if there are new notifications
+                    if (response.timestamp > lastNotificationTimestamp) {
                         $('#notification-count').text(response.label);
                         $('#notification-header').text(response.label + ' Notifications');
                         $('#notification-list').html(response.dropdown);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error fetching notifications:", error);
+
+                        // Play sound and show desktop notification if enabled
+                        if (response.label > 0 && Notification.permission === 'granted') {
+                            notificationSound.play();
+                            showDesktopNotification(response);
+                        }
+
+                        lastNotificationTimestamp = response.timestamp;
                     }
+
+                    // Update notification badge color based on count
+                    updateNotificationBadge(response.label);
+
+                } catch (error) {
+                    console.error("Error fetching notifications:", error);
+                    // Implement exponential backoff for retries
+                    handleNotificationError();
+                }
+            }
+
+            // Add notification badge update function
+            function updateNotificationBadge(count) {
+                const badge = $('#notification-count');
+                if (count > 0) {
+                    badge.removeClass('bg-secondary').addClass('bg-danger');
+                } else {
+                    badge.removeClass('bg-danger').addClass('bg-secondary');
+                }
+            }
+
+            // Add desktop notification function
+            function showDesktopNotification(data) {
+                if (!("Notification" in window)) return;
+
+                const options = {
+                    icon: '/favicon.ico',
+                    badge: '/badge.png',
+                    vibrate: [100, 50, 100],
+                    tag: 'notification-update',
+                    renotify: true,
+                    requireInteraction: true
+                };
+
+                new Notification('New Notifications', {
+                    ...options,
+                    body: `You have ${data.label} new notification${data.label > 1 ? 's' : ''}`
                 });
             }
 
+            // Add error handling with exponential backoff
+            let retryCount = 0;
+            const maxRetries = 5;
+
+            function handleNotificationError() {
+                if (retryCount < maxRetries) {
+                    const backoffTime = Math.min(1000 * Math.pow(2, retryCount), 30000);
+                    retryCount++;
+
+                    setTimeout(() => {
+                        updateNotifications();
+                    }, backoffTime);
+                } else {
+                    console.error('Max retry attempts reached for notifications');
+                    // Show user-friendly error message
+                    showErrorToast('Unable to fetch notifications. Please refresh the page.');
+                }
+            }
+
+            // Initialize real-time updates with Laravel Echo
+            if (window.Echo) {
+                Echo.private(`App.Models.User.${$('meta[name="user-id"]').content}`)
+                    .notification((notification) => {
+                        updateNotifications();
+                    });
+            }
+
             // Update notifications every 60 seconds
-            setInterval(updateNotifications, 60000);
+            const updateInterval = setInterval(updateNotifications, 60000);
+
+            // Clear interval when page is hidden
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    clearInterval(updateInterval);
+                } else {
+                    updateNotifications();
+                    setInterval(updateNotifications, 60000);
+                }
+            });
 
             // Initial update
             updateNotifications();
 
-            // Handle notification click to show modal
+            // Enhanced notification modal handling
             $(document).on('click', '#notification-list a', function(e) {
                 e.preventDefault();
-                var title = $(this).data('title');
-                var details = $(this).data('details');
-                $('#notificationModalLabel').text(title);
-                $('#notificationModalBody').text(details);
-                $('#notificationModal').modal('show');
+                const title = $(this).data('title');
+                const details = $(this).data('details');
+                const route = $(this).attr('href');
+
+                if (route && route !== '#') {
+                    window.location.href = route;
+                } else {
+                    $('#notificationModalLabel').text(title);
+                    $('#notificationModalBody').html(details);
+                    $('#notificationModal').modal('show');
+                }
             });
 
             // Preloader
@@ -1315,6 +1416,7 @@
                 } catch (error) {
                     console.error('Error sending subscription to server:', error);
                 }
+
             }
 
             urlBase64ToUint8Array(base64String) {
@@ -1629,5 +1731,85 @@
     });
     </script>
 
+    <script>
+        $(document).ready(function() {
+            // Check for saved sidebar state
+            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+            // Apply saved state
+            if (sidebarCollapsed) {
+                $('body').addClass('sidebar-collapse');
+            }
+
+            // Listen for sidebar toggle events
+            $('[data-widget="pushmenu"]').on('click', function() {
+                // Save the new state (opposite of current state)
+                const isCollapsed = !$('body').hasClass('sidebar-collapse');
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+            });
+
+            // Remember expanded menu items
+            $('.nav-treeview').each(function() {
+                const menuId = $(this).closest('.has-treeview').index();
+                const isExpanded = localStorage.getItem(`menu_${menuId}`) === 'expanded';
+
+                if (isExpanded) {
+                    $(this).closest('.has-treeview').addClass('menu-open');
+                    $(this).css('display', 'block');
+                }
+            });
+
+            // Save menu item state when clicked
+            $('.has-treeview > .nav-link').on('click', function() {
+                const menuId = $(this).parent().index();
+                const willExpand = !$(this).parent().hasClass('menu-open');
+                localStorage.setItem(`menu_${menuId}`, willExpand ? 'expanded' : 'collapsed');
+            });
+        });
+    </script>
+
+    <script>
+    // Service Worker Registration
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        window.addEventListener('load', async () => {
+            try {
+                const registration = await navigator.serviceWorker.register('/service-worker.js', {
+                    scope: '/'
+                });
+
+                console.log('ServiceWorker registered with scope:', registration.scope);
+
+                // Check and update service worker
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateToast('New version available! Please refresh to update.');
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('ServiceWorker registration failed:', error);
+            }
+        });
+    }
+
+    function showUpdateToast(message) {
+        Swal.fire({
+            title: 'Update Available',
+            text: message,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Refresh Now',
+            cancelButtonText: 'Later'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    }
+    </script>
+
 </body>
 </html>
+

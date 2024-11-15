@@ -87,6 +87,7 @@
                                     </div>
                                 </div>
                                 <!-- Add signature for Employees -->
+                                <div class="d-none">
                                 @if(Auth::user()->hasRole('Employee'))
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -125,6 +126,7 @@
                                     </div>
                                 </div>
                                 @endif
+                                </div>
                             </div>
                          {{-- <!-- Add the following after the "Reason" textarea -->
                             <div class="row">

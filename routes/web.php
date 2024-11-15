@@ -293,6 +293,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/controller-analysis/pdf', [ControllerAnalysisController::class, 'downloadPdf'])->name('controller.analysis.pdf');
         Route::get('/controller-analysis/excel', [ControllerAnalysisController::class, 'downloadExcel'])->name('controller.analysis.excel');
         Route::get('/controller-analysis/word', [ControllerAnalysisController::class, 'downloadWord'])->name('controller.analysis.word');
+
     });
 
     Auth::routes();

@@ -22,17 +22,19 @@
 
         <!-- Right column with detailed information -->
         <div class="col-lg-9">
-            <div class="mb-4 d-flex justify-content-between align-items-center">
-                <div>
-                    <button class="btn btn-primary mr-2" onclick="showSection('personal')">Personal Info</button>
-                    <button class="btn btn-success mr-2" onclick="showSection('work')">Work Details</button>
-                    <button class="btn btn-info mr-2" onclick="showSection('education')">Education</button>
-                    <button class="btn btn-warning mr-2" onclick="showSection('address')">Address</button>
-                    <button class="btn btn-secondary mr-2" onclick="showSection('government')">Government IDs</button>
-                    <button class="btn btn-dark mr-2" onclick="showSection('signature')">Signature</button>
+            <div class="mb-4">
+                <div class="nav-buttons-wrapper overflow-auto">
+                    <div class="d-flex">
+                        <button class="btn btn-primary flex-shrink-0 mr-2 mb-2" onclick="showSection('personal')">Personal Info</button>
+                        <button class="btn btn-success flex-shrink-0 mr-2 mb-2" onclick="showSection('work')">Work Details</button>
+                        <button class="btn btn-info flex-shrink-0 mr-2 mb-2" onclick="showSection('education')">Education</button>
+                        <button class="btn btn-warning flex-shrink-0 mr-2 mb-2" onclick="showSection('address')">Address</button>
+                        <button class="btn btn-secondary flex-shrink-0 mr-2 mb-2" onclick="showSection('government')">Government IDs</button>
+                        <button class="btn btn-dark flex-shrink-0 mr-2 mb-2" onclick="showSection('signature')">Signature</button>
+                    </div>
                 </div>
                 @if(auth()->user()->email === $employee->email_address && !$employee->signature)
-                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#signatureModal">
+                    <button class="btn btn-outline-primary mt-2" data-toggle="modal" data-target="#signatureModal">
                         <i class="fas fa-signature mr-1"></i> Add Signature
                     </button>
                 @endif
@@ -215,6 +217,7 @@
     .card {
         border: none;
         border-radius: 10px;
+        margin-bottom: 1rem;
     }
     .card-header {
         border-top-left-radius: 10px;
@@ -265,6 +268,60 @@
         opacity: 1;
         transform: translateX(0);
     }
+
+    .nav-buttons-wrapper {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    }
+
+    .nav-buttons-wrapper::-webkit-scrollbar { /* WebKit */
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding: 10px;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        #signatureCanvas {
+            width: 100% !important;
+            height: 150px !important;
+        }
+
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+    }
+
+    /* Improve government IDs section responsiveness */
+    @media (max-width: 576px) {
+        #government .row > div {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    /* Improve profile image responsiveness */
+    @media (max-width: 992px) {
+        .rounded-circle {
+            width: 150px !important;
+            height: 150px !important;
+        }
+    }
 </style>
 @endpush
 
@@ -314,6 +371,15 @@
         canvas.addEventListener('touchstart', handleTouch);
         canvas.addEventListener('touchmove', handleTouch);
         canvas.addEventListener('touchend', stopDrawing);
+
+        // Add resize handler
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initial canvas setup
+        resizeCanvas();
+
+        // Show first section by default
+        showSection('personal');
     });
 
     function startDrawing(e) {
@@ -343,15 +409,26 @@
         e.preventDefault();
         const touch = e.touches[0];
         const rect = canvas.getBoundingClientRect();
-        const offsetX = touch.clientX - rect.left;
-        const offsetY = touch.clientY - rect.top;
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
 
-        const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
-            clientX: touch.clientX,
-            clientY: touch.clientY
-        });
+        const offsetX = (touch.clientX - rect.left) * scaleX;
+        const offsetY = (touch.clientY - rect.top) * scaleY;
 
-        canvas.dispatchEvent(mouseEvent);
+        if (e.type === 'touchstart') {
+            isDrawing = true;
+            [lastX, lastY] = [offsetX, offsetY];
+        } else if (e.type === 'touchmove' && isDrawing) {
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(offsetX, offsetY);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            [lastX, lastY] = [offsetX, offsetY];
+        }
     }
 
     function clearSignature() {
@@ -462,5 +539,21 @@
             saveButton.disabled = false;
         });
     }
+
+    // Make canvas responsive
+    function resizeCanvas() {
+        const canvas = document.getElementById('signatureCanvas');
+        if (canvas) {
+            const modalBody = canvas.parentElement;
+            canvas.width = modalBody.offsetWidth - 30; // Adjust for padding
+            canvas.height = window.innerWidth < 768 ? 150 : 200;
+            clearSignature(); // Clear canvas after resize
+        }
+    }
+
+    // Update modal events
+    $('#signatureModal').on('shown.bs.modal', function () {
+        resizeCanvas();
+    });
 </script>
 @endpush

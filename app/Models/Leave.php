@@ -94,19 +94,39 @@ class Leave extends Model
     public function getLeavePaymentStatus()
     {
         $employmentStatus = $this->employee->employment_status;
+        $leaveDays = $this->getDiffdaysAttribute();
+        $leaveType = $this->type;
 
-        if ($employmentStatus === 'REGULAR') {
-            return $this->payment_status === 'With Pay' ? 'With Pay' : 'Without Pay';
-        } elseif ($employmentStatus === 'PROBATIONARY' || $employmentStatus === 'TRAINEE') {
-            return $this->payment_status === 'Without Pay' ? 'Without Pay' : 'With Pay';
+        // First check if employee is REGULAR
+        if ($employmentStatus !== 'REGULAR') {
+            return 'Without Pay';
         }
 
-        return null; // In case of unexpected status
+        // Check available leave balance based on leave type
+        switch ($leaveType->name) {
+            case 'Sick Leave':
+                $availableBalance = $this->employee->sick_leave;
+                break;
+            case 'Vacation Leave':
+                $availableBalance = $this->employee->vacation_leave;
+                break;
+            case 'Emergency Leave':
+                $availableBalance = $this->employee->emergency_leave;
+                break;
+            default:
+                return 'Without Pay';
+        }
+
+        // Convert available balance from hours to days (assuming 8-hour workday)
+        $availableBalanceDays = $availableBalance / 8;
+
+        // If requested leave days are within available balance
+        return $leaveDays <= $availableBalanceDays ? 'With Pay' : 'Without Pay';
     }
 
     public function getDiffdaysAttribute()
     {
-        return Carbon::parse($this->date_from)->diffInDays(Carbon::parse($this->date_to)) + 1;
+        return Carbon::parse($this->date_from)->diffInDays(Carbon::parse($this->date_to));
     }
 
 }

@@ -12,10 +12,13 @@ return new class extends Migration
             $table->id();
             $table->string('notification_type');
             $table->string('notification_id');
+            $table->text('notification_text');
+            $table->json('notification_details')->nullable();
+            $table->string('environment')->default('production');
             $table->timestamps();
 
-            // Create a unique compound index
-            $table->unique(['notification_type', 'notification_id']);
+            // Create a unique compound index with a shorter custom name
+            $table->index(['notification_type', 'notification_id', 'created_at'], 'sent_notif_lookup_idx');
         });
     }
 

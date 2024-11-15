@@ -12,7 +12,7 @@
             @if(isset($allNotifications) && is_array($allNotifications))
                 <div class="row">
                     @foreach($allNotifications as $category => $notifications)
-                        @if(($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin'])) &&
+                        @if(($category !== 'leave_requests' || Auth::user()->hasRole(['Super Admin', 'Admin', 'Employee'])) &&
                             ($category !== 'job_applications' || Auth::user()->hasRole(['HR Hiring', 'Super Admin'])) &&
                             ($category !== 'leave_status' || Auth::user()->hasRole(['Employee'])) &&
                             ($category !== 'cash_advances' || Auth::user()->hasRole(['Super Admin', 'Admin', 'Employee'])))
@@ -52,10 +52,13 @@
                                                 <span class="text-dark">{{ $notifications[0]['text'] }}</span>
                                                 <small class="text-muted d-block">{{ $notifications[0]['time'] }}</small>
                                                 @if(isset($notifications[0]['details']))
-                                                    <small class="text-muted d-block">{{ $notifications[0]['details'] }}</small>
+                                                    <small class="text-muted d-block">{!! $notifications[0]['details'] !!}</small>
                                                 @endif
                                                 @if($category === 'posts' && !Auth::user()->hasRole(['Super Admin', 'Admin']) && isset($notifications[0]['id']))
                                                     <a href="{{ route('posts.showById', $notifications[0]['id']) }}" class="btn btn-outline-info btn-sm mt-1">View Post</a>
+                                                @endif
+                                                @if($category === 'leave_requests' && Auth::user()->hasRole('Employee') && isset($notifications[0]['route']))
+                                                    <a href="{{ $notifications[0]['route'] }}" class="btn btn-outline-primary btn-sm mt-1">View Leave Details</a>
                                                 @endif
                                             </li>
                                         </ul>
@@ -106,13 +109,16 @@
                                                                                 @if(isset($notification['details']))
                                                                                     <small class="text-muted d-block mt-1">
                                                                                         <i class="fas fa-info-circle mr-1"></i>
-                                                                                        {{ $notification['details'] }}
+                                                                                        {!! $notification['details'] !!}
                                                                                     </small>
                                                                                 @endif
+                                                                                @if($category === 'posts' && !Auth::user()->hasRole(['Super Admin', 'Admin']) && isset($notification['id']))
+                                                                                    <a href="{{ route('posts.showById', $notification['id']) }}" class="btn btn-outline-info btn-sm mt-1">View Post</a>
+                                                                                @endif
+                                                                                @if($category === 'leave_requests' && Auth::user()->hasRole('Employee') && isset($notification['route']))
+                                                                                    <a href="{{ $notification['route'] }}" class="btn btn-outline-primary btn-sm mt-1">View Leave Details</a>
+                                                                                @endif
                                                                             </div>
-                                                                            @if($category === 'posts' && !Auth::user()->hasRole(['Super Admin', 'Admin']) && isset($notification['id']))
-                                                                                <a href="{{ route('posts.showById', $notification['id']) }}" class="btn btn-outline-info btn-sm mt-1">View Post</a>
-                                                                            @endif
                                                                         </div>
                                                                     </div>
                                                                 @endforeach
@@ -129,12 +135,16 @@
                                     @if(Auth::user()->hasRole(['Super Admin', 'Admin']) ||
                                        (Auth::user()->hasRole(['HR Hiring','Super Admin', 'Admin']) && $category === 'job_applications') ||
                                        (Auth::user()->hasRole('Employee') && $category === 'tasks') ||
-                                       (Auth::user()->hasRole('Employee') && $category === 'leave_status'))
+                                       (Auth::user()->hasRole('Employee') && ($category === 'leave_status' || $category === 'leave_requests')))
                                         <div class="text-right mt-3">
                                             @if($category === 'birthdays')
                                                 <a href="{{ route('birthdays') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'leave_requests')
-                                                <a href="{{ route('leaves.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                                @if(Auth::user()->hasRole('Employee'))
+                                                    <a href="{{ route('leaves.my_leave_sheet') }}" class="btn btn-outline-primary btn-sm">View My Leaves</a>
+                                                @else
+                                                    <a href="{{ route('leaves.index') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                                @endif
                                             @elseif($category === 'leave_status')
                                                 <a href="{{ route('leaves.my_leave_sheet') }}" class="btn btn-outline-primary btn-sm">View Details</a>
                                             @elseif($category === 'job_applications')

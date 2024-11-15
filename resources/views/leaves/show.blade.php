@@ -191,8 +191,180 @@
         padding: 10px 20px;
         transition: background-color 0.3s;
     }
+
+    /* Add these responsive styles */
+    @media screen and (max-width: 1024px) {
+        .leave-form {
+            max-width: 95%;
+            padding: 15px;
+        }
+
+        .form-row {
+            gap: 30px;
+        }
+
+        .signature-section {
+            padding: 0 25px;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .leave-form {
+            padding: 10px;
+        }
+
+        .header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .logo {
+            margin-right: 0;
+            margin-bottom: 15px;
+        }
+
+        .title {
+            text-align: center;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .input-line {
+            width: 100%;
+            display: block;
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .signature-section {
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 0;
+        }
+
+        .signature-block {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        /* Modal responsiveness */
+        .modal-dialog {
+            margin: 10px;
+        }
+
+        .signature-pad {
+            width: 100%;
+            height: 150px;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .header {
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            width: 150px;
+        }
+
+        .title {
+            font-size: 20px;
+        }
+
+        .checkbox-group {
+            margin-left: 10px;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        .btn-responsive {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* Improve form readability on small screens */
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .checkbox-item {
+            margin: 8px 0;
+        }
+
+        .recommendation-section {
+            font-size: 14px;
+        }
+
+        .radio-group {
+            margin: 8px 0;
+        }
+    }
+
+    /* Print-specific styles */
+    @media print {
+        .leave-form {
+            max-width: 100%;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .form-row {
+            page-break-inside: avoid;
+        }
+
+        .signature-section {
+            page-break-inside: avoid;
+        }
+
+        table {
+            page-break-inside: avoid;
+        }
+    }
+
+    /* Utility classes for better mobile display */
+    .text-break-mobile {
+        word-break: break-word;
+    }
+
+    .d-flex-mobile {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    /* Button container responsiveness */
+    .button-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    @media screen and (max-width: 480px) {
+        .button-container {
+            flex-direction: column;
+        }
+    }
 </style>
-<div style="display: flex; justify-content: flex-end; gap: 10px;">
+<div class="button-container">
     <button type="button" class="btn btn-info btn-responsive" onclick="printLeaveForm()">
         <i class="fas fa-print"></i> Print
     </button>
@@ -321,8 +493,11 @@
     </div>
 
     <div class="checkbox-group" style="margin-top: 20px;">
-        <span class="checkbox-box" data-payment="With Pay" style="{{ $leave->payment_status === 'With Pay' ? 'background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" fill="%23000"/></svg>\'); background-position: center; background-repeat: no-repeat;' : '' }}"></span> With Pay
-        <span class="checkbox-box" data-payment="Without Pay" style="margin-left: 20px; {{ $leave->payment_status === 'Without Pay' ? 'background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" fill="%23000"/></svg>\'); background-position: center; background-repeat: no-repeat;' : '' }}"></span> Without Pay
+        @php
+            $paymentStatus = $leave->getLeavePaymentStatus();
+        @endphp
+        <span class="checkbox-box" data-payment="With Pay" style="{{ $paymentStatus === 'With Pay' ? 'background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" fill="%23000"/></svg>\'); background-position: center; background-repeat: no-repeat;' : '' }}"></span> With Pay
+        <span class="checkbox-box" data-payment="Without Pay" style="margin-left: 20px; {{ $paymentStatus === 'Without Pay' ? 'background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" fill="%23000"/></svg>\'); background-position: center; background-repeat: no-repeat;' : '' }}"></span> Without Pay
     </div>
 
     <div class="recommendation-section">

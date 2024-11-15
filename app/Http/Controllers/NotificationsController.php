@@ -734,38 +734,83 @@ class NotificationsController extends Controller
         return view('all-notifications', ['allNotifications' => $this->notifications]);
     }
 
-    private function filterAlreadySentNotifications($notifications)
-    {
-        return collect($notifications)->filter(function($notification) {
-            $notificationId = $this->generateNotificationId($notification);
-            return !DB::table('sent_notifications')
-                ->where('notification_type', $notification['type'])
-                ->where('notification_id', $notificationId)
-                ->exists();
-        })->all();
-    }
-
     private function generateNotificationId($notification)
     {
-        // Create a unique identifier based on the notification content
+        // Enhanced unique identifier creation
         $idComponents = [
             $notification['type'],
             $notification['text'],
             $notification['details'] ?? '',
-            // Add any other relevant fields that make the notification unique
+            date('Y-m-d'), // Add date component for daily notifications like birthdays
+            isset($notification['details']['id']) ? $notification['details']['id'] : '', // Include specific IDs if available
         ];
 
-        return md5(implode('|', $idComponents));
+        return hash('sha256', implode('|', $idComponents));
+    }
+
+    private function filterAlreadySentNotifications($notifications)
+    {
+        return collect($notifications)->filter(function($notification) {
+            $notificationId = $this->generateNotificationId($notification);
+
+            // Check both local and production databases
+            $exists = DB::table('sent_notifications')
+                ->where('notification_type', $notification['type'])
+                ->where('notification_id', $notificationId)
+                ->where('created_at', '>=', now()->subDays(7)) // Only check last 7 days
+                ->exists();
+
+            if (!$exists) {
+                // Log new notification for debugging
+                Log::info('New notification detected', [
+                    'type' => $notification['type'],
+                    'id' => $notificationId,
+                    'text' => $notification['text']
+                ]);
+            }
+
+            return !$exists;
+        })->all();
     }
 
     private function markNotificationAsSent($notification)
     {
-        DB::table('sent_notifications')->insert([
-            'notification_type' => $notification['type'],
-            'notification_id' => $this->generateNotificationId($notification),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        try {
+            $notificationId = $this->generateNotificationId($notification);
+
+            DB::table('sent_notifications')->insert([
+                'notification_type' => $notification['type'],
+                'notification_id' => $notificationId,
+                'notification_text' => $notification['text'],
+                'notification_details' => json_encode($notification['details'] ?? []),
+                'environment' => app()->environment(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            Log::info('Notification marked as sent', [
+                'type' => $notification['type'],
+                'id' => $notificationId
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to mark notification as sent', [
+                'error' => $e->getMessage(),
+                'type' => $notification['type']
+            ]);
+        }
+    }
+
+    // Add this new method to clean up old sent notifications
+    private function cleanupOldNotifications()
+    {
+        try {
+            // Remove notifications older than 30 days
+            DB::table('sent_notifications')
+                ->where('created_at', '<', now()->subDays(30))
+                ->delete();
+        } catch (\Exception $e) {
+            Log::error('Failed to cleanup old notifications: ' . $e->getMessage());
+        }
     }
 
     private function handlePushReports($reports)
