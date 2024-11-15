@@ -494,7 +494,10 @@
 
     <div class="checkbox-group" style="margin-top: 20px;">
         @php
-            $paymentStatus = $leave->getLeavePaymentStatus();
+            // Use the stored payment_status if leave is approved, otherwise calculate it
+            $paymentStatus = $leave->approved_by_signature
+                ? $leave->payment_status
+                : $leave->getLeavePaymentStatus();
         @endphp
         <span class="checkbox-box" data-payment="With Pay" style="{{ $paymentStatus === 'With Pay' ? 'background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" fill="%23000"/></svg>\'); background-position: center; background-repeat: no-repeat;' : '' }}"></span> With Pay
         <span class="checkbox-box" data-payment="Without Pay" style="margin-left: 20px; {{ $paymentStatus === 'Without Pay' ? 'background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" fill="%23000"/></svg>\'); background-position: center; background-repeat: no-repeat;' : '' }}"></span> Without Pay

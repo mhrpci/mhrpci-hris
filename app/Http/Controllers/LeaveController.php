@@ -138,26 +138,42 @@ class LeaveController extends Controller
             $this->markAsRead($leave);
 
             // Calculate leave balances up to this leave ID
-            $vacationTaken = min(5, $leave->employee->leaves()
+            $vacationTaken = $leave->employee->leaves()
                 ->where('type_id', 1)
                 ->where('id', '<=', $id)
                 ->where('status', 'approved')
                 ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                ->value('days_taken') ?? 0);
+                ->value('days_taken') ?? 0;
 
-            $sickTaken = min(7, $leave->employee->leaves()
+            $sickTaken = $leave->employee->leaves()
                 ->where('type_id', 2)
                 ->where('id', '<=', $id)
                 ->where('status', 'approved')
                 ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                ->value('days_taken') ?? 0);
+                ->value('days_taken') ?? 0;
 
-            $emergencyTaken = min(3, $leave->employee->leaves()
+            $emergencyTaken = $leave->employee->leaves()
                 ->where('type_id', 3)
                 ->where('id', '<=', $id)
                 ->where('status', 'approved')
                 ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                ->value('days_taken') ?? 0);
+                ->value('days_taken') ?? 0;
+
+            // Check if taken days are within limits and update payment status
+            if ($leave->employee->employment_status === 'REGULAR') {
+                $isWithinLimits = match($leave->type_id) {
+                    1 => ($vacationTaken + $leave->duration) <= $leave->employee->vacation_leave,
+                    2 => ($sickTaken + $leave->duration) <= $leave->employee->sick_leave,
+                    3 => ($emergencyTaken + $leave->duration) <= $leave->employee->emergency_leave,
+                    default => false
+                };
+
+                $leave->payment_status = $isWithinLimits ? 'With Pay' : 'Without Pay';
+                $leave->save();
+            } else {
+                $leave->payment_status = 'Without Pay';
+                $leave->save();
+            }
 
             // Calculate balances
             $vacationBalance = 5 - $vacationTaken;
@@ -418,43 +434,47 @@ class LeaveController extends Controller
         public function myLeaveDetail($id)
         {
             try {
-                $user = Auth::user();
-                $employee = Employee::where('email_address', $user->email)->first();
-
-                if (!$employee) {
-                    return redirect()->route('leaves.my_leave_sheet')
-                        ->with('error', 'Employee not found.');
-                }
-
-                // Find the leave and ensure it belongs to the authenticated employee
-                $leave = Leave::where('id', $id)
-                    ->where('employee_id', $employee->id)
-                    ->firstOrFail();
-
-                // Mark the leave as read
+                $leave = Leave::findOrFail($id);
+                $employees = Employee::all();
                 $this->markAsRead($leave);
 
                 // Calculate leave balances up to this leave ID
-                $vacationTaken = min(5, $leave->employee->leaves()
+                $vacationTaken = $leave->employee->leaves()
                     ->where('type_id', 1)
                     ->where('id', '<=', $id)
                     ->where('status', 'approved')
                     ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                    ->value('days_taken') ?? 0);
+                    ->value('days_taken') ?? 0;
 
-                $sickTaken = min(7, $leave->employee->leaves()
+                $sickTaken = $leave->employee->leaves()
                     ->where('type_id', 2)
                     ->where('id', '<=', $id)
                     ->where('status', 'approved')
                     ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                    ->value('days_taken') ?? 0);
+                    ->value('days_taken') ?? 0;
 
-                $emergencyTaken = min(3, $leave->employee->leaves()
+                $emergencyTaken = $leave->employee->leaves()
                     ->where('type_id', 3)
                     ->where('id', '<=', $id)
                     ->where('status', 'approved')
                     ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                    ->value('days_taken') ?? 0);
+                    ->value('days_taken') ?? 0;
+
+                // Check if taken days are within limits and update payment status
+                if ($leave->employee->employment_status === 'REGULAR') {
+                    $isWithinLimits = match($leave->type_id) {
+                        1 => ($vacationTaken + $leave->duration) <= $leave->employee->vacation_leave,
+                        2 => ($sickTaken + $leave->duration) <= $leave->employee->sick_leave,
+                        3 => ($emergencyTaken + $leave->duration) <= $leave->employee->emergency_leave,
+                        default => false
+                    };
+
+                    $leave->payment_status = $isWithinLimits ? 'With Pay' : 'Without Pay';
+                    $leave->save();
+                } else {
+                    $leave->payment_status = 'Without Pay';
+                    $leave->save();
+                }
 
                 // Calculate balances
                 $vacationBalance = 5 - $vacationTaken;
@@ -464,10 +484,11 @@ class LeaveController extends Controller
                 $diff = $leave->diffdays;
                 $approvedByUser = $leave->approvedByUser;
 
-                return view('leaves.my_leave_detail', compact(
+                return view('leaves.show', compact(
                     'leave',
                     'approvedByUser',
                     'diff',
+                    'employees',
                     'vacationTaken',
                     'sickTaken',
                     'emergencyTaken',
@@ -476,7 +497,7 @@ class LeaveController extends Controller
                     'emergencyBalance'
                 ));
             } catch (\Exception $e) {
-                \Log::error('Leave Detail Error: ' . $e->getMessage());
+                \Log::error('Leave Show Error: ' . $e->getMessage());
                 \Log::error($e->getTraceAsString());
                 throw $e;
             }
