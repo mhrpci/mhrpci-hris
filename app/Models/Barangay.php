@@ -22,7 +22,7 @@ class Barangay extends Model
     {
         return $this->belongsTo(City::class);
     }
-    
+
     public function employee(): HasMany
     {
         return $this->hasMany(Employee::class);

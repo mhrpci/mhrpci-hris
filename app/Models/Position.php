@@ -13,7 +13,7 @@ class Position extends Model
 {
     use HasFactory;
     use Loggable;
-    
+
     protected $fillable = [
         'department_id',
         'name',

@@ -10,8 +10,7 @@ use Illuminate\Support\Str;
 class Payroll extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
+  protected $fillable = [
         'employee_id',
         'start_date',
         'end_date',

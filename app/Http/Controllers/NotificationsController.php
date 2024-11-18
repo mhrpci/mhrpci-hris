@@ -17,6 +17,8 @@ use Minishlink\WebPush\Subscription;
 use App\Models\PushSubscription;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationEmail; // We'll create this
 
 class NotificationsController extends Controller
 {
@@ -33,6 +35,7 @@ class NotificationsController extends Controller
 
     private $webPush;
     private $hasNewNotifications = false;
+    private $emailNotifications = [];
 
     public function __construct()
     {
@@ -112,9 +115,10 @@ class NotificationsController extends Controller
             $this->hasNewNotifications = ($newCount > $oldCount);
 
             if ($this->hasNewNotifications) {
-                // Dispatch broadcasting to a job for better performance
+                // Dispatch both push and email notifications
                 dispatch(function() {
                     $this->broadcastNewNotifications();
+                    $this->sendEmailNotifications();
                 })->afterResponse();
             }
 
@@ -518,6 +522,28 @@ class NotificationsController extends Controller
                     'details' => "Task details: {$task->description}" // Add details
                 ];
                 $this->notifications['tasks'][] = $notification;
+
+                // Email notification
+                $this->emailNotifications[] = [
+                    'email' => $employee->email_address,
+                    'type' => 'task',
+                    'subject' => 'New Task Assignment',
+                    'title' => "New Task: {$task->title}",
+                    'content' => [
+                        'greeting' => "Hello {$employee->first_name},",
+                        'message' => "You have been assigned a new task:",
+                        'details' => [
+                            'Task' => $task->title,
+                            'Description' => $task->description,
+                            'Due Date' => $task->due_date ? Carbon::parse($task->due_date)->format('M d, Y') : 'Not specified',
+                            'Priority' => ucfirst($task->priority ?? 'normal'),
+                        ],
+                        'action' => [
+                            'text' => 'View Task',
+                            'url' => config('app.url') . "/tasks/{$task->id}"
+                        ]
+                    ]
+                ];
             }
         }
 
@@ -848,6 +874,34 @@ class NotificationsController extends Controller
             }
         }
         return $success;
+    }
+
+    // Add this after broadcastNewNotifications() method
+    private function sendEmailNotifications()
+    {
+        if (empty($this->emailNotifications)) {
+            return;
+        }
+
+        try {
+            // Group notifications by user email
+            $groupedNotifications = collect($this->emailNotifications)
+                ->groupBy('email');
+
+            foreach ($groupedNotifications as $email => $notifications) {
+                // Dispatch email job to prevent blocking
+                dispatch(function() use ($email, $notifications) {
+                    Mail::to($email)->send(new NotificationEmail($notifications));
+                })->afterResponse();
+
+                Log::info('Email notifications queued', [
+                    'email' => $email,
+                    'count' => count($notifications)
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to send email notifications: ' . $e->getMessage());
+        }
     }
 }
 

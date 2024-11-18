@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class LeaveLog extends Model
 {
     use HasFactory;
-
     protected $fillable = ['leave_id', 'user_id', 'action'];
 
     public function leave()

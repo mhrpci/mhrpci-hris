@@ -19,7 +19,14 @@ class NotificationEmail extends Mailable
 
     public function build()
     {
-        return $this->view('emails.notifications')
-            ->with(['notifications' => $this->notifications]);
+        $firstNotification = $this->notifications->first();
+
+        return $this->subject($firstNotification['subject'])
+                    ->markdown('emails.notification')
+                    ->with([
+                        'notifications' => $this->notifications,
+                        'appName' => config('app.name'),
+                        'appUrl' => config('app.url')
+                    ]);
     }
 }
