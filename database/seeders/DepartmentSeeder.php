@@ -16,11 +16,10 @@ class DepartmentSeeder extends Seeder
     {
         DB::table('departments')->insert([
             ['name' => 'Human Resources Department', 'head_name' => 'Nikkei Tingson'],
-            ['name' => 'Finance and Accounting Department', 'head_name' => 'Cheryl Gasang'],
-            ['name' => 'Admin Department', 'head_name' => 'Janet R. Refugio'],
+            ['name' => 'Finance and Accounting Department', 'head_name' => 'Janet R. Refugio'],
+            ['name' => 'ADMIN DEPARTMENT', 'head_name' => 'Michael Amus H. Refugio'],
             ['name' => 'MHRHCI', 'head_name' => 'Alayza Cali-at'],
-            ['name' => 'IT Department', 'head_name' => 'Michael H. Refugio'],
-            ['name' => 'Warehouse Department', 'head_name' => 'Michael H. Refugio'],
+            ['name' => 'SUPPLY CHAIN DEPARTMENT', 'head_name' => 'Michael Amus H. Refugio'],
         ]);
     }
 }

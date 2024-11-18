@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
-use App\Traits\TracksActivity;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
@@ -15,7 +14,6 @@ class Employee extends Model
 {
     use HasFactory, Notifiable;
     use Loggable;
-    use TracksActivity;
 
     protected $fillable = [
         'company_id',
