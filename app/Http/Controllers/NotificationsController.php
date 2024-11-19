@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationEmail; // We'll create this
+use Illuminate\Support\Facades\Cache;
 
 class NotificationsController extends Controller
 {
@@ -37,17 +38,28 @@ class NotificationsController extends Controller
     private $hasNewNotifications = false;
     private $emailNotifications = [];
 
+    // Add environment-specific configuration
+    private $config;
+    private $maxRetries = 3;
+    private $retryDelay = 1000; // milliseconds
+
     public function __construct()
     {
+        $this->config = [
+            'cache_duration' => config('app.env') === 'production' ? 300 : 60, // 5 mins prod, 1 min local
+            'batch_size' => config('app.env') === 'production' ? 50 : 100,
+            'timeout' => config('app.env') === 'production' ? 30 : 10,
+        ];
+
         $this->initializeWebPush();
     }
 
     private function initializeWebPush()
     {
         try {
-            // Validate required configuration
-            if (!config('webpush.public_key') || !config('webpush.private_key')) {
-                Log::warning('WebPush configuration missing. Push notifications disabled.');
+            // Add environment check
+            if (!$this->isWebPushConfigured()) {
+                Log::warning('WebPush configuration missing for environment: ' . config('app.env'));
                 return;
             }
 
@@ -56,13 +68,80 @@ class NotificationsController extends Controller
                     'subject' => config('app.url') . '/home',
                     'publicKey' => config('webpush.public_key'),
                     'privateKey' => config('webpush.private_key'),
-                    'icon' => config('app.url') . '/vendor/adminlte/dist/img/LOGO4.png',
+                    'icon' => $this->getSecureAssetUrl('/vendor/adminlte/dist/img/LOGO4.png'),
                     'name' => config('app.name')
-                ]
+                ],
+                'timeout' => $this->config['timeout']
             ]);
         } catch (\Exception $e) {
-            Log::error('WebPush initialization failed: ' . $e->getMessage());
-            // Continue without web push functionality
+            $this->logError('WebPush initialization failed', $e);
+        }
+    }
+
+    // Add new helper methods
+    private function isWebPushConfigured(): bool
+    {
+        return !empty(config('webpush.public_key')) &&
+               !empty(config('webpush.private_key')) &&
+               !empty(config('app.url'));
+    }
+
+    private function getSecureAssetUrl($path): string
+    {
+        $baseUrl = config('app.url');
+        // Force HTTPS in production
+        if (config('app.env') === 'production') {
+            $baseUrl = str_replace('http://', 'https://', $baseUrl);
+        }
+        return $baseUrl . $path;
+    }
+
+    private function logError($message, \Exception $e, array $context = [])
+    {
+        $errorContext = array_merge([
+            'environment' => config('app.env'),
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ], $context);
+
+        Log::error($message, $errorContext);
+
+        if (config('app.env') === 'production') {
+            // Notify developers through your preferred service (e.g., Slack, email)
+            $this->notifyDevelopers($message, $errorContext);
+        }
+    }
+
+    // Add health check endpoint
+    public function healthCheck()
+    {
+        try {
+            // Check database connection
+            DB::connection()->getPdo();
+
+            // Check Redis if used
+            if (config('cache.default') === 'redis') {
+                Cache::store('redis')->ping();
+            }
+
+            // Check WebPush configuration
+            $webPushStatus = $this->isWebPushConfigured() ? 'configured' : 'not configured';
+
+            return response()->json([
+                'status' => 'healthy',
+                'environment' => config('app.env'),
+                'database' => 'connected',
+                'webpush' => $webPushStatus,
+                'timestamp' => now()->toIso8601String()
+            ]);
+        } catch (\Exception $e) {
+            $this->logError('Health check failed', $e);
+            return response()->json([
+                'status' => 'unhealthy',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -178,45 +257,90 @@ class NotificationsController extends Controller
         }
 
         $batch = [];
+        $retryCount = 0;
 
-        foreach ($subscriptions as $subscription) {
+        while ($retryCount < $this->maxRetries) {
             try {
-                $sub = Subscription::create([
-                    'endpoint' => $subscription->endpoint,
-                    'keys' => [
-                        'p256dh' => $subscription->p256dh_key,
-                        'auth' => $subscription->auth_token
-                    ]
-                ]);
-
-                foreach ($notifications as $notification) {
-                    $payload = $this->createNotificationPayload($notification, $subscription);
-                    if ($payload) {
-                        $batch[] = [
-                            'subscription' => $sub,
-                            'payload' => $payload,
-                            'notification' => $notification
-                        ];
+                foreach ($subscriptions as $subscription) {
+                    // Process subscription with timeout
+                    $result = $this->processSubscriptionWithTimeout($subscription, $notifications);
+                    if ($result) {
+                        $batch = array_merge($batch, $result);
                     }
                 }
+                break; // Success, exit retry loop
             } catch (\Exception $e) {
-                Log::error('Failed to create subscription', [
-                    'error' => $e->getMessage(),
-                    'endpoint' => $subscription->endpoint
-                ]);
-                continue;
+                $retryCount++;
+                if ($retryCount >= $this->maxRetries) {
+                    $this->logError('Max retries reached for push notifications', $e);
+                    return;
+                }
+                usleep($this->retryDelay * 1000); // Convert to microseconds
             }
         }
 
-        if (empty($batch)) {
-            Log::info('No notifications to send in batch');
-            return;
+        // Process batches with monitoring
+        $this->processBatchesWithMonitoring($batch);
+    }
+
+    private function processSubscriptionWithTimeout($subscription, $notifications)
+    {
+        return rescue(function () use ($subscription, $notifications) {
+            $batch = [];
+
+            $sub = Subscription::create([
+                'endpoint' => $subscription->endpoint,
+                'keys' => [
+                    'p256dh' => $subscription->p256dh_key,
+                    'auth' => $subscription->auth_token
+                ]
+            ]);
+
+            foreach ($notifications as $notification) {
+                $payload = $this->createNotificationPayload($notification, $subscription);
+                if ($payload) {
+                    $batch[] = [
+                        'subscription' => $sub,
+                        'payload' => $payload,
+                        'notification' => $notification
+                    ];
+                }
+            }
+
+            return $batch;
+        }, function ($e) use ($subscription) {
+            $this->logError('Failed to process subscription', $e, [
+                'endpoint' => $subscription->endpoint
+            ]);
+            return null;
+        });
+    }
+
+    private function processBatchesWithMonitoring($batch)
+    {
+        $startTime = microtime(true);
+        $batchSize = $this->config['batch_size'];
+        $processedCount = 0;
+
+        foreach (array_chunk($batch, $batchSize) as $batchItems) {
+            try {
+                $this->processBatchNotifications($batchItems);
+                $processedCount += count($batchItems);
+            } catch (\Exception $e) {
+                $this->logError('Batch processing failed', $e, [
+                    'processed' => $processedCount,
+                    'total' => count($batch)
+                ]);
+            }
         }
 
-        // Process in smaller batches for better performance
-        foreach (array_chunk($batch, 10) as $batchItems) {
-            $this->processBatchNotifications($batchItems);
-        }
+        // Log performance metrics
+        $duration = microtime(true) - $startTime;
+        Log::info('Batch processing completed', [
+            'processed' => $processedCount,
+            'total' => count($batch),
+            'duration' => round($duration, 2) . 's'
+        ]);
     }
 
     // New method to create notification payload
@@ -904,4 +1028,3 @@ class NotificationsController extends Controller
         }
     }
 }
-

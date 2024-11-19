@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotificationsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,3 +38,5 @@ Route::get('/employees/{employee}/signature', function (App\Models\Employee $emp
         'signature_path' => $employee->signature
     ]);
 });
+
+Route::get('notifications/health', [NotificationsController::class, 'healthCheck']);

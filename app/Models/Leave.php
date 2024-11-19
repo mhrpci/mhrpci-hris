@@ -93,35 +93,25 @@ class Leave extends Model
 
     public function getLeavePaymentStatus()
     {
-        $employmentStatus = $this->employee->employment_status;
-        $leaveDays = $this->getDiffdaysAttribute();
-        $leaveType = $this->type;
-
         // First check if employee is REGULAR
-        if ($employmentStatus !== 'REGULAR') {
+        if ($this->employee->employment_status !== 'REGULAR') {
             return 'Without Pay';
         }
 
+        // Get the total hours for this leave request
+        $diffHours = $this->diffhours;
+        $requestedHours = $diffHours['hours'] + ($diffHours['minutes'] / 60);
+
         // Check available leave balance based on leave type
-        switch ($leaveType->name) {
-            case 'Sick Leave':
-                $availableBalance = $this->employee->sick_leave;
-                break;
-            case 'Vacation Leave':
-                $availableBalance = $this->employee->vacation_leave;
-                break;
-            case 'Emergency Leave':
-                $availableBalance = $this->employee->emergency_leave;
-                break;
-            default:
-                return 'Without Pay';
-        }
+        $availableHours = match ($this->type->name) {
+            'Sick Leave' => $this->employee->sick_leave,
+            'Vacation Leave' => $this->employee->vacation_leave,
+            'Emergency Leave' => $this->employee->emergency_leave,
+            default => 0
+        };
 
-        // Convert available balance from hours to days (assuming 8-hour workday)
-        $availableBalanceDays = $availableBalance / 8;
-
-        // If requested leave days are within available balance
-        return $leaveDays <= $availableBalanceDays ? 'With Pay' : 'Without Pay';
+        // If requested hours are within or equal to available balance
+        return $requestedHours <= $availableHours ? 'With Pay' : 'Without Pay';
     }
 
     public function getDiffdaysAttribute()

@@ -111,8 +111,11 @@ class LeaveController extends Controller
                 'status' => 'pending',
                 'reason_to_leave' => $validatedData['reason_to_leave'],
                 'signature' => $employee->signature,
-                'payment_status' => $employee->employment_status === 'REGULAR' ? 'With Pay' : 'Without Pay'
             ]);
+
+            // Calculate payment status after creation
+            $leave->payment_status = $leave->getLeavePaymentStatus();
+            $leave->save();
 
             // Redirect with success message
             if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Admin')) {
@@ -138,49 +141,41 @@ class LeaveController extends Controller
             $this->markAsRead($leave);
 
             // Calculate leave balances up to this leave ID
-            $vacationTaken = $leave->employee->leaves()
-                ->where('type_id', 1)
-                ->where('id', '<=', $id)
-                ->where('status', 'approved')
-                ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                ->value('days_taken') ?? 0;
+            $vacationTaken = $this->calculateLeaveTaken($leave->employee->id, 1, $id);
+            $sickTaken = $this->calculateLeaveTaken($leave->employee->id, 2, $id);
+            $emergencyTaken = $this->calculateLeaveTaken($leave->employee->id, 3, $id);
 
-            $sickTaken = $leave->employee->leaves()
-                ->where('type_id', 2)
-                ->where('id', '<=', $id)
-                ->where('status', 'approved')
-                ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                ->value('days_taken') ?? 0;
-
-            $emergencyTaken = $leave->employee->leaves()
-                ->where('type_id', 3)
-                ->where('id', '<=', $id)
-                ->where('status', 'approved')
-                ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                ->value('days_taken') ?? 0;
+            // Calculate current leave days
+            $currentLeaveDays = $this->calculateCurrentLeaveDays($leave);
 
             // Check if taken days are within limits and update payment status
             if ($leave->employee->employment_status === 'REGULAR') {
                 $isWithinLimits = match($leave->type_id) {
-                    1 => ($vacationTaken + $leave->duration) <= $leave->employee->vacation_leave,
-                    2 => ($sickTaken + $leave->duration) <= $leave->employee->sick_leave,
-                    3 => ($emergencyTaken + $leave->duration) <= $leave->employee->emergency_leave,
+                    1 => $vacationTaken <= $leave->employee->vacation_leave,
+                    2 => $sickTaken <= $leave->employee->sick_leave,
+                    3 => $emergencyTaken <= $leave->employee->emergency_leave,
                     default => false
                 };
 
-                $leave->payment_status = $isWithinLimits ? 'With Pay' : 'Without Pay';
-                $leave->save();
+                // Only update payment status if the leave hasn't been approved yet
+                if (!$leave->approved_by) {
+                    $leave->payment_status = $isWithinLimits ? 'With Pay' : 'Without Pay';
+                    $leave->save();
+                }
             } else {
-                $leave->payment_status = 'Without Pay';
-                $leave->save();
+                // For non-regular employees, always set to Without Pay if not yet approved
+                if (!$leave->approved_by) {
+                    $leave->payment_status = 'Without Pay';
+                    $leave->save();
+                }
             }
 
             // Calculate balances
-            $vacationBalance = 5 - $vacationTaken;
-            $sickBalance = 7 - $sickTaken;
-            $emergencyBalance = 3 - $emergencyTaken;
+            $vacationBalance = max(0, 5 - $vacationTaken);
+            $sickBalance = max(0, 7 - $sickTaken);
+            $emergencyBalance = max(0, 3 - $emergencyTaken);
 
-            $diff = $leave->diffdays;
+            $diff = $this->calculateCurrentLeaveDays($leave);
             $approvedByUser = $leave->approvedByUser;
 
             return view('leaves.show', compact(
@@ -271,7 +266,7 @@ class LeaveController extends Controller
             'approved_by_signature' => 'required|string',
         ]);
 
-        // Find the leave request or fail
+        // Find the leave request
         $leave = Leave::findOrFail($id);
 
         try {
@@ -283,10 +278,32 @@ class LeaveController extends Controller
                 $approvedSignatureFileName = $this->processSignature($signatureData, 'approved');
             }
 
+            // Calculate taken days for this type of leave
+            $takenDays = $this->calculateLeaveTaken($leave->employee->id, $leave->type_id, $leave->id);
+
+            // Determine if the leave should be with pay
+            $isWithPay = false;
+            if ($leave->employee->employment_status === 'REGULAR') {
+                $maxDays = match($leave->type_id) {
+                    1 => $leave->employee->vacation_leave,
+                    2 => $leave->employee->sick_leave,
+                    3 => $leave->employee->emergency_leave,
+                    default => 0
+                };
+
+                $isWithPay = $takenDays <= $maxDays;
+            }
+
             // Update leave status and signature
             $leave->status = $validatedData['status'];
             $leave->approved_by = Auth::id();
             $leave->approved_by_signature = $approvedSignatureFileName;
+
+            // Only update payment status if it's being approved
+            if ($validatedData['status'] === 'approved') {
+                $leave->payment_status = $isWithPay ? 'With Pay' : 'Without Pay';
+            }
+
             $leave->save();
 
             return redirect()->route('leaves.show', $id)
@@ -439,52 +456,44 @@ class LeaveController extends Controller
                 $this->markAsRead($leave);
 
                 // Calculate leave balances up to this leave ID
-                $vacationTaken = $leave->employee->leaves()
-                    ->where('type_id', 1)
-                    ->where('id', '<=', $id)
-                    ->where('status', 'approved')
-                    ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                    ->value('days_taken') ?? 0;
+                $vacationTaken = $this->calculateLeaveTaken($leave->employee->id, 1, $id);
+                $sickTaken = $this->calculateLeaveTaken($leave->employee->id, 2, $id);
+                $emergencyTaken = $this->calculateLeaveTaken($leave->employee->id, 3, $id);
 
-                $sickTaken = $leave->employee->leaves()
-                    ->where('type_id', 2)
-                    ->where('id', '<=', $id)
-                    ->where('status', 'approved')
-                    ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                    ->value('days_taken') ?? 0;
-
-                $emergencyTaken = $leave->employee->leaves()
-                    ->where('type_id', 3)
-                    ->where('id', '<=', $id)
-                    ->where('status', 'approved')
-                    ->selectRaw('SUM(DATEDIFF(date_to, date_from)) as days_taken')
-                    ->value('days_taken') ?? 0;
+                // Calculate current leave days
+                $currentLeaveDays = $this->calculateCurrentLeaveDays($leave);
 
                 // Check if taken days are within limits and update payment status
                 if ($leave->employee->employment_status === 'REGULAR') {
                     $isWithinLimits = match($leave->type_id) {
-                        1 => ($vacationTaken + $leave->duration) <= $leave->employee->vacation_leave,
-                        2 => ($sickTaken + $leave->duration) <= $leave->employee->sick_leave,
-                        3 => ($emergencyTaken + $leave->duration) <= $leave->employee->emergency_leave,
+                        1 => $vacationTaken <= $leave->employee->vacation_leave,
+                        2 => $sickTaken <= $leave->employee->sick_leave,
+                        3 => $emergencyTaken <= $leave->employee->emergency_leave,
                         default => false
                     };
 
-                    $leave->payment_status = $isWithinLimits ? 'With Pay' : 'Without Pay';
-                    $leave->save();
+                    // Only update payment status if the leave hasn't been approved yet
+                    if (!$leave->approved_by) {
+                        $leave->payment_status = $isWithinLimits ? 'With Pay' : 'Without Pay';
+                        $leave->save();
+                    }
                 } else {
-                    $leave->payment_status = 'Without Pay';
-                    $leave->save();
+                    // For non-regular employees, always set to Without Pay if not yet approved
+                    if (!$leave->approved_by) {
+                        $leave->payment_status = 'Without Pay';
+                        $leave->save();
+                    }
                 }
 
                 // Calculate balances
-                $vacationBalance = 5 - $vacationTaken;
-                $sickBalance = 7 - $sickTaken;
-                $emergencyBalance = 3 - $emergencyTaken;
+                $vacationBalance = max(0, 5 - $vacationTaken);
+                $sickBalance = max(0, 7 - $sickTaken);
+                $emergencyBalance = max(0, 3 - $emergencyTaken);
 
-                $diff = $leave->diffdays;
+                $diff = $this->calculateCurrentLeaveDays($leave);
                 $approvedByUser = $leave->approvedByUser;
 
-                return view('leaves.show', compact(
+                return view('leaves.my_leave_detail', compact(
                     'leave',
                     'approvedByUser',
                     'diff',
@@ -542,4 +551,29 @@ class LeaveController extends Controller
                     ->withErrors(['error' => 'Failed to add validation signature: ' . $e->getMessage()]);
             }
         }
+
+    private function calculateLeaveTaken($employeeId, $typeId, $currentLeaveId)
+    {
+        return Leave::where('employee_id', $employeeId)
+            ->where('type_id', $typeId)
+            ->where('id', '<=', $currentLeaveId)
+            ->where('status', 'approved')
+            ->get()
+            ->sum(function ($leave) {
+                return $this->calculateCurrentLeaveDays($leave);
+            });
+    }
+
+    private function calculateCurrentLeaveDays($leave)
+    {
+        if ($leave->status !== 'approved') {
+            return 0;
+        }
+
+        $dateFrom = \Carbon\Carbon::parse($leave->date_from)->startOfDay();
+        $dateTo = \Carbon\Carbon::parse($leave->date_to)->startOfDay();
+
+        // Don't include the date_to in the count
+        return $dateFrom->diffInDays($dateTo);
+    }
 }

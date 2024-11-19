@@ -128,5 +128,4 @@ class User extends Authenticatable
         return $this->employee_type === 'employee'; // Adjust this based on your actual implementation
     }
 
-
 }

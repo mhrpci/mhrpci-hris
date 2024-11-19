@@ -494,7 +494,6 @@
 
     <div class="checkbox-group" style="margin-top: 20px;">
         @php
-            // Use the stored payment_status if leave is approved, otherwise calculate it
             $paymentStatus = $leave->approved_by_signature
                 ? $leave->payment_status
                 : $leave->getLeavePaymentStatus();

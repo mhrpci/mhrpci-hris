@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MHR Property COnglomerates, Inc.</title>
+    <title>MHR Property Conglomerates, Inc.</title>
 <style>
       /* Loader */
       .loader {
@@ -316,66 +316,8 @@
     height: auto; /* Maintain aspect ratio */
 }
 
-/* Add these styles to your existing CSS */
-.theme-option-wrapper .custom-switch {
-    padding-left: 2.25rem;
-}
-
-.theme-option-wrapper .custom-control-label {
-    padding-top: 2px;
-}
-
-.theme-option-wrapper .custom-switch .custom-control-label::before {
-    width: 2rem;
-    height: 1.25rem;
-    border-radius: 1rem;
-}
-
-.theme-option-wrapper .custom-switch .custom-control-label::after {
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: 1rem;
-}
-
-.custom-switch .custom-control-label::before {
-    background-color: #6c757d;
-}
-
-.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
-    background-color: #007bff;
-}
-
-.dark-mode-label {
-    color: #ced4da;
-}
-
 .theme-option-wrapper small {
     color: #6c757d !important;
-}
-
-/* Add these styles to your existing CSS */
-.theme-option-wrapper .custom-switch {
-    padding-left: 2.25rem;
-}
-
-.theme-option-wrapper .custom-control-label {
-    padding-top: 2px;
-}
-
-.theme-option-wrapper .custom-switch .custom-control-label::before {
-    width: 2rem;
-    height: 1.25rem;
-    border-radius: 1rem;
-}
-
-.theme-option-wrapper .custom-switch .custom-control-label::after {
-    width: calc(1.25rem - 4px);
-    height: calc(1.25rem - 4px);
-    border-radius: 50%;
-}
-
-.theme-option-wrapper .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
-    transform: translateX(0.75rem);
 }
 
 .theme-option-wrapper small {
@@ -466,18 +408,6 @@
                         <option value="sticky">Sticky Top</option>
                     </select>
                 </div>
-                <div class="theme-option-wrapper mb-4">
-                    <label class="d-block mb-2 text-light">Dark Mode</label>
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="dark-mode-toggle">
-                        <label class="custom-control-label text-light" for="dark-mode-toggle">
-                            <span class="dark-mode-label">Light Mode</span>
-                        </label>
-                    </div>
-                    <small class="text-muted d-block mt-1">
-                        Toggle between light and dark theme
-                    </small>
-                </div>
             </div>
         </aside>
         <!-- /.control-sidebar -->
@@ -489,6 +419,7 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
+
                 <li class="nav-item d-none d-sm-inline-block">
                     {{-- <a href="{{ url('/') }}" class="nav-link">Home</a> --}}
                 </li>
@@ -1138,46 +1069,6 @@
                     $(this).remove();
                 });
             }, 1000); // Changed from 5000 to 1000 milliseconds
-
-            // Dark Mode Toggle
-            function toggleDarkMode() {
-                const isDarkMode = $('#dark-mode-toggle').prop('checked');
-                $('body').toggleClass('dark-mode', isDarkMode);
-                localStorage.setItem('darkMode', isDarkMode);
-                updateDarkModeLabel(isDarkMode);
-            }
-
-            function updateDarkModeLabel(isDarkMode) {
-                $('.dark-mode-label').text(isDarkMode ? 'Dark Mode' : 'Light Mode');
-
-                // Update icon in the control sidebar if needed
-                const $icon = $('#dark-mode-toggle').closest('.custom-switch').find('i');
-                if ($icon.length) {
-                    $icon.removeClass('fa-sun fa-moon').addClass(isDarkMode ? 'fa-moon' : 'fa-sun');
-                }
-            }
-
-            // Initialize dark mode on page load
-            $(document).ready(function() {
-                // Check for saved dark mode preference
-                const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-
-                // Set initial state of the toggle
-                $('#dark-mode-toggle').prop('checked', savedDarkMode);
-
-                // Apply dark mode if it was saved
-                if (savedDarkMode) {
-                    $('body').addClass('dark-mode');
-                }
-
-                // Update the label
-                updateDarkModeLabel(savedDarkMode);
-
-                // Dark mode toggle change event
-                $('#dark-mode-toggle').on('change', function() {
-                    toggleDarkMode();
-                });
-            });
 
             // Theme customization
             function applyTheme(navbarClass, sidebarClass, brandClass) {

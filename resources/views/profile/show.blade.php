@@ -158,7 +158,7 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    @if(!auth()->user()->hasRole('Employee'))
                                     <div class="col-md-12 mb-3">
                                         <div class="card shadow-sm">
                                             <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
@@ -202,8 +202,8 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
-
+                                        </div>
+                                    @endif
                                     <!-- Add navigation and submit buttons -->
                                     <div class="mt-3">
                                         <button type="button" class="btn btn-secondary" onclick="stepper.previous()">Previous</button>

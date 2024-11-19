@@ -240,38 +240,38 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="department_id">Department<span class="text-danger">*</span></label>
-                    <select id="department_id" name="department_id" class="form-control" required>
-                        <option value="">Select department</option>
-                        @foreach($departments as $department)
-                            <option value="{{ $department->id }}">{{ $department->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="department_id">Department<span class="text-danger">*</span></label>
+                        <select id="department_id" name="department_id" class="form-control" required>
+                            <option value="">Select department</option>
+                            @foreach($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="position_id">Position<span class="text-danger">*</span></label>
-                    <select id="position_id" name="position_id" class="form-control" required>
-                        <option value="">Select position</option>
-                    </select>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="position_id">Position<span class="text-danger">*</span></label>
+                        <select id="position_id" name="position_id" class="form-control" required>
+                            <option value="">Select position</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-                                <!-- JavaScript to populate positions based on department selection -->
-                            <script>
-                                document.getElementById('department_id').addEventListener('change', function() {
-                                    var departmentId = this.value;
-                                    var positionDropdown = document.getElementById('position_id');
-                                    positionDropdown.innerHTML = '<option value="">Select position</option>';
-                                    @foreach($positions as $position)
-                                        if ("{{ $position->department_id }}" == departmentId) {
-                                            positionDropdown.innerHTML += '<option value="{{ $position->id }}">{{ $position->name }}</option>';
-                                        }
-                                    @endforeach
-                                });
-                            </script>
+                        <!-- JavaScript to populate positions based on department selection -->
+                    <script>
+                        document.getElementById('department_id').addEventListener('change', function() {
+                            var departmentId = this.value;
+                            var positionDropdown = document.getElementById('position_id');
+                            positionDropdown.innerHTML = '<option value="">Select position</option>';
+                            @foreach($positions as $position)
+                                if ("{{ $position->department_id }}" == departmentId) {
+                                    positionDropdown.innerHTML += '<option value="{{ $position->id }}">{{ $position->name }}</option>';
+                                }
+                            @endforeach
+                        });
+                    </script>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="birth_date">Birth Date<span class="text-danger">*</span></label>
@@ -352,14 +352,14 @@
                                         </div>
                                     </div>
                             <!-- Address script -->
-@section('css')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
-@stop
+        @section('css')
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+            <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+        @stop
 
-@section('js')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
+        @section('js')
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
         $(document).ready(function() {
             // Initialize Select2 for all select elements
             $('select').select2({

@@ -294,6 +294,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/controller-analysis/excel', [ControllerAnalysisController::class, 'downloadExcel'])->name('controller.analysis.excel');
         Route::get('/controller-analysis/word', [ControllerAnalysisController::class, 'downloadWord'])->name('controller.analysis.word');
 
+    Route::post('/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+
     });
 
     Auth::routes();
