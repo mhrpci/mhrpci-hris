@@ -9,11 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasPushSubscriptions, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions;
+    use HasRoles;
+    use Loggable;
 
     /**
      * The attributes that are mass assignable.
