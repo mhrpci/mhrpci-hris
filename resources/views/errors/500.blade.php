@@ -1,81 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>500 Internal Server Error</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 | Server Error</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: url('{{ asset('vendor/adminlte/dist/img/INTERNAL SERVER ERROR.png') }}') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Center content horizontally */
-            height: 100vh;
-            text-align: center;
-        }
-        .container {
-            padding: 40px;
-            border-radius: 8px;
-            max-width: 600px;
-            width: 100%;
-            margin-left: auto; /* Align container to the right on larger screens */
-            margin-right: 20px; /* Align container to the right on larger screens */
-        }
-        h1 {
-            font-size: 100px;
-            margin: 0;
-            color: #d9534f; /* Bootstrap danger color */
-        }
-        h2 {
-            font-size: 24px;
-            margin: 0 0 20px;
-            color: #555;
-        }
-        p {
-            font-size: 18px;
-            margin: 0 0 30px;
-            color: #777;
-        }
-        a {
-            text-decoration: none;
-            color: #007bff; /* Bootstrap primary color */
-            font-size: 18px;
-            font-weight: bold;
-            border: 2px solid #007bff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        a:hover {
-            background-color: #007bff;
-            color: #fff;
+            box-sizing: border-box;
         }
 
-        /* Mobile view adjustments */
-        @media (max-width: 768px) {
-            body {
-                justify-content: flex-start; /* Align content to the start on mobile screens */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f1e4ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3748;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #6b46c1;
+            line-height: 1;
+            text-shadow: 2px 2px 4px rgba(107, 70, 193, 0.2);
+            margin-bottom: 1rem;
+            animation: glitch 1s linear infinite;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #553c9a;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: #6b46c1;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(107, 70, 193, 0.2);
+        }
+
+        .back-button:hover {
+            background: #553c9a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(107, 70, 193, 0.3);
+        }
+
+        .server-icon {
+            margin-bottom: 2rem;
+        }
+
+        .server-icon svg {
+            width: 120px;
+            height: 120px;
+            fill: #6b46c1;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @media (max-width: 640px) {
+            .error-code {
+                font-size: 6rem;
             }
-            .container {
-                margin: 0; /* Remove margin on mobile screens */
-                position: relative;
+
+            .error-title {
+                font-size: 1.5rem;
             }
-            a {
-                position: absolute;
-                top: 150px;
-                right: 10px;
-                font-size: 16px; /* Adjust font size for better mobile view */
+
+            .error-message {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+
+            .server-icon svg {
+                width: 80px;
+                height: 80px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="javascript:history.back()">Go Back</a>
+    <div class="error-container">
+        <div class="server-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M21 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-1 9H4v-2h16v2zm0-4H4V8h16v2z"/>
+            </svg>
+        </div>
+        <div class="error-code">500</div>
+        <h1 class="error-title">Server Error</h1>
+        <p class="error-message">
+            Oops! Something went wrong on our servers.
+            We're working to fix the issue. Please try again later.
+        </p>
+        <a href="/" class="back-button">Return Home</a>
     </div>
 </body>
 </html>

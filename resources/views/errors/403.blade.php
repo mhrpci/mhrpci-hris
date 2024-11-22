@@ -1,81 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>404 Not Found</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 | Forbidden Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: url('{{ asset('vendor/adminlte/dist/img/Page Restricted.png') }}') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Center content horizontally */
-            height: 100vh;
-            text-align: center;
-        }
-        .container {
-            padding: 40px;
-            border-radius: 8px;
-            max-width: 600px;
-            width: 100%;
-            margin-left: auto; /* Align container to the right on larger screens */
-            margin-right: 20px; /* Align container to the right on larger screens */
-        }
-        h1 {
-            font-size: 100px;
-            margin: 0;
-            color: #d9534f; /* Bootstrap danger color */
-        }
-        h2 {
-            font-size: 24px;
-            margin: 0 0 20px;
-            color: #555;
-        }
-        p {
-            font-size: 18px;
-            margin: 0 0 30px;
-            color: #777;
-        }
-        a {
-            text-decoration: none;
-            color: #007bff; /* Bootstrap primary color */
-            font-size: 18px;
-            font-weight: bold;
-            border: 2px solid #007bff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        a:hover {
-            background-color: #007bff;
-            color: #fff;
+            box-sizing: border-box;
         }
 
-        /* Mobile view adjustments */
-        @media (max-width: 768px) {
-            body {
-                justify-content: flex-start; /* Align content to the start on mobile screens */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f1e4ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3748;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #6b46c1;
+            line-height: 1;
+            text-shadow: 2px 2px 4px rgba(107, 70, 193, 0.2);
+            margin-bottom: 1rem;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #553c9a;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: #6b46c1;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(107, 70, 193, 0.2);
+        }
+
+        .back-button:hover {
+            background: #553c9a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(107, 70, 193, 0.3);
+        }
+
+        .lock-icon {
+            margin-bottom: 2rem;
+        }
+
+        .lock-icon svg {
+            width: 120px;
+            height: 120px;
+            fill: #6b46c1;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 640px) {
+            .error-code {
+                font-size: 6rem;
             }
-            .container {
-                margin: 0; /* Remove margin on mobile screens */
-                position: relative;
+
+            .error-title {
+                font-size: 1.5rem;
             }
-            a {
-                position: absolute;
-                top: 150px;
-                right: 10px;
-                font-size: 16px; /* Adjust font size for better mobile view */
+
+            .error-message {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+
+            .lock-icon svg {
+                width: 80px;
+                height: 80px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="javascript:history.back()">Go Back</a>
+    <div class="error-container">
+        <div class="lock-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 1C8.676 1 6 3.676 6 7v2H4v14h16V9h-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v2H8V7c0-2.276 1.724-4 4-4zm0 10c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/>
+            </svg>
+        </div>
+        <div class="error-code">403</div>
+        <h1 class="error-title">Access Forbidden</h1>
+        <p class="error-message">
+            Sorry, you don't have permission to access this page.
+            Please contact your administrator if you believe this is a mistake.
+        </p>
+        <a href="/" class="back-button">Return Home</a>
     </div>
 </body>
 </html>
