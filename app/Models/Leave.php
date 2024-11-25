@@ -119,4 +119,47 @@ class Leave extends Model
         return Carbon::parse($this->date_from)->diffInDays(Carbon::parse($this->date_to));
     }
 
+    /**
+     * Scope for global search functionality
+     */
+    public function scopeSearch($query, $searchTerm)
+    {
+        return $query->where(function ($q) use ($searchTerm) {
+            $q->where('status', 'LIKE', "%{$searchTerm}%")
+              ->orWhere('reason_to_leave', 'LIKE', "%{$searchTerm}%")
+              ->orWhere('payment_status', 'LIKE', "%{$searchTerm}%")
+              ->orWhereHas('employee', function ($q) use ($searchTerm) {
+                  $q->where('first_name', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('last_name', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('company_id', 'LIKE', "%{$searchTerm}%");
+              })
+              ->orWhereHas('type', function ($q) use ($searchTerm) {
+                  $q->where('name', 'LIKE', "%{$searchTerm}%");
+              });
+        });
+    }
+
+    /**
+     * Get formatted date range for display
+     */
+    public function getDateRangeAttribute()
+    {
+        $from = Carbon::parse($this->date_from)->format('M d, Y');
+        $to = Carbon::parse($this->date_to)->format('M d, Y');
+        return "{$from} - {$to}";
+    }
+
+    /**
+     * Get status badge class
+     */
+    public function getStatusBadgeAttribute()
+    {
+        return match($this->status) {
+            'approved' => 'success',
+            'rejected' => 'danger',
+            'pending' => 'warning',
+            default => 'secondary'
+        };
+    }
+
 }

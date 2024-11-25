@@ -324,6 +324,145 @@
     font-size: 0.75rem;
     opacity: 0.8;
 }
+
+/* Global Search Styles */
+.global-search-container {
+    position: relative;
+    min-width: 300px;
+    margin-right: 1rem;
+}
+
+.global-search {
+    border-radius: 20px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.global-search:focus {
+    box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+    border-color: #8e44ad;
+}
+
+.search-results-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    z-index: 1050;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.search-results-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-results-body {
+    padding: 0.5rem 0;
+}
+
+.search-results-footer {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid #dee2e6;
+    text-align: center;
+}
+
+.search-result-item {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.search-result-item:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+    color: inherit;
+}
+
+.search-result-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #8e44ad;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.search-result-content {
+    flex: 1;
+}
+
+.search-result-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.search-result-subtitle {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.search-result-description {
+    font-size: 0.875rem;
+    color: #495057;
+}
+
+.search-result-type {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    background-color: #e9ecef;
+    color: #495057;
+    margin-left: 0.5rem;
+}
+
+/* Leave Request specific styles */
+.search-result-item .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.search-result-item .badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.search-result-item .badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.search-result-item .badge-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.search-result-item .badge-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.search-result-meta i {
+    margin-right: 0.25rem;
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -439,6 +578,39 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+                <!-- Global Search -->
+                @if(Auth::check() && !Auth::user()->hasRole('Employee'))
+                <li class="nav-item global-search-container">
+                    <div class="input-group">
+                        <input type="text" 
+                               class="form-control global-search" 
+                               id="globalSearch" 
+                               placeholder="Search employees, leaves, cash advances..."
+                               autocomplete="off">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="searchResults" class="search-results-container d-none">
+                        <div class="search-results-content">
+                            <div class="search-results-header">
+                                <h6 class="mb-0">Search Results</h6>
+                                <button type="button" class="close" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="search-results-body">
+                                <!-- Results will be inserted here -->
+                            </div>
+                            <div class="search-results-footer">
+                                <small class="text-muted">Press ESC to close</small>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                @endif
                 <!-- Tour Guide Button -->
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="start-tour" role="button">
@@ -1701,6 +1873,153 @@
     }
     </script>
 
+    <script>
+    $(document).ready(function() {
+        let searchTimeout;
+        const searchInput = $('#globalSearch');
+        const searchResults = $('#searchResults');
+        
+        // Search input handler
+        searchInput.on('input', function() {
+            clearTimeout(searchTimeout);
+            const query = $(this).val().trim();
+            
+            if (query.length < 2) {
+                searchResults.addClass('d-none');
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                performSearch(query);
+            }, 300);
+        });
+        
+        // Close search results
+        $('.search-results-container .close').on('click', function() {
+            searchResults.addClass('d-none');
+        });
+        
+        // Close on ESC key
+        $(document).on('keyup', function(e) {
+            if (e.key === 'Escape') {
+                searchResults.addClass('d-none');
+            }
+        });
+        
+        // Close when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.global-search-container').length) {
+                searchResults.addClass('d-none');
+            }
+        });
+        
+        function performSearch(query) {
+            $.ajax({
+                url: '{{ route("global-search") }}',
+                method: 'GET',
+                data: { query: query },
+                success: function(response) {
+                    if (response.results.length > 0) {
+                        displayResults(response.results);
+                        searchResults.removeClass('d-none');
+                    } else {
+                        displayNoResults();
+                        searchResults.removeClass('d-none');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Search failed:', xhr);
+                    displayError();
+                }
+            });
+        }
+        
+        function displayResults(results) {
+            const resultsBody = searchResults.find('.search-results-body');
+            resultsBody.empty();
+            
+            results.forEach(result => {
+                if (result.type === 'Leave Request') {
+                    resultsBody.append(`
+                        <a href="${result.url}" class="search-result-item">
+                            <div class="search-result-icon">
+                                <i class="${result.icon}"></i>
+                            </div>
+                            <div class="search-result-content">
+                                <div class="search-result-title">
+                                    ${escapeHtml(result.title)}
+                                    <span class="search-result-type">${result.type}</span>
+                                    <span class="badge badge-${result.meta.status.class}">
+                                        ${escapeHtml(result.meta.status.text)}
+                                    </span>
+                                </div>
+                                <div class="search-result-subtitle">
+                                    ${escapeHtml(result.meta.company_id)} • 
+                                    ${escapeHtml(result.meta.department)} •
+                                    ${escapeHtml(result.meta.date_range)}
+                                </div>
+                                <div class="search-result-description">
+                                    ${escapeHtml(result.description)}
+                                </div>
+                                <div class="search-result-meta">
+                                    <small class="text-muted">
+                                        <i class="fas fa-user-check"></i> Approved by: ${escapeHtml(result.meta.approved_by)}
+                                    </small>
+                                </div>
+                            </div>
+                        </a>
+                    `);
+                } else {
+                    // Original display for other result types
+                    resultsBody.append(`
+                        <a href="${result.url}" class="search-result-item">
+                            <div class="search-result-icon">
+                                <i class="${result.icon}"></i>
+                            </div>
+                            <div class="search-result-content">
+                                <div class="search-result-title">
+                                    ${escapeHtml(result.title)}
+                                    <span class="search-result-type">${result.type}</span>
+                                </div>
+                                <div class="search-result-subtitle">${escapeHtml(result.subtitle)}</div>
+                                <div class="search-result-description">${escapeHtml(result.description)}</div>
+                            </div>
+                        </a>
+                    `);
+                }
+            });
+        }
+        
+        function displayNoResults() {
+            const resultsBody = searchResults.find('.search-results-body');
+            resultsBody.html(`
+                <div class="text-center py-4">
+                    <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                    <p class="mb-0">No results found</p>
+                </div>
+            `);
+        }
+        
+        function displayError() {
+            const resultsBody = searchResults.find('.search-results-body');
+            resultsBody.html(`
+                <div class="text-center py-4">
+                    <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
+                    <p class="mb-0">An error occurred while searching</p>
+                </div>
+            `);
+        }
+        
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    });
+    </script>
+
 </body>
 </html>
-

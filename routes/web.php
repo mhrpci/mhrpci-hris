@@ -44,6 +44,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
 use App\Http\Controllers\ControllerAnalysisController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\GlobalSearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -296,6 +297,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+
+    Route::get('/global-search', [GlobalSearchController::class, 'search'])
+         ->name('global-search')
+         ->middleware('auth');
 
     });
 

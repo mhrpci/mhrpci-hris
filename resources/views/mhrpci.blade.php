@@ -824,6 +824,103 @@
             color: var(--primary-color);
             padding-left: 1.5rem;
         }
+
+        /* Add these new styles after your existing CSS */
+        .strategy-section {
+            padding: 80px 0;
+            background: #fff;
+        }
+
+        .strategy-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .strategy-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .strategy-header h2 {
+            font-size: 2.8rem;
+            color: #8b09db;
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .strategy-header p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .strategy-card {
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .strategy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #8b09db 0%, #a64dff 100%);
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(139, 9, 219, 0.1);
+        }
+
+        .strategy-icon {
+            font-size: 3rem;
+            color: #8b09db;
+            margin-bottom: 20px;
+        }
+
+        .strategy-card h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .strategy-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 992px) {
+            .strategy-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .strategy-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .strategy-header h2 {
+                font-size: 2.2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -988,6 +1085,59 @@
                             <li>2003: Formation of Medical & Hospital Resources Health Care, Inc. (MHRHCI)</li>
                         </ul>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="strategy-section">
+        <div class="strategy-container">
+            <div class="strategy-header">
+                <h2>Our Strategy</h2>
+                <p>Building on our strong foundation, we continue to expand our reach and impact through strategic initiatives that drive sustainable growth and value creation.</p>
+            </div>
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <div class="strategy-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Sustainable Growth</h3>
+                    <p>We focus on expanding our business portfolio while maintaining sustainable practices and responsible resource management.</p>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Strategic Partnerships</h3>
+                    <p>Building strong relationships with key stakeholders and partners to create synergies and drive mutual growth.</p>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Innovation Leadership</h3>
+                    <p>Continuously innovating across our businesses to stay ahead of market trends and meet evolving customer needs.</p>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>People Development</h3>
+                    <p>Investing in our people through training and development programs to build a high-performing organization.</p>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Market Expansion</h3>
+                    <p>Strategically expanding our presence in key markets while strengthening our existing market positions.</p>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Sustainability Focus</h3>
+                    <p>Implementing environmentally responsible practices across our operations while supporting community development.</p>
                 </div>
             </div>
         </div>
