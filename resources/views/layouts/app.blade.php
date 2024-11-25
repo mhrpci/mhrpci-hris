@@ -1653,28 +1653,7 @@
             buttons: getNavigationButtons()
         });
 
-        // Notifications Button
-        tour.addStep({
-            id: 'notifications-button',
-            text: `<div class="tour-content">
-                <h3 class="tour-title">Enable Push Notifications</h3>
-                <p>Stay informed with real-time push notifications:</p>
-                <ul>
-                    <li><strong>Important Updates</strong> - Never miss critical announcements</li>
-                    <li><strong>Task Reminders</strong> - Get notified of pending tasks</li>
-                    <li><strong>Leave Status</strong> - Receive updates on leave requests</li>
-                    <li><strong>System Alerts</strong> - Stay informed of system changes</li>
-                </ul>
-                <p class="mt-2"><strong>Tip:</strong> Click the "Enable Notifications" button to activate browser notifications!</p>
-            </div>`,
-            attachTo: {
-                element: '#notification-button',
-                on: 'top'
-            },
-            buttons: getNavigationButtons()
-        });
-
-        // Tour End
+        // Remove the notifications-button step and go directly to tour-end
         tour.addStep({
             id: 'tour-end',
             text: `<div class="tour-content">
