@@ -578,39 +578,6 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Global Search -->
-                @if(Auth::check() && !Auth::user()->hasRole('Employee'))
-                <li class="nav-item global-search-container">
-                    <div class="input-group">
-                        <input type="text" 
-                               class="form-control global-search" 
-                               id="globalSearch" 
-                               placeholder="Search employees, leaves, cash advances..."
-                               autocomplete="off">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="searchResults" class="search-results-container d-none">
-                        <div class="search-results-content">
-                            <div class="search-results-header">
-                                <h6 class="mb-0">Search Results</h6>
-                                <button type="button" class="close" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="search-results-body">
-                                <!-- Results will be inserted here -->
-                            </div>
-                            <div class="search-results-footer">
-                                <small class="text-muted">Press ESC to close</small>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                @endif
                 <!-- Tour Guide Button -->
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="start-tour" role="button">
@@ -677,15 +644,8 @@
                 <li class="nav-item dropdown" id="notification-dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-danger navbar-badge" id="notification-count">0</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notification-menu">
-                        <span class="dropdown-item dropdown-header" id="notification-header">0 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <div id="notification-list">
-                            <!-- Notifications will be dynamically inserted here -->
-                        </div>
-                        <div class="dropdown-divider"></div>
                         <a href="{{ route('notifications.all') }}" class="dropdown-item dropdown-footer">See All Notifications</a>
                     </div>
                 </li>
@@ -1406,135 +1366,138 @@
     <script>
     // Initialize notification system
     document.addEventListener('DOMContentLoaded', function() {
-        class NotificationHandler {
-            constructor() {
-                this.button = null;
-                this.init();
-            }
-
-            async init() {
-                if (!('Notification' in window)) {
-                    console.log('This browser does not support notifications');
-                    return;
+        // Check if user is Super Admin before creating the notification button
+        @if(Auth::check() && Auth::user()->hasRole('Super Admin'))
+            class NotificationHandler {
+                constructor() {
+                    this.button = null;
+                    this.init();
                 }
 
-                this.createButton();
-                this.updateButtonState(Notification.permission);
+                async init() {
+                    if (!('Notification' in window)) {
+                        console.log('This browser does not support notifications');
+                        return;
+                    }
 
-                if (Notification.permission === 'granted') {
-                    await this.initializeServiceWorker();
-                }
-            }
+                    this.createButton();
+                    this.updateButtonState(Notification.permission);
 
-            createButton() {
-                this.button = document.createElement('button');
-                this.button.id = 'notification-button';
-                this.button.className = 'btn position-fixed';
-                this.button.style.cssText = 'bottom: 20px; right: 20px; z-index: 1050; border-radius: 20px; padding: 10px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);';
-                this.button.addEventListener('click', () => this.requestPermission());
-                document.body.appendChild(this.button);
-            }
-
-            updateButtonState(permission) {
-                if (permission === 'granted') {
-                    this.button.className = 'btn btn-success position-fixed';
-                    this.button.innerHTML = '<i class="fas fa-bell"></i> Notifications Enabled';
-                } else {
-                    this.button.className = 'btn btn-primary position-fixed';
-                    this.button.innerHTML = '<i class="fas fa-bell"></i> Enable Notifications';
-                }
-            }
-
-            async requestPermission() {
-                try {
-                    const permission = await Notification.requestPermission();
-                    this.updateButtonState(permission);
-
-                    if (permission === 'granted') {
+                    if (Notification.permission === 'granted') {
                         await this.initializeServiceWorker();
-                        // Show test notification
-                        new Notification('Notifications Enabled', {
-                            body: 'You will now receive notifications from our system',
-                            icon: '/favicon.ico'
+                    }
+                }
+
+                createButton() {
+                    this.button = document.createElement('button');
+                    this.button.id = 'notification-button';
+                    this.button.className = 'btn position-fixed';
+                    this.button.style.cssText = 'bottom: 20px; right: 20px; z-index: 1050; border-radius: 20px; padding: 10px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);';
+                    this.button.addEventListener('click', () => this.requestPermission());
+                    document.body.appendChild(this.button);
+                }
+
+                updateButtonState(permission) {
+                    if (permission === 'granted') {
+                        this.button.className = 'btn btn-success position-fixed';
+                        this.button.innerHTML = '<i class="fas fa-bell"></i> Notifications Enabled';
+                    } else {
+                        this.button.className = 'btn btn-primary position-fixed';
+                        this.button.innerHTML = '<i class="fas fa-bell"></i> Enable Notifications';
+                    }
+                }
+
+                async requestPermission() {
+                    try {
+                        const permission = await Notification.requestPermission();
+                        this.updateButtonState(permission);
+
+                        if (permission === 'granted') {
+                            await this.initializeServiceWorker();
+                            // Show test notification
+                            new Notification('Notifications Enabled', {
+                                body: 'You will now receive notifications from our system',
+                                icon: '/favicon.ico'
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error requesting permission:', error);
+                    }
+                }
+
+                async initializeServiceWorker() {
+                    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                        console.error('Push notifications not supported');
+                        return;
+                    }
+
+                    try {
+                        const registration = await navigator.serviceWorker.register('/service-worker.js');
+                        console.log('ServiceWorker registered');
+
+                        const subscription = await registration.pushManager.getSubscription();
+                        if (subscription) {
+                            console.log('Already subscribed to push notifications');
+                            return;
+                        }
+
+                        const vapidPublicKey = document.querySelector('meta[name="vapid-key"]').content;
+                        if (!vapidPublicKey) {
+                            console.error('VAPID public key not found');
+                            return;
+                        }
+
+                        const convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey);
+                        const newSubscription = await registration.pushManager.subscribe({
+                            userVisibleOnly: true,
+                            applicationServerKey: convertedVapidKey
                         });
-                    }
-                } catch (error) {
-                    console.error('Error requesting permission:', error);
-                }
-            }
 
-            async initializeServiceWorker() {
-                if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-                    console.error('Push notifications not supported');
-                    return;
+                        await this.sendSubscriptionToServer(newSubscription);
+                        console.log('Push notification subscription successful');
+                    } catch (error) {
+                        console.error('Error initializing push notifications:', error);
+                    }
                 }
 
-                try {
-                    const registration = await navigator.serviceWorker.register('/service-worker.js');
-                    console.log('ServiceWorker registered');
+                async sendSubscriptionToServer(subscription) {
+                    try {
+                        const response = await fetch('/push/subscribe', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify(subscription)
+                        });
 
-                    const subscription = await registration.pushManager.getSubscription();
-                    if (subscription) {
-                        console.log('Already subscribed to push notifications');
-                        return;
-                    }
-
-                    const vapidPublicKey = document.querySelector('meta[name="vapid-key"]').content;
-                    if (!vapidPublicKey) {
-                        console.error('VAPID public key not found');
-                        return;
+                        const data = await response.json();
+                        console.log('Subscription sent to server:', data);
+                    } catch (error) {
+                        console.error('Error sending subscription to server:', error);
                     }
 
-                    const convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey);
-                    const newSubscription = await registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: convertedVapidKey
-                    });
+                }
 
-                    await this.sendSubscriptionToServer(newSubscription);
-                    console.log('Push notification subscription successful');
-                } catch (error) {
-                    console.error('Error initializing push notifications:', error);
+                urlBase64ToUint8Array(base64String) {
+                    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                    const base64 = (base64String + padding)
+                        .replace(/\-/g, '+')
+                        .replace(/_/g, '/');
+
+                    const rawData = window.atob(base64);
+                    const outputArray = new Uint8Array(rawData.length);
+
+                    for (let i = 0; i < rawData.length; ++i) {
+                        outputArray[i] = rawData.charCodeAt(i);
+                    }
+                    return outputArray;
                 }
             }
 
-            async sendSubscriptionToServer(subscription) {
-                try {
-                    const response = await fetch('/push/subscribe', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify(subscription)
-                    });
-
-                    const data = await response.json();
-                    console.log('Subscription sent to server:', data);
-                } catch (error) {
-                    console.error('Error sending subscription to server:', error);
-                }
-
-            }
-
-            urlBase64ToUint8Array(base64String) {
-                const padding = '='.repeat((4 - base64String.length % 4) % 4);
-                const base64 = (base64String + padding)
-                    .replace(/\-/g, '+')
-                    .replace(/_/g, '/');
-
-                const rawData = window.atob(base64);
-                const outputArray = new Uint8Array(rawData.length);
-
-                for (let i = 0; i < rawData.length; ++i) {
-                    outputArray[i] = rawData.charCodeAt(i);
-                }
-                return outputArray;
-            }
-        }
-
-        // Initialize the notification handler
-        new NotificationHandler();
+            // Initialize the notification handler only for Super Admin
+            new NotificationHandler();
+        @endif
     });
     </script>
 
@@ -1941,33 +1904,6 @@
             }
         });
         
-        // Close when clicking outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('.global-search-container').length) {
-                searchResults.addClass('d-none');
-            }
-        });
-        
-        function performSearch(query) {
-            $.ajax({
-                url: '{{ route("global-search") }}',
-                method: 'GET',
-                data: { query: query },
-                success: function(response) {
-                    if (response.results.length > 0) {
-                        displayResults(response.results);
-                        searchResults.removeClass('d-none');
-                    } else {
-                        displayNoResults();
-                        searchResults.removeClass('d-none');
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Search failed:', xhr);
-                    displayError();
-                }
-            });
-        }
         
         function displayResults(results) {
             const resultsBody = searchResults.find('.search-results-body');
