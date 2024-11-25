@@ -1124,7 +1124,17 @@
                         // Play sound and show desktop notification if enabled
                         if (response.label > 0 && Notification.permission === 'granted') {
                             notificationSound.play();
-                            showDesktopNotification(response);
+                            
+                            // Get the latest notification
+                            const latestNotification = response.notifications[0];
+                            if (latestNotification && latestNotification.type === 'post') {
+                                showDesktopNotification({
+                                    title: latestNotification.data.title,
+                                    body: latestNotification.data.message,
+                                    icon: '/favicon.ico',
+                                    url: latestNotification.data.url
+                                });
+                            }
                         }
 
                         lastNotificationTimestamp = response.timestamp;
@@ -1155,7 +1165,8 @@
                 if (!("Notification" in window)) return;
 
                 const options = {
-                    icon: '/favicon.ico',
+                    body: data.body,
+                    icon: data.icon,
                     badge: '/badge.png',
                     vibrate: [100, 50, 100],
                     tag: 'notification-update',
@@ -1163,10 +1174,15 @@
                     requireInteraction: true
                 };
 
-                new Notification('New Notifications', {
-                    ...options,
-                    body: `You have ${data.label} new notification${data.label > 1 ? 's' : ''}`
-                });
+                const notification = new Notification(data.title, options);
+
+                // Handle notification click
+                notification.onclick = function(event) {
+                    event.preventDefault();
+                    window.focus();
+                    window.location.href = data.url;
+                    notification.close();
+                };
             }
 
             // Add error handling with exponential backoff
@@ -1192,7 +1208,26 @@
             if (window.Echo) {
                 Echo.private(`App.Models.User.${$('meta[name="user-id"]').content}`)
                     .notification((notification) => {
-                        updateNotifications();
+                        // Handle real-time notification
+                        if (notification.type === 'App\\Notifications\\NewPostNotification') {
+                            updateNotifications();
+                            
+                            // Show toast notification
+                            Swal.fire({
+                                title: notification.title,
+                                text: notification.message,
+                                icon: 'info',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 5000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                        }
                     });
             }
 

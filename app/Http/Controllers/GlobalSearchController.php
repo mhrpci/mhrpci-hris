@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\Leave;
 use App\Models\CashAdvance;
 use App\Models\Accountability;
+use App\Models\Payroll;
 use Illuminate\Http\Request;
 
 class GlobalSearchController extends Controller
@@ -81,11 +82,17 @@ class GlobalSearchController extends Controller
             $results = $results->concat($employees);
         }
 
-        // Leave Search - Restricted to HR Comben, Admin and Super Admin
-        if ($user->hasAnyRole(['HR Comben', 'Admin', 'Super Admin'])) {
-            $leaves = Leave::search($query)
-                ->with(['employee', 'type', 'approvedByUser'])
-                ->take(5)
+        // Leave Search - Restricted to HR ComBen, Admin and Super Admin
+        if ($user->hasAnyRole(['HR ComBen', 'Admin', 'Super Admin'])) {
+            $leavesQuery = Leave::search($query)->with(['employee', 'type', 'approvedByUser']);
+            
+            // Add condition for HR ComBen role
+            if ($user->hasRole('HR ComBen')) {
+                $leavesQuery->where('status', 'approved')
+                           ->whereNull('validated_by_signature');
+            }
+            
+            $leaves = $leavesQuery->take(5)
                 ->get()
                 ->map(function($leave) {
                     $description = collect([
@@ -139,6 +146,40 @@ class GlobalSearchController extends Controller
                 });
                 
             $results = $results->concat($cashAdvances);
+        }
+
+        // Payroll Search - Restricted to Finance, Admin and Super Admin
+        if ($user->hasAnyRole(['Finance', 'Admin', 'Super Admin'])) {
+            $payrolls = Payroll::where('slug', 'LIKE', "%{$query}%")
+                ->orWhereHas('employee', function($q) use ($query) {
+                    $q->where('first_name', 'LIKE', "%{$query}%")
+                      ->orWhere('last_name', 'LIKE', "%{$query}%");
+                })
+                ->with('employee')
+                ->take(5)
+                ->get()
+                ->map(function($payroll) {
+                    return [
+                        'type' => 'Payroll',
+                        'id' => $payroll->id,
+                        'title' => $payroll->employee->first_name . ' ' . $payroll->employee->last_name,
+                        'subtitle' => "Payroll Record",
+                        'description' => implode(' • ', [
+                            "Period: {$payroll->start_date} to {$payroll->end_date}",
+                            "Net: ₱" . number_format($payroll->net_salary, 2)
+                        ]),
+                        'url' => url("/payrolls/{$payroll->slug}"),
+                        'icon' => 'fas fa-file-invoice-dollar',
+                        'meta' => [
+                            'company_id' => $payroll->employee->company_id,
+                            'gross_salary' => number_format($payroll->gross_salary, 2),
+                            'net_salary' => number_format($payroll->net_salary, 2),
+                            'period' => "{$payroll->start_date} to {$payroll->end_date}"
+                        ]
+                    ];
+                });
+                
+            $results = $results->concat($payrolls);
         }
 
         // Accountability Search - keeping it as is, but you might want to add restrictions here too
