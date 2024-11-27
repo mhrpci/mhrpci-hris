@@ -58,8 +58,9 @@
                     <p style="text-align: right;">Make sure to fill those have <a style="color:red">*</a> to avoid error.</p>
                 </div>
                     <div class="card-body">
-                        <form id="createEmployeeForm" action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="createEmployeeForm" action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">
                             @csrf
+                            <input type="hidden" name="MAX_FILE_SIZE" value="2097152" />
                             <div id="step1" class="step">
                                 <h5>Basic Information</h5>
                                 <div id="imagePreview"></div>
@@ -261,15 +262,62 @@
                 </div>
                         <!-- JavaScript to populate positions based on department selection -->
                     <script>
-                        document.getElementById('department_id').addEventListener('change', function() {
-                            var departmentId = this.value;
-                            var positionDropdown = document.getElementById('position_id');
-                            positionDropdown.innerHTML = '<option value="">Select position</option>';
-                            @foreach($positions as $position)
-                                if ("{{ $position->department_id }}" == departmentId) {
-                                    positionDropdown.innerHTML += '<option value="{{ $position->id }}">{{ $position->name }}</option>';
-                                }
-                            @endforeach
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Store the positions data in a JavaScript variable
+                            const positions = @json($positions);
+                            const cities = @json($city);
+                            const barangays = @json($barangay);
+
+                            // Department change handler
+                            document.getElementById('department_id').addEventListener('change', function() {
+                                const departmentId = this.value;
+                                const positionDropdown = document.getElementById('position_id');
+                                positionDropdown.innerHTML = '<option value="">Select position</option>';
+                                
+                                positions.forEach(position => {
+                                    if (position.department_id == departmentId) {
+                                        positionDropdown.innerHTML += `<option value="${position.id}">${position.name}</option>`;
+                                    }
+                                });
+                            });
+
+                            // Province change handler using jQuery and Select2
+                            $('#province_id').on('change', function() {
+                                const provinceId = this.value;
+                                const cityDropdown = $('#city_id');
+                                
+                                cityDropdown.empty().append('<option value="">Select city</option>');
+                                
+                                cities.forEach(city => {
+                                    if (city.province_id == provinceId) {
+                                        cityDropdown.append(`<option value="${city.id}">${city.name}</option>`);
+                                    }
+                                });
+                                
+                                cityDropdown.trigger('change');
+                            });
+
+                            // City change handler
+                            $('#city_id').on('change', function() {
+                                const cityId = this.value;
+                                const barangayDropdown = $('#barangay_id');
+                                
+                                barangayDropdown.empty().append('<option value="">Select barangay</option>');
+                                
+                                barangays.forEach(barangay => {
+                                    if (barangay.city_id == cityId) {
+                                        barangayDropdown.append(`<option value="${barangay.id}">${barangay.name}</option>`);
+                                    }
+                                });
+                                
+                                barangayDropdown.trigger('change');
+                            });
+
+                            // Initialize Select2
+                            $('select').select2({
+                                theme: 'bootstrap4',
+                                width: '100%'
+                            });
                         });
                     </script>
                                 <div class="col-md-6">

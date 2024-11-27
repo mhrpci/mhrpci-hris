@@ -25,6 +25,7 @@ use App\Mail\EmployeeResignationNotification;
 use App\Mail\UserAccountDisabledNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
@@ -48,20 +49,16 @@ public function index()
     // Get the authenticated user
     $user = auth()->user();
     $departments = Department::all();
-    // Check if the user has the Super Admin role
-    if ($user->hasRole('Super Admin')) {
-        $employees = Employee::all();
-    } else {
-        // If not Super Admin, only get employees with Rank File rank
-        $employees = Employee::all();
-    }
+    
+    // Get all employees - we'll handle authorization through policies instead
+    $employees = Employee::all();
 
     // Determine employment status for each employee
     foreach ($employees as $employee) {
         $employee->employment_status = $employee->employmentStatus();
     }
 
-    return view('employees.index', compact('employees','departments'));
+    return view('employees.index', compact('employees', 'departments'));
 }
 
     /**
@@ -86,83 +83,96 @@ public function index()
  */
 public function store(Request $request): RedirectResponse
 {
-    // Validate the incoming request
-    $validator = Validator::make($request->all(), [
-        'company_id' => 'required',
-        'profile' => 'nullable',
-        'first_name' => 'required',
-        'middle_name' => 'nullable',
-        'last_name' => 'required',
-        'suffix' => 'nullable',
-        'email_address' => 'required|email',
-        'contact_no' => 'required',
-        'birth_date' => 'required|date_format:Y-m-d',
-        'birth_place_province' => 'nullable',
-        'birth_place_city'=> 'nullable',
-        'birth_place_barangay' => 'nullable',
-        'province_id' => 'required',
-        'city_id' => 'required',
-        'barangay_id' => 'required',
-        'gender_id' => 'required',
-        'position_id' => 'required',
-        'department_id' => 'required',
-        'salary' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
-        'zip_code' => 'required|numeric',
-        'date_hired' => 'required|date_format:Y-m-d',
-        'sss_no' => 'nullable|numeric',
-        'pagibig_no' => 'nullable|numeric',
-        'tin_no' => 'nullable|numeric',
-        'philhealth_no' => 'nullable|numeric',
-        'elementary' => 'nullable',
-        'secondary' => 'nullable',
-        'tertiary' => 'nullable',
-        'emergency_name' => 'required',
-        'emergency_no' => 'required|numeric',
-    ]);
-
-    // Check if an employee with the same company_id exists
-    $existingCompanyId = Employee::where('company_id', $request->company_id)->first();
-
-    // Check if an employee with the same email_address exists
-    $existingEmail = Employee::where('email_address', $request->email_address)->first();
-
-    if ($existingCompanyId && $existingEmail) {
-        return redirect()->route('employees.create')
-                         ->withInput()
-                         ->with('error', 'Both Company ID and Email Address are already in use.');
-    } elseif ($existingCompanyId) {
-        return redirect()->route('employees.create')
-                         ->withInput()
-                         ->with('error', 'Company ID is already in use.');
-    } elseif ($existingEmail) {
-        return redirect()->route('employees.create')
-                         ->withInput()
-                         ->with('error', 'Email Address is already in use.');
-    }
-
     try {
-        // Create the employee
-        $employee = Employee::create($request->all());
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'company_id' => 'required|unique:employees,company_id',
+            'profile' => 'nullable|image|max:2048', // limit file size to 2MB
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'suffix' => 'nullable|string|max:10',
+            'email_address' => 'required|email|unique:employees,email_address',
+            'contact_no' => 'required|string|max:20',
+            'birth_date' => 'required|date_format:Y-m-d',
+            'birth_place_province' => 'nullable|string|max:255',
+            'birth_place_city'=> 'nullable|string|max:255',
+            'birth_place_barangay' => 'nullable|string|max:255',
+            'province_id' => 'required|exists:provinces,id',
+            'city_id' => 'required|exists:cities,id',
+            'barangay_id' => 'required|exists:barangays,id',
+            'gender_id' => 'required|exists:genders,id',
+            'position_id' => 'required|exists:positions,id',
+            'department_id' => 'required|exists:departments,id',
+            'salary' => 'required|numeric|min:0',
+            'zip_code' => 'required|string|max:10',
+            'date_hired' => 'required|date_format:Y-m-d',
+            'sss_no' => 'nullable|string|max:20',
+            'pagibig_no' => 'nullable|string|max:20',
+            'tin_no' => 'nullable|string|max:20',
+            'philhealth_no' => 'nullable|string|max:20',
+            'elementary' => 'nullable|string|max:255',
+            'secondary' => 'nullable|string|max:255',
+            'tertiary' => 'nullable|string|max:255',
+            'emergency_name' => 'required|string|max:255',
+            'emergency_no' => 'required|string|max:20',
+        ]);
 
-        // Save profile image if it exists
-        if ($request->hasFile('profile')) {
-            $image = $request->file('profile');
-            $filename = $image->store('profiles', 'public');
-            $employee->profile = $filename;
-            $employee->save(); // Save the employee with the profile image
+        if ($validator->fails()) {
+            return redirect()->route('employees.create')
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        // Save employment status
-        $employee->saveEmploymentStatus();
+        // Begin transaction
+        DB::beginTransaction();
 
-        // Redirect to the employee's show page by slug
-        return redirect()->route('employees.show', $employee->slug)
-            ->with('success', 'Employee created successfully');
+        try {
+            // Create the employee
+            $employee = Employee::create($request->except('profile'));
+
+            // Handle profile image
+            if ($request->hasFile('profile')) {
+                $image = $request->file('profile');
+                
+                // Validate image
+                if ($image->isValid()) {
+                    $filename = 'profile_' . time() . '.' . $image->getClientOriginalExtension();
+                    $path = $image->storeAs('profiles', $filename, 'public');
+                    $employee->profile = $path;
+                    $employee->save();
+                }
+            }
+
+            // Save employment status
+            $employee->saveEmploymentStatus();
+
+            // Commit transaction
+            DB::commit();
+
+            return redirect()->route('employees.show', $employee->slug)
+                ->with('success', 'Employee created successfully');
+
+        } catch (\Exception $e) {
+            // Rollback transaction
+            DB::rollBack();
+            
+            // Log the error
+            Log::error('Employee creation failed: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
+            return redirect()->route('employees.create')
+                ->withInput()
+                ->with('error', 'An error occurred while creating the employee. Please try again.');
+        }
+
     } catch (\Exception $e) {
-        // For any other errors
+        Log::error('Employee validation/creation failed: ' . $e->getMessage());
+        Log::error($e->getTraceAsString());
+
         return redirect()->route('employees.create')
-                         ->withInput()
-                         ->with('error', 'An error occurred while creating the employee. Please try again.');
+            ->withInput()
+            ->with('error', 'An error occurred while processing your request. Please try again.');
     }
 }
 

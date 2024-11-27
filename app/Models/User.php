@@ -14,8 +14,7 @@ use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions;
-    use HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions, HasRoles;
     use Loggable;
 
     /**

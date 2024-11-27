@@ -125,12 +125,14 @@
                             Leave Balance
                         </button>
                         <a href="{{ route('employees.edit', $employee->slug) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                        @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
                         <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-trash"></i> Delete</button>
                         </form>
                         @endif
+                    @endif
                     </div>
                 </div>
             </div>
