@@ -470,7 +470,7 @@
             </div>
         </section>
 
-        <section id="location" class="section">
+        <!-- <section id="location" class="section">
             <h2 class="section-title">Our Location</h2>
             <div class="location-container">
                 <div class="location-info" data-aos="fade-right">
@@ -491,7 +491,7 @@
                     </iframe>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <footer>
             <p>&copy; {{ date('Y') }} MAX (Max Hauling and Logistics). All rights reserved.</p>

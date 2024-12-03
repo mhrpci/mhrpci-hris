@@ -470,7 +470,7 @@
             </div>
         </section>
 
-        <section id="location" class="section">
+        <!-- <section id="location" class="section">
             <h2 class="section-title">Our Location</h2>
             <div class="location-container">
                 <div class="location-info" data-aos="fade-right">
@@ -491,10 +491,10 @@
                     </iframe>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <footer>
-            <p>&copy; {{ date('Y') }} BGPDI Gas Station. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} Cebic Industries. All rights reserved.</p>
             <p>A subsidiary of MHR Properties Conglomerate, Inc.</p>
         </footer>
     </main>
