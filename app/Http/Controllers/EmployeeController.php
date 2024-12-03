@@ -26,7 +26,6 @@ use App\Mail\UserAccountDisabledNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use ZipArchive;
 
 class EmployeeController extends Controller
 {
@@ -552,58 +551,6 @@ public function update(Request $request, $slug): RedirectResponse
             ->firstOrFail();
 
         return view('employees.public-profile', compact('employee'));
-    }
-
-    public function downloadIdCard(Request $request)
-    {
-        $frontImage = $request->file('front_image');
-        $backImage = $request->file('back_image');
-        $employeeId = $request->input('employee_id');
-
-        // Create temporary directory
-        $tempDir = storage_path('app/temp/' . uniqid());
-        if (!file_exists($tempDir)) {
-            mkdir($tempDir, 0777, true);
-        }
-
-        // Save images temporarily
-        $frontImagePath = $tempDir . '/id-card-front.jpg';
-        $backImagePath = $tempDir . '/id-card-back.jpg';
-        file_put_contents($frontImagePath, file_get_contents($frontImage));
-        file_put_contents($backImagePath, file_get_contents($backImage));
-
-        // Create ZIP file
-        $zipPath = $tempDir . '/id-card.zip';
-        $zip = new ZipArchive();
-        
-        if ($zip->open($zipPath, ZipArchive::CREATE) === TRUE) {
-            // Add both files to ZIP
-            $zip->addFile($frontImagePath, 'id-card-front.jpg');
-            $zip->addFile($backImagePath, 'id-card-back.jpg');
-            
-            // Set ZIP password
-            $zip->setPassword($employeeId);
-            
-            // Enable encryption for all files
-            $zip->setEncryptionName('id-card-front.jpg', ZipArchive::EM_AES_256);
-            $zip->setEncryptionName('id-card-back.jpg', ZipArchive::EM_AES_256);
-            
-            $zip->close();
-        }
-
-        // Read ZIP file
-        $zipContent = file_get_contents($zipPath);
-
-        // Cleanup
-        unlink($frontImagePath);
-        unlink($backImagePath);
-        unlink($zipPath);
-        rmdir($tempDir);
-
-        // Return ZIP file
-        return response($zipContent)
-            ->header('Content-Type', 'application/zip')
-            ->header('Content-Disposition', 'attachment; filename="id-card-complete.zip"');
     }
 
 }

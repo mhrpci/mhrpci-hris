@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ config('app.name') }} - Employee ID Card</title>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --card-width: 54mm;    /* Standard ID card width in portrait */
@@ -49,7 +48,6 @@
             width: var(--card-width);
             height: var(--card-height);
             position: relative;
-            transform-origin: top left;
             @media screen and (max-width: 768px) {
                 transform: scale(0.9);
                 margin: -10px;
@@ -61,9 +59,9 @@
         }
 
         .card-side {
-            width: var(--card-width);
-            height: var(--card-height);
             position: relative;
+            width: 100%;
+            height: 100%;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -303,7 +301,6 @@
             }
         }
 
-        /* Add new styles for download buttons */
         .download-buttons {
             position: fixed;
             top: 20px;
@@ -334,11 +331,9 @@
             }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
-    <div class="download-buttons">
-        <button class="download-btn" onclick="downloadCard()">Download ID Card</button>
-    </div>
     <div class="id-card-container">
         <div class="id-card">
             <div class="card-side card-front">
@@ -468,73 +463,66 @@
         </div>
     </div>
 
+    <div class="download-buttons">
+        <button class="download-btn" onclick="downloadBothSides()">Download ID Card</button>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        async function downloadCard() {
-            const scale = 4;
-            
+        async function captureCard(element) {
+            return await html2canvas(element, {
+                scale: 4,
+                useCORS: true,
+                logging: false,
+                width: 212,
+                height: 337,
+                backgroundColor: null,
+                imageTimeout: 0,
+                quality: 1.0
+            });
+        }
+
+        async function downloadBothSides() {
             try {
-                const options = {
-                    scale: scale,
-                    useCORS: true,
-                    logging: false,
-                    allowTaint: true,
-                    backgroundColor: null,
-                    width: 204,
-                    height: 323,
-                    imageTimeout: 0,
-                    onclone: (clonedDoc) => {
-                        const clonedCards = clonedDoc.querySelectorAll('.card-side');
-                        clonedCards.forEach(card => {
-                            card.style.width = 'var(--card-width)';
-                            card.style.height = 'var(--card-height)';
-                        });
-                    }
-                };
-
-                const frontCanvas = await html2canvas(
-                    document.querySelector('.card-front'),
-                    { ...options, backgroundColor: null }
-                );
-
-                const backCanvas = await html2canvas(
-                    document.querySelector('.card-back'),
-                    { ...options, backgroundColor: '#ffffff' }
-                );
-
-                const frontBlob = await new Promise(resolve => 
-                    frontCanvas.toBlob(resolve, 'image/jpeg', 1.0)
-                );
-                const backBlob = await new Promise(resolve => 
-                    backCanvas.toBlob(resolve, 'image/jpeg', 1.0)
-                );
+                const frontElement = document.querySelector('.card-front');
+                const backElement = document.querySelector('.card-back');
                 
-                const formData = new FormData();
-                formData.append('front_image', frontBlob, 'id-card-front.jpg');
-                formData.append('back_image', backBlob, 'id-card-back.jpg');
-                formData.append('employee_id', '{{ $employee->company_id }}');
-
-                const response = await fetch('{{ route("id-card.download") }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
+                const [frontCanvas, backCanvas] = await Promise.all([
+                    captureCard(frontElement),
+                    captureCard(backElement)
+                ]);
+                
+                const zip = new JSZip();
+                
+                // Add both high-resolution images to zip
+                zip.file('id-card-front.png', frontCanvas.toDataURL('image/png', 1.0).split(',')[1], {base64: true});
+                zip.file('id-card-back.png', backCanvas.toDataURL('image/png', 1.0).split(',')[1], {base64: true});
+                
+                // Generate zip with strong password protection
+                const content = await zip.generateAsync({
+                    type: "blob",
+                    compression: "DEFLATE",
+                    compressionOptions: {
+                        level: 9
+                    },
+                    password: "{{ $employee->company_id }}",
+                    encryptStrength: 3,
+                    encryption: "AES-256"
                 });
-
-                if (!response.ok) throw new Error('Network response was not ok');
-
-                const zipBlob = await response.blob();
                 
+                // Create download link
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(zipBlob);
-                link.download = `id-card-${Date.now()}.zip`;
+                link.href = URL.createObjectURL(content);
+                link.download = `ID_Card_{{ $employee->company_id }}_${Date.now()}.zip`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(link.href);
+
+                alert('Download complete! Use your Employee ID as the password to open the zip file.');
             } catch (error) {
-                console.error('Error generating image:', error);
-                alert('There was an error generating the ID card. Please try again.');
+                console.error('Error generating ID card:', error);
+                alert('An error occurred while generating the ID card. Please try again.');
             }
         }
     </script>

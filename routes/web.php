@@ -298,8 +298,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.markAllRead');
 
-    Route::post('id-card/download', [EmployeeController::class, 'downloadIdCard'])->name('id-card.download');
-
     });
 
     Auth::routes();
