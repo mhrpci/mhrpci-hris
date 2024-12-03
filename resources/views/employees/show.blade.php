@@ -44,9 +44,21 @@
                                     <i class="fas fa-qrcode"></i> Toggle QR
                                 </button>
                                 <div id="qrCode" style="display: none;">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ route('employees.public', $employee->slug) }}" 
-                                         alt="Employee QR Code" 
-                                         style="width: 100px; height: 100px;">
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ route('employees.public', $employee->slug) }}" 
+                                             alt="Employee QR Code" 
+                                             style="width: 100px; height: 100px;">
+                                        <div class="ms-3 text-muted" style="font-family: 'Helvetica Neue', sans-serif;">
+                                            <div style="transform: rotate(-5deg);">
+                                                <span style="font-size: 1.2rem; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                                                    ✨ Scan Me! ✨
+                                                </span>
+                                                <div class="curved-arrow-container" style="margin-top: 8px;">
+                                                    <i class="fas fa-arrow-left curved-arrow"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -185,4 +197,53 @@ function toggleQR() {
     qrCode.style.display = qrCode.style.display === 'none' ? 'block' : 'none';
 }
 </script>
+
+<style>
+@keyframes bounceLeft {
+    0%, 100% {
+        transform: translateX(0) rotate(-10deg) scale(1);
+    }
+    50% {
+        transform: translateX(-10px) rotate(-10deg) scale(1.1);
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.curved-arrow {
+    display: inline-block;
+    font-size: 1.8rem;
+    color: #444;
+    transform: rotate(-10deg);
+    animation: bounceLeft 2s ease-in-out infinite;
+    position: relative;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+    font-weight: 900;
+}
+
+.curved-arrow::before {
+    content: '⤾';
+    position: absolute;
+    font-size: 2rem;
+    left: -5px;
+    top: -5px;
+    opacity: 0.4;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+}
+
+.curved-arrow-container {
+    position: relative;
+    padding-left: 15px;
+    margin-top: 12px;
+}
+
+#qrCode span {
+    animation: sparkle 2s ease-in-out infinite;
+}
+</style>
 @endsection

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name') }} - Employee ID Card</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --card-width: 54mm;    /* Standard ID card width in portrait */
@@ -32,23 +33,37 @@
             padding: 20px;
             gap: 20px;
             flex-wrap: wrap;
+            @media screen and (max-width: 768px) {
+                padding: 10px;
+            }
         }
 
         .id-card-container {
             display: flex;
             gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .id-card {
             width: var(--card-width);
             height: var(--card-height);
             position: relative;
+            transform-origin: top left;
+            @media screen and (max-width: 768px) {
+                transform: scale(0.9);
+                margin: -10px;
+            }
+            @media screen and (max-width: 480px) {
+                transform: scale(0.8);
+                margin: -20px;
+            }
         }
 
         .card-side {
+            width: var(--card-width);
+            height: var(--card-height);
             position: relative;
-            width: 100%;
-            height: 100%;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -287,9 +302,43 @@
                 height: var(--card-height);
             }
         }
+
+        /* Add new styles for download buttons */
+        .download-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        @media print {
+            .download-buttons {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="download-buttons">
+        <button class="download-btn" onclick="downloadCard()">Download ID Card</button>
+    </div>
     <div class="id-card-container">
         <div class="id-card">
             <div class="card-side card-front">
@@ -418,5 +467,76 @@
             </div>
         </div>
     </div>
+
+    <script>
+        async function downloadCard() {
+            const scale = 4;
+            
+            try {
+                const options = {
+                    scale: scale,
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true,
+                    backgroundColor: null,
+                    width: 204,
+                    height: 323,
+                    imageTimeout: 0,
+                    onclone: (clonedDoc) => {
+                        const clonedCards = clonedDoc.querySelectorAll('.card-side');
+                        clonedCards.forEach(card => {
+                            card.style.width = 'var(--card-width)';
+                            card.style.height = 'var(--card-height)';
+                        });
+                    }
+                };
+
+                const frontCanvas = await html2canvas(
+                    document.querySelector('.card-front'),
+                    { ...options, backgroundColor: null }
+                );
+
+                const backCanvas = await html2canvas(
+                    document.querySelector('.card-back'),
+                    { ...options, backgroundColor: '#ffffff' }
+                );
+
+                const frontBlob = await new Promise(resolve => 
+                    frontCanvas.toBlob(resolve, 'image/jpeg', 1.0)
+                );
+                const backBlob = await new Promise(resolve => 
+                    backCanvas.toBlob(resolve, 'image/jpeg', 1.0)
+                );
+                
+                const formData = new FormData();
+                formData.append('front_image', frontBlob, 'id-card-front.jpg');
+                formData.append('back_image', backBlob, 'id-card-back.jpg');
+                formData.append('employee_id', '{{ $employee->company_id }}');
+
+                const response = await fetch('{{ route("id-card.download") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const zipBlob = await response.blob();
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = `id-card-${Date.now()}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                console.error('Error generating image:', error);
+                alert('There was an error generating the ID card. Please try again.');
+            }
+        }
+    </script>
 </body>
 </html>
