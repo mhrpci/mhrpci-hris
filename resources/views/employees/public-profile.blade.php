@@ -69,24 +69,12 @@
 
         .card-front {
             background: linear-gradient(135deg, 
-                {{ $employee->department->name == 'MHRHCI' ? 
-                    '#4169E1 0%,
-                    #4169E1 50%,
-                    #000080 50%,
-                    #000080 65%,
-                    #ffffff 65%,
-                    #ffffff 67%,
-                    #000080 67%,
-                    #000080 100%' : 
-                    '#663399 0%,
-                    #663399 50%,
-                    #4A6FA5 50%,
-                    #4A6FA5 65%,
-                    #ffffff 65%,
-                    #ffffff 67%,
-                    #4A6FA5 67%,
-                    #4A6FA5 100%'
-                }}
+                {{ match($employee->department->name) {
+                    'MHRHCI' => '#6495ED 0%, #6495ED 50%, #4169E1 50%, #4169E1 65%, #ffffff 65%, #ffffff 67%, #4169E1 67%, #4169E1 100%',
+                    'VHI' => '#228B22 0%, #228B22 50%, #32CD32 50%, #32CD32 65%, #ffffff 65%, #ffffff 67%, #32CD32 67%, #32CD32 100%',
+                    'BGPDI' => '#4169E1 0%, #4169E1 50%, #FFD700 50%, #FFD700 65%, #ffffff 65%, #ffffff 67%, #FFD700 67%, #FFD700 100%',
+                    default => '#9370DB 0%, #9370DB 50%, #4A6FA5 50%, #4A6FA5 65%, #ffffff 65%, #ffffff 67%, #4A6FA5 67%, #4A6FA5 100%'
+                } }}
             );
             color: var(--text-light);
             display: flex;
@@ -229,7 +217,12 @@
         }
 
         .back-section-title {
-            color: {{ $employee->department->name == 'MHRHCI' ? '#4169E1' : '#663399' }};
+            color: {{ match($employee->department->name) {
+                'MHRHCI' => '#4169E1',
+                'VHI' => '#006400',
+                'BGPDI' => '#0000FF',
+                default => '#663399'
+            } }};
             font-weight: bold;
             margin-bottom: 3px;
             text-align: left;
@@ -238,12 +231,22 @@
         }
 
         .back-header h3 {
-            color: {{ $employee->department->name == 'MHRHCI' ? '#4169E1' : '#663399' }};
+            color: {{ match($employee->department->name) {
+                'MHRHCI' => '#4169E1',
+                'VHI' => '#006400',
+                'BGPDI' => '#0000FF',
+                default => '#663399'
+            } }};
             font-weight: bold;
         }
 
         .back-section .detail-label {
-            color: {{ $employee->department->name == 'MHRHCI' ? '#4169E1' : '#663399' }};
+            color: {{ match($employee->department->name) {
+                'MHRHCI' => '#4169E1',
+                'VHI' => '#006400',
+                'BGPDI' => '#0000FF',
+                default => '#663399'
+            } }};
             font-weight: bold;
         }
 
@@ -340,6 +343,10 @@
                 <div class="card-header">
                     @if($employee->department->name == 'MHRHCI')
                         <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="MHRHCI Logo" class="company-logo">
+                    @elseif($employee->department->name == 'VHI')
+                        <img src="{{ asset('vendor/adminlte/dist/img/vhi.png') }}" alt="VHI Logo" class="company-logo">
+                    @elseif($employee->department->name == 'BGPDI')
+                        <img src="{{ asset('vendor/adminlte/dist/img/bgpdi.png') }}" alt="BGPDI Logo" class="company-logo">
                     @else
                         <img src="{{ asset('vendor/adminlte/dist/img/whiteLOGO4.png') }}" alt="Company Logo" class="company-logo">
                     @endif

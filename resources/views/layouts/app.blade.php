@@ -620,7 +620,7 @@
                 </li>
                 @endcanany
 
-                @canany(['admin', 'super-admin', 'hrcompliance'])
+                @canany(['admin', 'super-admin'])
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="fas fa-users"></i>

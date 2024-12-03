@@ -20,6 +20,8 @@ class DepartmentSeeder extends Seeder
             ['name' => 'ADMIN DEPARTMENT', 'head_name' => 'Michael Amus H. Refugio'],
             ['name' => 'MHRHCI', 'head_name' => 'Alayza Cali-at'],
             ['name' => 'SUPPLY CHAIN DEPARTMENT', 'head_name' => 'Michael Amus H. Refugio'],
+            ['name' => 'VHI', 'head_name' => 'Michael Amus H. Refugio'],
+            ['name' => 'BGPDI', 'head_name' => 'Michael Amus H. Refugio'],
         ]);
     }
 }
