@@ -548,8 +548,6 @@ public function update(Request $request, $slug): RedirectResponse
     {
         $employee = Employee::where('slug', $slug)
             ->where('employee_status', 'Active')
-            ->select('first_name', 'middle_name', 'last_name', 'suffix',
-                    'email_address', 'contact_no', 'profile', 'birth_date')
             ->firstOrFail();
 
         return view('employees.public-profile', compact('employee'));

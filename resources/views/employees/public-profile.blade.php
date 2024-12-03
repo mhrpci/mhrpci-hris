@@ -3,466 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} - {{ $employee->first_name }}'s Portfolio</title>
- <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <title>{{ config('app.name') }} - Employee ID Card</title>
     <style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #3b82f6;
-            --accent-color: #60a5fa;
-            --text-color: #1f2937;
-            --light-gray: #f3f4f6;
-            --gradient: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
-            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --card-width: 54mm;    /* Standard ID card width in portrait */
+            --card-height: 85.6mm; /* Standard ID card height in portrait */
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e67e22;
+            --background-color: #ecf0f1;
+            --text-dark: #333333;
+            --text-light: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', serif;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            line-height: 1.6;
-            background: var(--light-gray);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        .header {
-            background: var(--gradient);
-            padding: 2rem;
-            border-radius: 1rem;
-            margin: 1rem auto;
-            color: white;
+            background: var(--background-color);
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            backdrop-filter: blur(8px);
-            box-shadow: var(--card-shadow);
+            padding: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
-        .app-name {
-            font-weight: 700;
-            font-size: 1.25rem;
-            letter-spacing: -0.025em;
+        .id-card-container {
+            display: flex;
+            gap: 20px;
         }
 
-        .profile-section {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: minmax(250px, 300px) 1fr;
-            gap: 3rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-            transition: box-shadow 0.3s ease;
+        .id-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            position: relative;
         }
 
-        .profile-section:hover {
-            box-shadow: var(--hover-shadow);
-        }
-
-        .profile-image-container {
+        .card-side {
             position: relative;
             width: 100%;
-            aspect-ratio: 1;
-            border-radius: 1rem;
+            height: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, 
+                {{ $employee->department->name == 'MHRHCI' ? 
+                    '#4169E1 0%,
+                    #4169E1 50%,
+                    #000080 50%,
+                    #000080 65%,
+                    #ffffff 65%,
+                    #ffffff 67%,
+                    #000080 67%,
+                    #000080 100%' : 
+                    '#663399 0%,
+                    #663399 50%,
+                    #4A6FA5 50%,
+                    #4A6FA5 65%,
+                    #ffffff 65%,
+                    #ffffff 67%,
+                    #4A6FA5 67%,
+                    #4A6FA5 100%'
+                }}
+            );
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            position: relative;
             overflow: hidden;
         }
 
-        .profile-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .profile-image:hover {
-            transform: scale(1.02);
-        }
-
-        .name {
-            font-size: 2.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem;
-            letter-spacing: -0.025em;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .info-item {
-            background: var(--light-gray);
-            padding: 1.25rem;
-            border-radius: 0.75rem;
-            transition: all 0.3s ease;
-        }
-
-        .info-item:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--card-shadow);
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: var(--primary-color);
-            display: block;
-            margin-bottom: 0.3rem;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .qr-container {
-            position: relative;
-        }
-
-        .qr-section {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            box-shadow: var(--hover-shadow);
-            margin-top: 1rem;
-            text-align: center;
-            display: none;
-            animation: slideIn 0.3s ease;
-            z-index: 100;
-            min-width: 200px;
-        }
-
-        .toggle-qr-btn {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            backdrop-filter: blur(4px);
-        }
-
-        .toggle-qr-btn:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .portfolio-section {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-        }
-
-        .portfolio-section:hover {
-            box-shadow: var(--hover-shadow);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 0.75rem;
-            color: var(--text-color);
-        }
-
-        .section-title::after {
+        .card-front::before {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: var(--gradient);
-            border-radius: 1.5px;
+            top: -10%;
+            right: -10%;
+            width: 40%;
+            height: 40%;
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.1) 50%);
+            transform: rotate(-15deg);
         }
 
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
+        .card-front::after {
+            content: '';
+            position: absolute;
+            bottom: -5%;
+            left: -5%;
+            width: 30%;
+            height: 30%;
+            background: linear-gradient(45deg, transparent 50%, rgba(74, 111, 165, 0.3) 50%);
+            transform: rotate(15deg);
         }
 
-        .skill-item {
-            background: var(--light-gray);
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
+        .card-back {
+            background: white;
+            padding: 10px;
+        }
+
+        .card-header {
+            padding: 8px;
             text-align: center;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            cursor: default;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid var(--accent-color);
         }
 
-        .skill-item:hover {
-            background: var(--gradient);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--card-shadow);
+        .company-logo {
+            height: 60px;
+            width: auto;
+            margin-bottom: 4px;
+            filter: brightness(1.2) contrast(1.1);
+            max-width: 95%;
         }
 
-        .experience-item {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            border-left: 3px solid var(--primary-color);
-            background: var(--light-gray);
-            border-radius: 0 0.75rem 0.75rem 0;
-            transition: all 0.3s ease;
+        .card-title {
+            font-size: 7px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .experience-item:hover {
-            transform: translateX(4px);
-            box-shadow: var(--card-shadow);
+        .profile-section {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
-        .experience-title {
-            font-weight: 600;
-            font-size: 1.125rem;
-            color: var(--text-color);
-            margin-bottom: 0.25rem;
+        .profile-image {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            border-radius: 4px;
         }
 
-        .experience-company {
+        .profile-info {
+            width: 100%;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .employee-name {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .employee-details {
+            font-size: 8px;
+            line-height: 1.4;
+            color: #ffffff;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+            padding: 0 4px;
+        }
+
+        .detail-label {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding: 6px;
+            text-align: center;
+            font-size: 7px;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .back-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 8px;
+        }
+
+        .back-header {
+            text-align: center;
             color: var(--primary-color);
-            font-weight: 500;
-            margin-bottom: 0.25rem;
+            padding: 6px;
+            border-bottom: 1px solid var(--accent-color);
+            font-size: 8px;
         }
 
-        .experience-date {
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin-bottom: 0.75rem;
+        .back-section {
+            font-size: 7px;
+            padding: 4px;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .back-section-title {
+            color: {{ $employee->department->name == 'MHRHCI' ? '#4169E1' : '#663399' }};
+            font-weight: bold;
+            margin-bottom: 3px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 6px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 0.75rem;
-            }
-
-            .profile-section {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                padding: 1.5rem;
-            }
-
-            .name {
-                font-size: 2rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .profile-image-container {
-                max-width: 250px;
-                margin: 0 auto;
-            }
-
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-                padding: 1.5rem;
-            }
-
-            .qr-section {
-                right: 50%;
-                transform: translateX(50%);
-            }
-
-            .portfolio-section {
-                padding: 1.5rem;
-            }
+        .back-header h3 {
+            color: {{ $employee->department->name == 'MHRHCI' ? '#4169E1' : '#663399' }};
+            font-weight: bold;
         }
 
-        @media (max-width: 480px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .skills-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-
-            .name {
-                font-size: 1.75rem;
-            }
+        .back-section .detail-label {
+            color: {{ $employee->department->name == 'MHRHCI' ? '#4169E1' : '#663399' }};
+            font-weight: bold;
         }
 
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --text-color: #f3f4f6;
-                --light-gray: #1f2937;
-            }
+        .emergency-contact {
+            padding: 8px;
+            font-size: 7px;
+        }
 
-            body {
-                background: #111827;
-            }
+        .emergency-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-align: center;
+        }
 
-            .profile-section,
-            .portfolio-section,
-            .qr-section {
-                background: #1f2937;
-            }
+        .signature-section {
+            margin-top: auto;
+            text-align: center;
+            padding: 8px;
+            border-top: 1px solid var(--accent-color);
+            font-size: 6px;
+        }
 
-            .info-item,
-            .experience-item {
-                background: #111827;
-            }
+        .signature-section .detail-label {
+            font-size: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            color: var(--primary-color);
+            letter-spacing: 0.5px;
+        }
 
-            .skill-item {
-                background: #374151;
+        .signature-image {
+            max-width: 80px;
+            height: auto;
+            margin: 4px auto;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 16px;
+            opacity: 0.1;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        @media print {
+            body { margin: 0; padding: 0; }
+            .id-card-container {
+                width: var(--card-width);
+                height: var(--card-height);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="app-name">{{ config('app.name') }}</div>
-            <div class="qr-container">
-                <button class="toggle-qr-btn" onclick="toggleQR()">
-                    <i class="fas fa-qrcode"></i>
-                    QR Code
-                </button>
-                <div class="qr-section">
-                    <h3>Scan to view profile</h3>
-                    <div id="qrcode"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-section">
-            <div class="profile-image-container">
-                <img src="{{ $employee->profile ? Storage::url($employee->profile) : asset('images/default-profile.png') }}"
-                     alt="{{ $employee->first_name }}'s Profile Picture"
-                     class="profile-image">
-            </div>
-
-            <div class="profile-info">
-                <div class="name">
-                    {{ $employee->first_name }}
-                    {{ $employee->middle_name }}
-                    {{ $employee->last_name }}
-                    {{ $employee->suffix }}
+    <div class="id-card-container">
+        <div class="id-card">
+            <div class="card-side card-front">
+                <div class="card-header">
+                    @if($employee->department->name == 'MHRHCI')
+                        <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="MHRHCI Logo" class="company-logo">
+                    @else
+                        <img src="{{ asset('vendor/adminlte/dist/img/whiteLOGO4.png') }}" alt="Company Logo" class="company-logo">
+                    @endif
+                    <div class="card-title">Employee Identification Card</div>
                 </div>
 
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="info-label">Email Address</span>
-                        {{ $employee->email_address }}
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-label">Contact Number</span>
-                        {{ $employee->contact_no }}
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-label">Birth Date</span>
-                        {{ \Carbon\Carbon::parse($employee->birth_date)->format('F d, Y') }}
+                <div class="profile-section">
+                    <img src="{{ $employee->profile ? Storage::url($employee->profile) : asset('images/default-profile.png') }}"
+                         alt="Employee Photo" class="profile-image">
+                    
+                    <div class="profile-info">
+                        <div class="employee-name">
+                            {{ $employee->first_name }} {{ $employee->middle_name }} {{ $employee->last_name }} {{ $employee->suffix }}
+                        </div>
+                        <div class="employee-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Employee ID:</span>
+                                <span>{{ $employee->company_id }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Position:</span>
+                                <span>{{ $employee->position->name ?? 'N/A' }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Department:</span>
+                                <span>{{ $employee->department->name ?? 'N/A' }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Date Hired:</span>
+                                <span>{{ \Carbon\Carbon::parse($employee->date_hired)->format('M d, Y') }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="card-footer">
+                    
+                </div>
             </div>
         </div>
+        
+        <div class="id-card">
+            <div class="card-side card-back">
+                <div class="back-content">
+                    <div class="back-header">
+                        <h3>EMPLOYEE INFORMATION</h3>
+                    </div>
 
-        <div class="portfolio-section">
-            <h2 class="section-title">About Me</h2>
-            <p>{{ $employee->bio ?? 'A passionate professional dedicated to excellence in their field.' }}</p>
-        </div>
+                    <div class="back-section">
+                        <div class="back-section-title">Personal Details</div>
+                        <div class="detail-item">
+                            <span class="detail-label">Birth Date:</span>
+                            <span>{{ \Carbon\Carbon::parse($employee->birth_date)->format('M d, Y') ?? ' ' }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">SSS No:</span>
+                            <span>{{ $employee->sss_no ?? ' ' }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">TIN No:</span>
+                            <span>{{ $employee->tin_no ?? ' ' }}</span>
+                        </div>
+                    </div>
 
-        <div class="portfolio-section">
-            <h2 class="section-title">Skills & Expertise</h2>
-            <div class="skills-grid">
-                @foreach($employee->skills ?? ['Leadership', 'Project Management', 'Communication', 'Problem Solving'] as $skill)
-                    <div class="skill-item">{{ $skill }}</div>
-                @endforeach
+                    <div class="back-section">
+                        <div class="back-section-title">Emergency Contact</div>
+                        <div class="detail-item">
+                            <span class="detail-label">Name:</span>
+                            <span>{{ $employee->emergency_name }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Contact No:</span>
+                            <span>{{ $employee->emergency_no }}</span>
+                        </div>
+                    </div>
+
+                    <div class="back-section">
+                        <div class="back-section-title">Company Information</div>
+                        <div class="detail-item">
+                            <span class="detail-label">Name:</span>
+                            <span>{{ config('app.company_name') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Address:</span>
+                            <span>{{ config('app.company_address') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">City:</span>
+                            <span>{{ config('app.company_city') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">ZIP:</span>
+                            <span>{{ config('app.company_zip') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone:</span>
+                            <span>{{ config('app.company_phone') }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email:</span>
+                            <span>{{ config('app.company_email') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="signature-section">
+                        <div class="detail-label">Employee Signature</div>
+                        @if($employee->signature)
+                            <img src="{{ Storage::url($employee->signature) }}" 
+                                 alt="Employee Signature" 
+                                 class="signature-image">
+                        @else
+                            <div style="color: #666; font-size: 8px;">No signature available</div>
+                        @endif
+                        <div style="font-size: 7px; margin-top: 4px;">
+                            This ID card remains the property of {{ config('app.name') }}.<br>
+                            If found, please return to the nearest office.
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="portfolio-section">
-            <h2 class="section-title">Work Experience</h2>
-            @forelse($employee->experiences ?? [] as $experience)
-                <div class="experience-item">
-                    <div class="experience-title">{{ $experience->position }}</div>
-                    <div class="experience-company">{{ $experience->company }}</div>
-                    <div class="experience-date">{{ $experience->start_date }} - {{ $experience->end_date ?? 'Present' }}</div>
-                    <p>{{ $experience->description }}</p>
-                </div>
-            @empty
-                <div class="experience-item">
-                    <div class="experience-title">{{ $employee->position ?? 'Current Position' }}</div>
-                    <div class="experience-company">{{ config('app.name') }}</div>
-                    <div class="experience-date">Current</div>
-                </div>
-            @endforelse
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Generate QR Code
-            var qr = qrcode(0, 'M');
-            var currentUrl = window.location.href;
-            qr.addData(currentUrl);
-            qr.make();
-
-            // Create QR code image with specific size
-            var qrImage = qr.createImgTag(5, 10);
-            document.getElementById('qrcode').innerHTML = qrImage;
-        });
-
-        function toggleQR() {
-            const qrSection = document.querySelector('.qr-section');
-            const toggleBtn = document.querySelector('.toggle-qr-btn');
-
-            if (qrSection.style.display === 'none' || !qrSection.style.display) {
-                qrSection.style.display = 'block';
-                toggleBtn.innerHTML = '<i class="fas fa-times"></i> Close';
-            } else {
-                qrSection.style.display = 'none';
-                toggleBtn.innerHTML = '<i class="fas fa-qrcode"></i> QR Code';
-            }
-        }
-
-        // Close QR when clicking outside
-        document.addEventListener('click', function(event) {
-            const qrContainer = document.querySelector('.qr-container');
-            const qrSection = document.querySelector('.qr-section');
-            const toggleBtn = document.querySelector('.toggle-qr-btn');
-
-            if (!qrContainer.contains(event.target) && qrSection.style.display === 'block') {
-                qrSection.style.display = 'none';
-                toggleBtn.innerHTML = '<i class="fas fa-qrcode"></i> QR Code';
-            }
-        });
-    </script>
-
-    <!-- Add Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </body>
 </html>

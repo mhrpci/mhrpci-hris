@@ -38,7 +38,18 @@
                                 <p>No profile image available</p>
                             @endif
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-9 position-relative">
+                            <div style="position: absolute; top: 0; right: 0;">
+                                <button class="btn btn-sm btn-outline-secondary mb-2" onclick="toggleQR()">
+                                    <i class="fas fa-qrcode"></i> Toggle QR
+                                </button>
+                                <div id="qrCode" style="display: none;">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ route('employees.public', $employee->slug) }}" 
+                                         alt="Employee QR Code" 
+                                         style="width: 100px; height: 100px;">
+                                </div>
+                            </div>
+
                             <h4 class="text-primary">{{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name ?? '' }} {{ $employee->suffix ?? '' }}</h4>
                             <p><strong>Email:</strong> {{ $employee->email_address }}</p>
                             <p><strong>Contact No.:</strong> {{ $employee->contact_no }}</p>
@@ -167,4 +178,11 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleQR() {
+    const qrCode = document.getElementById('qrCode');
+    qrCode.style.display = qrCode.style.display === 'none' ? 'block' : 'none';
+}
+</script>
 @endsection
