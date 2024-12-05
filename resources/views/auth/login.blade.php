@@ -22,156 +22,243 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('vendor/adminlte/dist/img/frontmhrhci.jpg') no-repeat center center fixed;
+            background-size: cover;
             min-height: 100vh;
-            padding: 20px;
+            display: grid;
+            place-items: center;
+            padding: 2rem;
         }
 
         .container {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
-            display: flex;
-            max-width: 1000px;
             width: 100%;
-            overflow: hidden;
-        }
-
-        .form-container {
-            flex: 1;
-            padding: 60px;
-            transition: all 0.6s ease-in-out;
-        }
-
-        .overlay-container {
-            flex: 1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
             align-items: center;
+            border-radius: 24px;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .text-content {
+            text-align: left;
+            padding: 2.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .text-content:hover {
+            transform: translateY(-5px);
+        }
+
+        .logo-container {
+            display: flex;
             justify-content: center;
-            color: #ffffff;
-            padding: 60px;
-            text-align: center;
+            margin-bottom: 2rem;
         }
 
-        h1 {
+        .text-content .logo {
+            width: 220px;
+            height: 180px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .text-content .logo:hover {
+            transform: scale(1.02);
+            filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .company-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
             font-weight: 700;
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 30px;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(45deg, #ffffff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        h2 {
-            font-weight: 600;
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 1rem;
+        .welcome-text {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-top: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
         }
 
-        .logo {
-            width: 120px;
-            margin-bottom: 30px;
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: clamp(2rem, 5vw, 3rem);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .form-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-card h1 {
+            font-size: clamp(1.8rem, 3vw, 2.2rem);
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+            position: relative;
+        }
+
+        .form-card h1::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 60px;
+            height: 4px;
+            background: #0066ff;
+            border-radius: 2px;
         }
 
         .input-group {
+            margin-bottom: 1.5rem;
             position: relative;
-            width: 100%;
-            margin-bottom: 20px;
         }
 
         input {
             width: 100%;
-            padding: 15px 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             font-size: 1rem;
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
         }
 
         input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            border-color: #0066ff;
+            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
             outline: none;
         }
 
         .password-toggle {
             position: absolute;
-            right: 15px;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #999;
+            color: #666;
             transition: color 0.3s ease;
         }
 
         .password-toggle:hover {
-            color: #667eea;
+            color: #0066ff;
         }
 
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 15px 30px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            margin-top: 20px;
             width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, #0066ff, #0052cc);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.2);
         }
 
         button:hover {
+            background: linear-gradient(45deg, #0052cc, #003d99);
             transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3);
         }
 
-        a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
+        /* Responsive Design */
+        @media screen and (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                padding: 2rem;
+            }
         }
 
-        a:hover {
-            color: #764ba2;
+        @media screen and (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 90%;
+            }
+
+            .text-content {
+                text-align: center;
+                padding: 1rem;
+            }
+
+            .text-content .logo {
+                margin: 0 auto 2rem;
+            }
+
+            .form-card h1::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .form-card {
+                padding: 2rem;
+            }
         }
 
+        @media screen and (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .text-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Notification Styles */
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: #ffffff;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            color: white;
             font-weight: 500;
             display: none;
+            animation: slideIn 0.3s ease;
             z-index: 1000;
-            animation: slideIn 0.5s ease-out;
         }
 
         .notification.success {
-            background-color: #4CAF50;
+            background: linear-gradient(45deg, #28a745, #218838);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
         }
 
         .notification.error {
-            background-color: #F44336;
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
         }
 
         @keyframes slideIn {
@@ -185,77 +272,103 @@
             }
         }
 
-        .loader {
+        .footer {
             position: fixed;
-            top: 0;
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .loader-content {
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
+            padding: 1.5rem;
             text-align: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+        .footer p {
+            margin: 0.5rem 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            line-height: 1.6;
+            font-weight: 300;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .footer p:first-child {
+            font-weight: 400;
         }
 
         @media screen and (max-width: 768px) {
-            .container {
+            .footer {
+                padding: 1rem;
+            }
+            
+            .footer p {
+                font-size: 0.85rem;
+            }
+
+            .footer-content {
                 flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
             }
-
-            .form-container, .overlay-container {
-                width: 100%;
+            
+            .contact {
+                flex-direction: column;
+                gap: 0.3rem;
             }
+        }
 
-            .overlay-container {
-                display: none;
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .address {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .contact {
+            display: flex;
+            gap: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        /* Update media queries for footer */
+        @media screen and (max-width: 1024px) {  /* Standard laptop breakpoint */
+            .footer {
+                display: none;  /* Hide footer for screens smaller than laptop */
             }
-
-            .form-container {
-                padding: 40px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            h2 {
-                font-size: 1.5rem;
+            
+            /* Adjust container bottom padding when footer is hidden */
+            .container {
+                margin-bottom: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <div id="loader" class="loader">
-        <div class="loader-content">
-            <div class="spinner"></div>
-            <div>Loading...</div>
-        </div>
-    </div>
     <div class="container">
-        <div class="form-container">
+        <div class="text-content">
+            <div class="logo-container">
+                <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Company Logo" class="logo">
+            </div>
+            <h2 class="company-title">{{ config('app.company_name') }}</h2>
+            <p class="welcome-text">Welcome to our secure portal. Please sign in to access your account.</p>
+        </div>
+
+        <div class="form-card">
+            <h1>Sign in</h1>
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
-                <h1>Welcome Back</h1>
                 <div class="input-group">
                     <input type="email" name="email" placeholder="Email" required />
                 </div>
@@ -265,18 +378,24 @@
                         <i class="fas fa-eye" id="toggleIcon"></i>
                     </span>
                 </div>
-                <a href="{{ route('password.request') }}">Forgot your password?</a>
+                <div style="margin-bottom: 20px;">
+                    <a href="{{ route('password.request') }}" style="color: #0066ff; text-decoration: none;">Forgot password?</a>
+                </div>
                 <button type="submit">Sign In</button>
             </form>
         </div>
-        <div class="overlay-container">
-            <div class="overlay-content">
-                <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Logo" class="logo">
-                <h2>MHRPCI-HRIS</h2>
-                <p>Enter your personal details and start your journey with us</p>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="address">{{ config('app.company_address') }} {{ config('app.company_city') }} {{ config('app.company_zip') }}</div>
+            <div class="contact">
+                <span>Phone: {{ config('app.company_phone') }}</span>
+                <span>Email: {{ config('app.company_email') }}</span>
             </div>
         </div>
-    </div>
+    </footer>
+
     <div id="notification" class="notification"></div>
 
     <script>
