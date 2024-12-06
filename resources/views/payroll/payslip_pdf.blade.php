@@ -186,7 +186,7 @@
                 <div class="column">
                     <h2 class="text-uppercase">Net Pay</h2>
                     <h1 class="text-primary">PHP {{ number_format($payroll->net_salary, 2) }}</h1>
-                    <p class="text-right" style="margin-right: 30%"><strong>{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</strong></p>
+                    <p class="text-right" style="margin-right: 30%"><strong>MHR HR ComBEN</strong></p>
                 </div>
                 <div class="column">
                     @php

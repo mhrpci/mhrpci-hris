@@ -298,6 +298,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.markAllRead');
 
+    Route::post('/employees/create-bulk-users', [EmployeeController::class, 'createBulkUsers'])
+        ->name('employees.createBulkUsers');
+
     });
 
     Auth::routes();

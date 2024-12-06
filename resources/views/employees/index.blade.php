@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('css')
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+@endsection
+
 @section('content')
     <br>
     <div class="container-fluid">
@@ -23,6 +28,14 @@
                                 <button type="submit" class="btn btn-secondary btn-sm rounded-pill">Export Employees <i class="fas fa-file-export"></i></button>
                             </form>
                             @endif
+                            @if(Auth::user()->hasRole(['Super Admin', 'Admin', 'HR Compliance']))
+                            <form action="{{ route('employees.createBulkUsers') }}" method="POST" class="d-inline mr-2 mb-2">
+                                    @csrf
+                                    <button type="submit" class="btn btn-info btn-sm rounded-pill create-bulk-users-btn">
+                                        Create All User Accounts <i class="fas fa-users"></i>
+                                    </button>
+                            </form>
+                            @endif
                             <div class="dropdown mr-2 mb-2">
                                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Filter <i class="fas fa-filter"></i>
@@ -34,7 +47,7 @@
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#departmentModal">Department</a>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#rankModal">Rank</a>
                                 </div>
-                            </div>
+                            </div>                    
                         </div>
                     </div>
                      <!-- /.card-header -->
@@ -86,21 +99,27 @@
                                                             @elseif ($employee->rank === 'Rank File' && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('HR Compliance') || Auth::user()->hasRole('Finance')))
                                                             <a class="dropdown-item" href="{{ route('employees.edit', $employee->slug) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
                                                             @endif
-                                                        @can('user-create')
-                                                            <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="dropdown-item create-user-btn">
-                                                                <i class="fas fa-user-plus"></i>&nbsp;Create User
-                                                            </button>
-                                                            </form>
+                                                        @if(!$employee->email_address || !App\Models\User::where('email', $employee->email_address)->exists())
+                                                            @can('user-create')
+                                                                <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item create-user-btn">
+                                                                    <i class="fas fa-user-plus"></i>&nbsp;Create User
+                                                                </button>
+                                                                </form>
                                                             @elsecan('hrcompliance')
-                                                            <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="dropdown-item create-user-btn">
-                                                                <i class="fas fa-user-plus"></i>&nbsp;Create User
+                                                                <form action="{{ route('employees.createUser', $employee->id) }}" method="POST">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item create-user-btn">
+                                                                    <i class="fas fa-user-plus"></i>&nbsp;Create User
+                                                                </button>
+                                                                </form>
+                                                            @endcan
+                                                        @else
+                                                            <button class="dropdown-item" disabled>
+                                                                <i class="fas fa-check"></i>&nbsp;User Account Exists
                                                             </button>
-                                                            </form>
-                                                        @endcan
+                                                        @endif
                                                         <button class="dropdown-item" data-toggle="modal"
                                                                 data-target="#additionalDetailsModal"
                                                                 data-employee-name="{{ $employee->last_name }} {{ $employee->first_name }}"
@@ -134,114 +153,114 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                         <!-- Enhanced Leave Balance Modal -->
-            <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="additionalDetailsModalLabel">
-                                <i class="fas fa-calendar-check"></i> Employee Leave Balance
-                            </h5>
-                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="employee-info mb-3">
-                                <h6 class="font-weight-bold" id="employeeName"></h6>
-                                <small class="text-muted" id="employeeDetails"></small>
-                            </div>
-                            <div class="row">
-                                <!-- Sick Leave Card -->
-                                <div class="col-md-12 mb-3">
-                                    <div class="card border-left-danger h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                        Sick Leave Balance</div>
-                                                    <div class="row no-gutters align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                                {{ number_format($employee->sick_leave, 2) }} Hours
-                                                            </div>
-                                                            <small class="text-muted">
-                                                                Equivalent to {{ number_format($employee->sick_leave / 24, 2) }} Days
-                                                            </small>
+                                            <!-- Enhanced Leave Balance Modal -->
+                                            <div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-labelledby="additionalDetailsModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-primary text-white">
+                                                            <h5 class="modal-title" id="additionalDetailsModalLabel">
+                                                                <i class="fas fa-calendar-check"></i> Employee Leave Balance
+                                                            </h5>
+                                                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-hospital text-gray-300 fa-2x"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                                        <div class="modal-body">
+                                                            <div class="employee-info mb-3">
+                                                                <h6 class="font-weight-bold" id="employeeName"></h6>
+                                                                <small class="text-muted" id="employeeDetails"></small>
+                                                            </div>
+                                                            <div class="row">
+                                                                <!-- Sick Leave Card -->
+                                                                <div class="col-md-12 mb-3">
+                                                                    <div class="card border-left-danger h-100 py-2">
+                                                                        <div class="card-body">
+                                                                            <div class="row no-gutters align-items-center">
+                                                                                <div class="col mr-2">
+                                                                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                                                        Sick Leave Balance</div>
+                                                                                    <div class="row no-gutters align-items-center">
+                                                                                        <div class="col-auto">
+                                                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                                                                {{ number_format($employee->sick_leave, 2) }} Hours
+                                                                                            </div>
+                                                                                            <small class="text-muted">
+                                                                                                Equivalent to {{ number_format($employee->sick_leave / 24, 2) }} Days
+                                                                                            </small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-auto">
+                                                                                    <i class="fas fa-hospital text-gray-300 fa-2x"></i>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
-                                <!-- Vacation Leave Card -->
-                                <div class="col-md-12 mb-3">
-                                    <div class="card border-left-primary h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                        Vacation Leave Balance</div>
-                                                    <div class="row no-gutters align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                                {{ number_format($employee->vacation_leave, 2) }} Hours
-                                                            </div>
-                                                            <small class="text-muted">
-                                                                Equivalent to {{ number_format($employee->vacation_leave / 24, 2) }} Days
-                                                            </small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-umbrella-beach text-gray-300 fa-2x"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                                                <!-- Vacation Leave Card -->
+                                                                <div class="col-md-12 mb-3">
+                                                                    <div class="card border-left-primary h-100 py-2">
+                                                                        <div class="card-body">
+                                                                            <div class="row no-gutters align-items-center">
+                                                                                <div class="col mr-2">
+                                                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                                        Vacation Leave Balance</div>
+                                                                                    <div class="row no-gutters align-items-center">
+                                                                                        <div class="col-auto">
+                                                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                                                                {{ number_format($employee->vacation_leave, 2) }} Hours
+                                                                                            </div>
+                                                                                            <small class="text-muted">
+                                                                                                Equivalent to {{ number_format($employee->vacation_leave / 24, 2) }} Days
+                                                                                            </small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-auto">
+                                                                                    <i class="fas fa-umbrella-beach text-gray-300 fa-2x"></i>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
-                                <!-- Emergency Leave Card -->
-                                <div class="col-md-12">
-                                    <div class="card border-left-warning h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                        Emergency Leave Balance</div>
-                                                    <div class="row no-gutters align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                                {{ number_format($employee->emergency_leave, 2) }} Hours
+                                                                <!-- Emergency Leave Card -->
+                                                                <div class="col-md-12">
+                                                                    <div class="card border-left-warning h-100 py-2">
+                                                                        <div class="card-body">
+                                                                            <div class="row no-gutters align-items-center">
+                                                                                <div class="col mr-2">
+                                                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                                                        Emergency Leave Balance</div>
+                                                                                    <div class="row no-gutters align-items-center">
+                                                                                        <div class="col-auto">
+                                                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                                                                                {{ number_format($employee->emergency_leave, 2) }} Hours
+                                                                                            </div>
+                                                                                            <small class="text-muted">
+                                                                                                Equivalent to {{ number_format($employee->emergency_leave / 24, 2) }} Days
+                                                                                            </small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-auto">
+                                                                                    <i class="fas fa-exclamation-circle text-gray-300 fa-2x"></i>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <small class="text-muted">
-                                                                Equivalent to {{ number_format($employee->emergency_leave / 24, 2) }} Days
-                                                            </small>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                                <i class="fas fa-times"></i> Close
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-exclamation-circle text-gray-300 fa-2x"></i>
-                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                <i class="fas fa-times"></i> Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -295,47 +314,136 @@
         </div>
 
             <!-- Month Modal -->
-    <div class="modal fade" id="monthModal" tabindex="-1" role="dialog" aria-labelledby="monthModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="monthModalLabel">Filter by Month</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="monthForm">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="month">Month</label>
-                            <input type="month" class="form-control" id="month" name="month" required>
+            <div class="modal fade" id="monthModal" tabindex="-1" role="dialog" aria-labelledby="monthModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="monthModalLabel">Filter by Month</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
+                        <form id="monthForm">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="month">Month</label>
+                                    <input type="month" class="form-control" id="month" name="month" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Apply Filter</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Apply Filter</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
-    </div>
+            <!-- Year Modal -->
+            <div class="modal fade" id="yearModal" tabindex="-1" role="dialog" aria-labelledby="yearModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="yearModalLabel">Filter by Year</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="yearForm">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="year">Year</label>
+                                    <input type="number" class="form-control" id="year" name="year" min="1900" max="2099" step="1" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Apply Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Status Modal -->
+            <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="statusModalLabel">Filter by Employment Status</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="statusForm">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="employee_status">Employment Status</label>
+                                    <select class="form-control" id="employee_status" name="employee_status" required>
+                                        <option value="">Select Status</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Resigned">Resigned</option>
+                                        <option value="Terminated">Terminated</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Apply Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Department Modal -->
+            <div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="departmentModalLabel">Filter by Department</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="departmentForm">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <select class="form-control" id="department" name="department" required>
+                                        <option value="">Select Department</option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{ $department->name }}">{{ $department->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Apply Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Year Modal -->
-        <div class="modal fade" id="yearModal" tabindex="-1" role="dialog" aria-labelledby="yearModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="yearModalLabel">Filter by Year</h5>
+            <!-- Rank Modal -->
+            <div class="modal fade" id="rankModal" tabindex="-1" role="dialog" aria-labelledby="rankModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="rankModalLabel">Filter by Rank</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form id="yearForm">
+                    <form id="rankForm">
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="year">Year</label>
-                                <input type="number" class="form-control" id="year" name="year" min="1900" max="2099" step="1" required>
+                                <label for="rank">Rank</label>
+                                <select class="form-control" id="rank" name="rank" required>
+                                    <option value="">Select Rank</option>
+                                    <option value="Rank File">Rank File</option>
+                                    <option value="Managerial">Managerial</option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -346,101 +454,13 @@
                 </div>
             </div>
         </div>
-        <!-- Status Modal -->
-    <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="statusModalLabel">Filter by Employment Status</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="statusForm">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="employee_status">Employment Status</label>
-                            <select class="form-control" id="employee_status" name="employee_status" required>
-                                <option value="">Select Status</option>
-                                <option value="Active">Active</option>
-                                <option value="Resigned">Resigned</option>
-                                <option value="Terminated">Terminated</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Apply Filter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Department Modal -->
-    <div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="departmentModalLabel">Filter by Department</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="departmentForm">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="department">Department</label>
-                            <select class="form-control" id="department" name="department" required>
-                                <option value="">Select Department</option>
-                                @foreach ($departments as $department)
-                                    <option value="{{ $department->name }}">{{ $department->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Apply Filter</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Rank Modal -->
-    <div class="modal fade" id="rankModal" tabindex="-1" role="dialog" aria-labelledby="rankModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="rankModalLabel">Filter by Rank</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="rankForm">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="rank">Rank</label>
-                        <select class="form-control" id="rank" name="rank" required>
-                            <option value="">Select Rank</option>
-                            <option value="Rank File">Rank File</option>
-                            <option value="Managerial">Managerial</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Apply Filter</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 @endsection
 
 @section('js')
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
        $(document).ready(function () {
     let table = $('#employees-table').DataTable({
@@ -767,6 +787,27 @@
 
         modal.find('.emergency-leave-hours').text(Number(emergencyLeave).toFixed(2) + ' Hours');
         modal.find('.emergency-leave-days').text('Equivalent to ' + (Number(emergencyLeave) / 24).toFixed(2) + ' Days');
+    });
+
+    // Handle bulk user creation confirmation
+    $(document).on('click', '.create-bulk-users-btn', function(e) {
+        e.preventDefault();
+        let form = $(this).closest('form');
+
+        Swal.fire({
+            title: 'Create User Accounts',
+            text: 'Are you sure you want to create user accounts for all active employees?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, create them!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
     });
 });
 

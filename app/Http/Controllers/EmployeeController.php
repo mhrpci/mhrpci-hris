@@ -553,4 +553,93 @@ public function update(Request $request, $slug): RedirectResponse
         return view('employees.public-profile', compact('employee'));
     }
 
+    // ... existing code ...
+
+/**
+ * Create user accounts for all active employees who don't have accounts yet.
+ *
+ * @return \Illuminate\Http\RedirectResponse
+ */
+public function createBulkUsers(): RedirectResponse
+{
+    try {
+        // Begin transaction
+        DB::beginTransaction();
+
+        // Get all active employees without user accounts
+        $activeEmployees = Employee::where('employee_status', 'Active')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('users')
+                    ->whereRaw('users.email = employees.email_address');
+            })
+            ->get();
+
+        if ($activeEmployees->isEmpty()) {
+            return redirect()->route('employees.index')
+                ->with('info', 'No eligible employees found for user account creation.');
+        }
+
+        // Get the Employee role
+        $employeeRole = Role::where('name', 'Employee')->firstOrFail();
+
+        $createdCount = 0;
+        $failedCount = 0;
+        $errors = [];
+
+        foreach ($activeEmployees as $employee) {
+            try {
+                // Create user account
+                $user = User::create([
+                    'company_id' => $employee->company_id,
+                    'first_name' => $employee->first_name,
+                    'middle_name' => $employee->middle_name,
+                    'last_name' => $employee->last_name,
+                    'suffix' => $employee->suffix,
+                    'email' => $employee->email_address,
+                    'password' => Hash::make($employee->company_id),
+                    'bio' => $employee->position->name,
+                    'profile_image' => $employee->profile,
+                    'contact_no' => $employee->contact_no,
+                    'date_hired' => $employee->date_hired,
+                ]);
+
+                // Assign the Employee role
+                $user->assignRole($employeeRole);
+
+                // Send notification email
+                $user->notify(new EmployeeAccountActivated($employee));
+
+                $createdCount++;
+            } catch (\Exception $e) {
+                $failedCount++;
+                $errors[] = "Failed to create user for {$employee->first_name} {$employee->last_name}: {$e->getMessage()}";
+                Log::error("User creation failed for employee {$employee->id}: " . $e->getMessage());
+            }
+        }
+
+        DB::commit();
+
+        // Prepare the response message
+        $message = "Successfully created {$createdCount} user accounts.";
+        if ($failedCount > 0) {
+            $message .= " Failed to create {$failedCount} accounts.";
+        }
+
+        $type = $failedCount > 0 ? 'warning' : 'success';
+
+        return redirect()->route('employees.index')
+            ->with($type, $message)
+            ->with('errors', $errors);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Bulk user creation failed: ' . $e->getMessage());
+        Log::error($e->getTraceAsString());
+
+        return redirect()->route('employees.index')
+            ->with('error', 'An error occurred during bulk user creation. Please try again.');
+    }
+}
+
 }

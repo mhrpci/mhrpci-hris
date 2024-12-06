@@ -33,11 +33,6 @@
                         <button class="btn btn-dark flex-shrink-0 mr-2 mb-2" onclick="showSection('signature')">Signature</button>
                     </div>
                 </div>
-                @if(auth()->user()->email === $employee->email_address && !$employee->signature)
-                    <button class="btn btn-outline-primary mt-2" data-toggle="modal" data-target="#signatureModal">
-                        <i class="fas fa-signature mr-1"></i> Add Signature
-                    </button>
-                @endif
             </div>
 
             <div id="infoSections">
@@ -326,7 +321,9 @@
 @endpush
 
 @push('scripts')
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function showSection(sectionId) {
         const sections = document.querySelectorAll('.info-section');

@@ -17,6 +17,7 @@ use App\Models\PhilhealthContribution;
 use App\Models\SssLoan;
 use App\Models\PagibigLoan;
 use App\Models\CashAdvance;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -278,6 +279,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Add this line to fetch the employee data for the authenticated user
+        $employees = Employee::where('email_address', Auth::user()->email)->get();
+
         // Get counts of employees by department
         $employeesByDepartment = $this->countEmployeesByDepartment();
 
@@ -333,6 +337,7 @@ class HomeController extends Controller
 
         // Pass the counts, sum, monthly contributions, latest posts, leave details, holidays, birthdays, and career count to the view
         return view('home', compact(
+            'employees',
             'userCount',
             'employeeCount',
             'attendanceAllCount',

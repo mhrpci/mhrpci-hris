@@ -473,27 +473,29 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
     <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
 
     @stack('styles')
 
+    <!-- Initialize Select2 after jQuery is loaded -->
     <script>
-        $(document).ready(function() {
-            // Initialize Select2 for all select elements
-            $('select').select2({
-                theme: 'bootstrap4',
-                width: '100%'
-            });
+        window.addEventListener('load', function() {
+            if (typeof jQuery !== 'undefined') {
+                // Initialize Select2 for all select elements
+                $('select').select2({
+                    theme: 'bootstrap4',
+                    width: '100%'
+                });
+            }
         });
     </script>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <meta name="vapid-key" content="{{ config('webpush.public_key') }}">
-    <meta name="user-id" content="{{ Auth::id() }}">
     <meta name="app-env" content="{{ config('app.env') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/css/shepherd.css"/>
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/js/shepherd.min.js"></script>
@@ -1044,10 +1046,10 @@
     </div>
     <!-- ./wrapper -->
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- AdminLTE App -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"></script>
     <!-- DataTables -->
@@ -1058,171 +1060,6 @@
 
     <script>
         $(document).ready(function() {
-            let lastNotificationTimestamp = 0;
-            let notificationSound = new Audio('/sounds/notification.mp3');
-
-            // Enhanced notification update function
-            async function updateNotifications() {
-                try {
-                    const response = await $.ajax({
-                        url: '{{ route("notifications.get") }}',
-                        method: 'GET',
-                        headers: {
-                            'X-Socket-ID': window.Echo?.socketId()
-                        },
-                        data: {
-                            last_timestamp: lastNotificationTimestamp
-                        }
-                    });
-
-                    // Update only if there are new notifications
-                    if (response.timestamp > lastNotificationTimestamp) {
-                        $('#notification-count').text(response.label);
-                        $('#notification-header').text(response.label + ' Notifications');
-                        $('#notification-list').html(response.dropdown);
-
-                        // Play sound and show desktop notification if enabled
-                        if (response.label > 0 && Notification.permission === 'granted') {
-                            notificationSound.play();
-                            
-                            // Get the latest notification
-                            const latestNotification = response.notifications[0];
-                            if (latestNotification && latestNotification.type === 'post') {
-                                showDesktopNotification({
-                                    title: latestNotification.data.title,
-                                    body: latestNotification.data.message,
-                                    icon: '/favicon.ico',
-                                    url: latestNotification.data.url
-                                });
-                            }
-                        }
-
-                        lastNotificationTimestamp = response.timestamp;
-                    }
-
-                    // Update notification badge color based on count
-                    updateNotificationBadge(response.label);
-
-                } catch (error) {
-                    console.error("Error fetching notifications:", error);
-                    // Implement exponential backoff for retries
-                    handleNotificationError();
-                }
-            }
-
-            // Add notification badge update function
-            function updateNotificationBadge(count) {
-                const badge = $('#notification-count');
-                if (count > 0) {
-                    badge.removeClass('bg-secondary').addClass('bg-danger');
-                } else {
-                    badge.removeClass('bg-danger').addClass('bg-secondary');
-                }
-            }
-
-            // Add desktop notification function
-            function showDesktopNotification(data) {
-                if (!("Notification" in window)) return;
-
-                const options = {
-                    body: data.body,
-                    icon: data.icon,
-                    badge: '/badge.png',
-                    vibrate: [100, 50, 100],
-                    tag: 'notification-update',
-                    renotify: true,
-                    requireInteraction: true
-                };
-
-                const notification = new Notification(data.title, options);
-
-                // Handle notification click
-                notification.onclick = function(event) {
-                    event.preventDefault();
-                    window.focus();
-                    window.location.href = data.url;
-                    notification.close();
-                };
-            }
-
-            // Add error handling with exponential backoff
-            let retryCount = 0;
-            const maxRetries = 5;
-
-            function handleNotificationError() {
-                if (retryCount < maxRetries) {
-                    const backoffTime = Math.min(1000 * Math.pow(2, retryCount), 30000);
-                    retryCount++;
-
-                    setTimeout(() => {
-                        updateNotifications();
-                    }, backoffTime);
-                } else {
-                    console.error('Max retry attempts reached for notifications');
-                    // Show user-friendly error message
-                    showErrorToast('Unable to fetch notifications. Please refresh the page.');
-                }
-            }
-
-            // Initialize real-time updates with Laravel Echo
-            if (window.Echo) {
-                Echo.private(`App.Models.User.${$('meta[name="user-id"]').content}`)
-                    .notification((notification) => {
-                        // Handle real-time notification
-                        if (notification.type === 'App\\Notifications\\NewPostNotification') {
-                            updateNotifications();
-                            
-                            // Show toast notification
-                            Swal.fire({
-                                title: notification.title,
-                                text: notification.message,
-                                icon: 'info',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 5000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            });
-                        }
-                    });
-            }
-
-            // Update notifications every 60 seconds
-            const updateInterval = setInterval(updateNotifications, 60000);
-
-            // Clear interval when page is hidden
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    clearInterval(updateInterval);
-                } else {
-                    updateNotifications();
-                    setInterval(updateNotifications, 60000);
-                }
-            });
-
-            // Initial update
-            updateNotifications();
-
-            // Enhanced notification modal handling
-            $(document).on('click', '#notification-list a', function(e) {
-                e.preventDefault();
-                const title = $(this).data('title');
-                const details = $(this).data('details');
-                const route = $(this).attr('href');
-
-                if (route && route !== '#') {
-                    window.location.href = route;
-                } else {
-                    $('#notificationModalLabel').text(title);
-                    $('#notificationModalBody').html(details);
-                    $('#notificationModal').modal('show');
-                }
-            });
-
             // Preloader
             $(window).on('load', function() {
                 $('#loader').fadeOut('slow', function() {
@@ -1235,7 +1072,7 @@
                 $('#loader').fadeOut('slow', function() {
                     $(this).remove();
                 });
-            }, 1000); // Changed from 5000 to 1000 milliseconds
+            }, 1000);
 
             // Theme customization
             function applyTheme(navbarClass, sidebarClass, brandClass) {
@@ -1315,54 +1152,54 @@
             // Call this function on page load
             loadSavedTheme();
 
-             // Navbar Position Functionality
-    function applyNavbarPosition(position) {
-        const $body = $('body');
-        const $navbar = $('.main-header');
+            // Navbar Position Functionality
+            function applyNavbarPosition(position) {
+                const $body = $('body');
+                const $navbar = $('.main-header');
 
-        // Remove existing classes
-        $body.removeClass('layout-navbar-fixed layout-navbar-not-fixed');
-        $navbar.removeClass('fixed-top sticky-top');
+                // Remove existing classes
+                $body.removeClass('layout-navbar-fixed layout-navbar-not-fixed');
+                $navbar.removeClass('fixed-top sticky-top');
 
-        switch (position) {
-            case 'fixed':
-                $body.addClass('layout-navbar-fixed');
-                $navbar.addClass('fixed-top');
-                break;
-            case 'sticky':
-                $navbar.addClass('sticky-top');
-                break;
-            default: // 'static'
-                $body.addClass('layout-navbar-not-fixed');
-                break;
-        }
+                switch (position) {
+                    case 'fixed':
+                        $body.addClass('layout-navbar-fixed');
+                        $navbar.addClass('fixed-top');
+                        break;
+                    case 'sticky':
+                        $navbar.addClass('sticky-top');
+                        break;
+                    default: // 'static'
+                        $body.addClass('layout-navbar-not-fixed');
+                        break;
+                }
 
-        // Save preference
-        localStorage.setItem('navbarPosition', position);
-    }
+                // Save preference
+                localStorage.setItem('navbarPosition', position);
+            }
 
-    // Navbar position change event handler
-    $('#navbar-position-select').on('change', function() {
-        const selectedPosition = $(this).val();
-        applyNavbarPosition(selectedPosition);
-    });
+            // Navbar position change event handler
+            $('#navbar-position-select').on('change', function() {
+                const selectedPosition = $(this).val();
+                applyNavbarPosition(selectedPosition);
+            });
 
-    // Load saved navbar position
-    function loadSavedNavbarPosition() {
-        const savedPosition = localStorage.getItem('navbarPosition') || 'static';
-        $('#navbar-position-select').val(savedPosition);
-        applyNavbarPosition(savedPosition);
-    }
+            // Load saved navbar position
+            function loadSavedNavbarPosition() {
+                const savedPosition = localStorage.getItem('navbarPosition') || 'static';
+                $('#navbar-position-select').val(savedPosition);
+                applyNavbarPosition(savedPosition);
+            }
 
-    // Call this function on page load
-    loadSavedNavbarPosition();
+            // Call this function on page load
+            loadSavedNavbarPosition();
         });
     </script>
 
     @yield('js')
 
-    <script src="{{ asset('js/push-notifications.js') }}"></script>
-
+</body>
+</html>
     <script>
     // Initialize notification system
     document.addEventListener('DOMContentLoaded', function() {
@@ -1384,7 +1221,11 @@
                     this.updateButtonState(Notification.permission);
 
                     if (Notification.permission === 'granted') {
-                        await this.initializeServiceWorker();
+                        // Show test notification
+                        new Notification('Notifications Enabled', {
+                            body: 'You will now receive notifications from our system',
+                            icon: '/favicon.ico'
+                        });
                     }
                 }
 
@@ -1413,7 +1254,6 @@
                         this.updateButtonState(permission);
 
                         if (permission === 'granted') {
-                            await this.initializeServiceWorker();
                             // Show test notification
                             new Notification('Notifications Enabled', {
                                 body: 'You will now receive notifications from our system',
@@ -1423,75 +1263,6 @@
                     } catch (error) {
                         console.error('Error requesting permission:', error);
                     }
-                }
-
-                async initializeServiceWorker() {
-                    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-                        console.error('Push notifications not supported');
-                        return;
-                    }
-
-                    try {
-                        const registration = await navigator.serviceWorker.register('/service-worker.js');
-                        console.log('ServiceWorker registered');
-
-                        const subscription = await registration.pushManager.getSubscription();
-                        if (subscription) {
-                            console.log('Already subscribed to push notifications');
-                            return;
-                        }
-
-                        const vapidPublicKey = document.querySelector('meta[name="vapid-key"]').content;
-                        if (!vapidPublicKey) {
-                            console.error('VAPID public key not found');
-                            return;
-                        }
-
-                        const convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey);
-                        const newSubscription = await registration.pushManager.subscribe({
-                            userVisibleOnly: true,
-                            applicationServerKey: convertedVapidKey
-                        });
-
-                        await this.sendSubscriptionToServer(newSubscription);
-                        console.log('Push notification subscription successful');
-                    } catch (error) {
-                        console.error('Error initializing push notifications:', error);
-                    }
-                }
-
-                async sendSubscriptionToServer(subscription) {
-                    try {
-                        const response = await fetch('/push/subscribe', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            },
-                            body: JSON.stringify(subscription)
-                        });
-
-                        const data = await response.json();
-                        console.log('Subscription sent to server:', data);
-                    } catch (error) {
-                        console.error('Error sending subscription to server:', error);
-                    }
-
-                }
-
-                urlBase64ToUint8Array(base64String) {
-                    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-                    const base64 = (base64String + padding)
-                        .replace(/\-/g, '+')
-                        .replace(/_/g, '/');
-
-                    const rawData = window.atob(base64);
-                    const outputArray = new Uint8Array(rawData.length);
-
-                    for (let i = 0; i < rawData.length; ++i) {
-                        outputArray[i] = rawData.charCodeAt(i);
-                    }
-                    return outputArray;
                 }
             }
 
@@ -1809,48 +1580,6 @@
     </script>
 
     <script>
-    // Service Worker Registration
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-        window.addEventListener('load', async () => {
-            try {
-                const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                    scope: '/'
-                });
-
-                console.log('ServiceWorker registered with scope:', registration.scope);
-
-                // Check and update service worker
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateToast('New version available! Please refresh to update.');
-                        }
-                    });
-                });
-            } catch (error) {
-                console.error('ServiceWorker registration failed:', error);
-            }
-        });
-    }
-
-    function showUpdateToast(message) {
-        Swal.fire({
-            title: 'Update Available',
-            text: message,
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Refresh Now',
-            cancelButtonText: 'Later'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.reload();
-            }
-        });
-    }
-    </script>
-
-    <script>
     $(document).ready(function() {
         let searchTimeout;
         const searchInput = $('#globalSearch');
@@ -1882,92 +1611,6 @@
                 searchResults.addClass('d-none');
             }
         });
-        
-        
-        function displayResults(results) {
-            const resultsBody = searchResults.find('.search-results-body');
-            resultsBody.empty();
-            
-            results.forEach(result => {
-                if (result.type === 'Leave Request') {
-                    resultsBody.append(`
-                        <a href="${result.url}" class="search-result-item">
-                            <div class="search-result-icon">
-                                <i class="${result.icon}"></i>
-                            </div>
-                            <div class="search-result-content">
-                                <div class="search-result-title">
-                                    ${escapeHtml(result.title)}
-                                    <span class="search-result-type">${result.type}</span>
-                                    <span class="badge badge-${result.meta.status.class}">
-                                        ${escapeHtml(result.meta.status.text)}
-                                    </span>
-                                </div>
-                                <div class="search-result-subtitle">
-                                    ${escapeHtml(result.meta.company_id)} • 
-                                    ${escapeHtml(result.meta.department)} •
-                                    ${escapeHtml(result.meta.date_range)}
-                                </div>
-                                <div class="search-result-description">
-                                    ${escapeHtml(result.description)}
-                                </div>
-                                <div class="search-result-meta">
-                                    <small class="text-muted">
-                                        <i class="fas fa-user-check"></i> Approved by: ${escapeHtml(result.meta.approved_by)}
-                                    </small>
-                                </div>
-                            </div>
-                        </a>
-                    `);
-                } else {
-                    // Original display for other result types
-                    resultsBody.append(`
-                        <a href="${result.url}" class="search-result-item">
-                            <div class="search-result-icon">
-                                <i class="${result.icon}"></i>
-                            </div>
-                            <div class="search-result-content">
-                                <div class="search-result-title">
-                                    ${escapeHtml(result.title)}
-                                    <span class="search-result-type">${result.type}</span>
-                                </div>
-                                <div class="search-result-subtitle">${escapeHtml(result.subtitle)}</div>
-                                <div class="search-result-description">${escapeHtml(result.description)}</div>
-                            </div>
-                        </a>
-                    `);
-                }
-            });
-        }
-        
-        function displayNoResults() {
-            const resultsBody = searchResults.find('.search-results-body');
-            resultsBody.html(`
-                <div class="text-center py-4">
-                    <i class="fas fa-search fa-2x text-muted mb-2"></i>
-                    <p class="mb-0">No results found</p>
-                </div>
-            `);
-        }
-        
-        function displayError() {
-            const resultsBody = searchResults.find('.search-results-body');
-            resultsBody.html(`
-                <div class="text-center py-4">
-                    <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
-                    <p class="mb-0">An error occurred while searching</p>
-                </div>
-            `);
-        }
-        
-        function escapeHtml(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
     });
     </script>
 

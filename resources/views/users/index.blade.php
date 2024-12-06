@@ -134,7 +134,12 @@
 <!-- /.container-fluid -->
 @endsection
 
+@section('css')
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+@endsection
+
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
         $('#users-table').DataTable();

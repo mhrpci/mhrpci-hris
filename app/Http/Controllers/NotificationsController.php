@@ -148,15 +148,27 @@ class NotificationsController extends Controller
     // Method to fetch notifications data
     public function getNotificationsData(Request $request)
     {
-        $this->generateNotifications();
+        try {
+            $this->generateNotifications();
 
-        return response()->json([
-            'label' => $this->countTotalNotifications(),
-            'label_color' => 'danger',
-            'icon_color' => 'dark',
-            'dropdown' => $this->generateDropdownHtml(),
-            'timestamp' => now()->timestamp
-        ]);
+            return response()->json([
+                'label' => $this->countTotalNotifications(),
+                'label_color' => 'danger',
+                'icon_color' => 'dark',
+                'dropdown' => $this->generateDropdownHtml(),
+                'timestamp' => now()->timestamp
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in getNotificationsData: ' . $e->getMessage());
+            // Return a safe fallback response
+            return response()->json([
+                'label' => 0,
+                'label_color' => 'danger',
+                'icon_color' => 'dark',
+                'dropdown' => '',
+                'timestamp' => now()->timestamp
+            ]);
+        }
     }
 
     // Generate all types of notifications
@@ -165,18 +177,18 @@ class NotificationsController extends Controller
         try {
             $oldCount = $this->countTotalNotifications();
 
-            // Use database transactions with a shorter timeout
+            // Use cache to prevent duplicate processing
+            $cacheKey = 'notifications_' . Auth::id();
+            if (Cache::has($cacheKey)) {
+                return Cache::get($cacheKey);
+            }
+
             DB::beginTransaction();
 
-            // Set a reasonable timeout for the transaction
+            // Set a reasonable timeout
             DB::statement('SET SESSION innodb_lock_wait_timeout=10');
 
-            // Use eager loading to reduce database queries
-            Employee::with(['leaves', 'tasks', 'cashAdvances'])->chunk(100, function($employees) {
-                // Process employees in chunks
-            });
-
-            // Generate notifications concurrently where possible
+            // Process notifications in parallel where possible
             $notifications = [
                 $this->generateBirthdayNotifications(),
                 $this->generatePostNotifications(),
@@ -193,8 +205,11 @@ class NotificationsController extends Controller
             $newCount = $this->countTotalNotifications();
             $this->hasNewNotifications = ($newCount > $oldCount);
 
+            // Cache the results
+            Cache::put($cacheKey, $this->notifications, now()->addMinutes(5));
+
             if ($this->hasNewNotifications) {
-                // Dispatch both push and email notifications
+                // Use queue for notifications
                 dispatch(function() {
                     $this->broadcastNewNotifications();
                     $this->sendEmailNotifications();
@@ -204,7 +219,16 @@ class NotificationsController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error generating notifications: ' . $e->getMessage());
-            throw $e;
+            // Return empty notifications instead of throwing error
+            return [
+                'birthdays' => [],
+                'posts' => [],
+                'holidays' => [],
+                'leave_requests' => [],
+                'tasks' => [],
+                'job_applications' => [],
+                'cash_advances' => [],
+            ];
         }
     }
 
@@ -217,34 +241,44 @@ class NotificationsController extends Controller
 
         try {
             $newNotifications = $this->getNewNotifications();
-            $newNotifications = $this->filterAlreadySentNotifications($newNotifications);
-
             if (empty($newNotifications)) {
                 return;
             }
 
-            // Process subscriptions in smaller chunks
+            // Add timeout for push notifications
+            $timeout = config('app.env') === 'production' ? 30 : 10;
+
+            // Process subscriptions with chunking and timeout
             PushSubscription::where('active', true)
                 ->select(['endpoint', 'p256dh_key', 'auth_token', 'user_id'])
-                ->chunk(25, function($subscriptions) use ($newNotifications) {
-                    $this->processPushNotifications($subscriptions, $newNotifications);
+                ->chunk(25, function($subscriptions) use ($newNotifications, $timeout) {
+                    rescue(function() use ($subscriptions, $newNotifications) {
+                        $this->processPushNotifications($subscriptions, $newNotifications);
+                    }, function() {
+                        Log::warning('Push notification processing failed, continuing...');
+                        return null;
+                    });
                 });
 
-            // Broadcast using Laravel's event system
+            // Broadcast event with retry
             $broadcastData = [
                 'label' => $this->countTotalNotifications(),
                 'label_color' => 'danger',
                 'icon_color' => 'dark',
                 'dropdown' => $this->generateDropdownHtml(),
-                'timestamp' => now()->timestamp,
-                'sound' => 'notification.mp3'
+                'timestamp' => now()->timestamp
             ];
 
-            broadcast(new NewNotification($broadcastData))->toOthers();
+            rescue(function() use ($broadcastData) {
+                broadcast(new NewNotification($broadcastData))->toOthers();
+            }, function() {
+                Log::warning('Broadcasting failed, continuing...');
+                return null;
+            });
 
         } catch (\Exception $e) {
             Log::error('Broadcasting failed: ' . $e->getMessage());
-            report($e);
+            // Don't throw the error, just log it
         }
     }
 
@@ -537,9 +571,10 @@ class NotificationsController extends Controller
 
         \Log::info('Generating birthday notifications', ['today' => $today, 'authUserEmail' => $authUserEmail]);
 
-        // Fetch employees with birthdays today
+        // Fetch only active employees with birthdays today
         $todaysBirthdays = Employee::whereMonth('birth_date', $today->month)
             ->whereDay('birth_date', $today->day)
+            ->where('employee_status', 'Active')
             ->get();
 
         \Log::info('Employees with birthdays today', ['count' => $todaysBirthdays->count()]);

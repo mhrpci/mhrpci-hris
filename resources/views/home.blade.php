@@ -752,12 +752,15 @@
     @endif
     <!-- Add signature reminder alert -->
     @if(Auth::user()->hasRole('Employee'))
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <strong>Reminder!</strong> You can set up your employee signature in your my profile setting.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+        @if(!$employees->first()->signature)
+            <div class="col-md-12 mb-3">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Notice:</strong> Please add your signature to your employee profile before applying for leave. 
+                    <a href="{{ url('/my-profile') }}" class="alert-link">Update your profile here</a>.
+                </div>
+            </div>
+        @endif
     @endif
 
     <div class="row">
@@ -907,19 +910,19 @@
                         <h3 class="animated-greeting">{{ $greeting }}</h3>
                     @endif
 
-                    @if($todaysBirthdays->isNotEmpty())
+                    @if($todaysBirthdays->where('employee_status', 'Active')->isNotEmpty())
                         <h3 class="birthday-heading">Today's Birthdays</h3>
                         <ul class="birthday-list">
-                            @foreach($todaysBirthdays as $employee)
+                            @foreach($todaysBirthdays->where('employee_status', 'Active') as $employee)
                                 <li class="birthday-item">{{ $employee->first_name }} {{ $employee->last_name }}</li>
                             @endforeach
                         </ul>
                     @endif
 
-                    @if($upcomingBirthdays->isNotEmpty())
+                    @if($upcomingBirthdays->where('employee_status', 'Active')->isNotEmpty())
                         <h3 class="birthday-heading">Upcoming Birthdays This Month</h3>
                         <ul class="birthday-list">
-                            @foreach($upcomingBirthdays as $employee)
+                            @foreach($upcomingBirthdays->where('employee_status', 'Active') as $employee)
                                 <li class="birthday-item">
                                     {{ $employee->first_name }} {{ $employee->last_name }} -
                                     {{ \Carbon\Carbon::parse($employee->birth_date)->format('F d') }}

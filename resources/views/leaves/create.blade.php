@@ -15,6 +15,17 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
+                        @if(Auth::user()->hasRole('Employee'))
+                            @if(!$employees->first()->signature)
+                                <div class="col-md-12 mb-3">
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <strong>Notice:</strong> Please add your signature to your employee profile before applying for leave. 
+                                        <a href="{{ url('/my-profile') }}" class="alert-link">Update your profile here</a>.
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
                         <form action="{{ route('leaves.store') }}" method="POST">
                             @csrf
                             <div class="row">
