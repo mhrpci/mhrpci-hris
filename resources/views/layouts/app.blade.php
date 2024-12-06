@@ -463,6 +463,166 @@
 .search-result-meta i {
     margin-right: 0.25rem;
 }
+
+/* User Dropdown - Updated Styling */
+.user-menu .dropdown-menu {
+    padding: 0;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    min-width: 250px;
+    margin-top: 0.5rem;
+}
+
+.user-header {
+    background: linear-gradient(-45deg, #8e44ad, #9b59b6, #2ecc71, #3498db);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    padding: 1rem;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-header::before,
+.user-header::after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 6s infinite;
+}
+
+.user-header::before {
+    left: 10%;
+    animation-delay: -2s;
+}
+
+.user-header::after {
+    right: 10%;
+    animation-delay: -4s;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 0.3;
+    }
+}
+
+.user-header .img-circle {
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255,255,255,0.9);
+    padding: 0;
+    margin-bottom: 0.5rem;
+}
+
+.user-header .user-info {
+    color: #fff;
+    text-align: center;
+}
+
+.user-header .user-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #fff;
+}
+
+.user-header .user-role {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.9);
+    background: rgba(0,0,0,0.1);
+    padding: 0.2rem 0.8rem;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.dropdown-menu-content {
+    padding: 0.5rem 0;
+}
+
+.user-menu .dropdown-item {
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    color: #444;
+    transition: all 0.2s ease;
+}
+
+.user-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #8e44ad;
+}
+
+.user-menu .dropdown-item i {
+    width: 1.2rem;
+    margin-right: 0.8rem;
+    font-size: 1rem;
+    color: #666;
+}
+
+.user-menu .dropdown-item:hover i {
+    color: #8e44ad;
+}
+
+.user-menu .dropdown-divider {
+    margin: 0.25rem 0;
+    border-top: 1px solid #f1f1f1;
+}
+
+.user-menu .logout-item {
+    color: #dc3545;
+}
+
+.user-menu .logout-item:hover {
+    background-color: #fff5f5;
+    color: #dc3545;
+}
+
+.user-menu .logout-item i {
+    color: #dc3545;
+}
+
+.user-status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #28a745;
+    margin-right: 0.5rem;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.8);
+}
+
+.user-role {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #fff;
+    margin-top: 0.5rem;
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -663,38 +823,45 @@
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                             @if(Auth::user()->adminlte_image())
-                                <img src="{{ Auth::user()->adminlte_image() }}" class="user-image img-circle elevation-2" alt="User Image">
+                                <img src="{{ Auth::user()->adminlte_image() }}" class="user-image img-circle elevation-1" alt="User Image">
+                                {{Auth::user()->first_name}} {{Auth::user()->last_name}}
                             @else
-                                <div class="user-image img-circle elevation-2 d-flex justify-content-center align-items-center" style="width: 2.1rem; height: 2.1rem; background-color: #007bff; color: white; font-size: 0.8rem;">
+                                <div class="user-image img-circle elevation-1 d-flex justify-content-center align-items-center">
                                     {{ strtoupper(substr(Auth::user()->first_name, 0, 1) . substr(Auth::user()->last_name, 0, 1)) }}
                                 </div>
                             @endif
-                            <span class="d-none d-md-inline">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                            <!-- User image -->
-                            <li class="user-header bg-primary">
+                        <div class="dropdown-menu">
+                            <div class="user-header">
                                 @if(Auth::user()->adminlte_image())
                                     <img src="{{ Auth::user()->adminlte_image() }}" class="img-circle elevation-2" alt="User Image">
                                 @else
-                                    <div class="img-circle elevation-2 d-flex justify-content-center align-items-center mx-auto" style="width: 90px; height: 90px; background-color: #007bff; color: white; font-size: 2rem;">
+                                    <div class="img-circle elevation-2 d-flex justify-content-center align-items-center mx-auto">
                                         {{ strtoupper(substr(Auth::user()->first_name, 0, 1) . substr(Auth::user()->last_name, 0, 1)) }}
                                     </div>
                                 @endif
-                                <p>
-                                    {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
-                                    <small>Member since {{ Auth::user()->date_hired ?? Auth::user()->created_at->format('F d, Y') }}</small>
-                                </p>
-                            </li>
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-                                <a href="/profile/details" class="btn btn-default btn-flat">Profile</a>
-                                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                                <div class="user-info">
+                                    <div class="user-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</div>
+                                    <span class="user-role">{{ Auth::user()->roles->first()->name ?? 'User' }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="dropdown-menu-content">
+                                <a href="/profile/details" class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    My Profile
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                
+                                <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-default btn-flat float-right">Sign out</button>
+                                    <button type="submit" class="dropdown-item logout-item">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Sign out
+                                    </button>
                                 </form>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </li>
                 @endguest
             </ul>
@@ -1221,7 +1388,6 @@
                     this.updateButtonState(Notification.permission);
 
                     if (Notification.permission === 'granted') {
-                        // Show test notification
                         new Notification('Notifications Enabled', {
                             body: 'You will now receive notifications from our system',
                             icon: '/favicon.ico'
@@ -1231,7 +1397,7 @@
 
                 createButton() {
                     this.button = document.createElement('button');
-                    this.button.id = 'notification-button';
+                    this.button.id = 'enable-notifications-btn';
                     this.button.className = 'btn position-fixed';
                     this.button.style.cssText = 'bottom: 20px; right: 20px; z-index: 1050; border-radius: 20px; padding: 10px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);';
                     this.button.addEventListener('click', () => this.requestPermission());
@@ -1239,6 +1405,8 @@
                 }
 
                 updateButtonState(permission) {
+                    if (!this.button) return;
+                    
                     if (permission === 'granted') {
                         this.button.className = 'btn btn-success position-fixed';
                         this.button.innerHTML = '<i class="fas fa-bell"></i> Notifications Enabled';
@@ -1254,7 +1422,6 @@
                         this.updateButtonState(permission);
 
                         if (permission === 'granted') {
-                            // Show test notification
                             new Notification('Notifications Enabled', {
                                 body: 'You will now receive notifications from our system',
                                 icon: '/favicon.ico'
@@ -1266,7 +1433,7 @@
                 }
             }
 
-            // Initialize the notification handler only for Super Admin
+            // Initialize the notification handler
             new NotificationHandler();
         @endif
     });
