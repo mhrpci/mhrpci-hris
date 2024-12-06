@@ -487,7 +487,8 @@
                         style="border:0; border-radius: 10px;"
                         allowfullscreen=""
                         loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
+                        referrerpolicy="no-referrer-when-downgrade"
+                        sandbox="allow-scripts allow-same-origin allow-popups">
                     </iframe>
                 </div>
             </div>

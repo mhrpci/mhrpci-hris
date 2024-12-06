@@ -391,7 +391,7 @@
                 <li><a href="{{route('welcome')}}" class="nav-link">Home</a></li>
                 <li><a href="#who-we-are" class="nav-link">Who We Are</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#location" class="nav-link">Location</a></li>
+                <!-- <li><a href="#location" class="nav-link">Location</a></li> -->
             </ul>
             <div class="mobile-menu-btn">
                 <span></span>

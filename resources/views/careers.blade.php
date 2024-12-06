@@ -700,27 +700,30 @@
         </div>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loader = document.getElementById('loader');
-
-            // Smooth fade out after 1 second
-            setTimeout(function() {
-                loader.classList.add('fade-out');
+            if (loader) {
                 setTimeout(function() {
-                    loader.style.display = 'none';
-                }, 500); // Match this to the transition duration in CSS
-            }, 1000);
+                    loader.classList.add('fade-out');
+                    setTimeout(function() {
+                        loader.style.display = 'none';
+                    }, 500);
+                }, 1000);
+            }
 
             var applyModal = document.getElementById('applyModal');
-            applyModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var careerId = button.getAttribute('data-career-id');
-                var hiringIdInput = document.getElementById('hiringIdInput');
-                hiringIdInput.value = careerId;
-            });
+            if (applyModal) {
+                applyModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var careerId = button.getAttribute('data-career-id');
+                    var hiringIdInput = document.getElementById('hiringIdInput');
+                    hiringIdInput.value = careerId;
+                });
+            }
 
             var alertElements = document.querySelectorAll('.alert');
             alertElements.forEach(function(alertElement) {
@@ -733,26 +736,35 @@
             var mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
             var navLinks = document.querySelector('.nav-links');
 
-            mobileMenuToggle.addEventListener('click', function() {
-                navLinks.classList.toggle('show');
-                this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
-            });
+            if (mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                    this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
 
-            // Close mobile menu when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!navLinks.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
-                    navLinks.classList.remove('show');
-                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                }
-            });
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!navLinks.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                        navLinks.classList.remove('show');
+                        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
 
             // Add smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    const href = this.getAttribute('href');
+                    // Only process the click if it's a valid anchor link (contains more than just #)
+                    if (href.length > 1) {
+                        e.preventDefault();
+                        const targetElement = document.querySelector(href);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
                 });
             });
 
@@ -782,71 +794,77 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('careerSearch');
-    const careerList = document.getElementById('careerList');
-    const careerItems = careerList.getElementsByClassName('career-item-container');
+            const searchInput = document.getElementById('careerSearch');
+            const careerList = document.getElementById('careerList');
+            
+            // Only proceed if both elements exist
+            if (searchInput && careerList) {
+                const careerItems = careerList.getElementsByClassName('career-item-container');
 
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
 
-        Array.from(careerItems).forEach(function(item) {
-            const position = item.querySelector('h2').textContent.toLowerCase();
-            const description = item.querySelector('p').textContent.toLowerCase();
+                    Array.from(careerItems).forEach(function(item) {
+                        const position = item.querySelector('h2').textContent.toLowerCase();
+                        const description = item.querySelector('p').textContent.toLowerCase();
 
-            if (position.includes(searchTerm) || description.includes(searchTerm)) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
+                        if (position.includes(searchTerm) || description.includes(searchTerm)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+
+                    // Show a message if no results are found
+                    const visibleItems = Array.from(careerItems).filter(item => item.style.display !== 'none');
+                    if (visibleItems.length === 0) {
+                        let noResultsMessage = document.getElementById('noResultsMessage');
+                        if (!noResultsMessage) {
+                            noResultsMessage = document.createElement('div');
+                            noResultsMessage.id = 'noResultsMessage';
+                            noResultsMessage.className = 'alert alert-info text-center mt-4';
+                            noResultsMessage.innerHTML = '<p class="mb-0">No positions found matching your search.</p>';
+                            careerList.parentNode.insertBefore(noResultsMessage, careerList.nextSibling);
+                        }
+                        noResultsMessage.style.display = '';
+                    } else {
+                        const existingMessage = document.getElementById('noResultsMessage');
+                        if (existingMessage) {
+                            existingMessage.style.display = 'none';
+                        }
+                    }
+                });
             }
         });
-
-        // Show a message if no results are found
-        const visibleItems = Array.from(careerItems).filter(item => item.style.display !== 'none');
-        if (visibleItems.length === 0) {
-            let noResultsMessage = document.getElementById('noResultsMessage');
-            if (!noResultsMessage) {
-                noResultsMessage = document.createElement('div');
-                noResultsMessage.id = 'noResultsMessage';
-                noResultsMessage.className = 'alert alert-info text-center mt-4';
-                noResultsMessage.innerHTML = '<p class="mb-0">No positions found matching your search.</p>';
-                careerList.parentNode.insertBefore(noResultsMessage, careerList.nextSibling);
-            }
-            noResultsMessage.style.display = '';
-        } else {
-            const existingMessage = document.getElementById('noResultsMessage');
-            if (existingMessage) {
-                existingMessage.style.display = 'none';
-            }
-        }
-    });
-});
     </script>
     <script>
-        $(document).ready(function() {
-            $('.save-job-btn').on('click', function() {
-                var button = $(this);
-                var hiringId = button.data('hiring-id');
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.save-job-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const hiringId = this.dataset.hiringId;
 
-                $.ajax({
-                    url: '{{ route("toggle.save.job") }}',
-                    method: 'POST',
-                    data: {
-                        hiring_id: hiringId,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        if (response.isSaved) {
-                            button.text('Unsave Job');
-                            button.data('saved', 'true');
+                    fetch('{{ route("toggle.save.job") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ hiring_id: hiringId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.isSaved) {
+                            this.innerHTML = '<i class="fas fa-bookmark me-1"></i> Unsave Job';
+                            this.dataset.saved = 'true';
                         } else {
-                            button.text('Save Job');
-                            button.data('saved', 'false');
+                            this.innerHTML = '<i class="fas fa-bookmark-o me-1"></i> Save Job';
+                            this.dataset.saved = 'false';
                         }
-                        alert(response.message);
-                    },
-                    error: function(xhr) {
+                        alert(data.message);
+                    })
+                    .catch(error => {
                         alert('An error occurred. Please try again.');
-                    }
+                    });
                 });
             });
         });

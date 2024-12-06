@@ -1464,19 +1464,6 @@
             z-index: -1;
         }
 
-        /* Specific background images for each section */
-        #about .parallax-bg {
-            background-image: url('path/to/about-bg.jpg');
-        }
-
-        #subsidiaries .parallax-bg {
-            background-image: url('path/to/subsidiaries-bg.jpg');
-        }
-
-        #partners .parallax-bg {
-            background-image: url('path/to/partners-bg.jpg');
-        }
-
         /* Adjust section padding for parallax effect */
         section {
             padding: 8rem 0;
@@ -2155,7 +2142,8 @@
                                              class="subsidiary-img"
                                              loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">CIO</h3>
@@ -2174,9 +2162,9 @@
                                              alt="MHRHCI"
                                              class="subsidiary-img"
                                              loading="lazy"
-                                             loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">MHRHCI</h3>
@@ -2195,9 +2183,9 @@
                                              alt="BGPDI"
                                              class="subsidiary-img"
                                              loading="lazy"
-                                             loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">BGPDI</h3>
@@ -2216,9 +2204,9 @@
                                              alt="VHI"
                                              class="subsidiary-img"
                                              loading="lazy"
-                                             loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">VHI</h3>
@@ -2237,9 +2225,9 @@
                                              alt="MAX"
                                              class="subsidiary-img"
                                              loading="lazy"
-                                             loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">MAX</h3>
@@ -2258,9 +2246,9 @@
                                              alt="RCG"
                                              class="subsidiary-img"
                                              loading="lazy"
-                                             loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">RCG</h3>
@@ -2279,9 +2267,9 @@
                                              alt="LUCIOUS"
                                              class="subsidiary-img"
                                              loading="lazy"
-                                             loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">LUCIOUS</h3>
@@ -2300,9 +2288,9 @@
                                              alt="MHRCONS"
                                              class="subsidiary-img"
                                              loading="lazy"
-                                             loading="lazy"
                                              width="200"
-                                             height="200">
+                                             height="200"
+                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
                                     </div>
                                     <div class="subsidiary-info">
                                         <h3 class="subsidiary-name">MHRCONS</h3>
@@ -2390,155 +2378,140 @@
             const chatbotContainer = document.getElementById('chatbot-container');
             const chatbotClose = document.getElementById('chatbot-close');
 
-            chatbotToggle.addEventListener('click', function() {
-                chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
-            });
+            if (chatbotToggle && chatbotContainer && chatbotClose) {
+                chatbotToggle.addEventListener('click', function() {
+                    chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
+                });
 
-            chatbotClose.addEventListener('click', function() {
-                chatbotContainer.style.display = 'none';
-            });
-        });
+                chatbotClose.addEventListener('click', function() {
+                    chatbotContainer.style.display = 'none';
+                });
+            }
 
-        document.addEventListener('DOMContentLoaded', function() {
+            // Posts slider functionality
             const slider = document.querySelector('.posts-slider');
             const prevBtn = document.querySelector('.prev-btn');
             const nextBtn = document.querySelector('.next-btn');
             const postCards = document.querySelectorAll('.post-card');
-            let currentIndex = 0;
-            let autoSlideInterval;
 
-            function updateSliderPosition() {
-                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-            }
+            if (slider && prevBtn && nextBtn && postCards.length > 0) {
+                let currentIndex = 0;
+                let autoSlideInterval;
 
-            function showPrevPost() {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                } else {
-                    currentIndex = postCards.length - 1;
+                function updateSliderPosition() {
+                    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
                 }
-                updateSliderPosition();
-                resetAutoSlide();
-            }
 
-            function showNextPost() {
-                if (currentIndex < postCards.length - 1) {
-                    currentIndex++;
-                } else {
-                    currentIndex = 0;
+                function showPrevPost() {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                    } else {
+                        currentIndex = postCards.length - 1;
+                    }
+                    updateSliderPosition();
+                    resetAutoSlide();
                 }
-                updateSliderPosition();
-                resetAutoSlide();
-            }
 
-            function startAutoSlide() {
-                autoSlideInterval = setInterval(showNextPost, 10000); // 10 seconds
-            }
+                function showNextPost() {
+                    if (currentIndex < postCards.length - 1) {
+                        currentIndex++;
+                    } else {
+                        currentIndex = 0;
+                    }
+                    updateSliderPosition();
+                    resetAutoSlide();
+                }
 
-            function resetAutoSlide() {
-                clearInterval(autoSlideInterval);
+                function startAutoSlide() {
+                    autoSlideInterval = setInterval(showNextPost, 10000); // 10 seconds
+                }
+
+                function resetAutoSlide() {
+                    clearInterval(autoSlideInterval);
+                    startAutoSlide();
+                }
+
+                prevBtn.addEventListener('click', showPrevPost);
+                nextBtn.addEventListener('click', showNextPost);
+
+                // Optional: Add keyboard navigation
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowLeft') {
+                        showPrevPost();
+                    } else if (e.key === 'ArrowRight') {
+                        showNextPost();
+                    }
+                });
+
+                // Optional: Add touch swipe support
+                let touchStartX = 0;
+                let touchEndX = 0;
+
+                slider.addEventListener('touchstart', function(e) {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+
+                slider.addEventListener('touchend', function(e) {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                });
+
+                function handleSwipe() {
+                    if (touchStartX - touchEndX > 50) {
+                        showNextPost();
+                    }
+                    if (touchEndX - touchStartX > 50) {
+                        showPrevPost();
+                    }
+                }
+
+                // Start the automatic slide
                 startAutoSlide();
+
+                // Pause auto-slide when hovering over the slider
+                slider.addEventListener('mouseenter', function() {
+                    clearInterval(autoSlideInterval);
+                });
+
+                // Resume auto-slide when mouse leaves the slider
+                slider.addEventListener('mouseleave', function() {
+                    startAutoSlide();
+                });
             }
 
-            prevBtn.addEventListener('click', showPrevPost);
-            nextBtn.addEventListener('click', showNextPost);
-
-            // Optional: Add keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowLeft') {
-                    showPrevPost();
-                } else if (e.key === 'ArrowRight') {
-                    showNextPost();
-                }
-            });
-
-            // Optional: Add touch swipe support
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            slider.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-            });
-
-            slider.addEventListener('touchend', function(e) {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            });
-
-            function handleSwipe() {
-                if (touchStartX - touchEndX > 50) {
-                    showNextPost();
-                }
-                if (touchEndX - touchStartX > 50) {
-                    showPrevPost();
-                }
-            }
-
-            // Start the automatic slide
-            startAutoSlide();
-
-            // Pause auto-slide when hovering over the slider
-            slider.addEventListener('mouseenter', function() {
-                clearInterval(autoSlideInterval);
-            });
-
-            // Resume auto-slide when mouse leaves the slider
-            slider.addEventListener('mouseleave', function() {
-                startAutoSlide();
-            });
-        });
-
-        // Modal functionality
-        document.addEventListener('DOMContentLoaded', function() {
+            // Modal functionality
             const modal = document.getElementById('postModal');
             const closeBtn = document.querySelector('.close');
             const readMoreButtons = document.querySelectorAll('.read-more');
 
-            readMoreButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.getAttribute('data-post-id');
-                    fetchPostDetails(postId);
+            if (modal && closeBtn) {
+                readMoreButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const postId = this.getAttribute('data-post-id');
+                        fetchPostDetails(postId);
+                    });
                 });
-            });
 
-            closeBtn.addEventListener('click', closeModal);
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-
-            function fetchPostDetails(postId) {
-                fetch(`/api/posts/${postId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('modalTitle').textContent = data.title;
-                        document.getElementById('modalContent').innerHTML = data.content;
-                        document.getElementById('modalMeta').innerHTML = `
-                            <p>By: ${data.user.first_name} ${data.user.last_name}</p>
-                            <p>Posted on: ${new Date(data.created_at).toLocaleDateString()}</p>
-                        `;
-                        modal.style.display = 'block';
-                    })
-                    .catch(error => console.error('Error:', error));
+                closeBtn.addEventListener('click', closeModal);
+                window.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        closeModal();
+                    }
+                });
             }
 
-            function closeModal() {
-                modal.style.display = 'none';
-            }
-        });
+            // Alert handling
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
 
-        // Allow right-click but prevent default context menu
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault(); // Prevent the default context menu
-            // Custom context menu logic can be added here if needed
-        });
-
-        // Disable F12, Ctrl+Shift+I, Ctrl+U
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'U')) {
-                e.preventDefault();
+            if (successAlert) {
+                showAlert(successAlert);
             }
+            if (errorAlert) {
+                showAlert(errorAlert);
+            }
+
+            // ... rest of the code ...
         });
 
         // Scroll Animation
