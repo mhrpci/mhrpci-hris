@@ -2,21 +2,19 @@
 
 @section('content')
 <br>
-@if ($message = Session::get('success'))
+@if ($message = Session::get('success') || $message = Session::get('error'))
     <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: '{{ $message }}',
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
         });
-    </script>
-@endif
-@if ($message = Session::get('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ $message }}',
+
+        Toast.fire({
+            icon: '{{ Session::has("success") ? "success" : "error" }}',
+            title: '{{ $message }}'
         });
     </script>
 @endif
@@ -31,19 +29,24 @@
                 </div>
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-md-3 text-center">
+                        <div class="col-lg-3 col-md-4 col-sm-12 text-center mb-3">
                             @if($employee->profile)
-                                <img src="{{ asset('storage/' . $employee->profile) }}" alt="Profile Image" class="profile-img img-fluid mb-3">
+                                <img src="{{ asset('storage/' . $employee->profile) }}" alt="Profile Image" 
+                                     class="profile-img img-fluid rounded shadow-sm" 
+                                     style="max-width: 200px; width: 100%; object-fit: cover;">
                             @else
-                                <p>No profile image available</p>
+                                <div class="border rounded p-3 bg-light">
+                                    <i class="fas fa-user-circle fa-5x text-secondary"></i>
+                                    <p class="mt-2 text-muted">No profile image</p>
+                                </div>
                             @endif
                         </div>
-                        <div class="col-md-9 position-relative">
-                            <div style="position: absolute; top: 0; right: 0;">
-                                <button class="btn btn-sm btn-outline-secondary mb-2" onclick="toggleQR()">
-                                    <i class="fas fa-qrcode"></i> Toggle QR
+                        <div class="col-lg-9 col-md-8 col-sm-12 position-relative">
+                            <div class="qr-container mb-3">
+                                <button class="btn btn-sm btn-outline-primary" onclick="toggleQR()">
+                                    <i class="fas fa-qrcode"></i> <span class="d-none d-sm-inline">Toggle QR Code</span>
                                 </button>
-                                <div id="qrCode" style="display: none;">
+                                <div id="qrCode" class="mt-2 p-3 border rounded bg-white shadow-sm" style="display: none;">
                                     <div class="d-flex align-items-center">
                                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ route('employees.public', $employee->slug) }}" 
                                              alt="Employee QR Code" 
@@ -85,7 +88,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-lg-6 col-md-12 mb-3">
                             <div class="card border-secondary mb-3">
                                 <div class="card-header bg-secondary text-white">
                                     Personal Information
@@ -98,7 +101,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-lg-6 col-md-12 mb-3">
                             <div class="card border-secondary mb-3">
                                 <div class="card-header bg-secondary text-white">
                                     Hired Details
@@ -113,7 +116,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-lg-6 col-md-12 mb-3">
                             <div class="card border-secondary mb-3">
                                 <div class="card-header bg-secondary text-white">
                                     School Attainment & Home Address
@@ -127,7 +130,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-lg-6 col-md-12 mb-3">
                             <div class="card border-secondary mb-3">
                                 <div class="card-header bg-secondary text-white">
                                     Government ID's
@@ -141,21 +144,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-right">
-                    <a href="{{ route('employees.index') }}" class="btn btn-primary btn-sm ml-auto"><i class="fas fa-list"></i> Back to List</a>
-                    @if($employee->employee_status !== 'Resigned')
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#additionalDetailsModal"><i class="fas fa-balance-scale"></i>
-                            Leave Balance
-                        </button>
-                        <a href="{{ route('employees.edit', $employee->slug) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                        @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
-                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to create a user for this employee?')"><i class="fas fa-trash"></i> Delete</button>
-                        </form>
-                        @endif
-                    @endif
+                    <div class="text-end mt-4">
+                        <div class="btn-group flex-wrap">
+                            <a href="{{ route('employees.index') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> <span class="d-none d-sm-inline">Back to List</span>
+                            </a>
+                            @if($employee->employee_status !== 'Resigned')
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#additionalDetailsModal">
+                                    <i class="fas fa-balance-scale"></i> <span class="d-none d-sm-inline">Leave Balance</span>
+                                </button>
+                                <a href="{{ route('employees.edit', $employee->slug) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> <span class="d-none d-sm-inline">Edit</span>
+                                </a>
+                                @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
+                                    <button type="submit" class="btn btn-danger btn-sm delete-btn">
+                                        <i class="fas fa-trash"></i> <span class="d-none d-sm-inline">Delete</span>
+                                    </button>
+                                @endif
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -195,10 +202,56 @@
 function toggleQR() {
     const qrCode = document.getElementById('qrCode');
     qrCode.style.display = qrCode.style.display === 'none' ? 'block' : 'none';
+    
+    if (qrCode.style.display === 'block') {
+        qrCode.classList.add('animate__animated', 'animate__fadeIn');
+    }
 }
+
+// Enhanced delete confirmation
+document.querySelector('.delete-btn')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.closest('form').submit();
+        }
+    });
+});
 </script>
 
 <style>
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.btn-group {
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .btn {
+        margin: 0.25rem;
+    }
+}
+
 @keyframes bounceLeft {
     0%, 100% {
         transform: translateX(0) rotate(-10deg) scale(1);
@@ -244,6 +297,23 @@ function toggleQR() {
 
 #qrCode span {
     animation: sparkle 2s ease-in-out infinite;
+}
+
+.profile-img {
+    transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+}
+
+.delete-btn {
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
 }
 </style>
 @endsection
