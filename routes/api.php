@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\ApiAuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,18 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth')->post('/save-device-token', function (Request $request) {
-    $validated = $request->validate([
-        'token' => 'required|string'
-    ]);
-
-    auth()->user()->update([
-        'device_token' => $validated['token']
-    ]);
-
-    return response()->json(['message' => 'Token saved successfully']);
-});
-
 Route::get('/employees/{employee}/signature', function (App\Models\Employee $employee) {
     return response()->json([
         'signature' => $employee->signature ? Storage::url($employee->signature) : null,
@@ -40,3 +30,12 @@ Route::get('/employees/{employee}/signature', function (App\Models\Employee $emp
 });
 
 Route::get('notifications/health', [NotificationsController::class, 'healthCheck']);
+
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('user', [AuthController::class, 'user']);
+    });
+});
