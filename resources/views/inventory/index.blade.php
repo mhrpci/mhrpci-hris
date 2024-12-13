@@ -9,9 +9,9 @@
                     <div class="card-header">
                         <h3 class="card-title">Inventory List</h3>
                         <div class="card-tools">
-                            <div class="button-group">
+                            <div class="button-group d-flex">
                                 @can('inventory-create')
-                                <a href="{{ route('inventory.create') }}" class="btn btn-success btn-sm rounded-pill mb-2 mb-sm-0">
+                                <a href="{{ route('inventory.create') }}" class="btn btn-success btn-sm rounded-pill mr-2">
                                     Add Inventory <i class="fas fa-plus-circle"></i>
                                 </a>
                                 @endcan
@@ -33,7 +33,6 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <!-- Form inside modal -->
                                     <form id="importForm" action="{{ route('inventory.import') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="form-group">
@@ -70,11 +69,13 @@
                                             <td>
                                                 <div class="dropdown">
                                                     <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v"></i>
+                                                        <i class="fas fa-ellipsis-v"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         @can('inventory-edit')
-                                                            <a class="dropdown-item" href="{{ route('inventory.edit',$inventory->id) }}"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                                            <a class="dropdown-item" href="{{ route('inventory.edit',$inventory->id) }}">
+                                                                <i class="fas fa-edit"></i>&nbsp;Edit
+                                                            </a>
                                                         @endcan
                                                         @can('inventory-delete')
                                                             <form action="{{ route('inventory.destroy', $inventory->id) }}" method="POST">
@@ -94,43 +95,20 @@
                             </table>
                         </div>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
             </div>
-            <!-- /.col-md-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 @endsection
 
 @section('css')
 <style>
-    @media (max-width: 768px) {
-        .card-header {
-            flex-direction: column;
-            align-items: start !important;
-        }
-        .card-tools {
-            margin-top: 10px;
-            width: 100%;
-        }
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            gap: 10px;
-        }
-        .btn {
-            width: 100%;
-        }
-        .modal-dialog {
-            margin: 0.5rem;
-        }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    /* Toast styles */
     .colored-toast.swal2-icon-success {
         box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
     }
@@ -184,15 +162,8 @@
 
         // Initialize DataTable
         $('#inventory-table').DataTable({
-            responsive: true,
-            scrollX: true,
-            autoWidth: false,
-            columnDefs: [
-                { responsivePriority: 1, targets: 1 },
-                { responsivePriority: 2, targets: -1 },
-                { responsivePriority: 3, targets: 0 },
-                { responsivePriority: 4, targets: '_all' }
-            ],
+            scrollX: false,
+            autoWidth: true,
             language: {
                 emptyTable: "No inventory items available at the moment."
             }
@@ -235,7 +206,7 @@
             });
         });
 
-        // Update delete confirmation
+        // Delete confirmation
         $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
             e.preventDefault();
             let form = $(this).closest('form');
@@ -255,11 +226,6 @@
                     form.submit();
                 }
             });
-        });
-
-        // Improve modal behavior
-        $('#importModal').on('shown.bs.modal', function () {
-            $(this).find('[type="file"]').focus();
         });
     });
 </script>
