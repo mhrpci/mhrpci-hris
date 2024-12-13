@@ -39,7 +39,7 @@
                             <select name="it_inventories[]" id="it_inventories" class="form-control select2" multiple>
                                 @foreach($itInventories as $inventory)
                                     <option value="{{ $inventory->id }}">
-                                        {{ $inventory->name }}
+                                        {{ $inventory->name }} - <strong>Description:</strong> {{ $inventory->description ?? ' '}}
                                     </option>
                                 @endforeach
                             </select>
