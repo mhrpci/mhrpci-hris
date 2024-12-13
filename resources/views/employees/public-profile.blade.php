@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ config('app.name') }} - Employee ID Card</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         :root {
             --card-width: 54mm;    /* Standard ID card width in portrait */
@@ -333,136 +334,195 @@
                 display: none;
             }
         }
+
+        .flip-card {
+            position: relative;
+            width: var(--card-width);
+            height: var(--card-height);
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .flip-card {
+                touch-action: none;
+            }
+            
+            .flip-instruction {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 14px;
+                z-index: 1000;
+                pointer-events: none;
+            }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
     <div class="id-card-container">
-        <div class="id-card">
-            <div class="card-side card-front">
-                <div class="card-header">
-                    @if($employee->department->name == 'MHRHCI')
-                        <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="MHRHCI Logo" class="company-logo">
-                    @elseif($employee->department->name == 'VHI')
-                        <img src="{{ asset('vendor/adminlte/dist/img/vhi.png') }}" alt="VHI Logo" class="company-logo">
-                    @elseif($employee->department->name == 'BGPDI')
-                        <img src="{{ asset('vendor/adminlte/dist/img/bgpdi.png') }}" alt="BGPDI Logo" class="company-logo">
-                    @else
-                        <img src="{{ asset('vendor/adminlte/dist/img/whiteLOGO4.png') }}" alt="Company Logo" class="company-logo">
-                    @endif
-                    <div class="card-title">Employee Identification Card</div>
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <div class="card-side card-front">
+                        <div class="card-header">
+                            @if($employee->department->name == 'MHRHCI')
+                                <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="MHRHCI Logo" class="company-logo">
+                            @elseif($employee->department->name == 'VHI')
+                                <img src="{{ asset('vendor/adminlte/dist/img/vhi.png') }}" alt="VHI Logo" class="company-logo">
+                            @elseif($employee->department->name == 'BGPDI')
+                                <img src="{{ asset('vendor/adminlte/dist/img/bgpdi.png') }}" alt="BGPDI Logo" class="company-logo">
+                            @else
+                                <img src="{{ asset('vendor/adminlte/dist/img/whiteLOGO4.png') }}" alt="Company Logo" class="company-logo">
+                            @endif
+                            <div class="card-title">Employee Identification Card</div>
+                        </div>
+
+                        <div class="profile-section">
+                            <img src="{{ $employee->profile ? Storage::url($employee->profile) : asset('images/default-profile.png') }}"
+                                 alt="Employee Photo" class="profile-image">
+                            
+                            <div class="profile-info">
+                                <div class="employee-name">
+                                    {{ $employee->first_name }} {{ $employee->middle_name }} {{ $employee->last_name }} {{ $employee->suffix }}
+                                </div>
+                                <div class="employee-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Employee ID:</span>
+                                        <span>{{ $employee->company_id }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Position:</span>
+                                        <span>{{ $employee->position->name ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Department:</span>
+                                        <span>{{ $employee->department->name ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Date Hired:</span>
+                                        <span>{{ \Carbon\Carbon::parse($employee->date_hired)->format('M d, Y') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            
+                        </div>
+                    </div>
                 </div>
-
-                <div class="profile-section">
-                    <img src="{{ $employee->profile ? Storage::url($employee->profile) : asset('images/default-profile.png') }}"
-                         alt="Employee Photo" class="profile-image">
-                    
-                    <div class="profile-info">
-                        <div class="employee-name">
-                            {{ $employee->first_name }} {{ $employee->middle_name }} {{ $employee->last_name }} {{ $employee->suffix }}
-                        </div>
-                        <div class="employee-details">
-                            <div class="detail-item">
-                                <span class="detail-label">Employee ID:</span>
-                                <span>{{ $employee->company_id }}</span>
+                <div class="flip-card-back">
+                    <div class="card-side card-back">
+                        <div class="back-content">
+                            <div class="back-header">
+                                <h3>EMPLOYEE INFORMATION</h3>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Position:</span>
-                                <span>{{ $employee->position->name ?? 'N/A' }}</span>
+
+                            <div class="back-section">
+                                <div class="back-section-title">Personal Details</div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Birth Date:</span>
+                                    <span>{{ \Carbon\Carbon::parse($employee->birth_date)->format('M d, Y') ?? ' ' }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">SSS No:</span>
+                                    <span>{{ $employee->sss_no ?? ' ' }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">TIN No:</span>
+                                    <span>{{ $employee->tin_no ?? ' ' }}</span>
+                                </div>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Department:</span>
-                                <span>{{ $employee->department->name ?? 'N/A' }}</span>
+
+                            <div class="back-section">
+                                <div class="back-section-title">Emergency Contact</div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Name:</span>
+                                    <span>{{ $employee->emergency_name }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Contact No:</span>
+                                    <span>{{ $employee->emergency_no }}</span>
+                                </div>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Date Hired:</span>
-                                <span>{{ \Carbon\Carbon::parse($employee->date_hired)->format('M d, Y') }}</span>
+
+                            <div class="back-section">
+                                <div class="back-section-title">Company Information</div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Name:</span>
+                                    <span>{{ config('app.company_name') }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Address:</span>
+                                    <span>{{ config('app.company_address') }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">City:</span>
+                                    <span>{{ config('app.company_city') }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">ZIP:</span>
+                                    <span>{{ config('app.company_zip') }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Phone:</span>
+                                    <span>{{ config('app.company_phone') }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Email:</span>
+                                    <span>{{ config('app.company_email') }}</span>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="card-footer">
-                    
-                </div>
-            </div>
-        </div>
-        
-        <div class="id-card">
-            <div class="card-side card-back">
-                <div class="back-content">
-                    <div class="back-header">
-                        <h3>EMPLOYEE INFORMATION</h3>
-                    </div>
-
-                    <div class="back-section">
-                        <div class="back-section-title">Personal Details</div>
-                        <div class="detail-item">
-                            <span class="detail-label">Birth Date:</span>
-                            <span>{{ \Carbon\Carbon::parse($employee->birth_date)->format('M d, Y') ?? ' ' }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">SSS No:</span>
-                            <span>{{ $employee->sss_no ?? ' ' }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">TIN No:</span>
-                            <span>{{ $employee->tin_no ?? ' ' }}</span>
-                        </div>
-                    </div>
-
-                    <div class="back-section">
-                        <div class="back-section-title">Emergency Contact</div>
-                        <div class="detail-item">
-                            <span class="detail-label">Name:</span>
-                            <span>{{ $employee->emergency_name }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Contact No:</span>
-                            <span>{{ $employee->emergency_no }}</span>
-                        </div>
-                    </div>
-
-                    <div class="back-section">
-                        <div class="back-section-title">Company Information</div>
-                        <div class="detail-item">
-                            <span class="detail-label">Name:</span>
-                            <span>{{ config('app.company_name') }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Address:</span>
-                            <span>{{ config('app.company_address') }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">City:</span>
-                            <span>{{ config('app.company_city') }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">ZIP:</span>
-                            <span>{{ config('app.company_zip') }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Phone:</span>
-                            <span>{{ config('app.company_phone') }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Email:</span>
-                            <span>{{ config('app.company_email') }}</span>
-                        </div>
-                    </div>
-
-                    <div class="signature-section">
-                        <div class="detail-label">Employee Signature</div>
-                        @if($employee->signature)
-                            <img src="{{ Storage::url($employee->signature) }}" 
-                                 alt="Employee Signature" 
-                                 class="signature-image">
-                        @else
-                            <div style="color: #666; font-size: 8px;">No signature available</div>
-                        @endif
-                        <div style="font-size: 7px; margin-top: 4px;">
-                            This ID card remains the property of {{ config('app.name') }}.<br>
-                            If found, please return to the nearest office.
+                            <div class="signature-section">
+                                <div class="detail-label">Employee Signature</div>
+                                @if($employee->signature)
+                                    <img src="{{ Storage::url($employee->signature) }}" 
+                                         alt="Employee Signature" 
+                                         class="signature-image">
+                                @else
+                                    <div style="color: #666; font-size: 8px;">No signature available</div>
+                                @endif
+                                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                                    <div style="font-size: 6px;">
+                                        This ID card remains the property of {{ config('app.name') }}.<br>
+                                        If found, please return to the nearest office.
+                                    </div>
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data={{ route('employees.public', $employee->slug) }}" 
+                                         alt="QR Code" 
+                                         style="width: 20px; height: 20px; margin-left: 4px;">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -471,67 +531,223 @@
     </div>
 
     <div class="download-buttons">
-        <button class="download-btn" onclick="downloadBothSides()">Download ID Card</button>
+        <button class="download-btn" onclick="downloadSecureIdCard()">Download Secure ID Card</button>
     </div>
+
+    <div class="flip-instruction">Tap card to flip</div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
+        const rateLimiter = {
+            lastDownload: 0,
+            minInterval: 5000, // 5 seconds
+            check() {
+                const now = Date.now();
+                if (now - this.lastDownload < this.minInterval) {
+                    return false;
+                }
+                this.lastDownload = now;
+                return true;
+            }
+        };
+
         async function captureCard(element) {
             return await html2canvas(element, {
                 scale: 4,
                 useCORS: true,
                 logging: false,
-                width: 212,
-                height: 337,
                 backgroundColor: null,
-                imageTimeout: 0,
                 quality: 1.0
             });
         }
 
-        async function downloadBothSides() {
+        async function downloadSecureIdCard() {
+            if (!rateLimiter.check()) {
+                alert('Please wait a few seconds before downloading again.');
+                return;
+            }
+
             try {
-                const frontElement = document.querySelector('.card-front');
-                const backElement = document.querySelector('.card-back');
+                // First, get the download token
+                const tokenResponse = await fetch(`/employees/{{ $employee->slug }}/secure-download`);
+                const tokenData = await tokenResponse.json();
+
+                if (!tokenData.success) {
+                    throw new Error(tokenData.message);
+                }
+
+                // Capture card sides
+                const frontElement = document.querySelector('.flip-card-front');
+                const backElement = document.querySelector('.flip-card-back');
                 
-                const [frontCanvas, backCanvas] = await Promise.all([
-                    captureCard(frontElement),
-                    captureCard(backElement)
-                ]);
+                // Setup for capturing back side
+                const backElementTransform = backElement.style.transform;
+                const backElementParent = backElement.parentElement;
+                const parentTransform = backElementParent.style.transform;
                 
+                const tempContainer = document.createElement('div');
+                tempContainer.style.position = 'absolute';
+                tempContainer.style.left = '-9999px';
+                tempContainer.style.top = '0';
+                document.body.appendChild(tempContainer);
+                
+                const backClone = backElement.cloneNode(true);
+                tempContainer.appendChild(backClone);
+                backClone.style.transform = 'none';
+                backClone.style.position = 'static';
+                backClone.style.backfaceVisibility = 'visible';
+
+                const frontCanvas = await captureCard(frontElement);
+                const backCanvas = await captureCard(backClone);
+
+                document.body.removeChild(tempContainer);
+                backElement.style.transform = backElementTransform;
+                backElementParent.style.transform = parentTransform;
+
+                // Process secure download
+                const processResponse = await fetch('/employees/process-secure-download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        download_token: tokenData.download_token
+                    })
+                });
+
+                const processData = await processResponse.json();
+
+                if (!processData.success) {
+                    throw new Error(processData.message);
+                }
+
+                // Create zip with WinRAR compatible encryption
                 const zip = new JSZip();
                 
-                // Add both high-resolution images to zip
-                zip.file('id-card-front.png', frontCanvas.toDataURL('image/png', 1.0).split(',')[1], {base64: true});
-                zip.file('id-card-back.png', backCanvas.toDataURL('image/png', 1.0).split(',')[1], {base64: true});
+                // Add a readme file with instructions
+                zip.file('README.txt', 
+                    'This ZIP file contains your ID card images.\n' +
+                    'Front and back images are included in PNG format.\n' +
+                    'Created on: ' + new Date().toLocaleString() + '\n' +
+                    'For security purposes, this file is password protected.'
+                );
                 
-                // Generate zip with strong password protection
+                // Add images to zip with better compression
+                zip.file('id-card-front.png', frontCanvas.toDataURL('image/png', 1.0).split(',')[1], {
+                    base64: true,
+                    compression: "DEFLATE",
+                    compressionOptions: {
+                        level: 9
+                    }
+                });
+                
+                zip.file('id-card-back.png', backCanvas.toDataURL('image/png', 1.0).split(',')[1], {
+                    base64: true,
+                    compression: "DEFLATE",
+                    compressionOptions: {
+                        level: 9
+                    }
+                });
+                
+                // Generate WinRAR compatible encrypted zip
                 const content = await zip.generateAsync({
                     type: "blob",
                     compression: "DEFLATE",
                     compressionOptions: {
                         level: 9
                     },
-                    password: "{{ $employee->company_id }}",
+                    platform: "DOS",
                     encryptStrength: 3,
-                    encryption: "AES-256"
+                    password: processData.password,
+                    comment: "Created by {{ config('app.name') }} - Secured with WinRAR encryption"
                 });
                 
-                // Create download link
+                // Create and trigger download
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
-                link.download = `ID_Card_{{ $employee->company_id }}_${Date.now()}.zip`;
+                link.download = processData.filename;
+                link.type = 'application/zip';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(link.href);
 
-                alert('Download complete! Use your Employee ID as the password to open the zip file.');
+                // Show password dialog with better formatting
+                const passwordMessage = 
+                    "Your ID card has been downloaded successfully!\n\n" +
+                    "File: " + processData.filename + "\n" +
+                    "Password: " + processData.password + "\n\n" +
+                    "Please keep this password safe. You will need it to open the ZIP file.\n" +
+                    "This file can be opened with WinRAR or other ZIP programs.";
+                    
+                alert(passwordMessage);
+
+                // Analytics tracking if available
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'download_secure_id_card', {
+                        'employee_id': '{{ $employee->company_id }}',
+                        'timestamp': processData.timestamp
+                    });
+                }
             } catch (error) {
-                console.error('Error generating ID card:', error);
-                alert('An error occurred while generating the ID card. Please try again.');
+                console.error('Error generating secure ID card:', error);
+                alert('An error occurred while generating the secure ID card. Please try again.');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const flipCard = document.querySelector('.flip-card');
+            const instruction = document.querySelector('.flip-instruction');
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            // Function to toggle flip
+            function toggleFlip() {
+                flipCard.classList.toggle('flipped');
+            }
+
+            // Handle click/tap events
+            flipCard.addEventListener('click', function(e) {
+                toggleFlip();
+            });
+
+            // Handle touch events
+            flipCard.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+
+            flipCard.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+
+            // Handle swipe
+            function handleSwipe() {
+                const swipeThreshold = 50; // minimum distance for swipe
+                const difference = touchStartX - touchEndX;
+
+                if (Math.abs(difference) > swipeThreshold) {
+                    toggleFlip();
+                }
+            }
+
+            // Hide instruction after 3 seconds
+            if (instruction) {
+                setTimeout(() => {
+                    instruction.style.opacity = '0';
+                    instruction.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        instruction.style.display = 'none';
+                    }, 500);
+                }, 3000);
+            }
+
+            // Prevent default touch behaviors
+            flipCard.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        });
     </script>
 </body>
 </html>

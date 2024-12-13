@@ -102,6 +102,8 @@ Route::get('/privacy', function () {
 
 // Public Profile routes
 Route::get('/employees-public/{slug}', [EmployeeController::class, 'publicProfile'])->name('employees.public');
+Route::get('/employees/{slug}/secure-download', [EmployeeController::class, 'downloadSecureIdCard'])->name('employees.secure-download');
+Route::post('/employees/process-secure-download', [EmployeeController::class, 'processSecureDownload'])->name('employees.process-secure-download');
 
 // Auth routes
 Route::middleware('auth')->group(function () {

@@ -26,6 +26,7 @@ use App\Mail\UserAccountDisabledNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class EmployeeController extends Controller
 {
@@ -639,6 +640,120 @@ public function createBulkUsers(): RedirectResponse
 
         return redirect()->route('employees.index')
             ->with('error', 'An error occurred during bulk user creation. Please try again.');
+    }
+}
+
+/**
+ * Generate a secure password-protected zip file for ID card download
+ *
+ * @param string $slug
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function downloadSecureIdCard($slug)
+{
+    try {
+        // Find employee or throw 404
+        $employee = Employee::where('slug', $slug)
+            ->where('employee_status', 'Active')
+            ->firstOrFail();
+
+        // Generate a unique temporary directory name
+        $tempDir = 'temp/' . uniqid('id_card_' . $employee->company_id . '_');
+        Storage::makeDirectory('public/' . $tempDir);
+
+        // Store the password temporarily (will be used client-side)
+        $password = $employee->company_id;
+
+        // Generate a secure random token for this download
+        $downloadToken = bin2hex(random_bytes(32));
+        
+        // Store the token with expiration (15 minutes)
+        Cache::put('id_card_download_' . $downloadToken, [
+            'employee_id' => $employee->id,
+            'password' => $password,
+            'attempts' => 0
+        ], now()->addMinutes(15));
+
+        return response()->json([
+            'success' => true,
+            'download_token' => $downloadToken,
+            'message' => 'Download token generated successfully',
+            'expires_in' => 900 // 15 minutes in seconds
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Secure ID card download failed: ' . $e->getMessage());
+        Log::error($e->getTraceAsString());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to generate secure download token'
+        ], 500);
+    }
+}
+
+/**
+ * Process the secure download with the provided token
+ *
+ * @param Request $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function processSecureDownload(Request $request)
+{
+    try {
+        $downloadToken = $request->input('download_token');
+        
+        // Verify token exists and is valid
+        $downloadData = Cache::get('id_card_download_' . $downloadToken);
+        
+        if (!$downloadData) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired download token'
+            ], 400);
+        }
+
+        // Increment attempt counter
+        $downloadData['attempts']++;
+        if ($downloadData['attempts'] > 3) {
+            Cache::forget('id_card_download_' . $downloadToken);
+            return response()->json([
+                'success' => false,
+                'message' => 'Maximum download attempts exceeded'
+            ], 400);
+        }
+        
+        Cache::put('id_card_download_' . $downloadToken, $downloadData, now()->addMinutes(15));
+
+        // Find employee
+        $employee = Employee::findOrFail($downloadData['employee_id']);
+
+        // Generate unique filename with timestamp
+        $timestamp = date('Ymd_His');
+        $filename = "secure_id_card_{$employee->company_id}_{$timestamp}.zip";
+
+        // Log download attempt
+        Log::info('Secure ID card download initiated', [
+            'employee_id' => $employee->company_id,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'password' => $downloadData['password'],
+            'filename' => $filename,
+            'timestamp' => $timestamp
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Secure download processing failed: ' . $e->getMessage());
+        Log::error($e->getTraceAsString());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to process secure download'
+        ], 500);
     }
 }
 
