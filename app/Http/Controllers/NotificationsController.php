@@ -198,6 +198,7 @@ class NotificationsController extends Controller
                 $this->generateTaskNotifications(),
                 $this->generateJobApplicationNotifications(),
                 $this->generateCashAdvanceNotifications(),
+                $this->generateEligibilityNotifications(),
             ];
 
             DB::commit();
@@ -1060,6 +1061,86 @@ class NotificationsController extends Controller
             }
         } catch (\Exception $e) {
             Log::error('Failed to send email notifications: ' . $e->getMessage());
+        }
+    }
+
+    private function generateEligibilityNotifications()
+    {
+        try {
+            // Get employees who have completed exactly 1 year of service today
+            $oneYearAgo = Carbon::now()->subYear()->startOfDay();
+            
+            $eligibleEmployees = Employee::where('employee_status', 'Active')
+                ->whereDate('date_hired', $oneYearAgo)
+                ->whereDoesntHave('cashAdvances', function($query) {
+                    $query->whereIn('status', ['pending', 'active']);
+                })
+                ->get();
+
+            foreach ($eligibleEmployees as $employee) {
+                // Calculate maximum eligible amount (example: 3x monthly salary)
+                $maxEligibleAmount = "No limit";
+                
+                // Create notification
+                $notification = [
+                    'icon' => 'fas fa-fw fa-award text-success',
+                    'text' => "Congratulations! You are now eligible to apply for a company loan/cash advance",
+                    'time' => now()->diffForHumans(),
+                    'details' => "Employment Anniversary: {$employee->date_hired->format('M d, Y')}\n" .
+                                "Years of Service: 1 year\n" .
+                                "Maximum Eligible Amount: ₱" . number_format($maxEligibleAmount, 2) . "\n" .
+                                "Click here to apply now!"
+                ];
+                
+                // Add to notifications array
+                $this->notifications['cash_advances'][] = $notification;
+
+                // Add email notification
+                $this->emailNotifications[] = [
+                    'email' => $employee->email_address,
+                    'type' => 'eligibility',
+                    'subject' => 'Congratulations! You Are Now Eligible for Company Loan/Cash Advance',
+                    'title' => 'Cash Advance Eligibility Notice',
+                    'content' => [
+                        'greeting' => "Dear {$employee->first_name},",
+                        'message' => "We are pleased to inform you that you have reached an important milestone in your employment with us. As you complete your first year with the company, you are now eligible to apply for our company loan/cash advance program.",
+                        'details' => [
+                            'Employment Start Date' => $employee->date_hired->format('M d, Y'),
+                            'Years of Service' => '1 year',
+                            'Maximum Eligible Amount' => '₱' . number_format($maxEligibleAmount, 2),
+                            'Monthly Salary' => '₱' . number_format($employee->salary, 2),
+                        ],
+                        'additional_info' => [
+                            'Benefits of Our Cash Advance Program:',
+                            '• Flexible repayment terms',
+                            '• Competitive interest rates',
+                            '• Quick processing time',
+                            '• No hidden charges'
+                        ],
+                        'requirements' => [
+                            'Required Documents:',
+                            '• Valid government ID',
+                            '• Latest payslip',
+                            '• Filled out cash advance application form'
+                        ],
+                        'action' => [
+                            'text' => 'Apply Now',
+                            'url' => config('app.url') . '/cash-advances/create'
+                        ],
+                        'footer' => "If you have any questions about the cash advance program, please don't hesitate to contact the HR department.\n\nBest regards,\nHR Department"
+                    ]
+                ];
+
+                // Log the notification
+                Log::info('Eligibility notification created', [
+                    'employee' => $employee->id,
+                    'email' => $employee->email_address,
+                    'date_hired' => $employee->date_hired
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Error generating eligibility notifications: ' . $e->getMessage());
         }
     }
 }

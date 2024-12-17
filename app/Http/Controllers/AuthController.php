@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -106,5 +107,25 @@ class AuthController extends Controller
 
         // OTP is invalid
         return response()->json(['message' => 'Invalid OTP. Please try again.'], 400);
+    }
+
+    public function validateUser(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Authentication successful'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid credentials'
+        ], 401);
     }
 }

@@ -40,14 +40,14 @@
                     <tbody>
                         @if($tasks->isEmpty())
                             <tr>
-                                <td colspan="6" class="text-center">No tasks assigned to you.</td>
+                                <td colspan="6" class="text-center">No tasks found</td>
                             </tr>
                         @else
                             @foreach($tasks as $task)
                                 <tr>
-                                    <td data-label="Title">{{ $task->title }}</td>
-                                    <td data-label="Description">{{ $task->description }}</td>
-                                    <td data-label="Status">
+                                    <td>{{ $task->title }}</td>
+                                    <td>{{ $task->description }}</td>
+                                    <td>
                                         @if($task->status === 'Pending')
                                             <i class="fas fa-hourglass-half text-secondary"></i> Pending
                                         @elseif($task->status === 'On Progress')
@@ -58,15 +58,15 @@
                                             <i class="fas fa-times-circle text-danger"></i> Abandoned
                                         @endif
                                     </td>
-                                    <td data-label="Assigned To">{{ $task->employee->first_name }} {{ $task->employee->last_name }}</td>
-                                    <td data-label="Read">
+                                    <td>{{ $task->employee->first_name }} {{ $task->employee->last_name }}</td>
+                                    <td>
                                         @if($task->is_read)
                                             <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i> Read</span>
                                         @else
                                             <span class="badge badge-info"><i class="fas fa-bell mr-1"></i> New</span>
                                         @endif
                                     </td>
-                                    <td data-label="Action">
+                                    <td>
                                         <div class="btn-group">
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-outline-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -176,35 +176,39 @@
 @push('scripts')
 <script>
     $(document).ready(function () {
-        var table = $('#tasksTable').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "columnDefs": [
-                { "orderable": false, "targets": 5 } // Disable ordering on the Action column (now index 5)
-            ],
-            "language": {
-                "search": "Search:",
-                "lengthMenu": "Show _MENU_ entries",
-                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
-                "paginate": {
-                    "first": "First",
-                    "last": "Last",
-                    "next": "Next",
-                    "previous": "Previous"
+        // Initialize DataTable only if there are tasks
+        if ($('#tasksTable tbody tr').length > 0 && !$('#tasksTable tbody tr td[colspan]').length) {
+            var table = $('#tasksTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "columnDefs": [
+                    { "orderable": false, "targets": 5 }
+                ],
+                "language": {
+                    "emptyTable": "No tasks found",
+                    "search": "Search:",
+                    "lengthMenu": "Show _MENU_ entries",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
                 }
-            }
-        });
+            });
 
-        // Add custom filtering for read/unread
-        $('#readFilter').on('change', function() {
-            var selected = $(this).val();
-            table.column(4).search(selected).draw();
-        });
+            // Add custom filtering for read/unread
+            $('#readFilter').on('change', function() {
+                var selected = $(this).val();
+                table.column(4).search(selected).draw();
+            });
+        }
     });
 </script>
 @endpush

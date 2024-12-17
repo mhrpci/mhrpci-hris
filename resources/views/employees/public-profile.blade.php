@@ -385,6 +385,27 @@
                 pointer-events: none;
             }
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #authModal {
+            backdrop-filter: blur(5px);
+        }
+
+        #authModal input:focus {
+            box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+        }
+
+        #authModal button[type="submit"]:hover {
+            background: var(--secondary-color);
+        }
+
+        #authModal button[type="button"]:hover {
+            background: #f5f5f5;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
@@ -531,10 +552,122 @@
     </div>
 
     <div class="download-buttons">
-        <button class="download-btn" onclick="downloadSecureIdCard()">Download Secure ID Card</button>
+        <button class="download-btn" onclick="showAuthForm()">Download Secure ID Card</button>
     </div>
 
     <div class="flip-instruction">Tap card to flip</div>
+
+    <!-- Enhanced Authentication Modal -->
+    <div id="authModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1001; opacity: 0; transition: opacity 0.3s ease;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; width: 360px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <!-- Close button -->
+            <button onclick="closeAuthModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; cursor: pointer; color: #666; padding: 5px; line-height: 1;">×</button>
+            
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 25px;">
+                <h3 style="color: var(--primary-color); font-size: 1.5em; margin: 0 0 10px 0;">Secure Download</h3>
+                <p style="color: #666; font-size: 0.9em; margin: 0;">Please authenticate to download the ID card</p>
+            </div>
+
+            <!-- Form -->
+            <form id="authForm" onsubmit="validateUser(event)">
+                <!-- Email Field -->
+                <div style="margin-bottom: 20px;">
+                    <label for="email" style="display: block; margin-bottom: 8px; color: #444; font-size: 0.9em; font-weight: 500;">Email Address</label>
+                    <div style="position: relative;">
+                        <input type="email" 
+                               id="email" 
+                               required 
+                               style="width: 100%; 
+                                      padding: 12px 15px 12px 40px; 
+                                      border: 2px solid #e1e1e1; 
+                                      border-radius: 8px; 
+                                      font-size: 0.95em; 
+                                      transition: all 0.3s ease;
+                                      outline: none;"
+                               onFocus="this.style.borderColor='var(--primary-color)'"
+                               onBlur="this.style.borderColor='#e1e1e1'">
+                        <!-- Email Icon -->
+                        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: #666;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div style="margin-bottom: 25px;">
+                    <label for="password" style="display: block; margin-bottom: 8px; color: #444; font-size: 0.9em; font-weight: 500;">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" 
+                               id="password" 
+                               required 
+                               style="width: 100%; 
+                                      padding: 12px 15px 12px 40px; 
+                                      border: 2px solid #e1e1e1; 
+                                      border-radius: 8px; 
+                                      font-size: 0.95em; 
+                                      transition: all 0.3s ease;
+                                      outline: none;"
+                               onFocus="this.style.borderColor='var(--primary-color)'"
+                               onBlur="this.style.borderColor='#e1e1e1'">
+                        <!-- Lock Icon -->
+                        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: #666;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" 
+                            onclick="closeAuthModal()" 
+                            style="flex: 1;
+                                   padding: 12px;
+                                   border: 2px solid #e1e1e1;
+                                   background: white;
+                                   color: #666;
+                                   border-radius: 8px;
+                                   cursor: pointer;
+                                   font-weight: 500;
+                                   transition: all 0.3s ease;">Cancel</button>
+                    <button type="submit" 
+                            style="flex: 2;
+                                   padding: 12px;
+                                   border: none;
+                                   background: var(--primary-color);
+                                   color: white;
+                                   border-radius: 8px;
+                                   cursor: pointer;
+                                   font-weight: 500;
+                                   transition: all 0.3s ease;">Authenticate & Download</button>
+                </div>
+
+                <!-- Loading Indicator (hidden by default) -->
+                <div id="loadingIndicator" 
+                     style="display: none;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(255,255,255,0.9);
+                            border-radius: 12px;
+                            justify-content: center;
+                            align-items: center;">
+                    <div style="text-align: center;">
+                        <div style="border: 3px solid #f3f3f3;
+                                   border-top: 3px solid var(--primary-color);
+                                   border-radius: 50%;
+                                   width: 30px;
+                                   height: 30px;
+                                   margin: 0 auto 10px;
+                                   animation: spin 1s linear infinite;"></div>
+                        <p style="color: var(--primary-color); margin: 0;">Authenticating...</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
@@ -747,6 +880,67 @@
             flipCard.addEventListener('touchmove', function(e) {
                 e.preventDefault();
             }, { passive: false });
+        });
+
+        function showAuthForm() {
+            const modal = document.getElementById('authModal');
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+            }, 10);
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                // Reset form
+                document.getElementById('authForm').reset();
+            }, 300);
+        }
+
+        async function validateUser(event) {
+            event.preventDefault();
+            
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'flex';
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/validate-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeAuthModal();
+                    downloadSecureIdCard();
+                } else {
+                    alert(data.message || 'Invalid credentials. Please try again.');
+                }
+            } catch (error) {
+                console.error('Authentication error:', error);
+                alert('An error occurred during authentication. Please try again.');
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target === modal) {
+                closeAuthModal();
+            }
         });
     </script>
 </body>

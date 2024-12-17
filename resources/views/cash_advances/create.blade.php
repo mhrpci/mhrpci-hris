@@ -27,19 +27,24 @@
                         <div class="ineligible-message text-center py-5">
                             <div class="marker-icon mb-4">
                                 <div class="icon-wrapper">
-                                    <div class="marker"></div>
-                                    <div class="paper"></div>
-                                    <div class="signature"></div>
+                                    <i class="fas fa-exclamation-circle fa-5x text-warning"></i>
                                 </div>
                             </div>
-                            <h2 class="mb-3" style="font-size: 1.75rem; font-weight: 600;">
-                                Thank you for your interest<br>
-                                in Company Loan!
-                            </h2>
-                            <p class="text-muted mb-5" style="font-size: 1.1rem;">
-                                You are currently not eligible for Company Loan.<br>
-                                Keep working and we'll let you know when you can apply again.
-                            </p>
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h2 class="mb-3 text-primary" style="font-size: 1.75rem; font-weight: 600;">
+                                        Thank you for your interest in Company Loan!
+                                    </h2>
+                                    <p class="text-muted mb-4" style="font-size: 1.1rem;">
+                                        You are currently not eligible for Company Loan.<br>
+                                        A minimum of one year service is required to apply.
+                                    </p>
+                                    <div class="alert alert-info" role="alert">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Keep working and we'll let you know when you can apply again.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @else
                         <form action="{{ route('cash_advances.store') }}" method="POST" id="cashAdvanceForm">
@@ -176,80 +181,28 @@
         }
 
         .ineligible-message {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             padding: 2rem;
         }
 
         .icon-wrapper {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto;
+            margin-bottom: 1.5rem;
         }
 
-        .marker {
-            position: absolute;
-            top: 20%;
-            left: 15%;
-            width: 30px;
-            height: 80px;
-            background: #6c63ff;
-            border-radius: 4px;
-            transform: rotate(-45deg);
+        .icon-wrapper i {
+            color: #ffc107;
         }
 
-        .marker::after {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 0;
-            width: 30px;
-            height: 16px;
-            background: #5753d0;
-            border-radius: 4px;
+        .card.shadow-sm {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            transition: all 0.3s ease;
         }
 
-        .paper {
-            position: absolute;
-            top: 30%;
-            left: 35%;
-            width: 60px;
-            height: 70px;
-            background: #f5f5f5;
-            border: 2px solid #e0e0e0;
-            border-radius: 4px;
-            transform: rotate(15deg);
-        }
-
-        .signature {
-            position: absolute;
-            top: 50%;
-            left: 40%;
-            width: 40px;
-            height: 2px;
-            background: #6c63ff;
-            transform: rotate(15deg);
-        }
-
-        .signature::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 5px;
-            width: 30px;
-            height: 2px;
-            background: #6c63ff;
-        }
-
-        .signature::after {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 10px;
-            width: 20px;
-            height: 2px;
-            background: #6c63ff;
+        .card.shadow-sm:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
 
         @media (max-width: 768px) {
@@ -263,11 +216,6 @@
 
             .ineligible-message p {
                 font-size: 1rem !important;
-            }
-
-            .icon-wrapper {
-                width: 100px;
-                height: 100px;
             }
         }
     </style>
