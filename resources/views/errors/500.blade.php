@@ -123,7 +123,7 @@
             Oops! Something went wrong on our servers.
             We're working to fix the issue. Please try again later.
         </p>
-        <a href="/" class="back-button">Return Home</a>
+        <a href="{{ auth()->check() ? route('home') : '/' }}" class="back-button">Return Home</a>
     </div>
 </body>
 </html>

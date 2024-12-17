@@ -132,7 +132,7 @@
             We're currently performing maintenance on our servers.
             We'll be back online shortly. Thank you for your patience.
         </p>
-        <a href="/" class="back-button">Return Home</a>
+        <a href="{{ auth()->check() ? route('home') : '/' }}" class="back-button">Return Home</a>
     </div>
 
     <script>
