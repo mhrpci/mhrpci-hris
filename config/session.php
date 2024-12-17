@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'lifetime' => 525600, // 1 year in minutes
+    'lifetime' => 20, // 20 minutes
 
     'expire_on_close' => false,
 
