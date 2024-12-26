@@ -1218,24 +1218,6 @@
                         </li>
                         @can('super-admin')
                         <li class="nav-item">
-                            <a href="{{ url('/backups') }}" class="nav-link {{ Request::is('backups*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-database"></i>
-                                <p>Backups</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/generators') }}" class="nav-link {{ Request::is('generators*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-project-diagram"></i>
-                                <p>Generators</p>
-                            </a>
-                        </li>
-                        {{-- <li class="nav-item">
-                            <a href="{{ url('/calendar') }}" class="nav-link {{ Request::is('calendar*') ? 'active' : '' }}">
-                                <i class="nav-icon far fa-calendar-alt"></i>
-                                <p>Calendar</p>
-                            </a>
-                        </li> --}}
-                        <li class="nav-item">
                             <a href="{{ url('/reports') }}" class="nav-link {{ Request::is('reports*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-chart-bar"></i>
                                 <p>Reports</p>
