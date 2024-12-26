@@ -273,7 +273,7 @@
     }
 
     .welcome-message {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
         color: #ffffff;
     }
 
@@ -572,9 +572,7 @@
     .welcome-heading {
         font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(to right, #fff, #e0e0e0);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #ffffff;
         margin-bottom: 1rem;
     }
 

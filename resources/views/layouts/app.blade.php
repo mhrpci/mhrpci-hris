@@ -623,6 +623,75 @@
     color: #fff;
     margin-top: 0.5rem;
 }
+
+/* Tour Guide Styles */
+.shepherd-button {
+    background: #8e44ad !important;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 8px;
+    padding: 8px 18px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.shepherd-button:hover {
+    background: #732d91 !important;
+}
+
+.shepherd-button.shepherd-button-secondary {
+    background: #6c757d !important;
+}
+
+.shepherd-button.shepherd-button-secondary:hover {
+    background: #5a6268 !important;
+}
+
+.shepherd-text {
+    color: #495057;
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 1rem;
+}
+
+.shepherd-title {
+    color: #8e44ad;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.shepherd-header {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.shepherd-footer {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.shepherd-element {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 400px;
+}
+
+.shepherd-arrow:before {
+    background: #fff !important;
+}
+
+.shepherd-enabled.shepherd-element {
+    opacity: 1;
+}
+
+.shepherd-modal-overlay-container.shepherd-modal-is-visible {
+    opacity: 0.5;
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
@@ -657,8 +726,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <meta name="app-env" content="{{ config('app.env') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/css/shepherd.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@9.1.1/dist/js/shepherd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -1364,6 +1433,297 @@
     </script>
 
     @yield('js')
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tour = new Shepherd.Tour({
+            useModalOverlay: true,
+            defaultStepOptions: {
+                classes: 'shadow-md bg-purple-dark',
+                scrollTo: true,
+                cancelIcon: {
+                    enabled: true
+                }
+            }
+        });
+
+        // Welcome Step
+        tour.addStep({
+            id: 'welcome',
+            text: `<h3 class="shepherd-title">Welcome to MHR Property Conglomerates HRIS! 👋</h3>
+                   <p>This comprehensive tour will guide you through our system's main interface components and features.</p>`,
+            buttons: [
+                {
+                    text: 'Skip Tour',
+                    action: tour.complete,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Start Tour',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Main Sidebar Overview
+        tour.addStep({
+            id: 'sidebar-overview',
+            text: `<h3 class="shepherd-title">Main Navigation Sidebar</h3>
+                   <p>This is your primary navigation menu, containing all essential modules and features:</p>
+                   <ul>
+                       <li>Dashboard - Overview of key metrics</li>
+                       <li>Employee Management - Handle employee records</li>
+                       <li>Attendance & Leave Management</li>
+                       <li>Payroll & Benefits</li>
+                       <li>And more based on your role permissions</li>
+                   </ul>`,
+            attachTo: {
+                element: '.main-sidebar',
+                on: 'right'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Brand Logo
+        tour.addStep({
+            id: 'brand-logo',
+            text: `<h3 class="shepherd-title">Company Brand</h3>
+                   <p>Click here to return to the dashboard at any time. The logo serves as your home button.</p>`,
+            attachTo: {
+                element: '.brand-link',
+                on: 'right'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Navbar Overview
+        tour.addStep({
+            id: 'navbar-overview',
+            text: `<h3 class="shepherd-title">Top Navigation Bar</h3>
+                   <p>The top navigation bar provides quick access to important features:</p>
+                   <ul>
+                       <li>Menu Toggle - Collapse/Expand sidebar</li>
+                       <li>Our Policies - Quick access to company policies</li>
+                       <li>Global Search - Find anything quickly</li>
+                       <li>Notifications - Stay updated with alerts</li>
+                       <li>User Profile - Access your account settings</li>
+                   </ul>`,
+            attachTo: {
+                element: '.main-header',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Menu Toggle
+        tour.addStep({
+            id: 'menu-toggle',
+            text: `<h3 class="shepherd-title">Menu Toggle</h3>
+                   <p>Click this button to collapse or expand the sidebar, giving you more workspace when needed.</p>`,
+            attachTo: {
+                element: '[data-widget="pushmenu"]',
+                on: 'right'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Notifications - Add element check before creating step
+        const notificationElement = document.querySelector('#notification-dropdown');
+        if (notificationElement) {
+            tour.addStep({
+                id: 'notifications',
+                text: `<h3 class="shepherd-title">Notifications Center</h3>
+                       <p>Stay informed with real-time notifications about:</p>
+                       <ul>
+                           <li>Leave requests and approvals</li>
+                           <li>Payroll updates</li>
+                           <li>Important announcements</li>
+                           <li>System updates</li>
+                       </ul>`,
+                attachTo: {
+                    element: '#notification-dropdown',
+                    on: 'bottom'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back,
+                        classes: 'shepherd-button-secondary'
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next
+                    }
+                ]
+            });
+        }
+
+        // User Profile Dropdown
+        tour.addStep({
+            id: 'user-profile',
+            text: `<h3 class="shepherd-title">User Profile Menu</h3>
+                   <p>Access your personal settings and options:</p>
+                   <ul>
+                       <li>View and edit your profile</li>
+                       <li>Change your password</li>
+                       <li>Manage account settings</li>
+                       <li>Sign out of the system</li>
+                   </ul>`,
+            attachTo: {
+                element: '.user-menu',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Right Sidebar (Theme Customization)
+        tour.addStep({
+            id: 'right-sidebar',
+            text: `<h3 class="shepherd-title">Theme Customization</h3>
+                   <p>Personalize your interface appearance:</p>
+                   <ul>
+                       <li>Choose from multiple color themes</li>
+                       <li>Adjust navbar position (Fixed/Static)</li>
+                       <li>Customize sidebar appearance</li>
+                       <li>Your preferences are saved automatically</li>
+                   </ul>`,
+            attachTo: {
+                element: '[data-widget="control-sidebar"]',
+                on: 'left'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Content Area
+        tour.addStep({
+            id: 'content-area',
+            text: `<h3 class="shepherd-title">Main Content Area</h3>
+                   <p>This is where your selected module's content will be displayed. The area adjusts automatically based on your sidebar state and screen size.</p>`,
+            attachTo: {
+                element: '.content-wrapper',
+                on: 'left'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next
+                }
+            ]
+        });
+
+        // Final Step
+        tour.addStep({
+            id: 'end',
+            text: `<h3 class="shepherd-title">Tour Complete! 🎉</h3>
+                   <p>You're now familiar with the main interface components. Remember:</p>
+                   <ul>
+                       <li>You can restart this tour anytime using the Tour Guide button</li>
+                       <li>Explore each module to discover more features</li>
+                       <li>Contact support if you need additional help</li>
+                   </ul>`,
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'shepherd-button-secondary'
+                },
+                {
+                    text: 'Finish',
+                    action: tour.complete
+                }
+            ]
+        });
+
+        // Start tour button - Add element check
+        const startTourButton = document.getElementById('start-tour');
+        if (startTourButton) {
+            startTourButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                tour.start();
+            });
+        }
+
+        // Save tour progress in localStorage
+        tour.on('complete', () => {
+            localStorage.setItem('tourCompleted', 'true');
+        });
+
+        // Check if first-time user
+        if (!localStorage.getItem('tourCompleted')) {
+            // Show tour prompt for first-time users
+            setTimeout(() => {
+                if (confirm('Would you like to take a quick tour of the system?')) {
+                    tour.start();
+                }
+            }, 1000);
+        }
+    });
+    </script>
 
 </body>
 </html>
