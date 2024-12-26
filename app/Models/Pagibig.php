@@ -57,18 +57,44 @@ class Pagibig extends Model
         $employerContribution = $pagibig->employer_contribution / 2;
         $contributionDate = $pagibig->contribution_date;
 
+        // Dates for contributions
+        $firstDate = $contributionDate->copy()->setDay(10);
+        $secondDate = $contributionDate->copy()->setDay(25);
+
         // Create first contribution (10th of the month)
         PagibigContribution::create([
             'employee_id' => $pagibig->employee_id,
             'pagibig_contribution' => $employerContribution,
-            'date' => $contributionDate->copy()->setDay(10),
+            'date' => $firstDate,
         ]);
+
+        // Store in Contribution model for 10th
+        Contribution::updateOrCreate(
+            [
+                'employee_id' => $pagibig->employee_id,
+                'date' => $firstDate,
+            ],
+            [
+                'pagibig_contribution' => $employerContribution,
+            ]
+        );
 
         // Create second contribution (25th of the month)
         PagibigContribution::create([
             'employee_id' => $pagibig->employee_id,
             'pagibig_contribution' => $employerContribution,
-            'date' => $contributionDate->copy()->setDay(25),
+            'date' => $secondDate,
         ]);
+
+        // Store in Contribution model for 25th
+        Contribution::updateOrCreate(
+            [
+                'employee_id' => $pagibig->employee_id,
+                'date' => $secondDate,
+            ],
+            [
+                'pagibig_contribution' => $employerContribution,
+            ]
+        );
     }
 }

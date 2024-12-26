@@ -52,18 +52,43 @@ class Philhealth extends Model
         $secondHalfDate = Carbon::create($contributionDate->year, $contributionDate->month, 25);
 
         $halfContribution = $this->employee_contribution / 2;
+        $roundedHalfContribution = round($halfContribution, 2);
 
+        // Create first contribution (10th of the month)
         PhilhealthContribution::create([
             'employee_id' => $this->employee_id,
-            'philhealth_contribution' => round($halfContribution, 2),
+            'philhealth_contribution' => $roundedHalfContribution,
             'date' => $firstHalfDate,
         ]);
 
+        // Store in Contribution model for 10th
+        Contribution::updateOrCreate(
+            [
+                'employee_id' => $this->employee_id,
+                'date' => $firstHalfDate,
+            ],
+            [
+                'philhealth_contribution' => $roundedHalfContribution,
+            ]
+        );
+
+        // Create second contribution (25th of the month)
         PhilhealthContribution::create([
             'employee_id' => $this->employee_id,
-            'philhealth_contribution' => round($halfContribution, 2),
+            'philhealth_contribution' => $roundedHalfContribution,
             'date' => $secondHalfDate,
         ]);
+
+        // Store in Contribution model for 25th
+        Contribution::updateOrCreate(
+            [
+                'employee_id' => $this->employee_id,
+                'date' => $secondHalfDate,
+            ],
+            [
+                'philhealth_contribution' => $roundedHalfContribution,
+            ]
+        );
 
         return $this;
     }

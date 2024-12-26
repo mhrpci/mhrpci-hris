@@ -30,7 +30,7 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
-                                    @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin'))
+                                    @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('HR ComBen'))
                                         <div class="form-group">
                                             <label for="employee_id">Employee</label>
                                             <select id="employee_id" name="employee_id" class="form-control" required>

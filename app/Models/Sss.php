@@ -130,11 +130,23 @@ class Sss extends Model
         $lastDate = $contributionMonth->copy()->setDay(25);
 
         foreach ([$firstDate, $lastDate] as $date) {
+            // Create SssContribution entry
             SssContribution::create([
                 'employee_id' => $employeeId,
                 'date' => $date,
                 'sss_contribution' => $halfContribution,
             ]);
+
+            // Store in Contribution model
+            Contribution::updateOrCreate(
+                [
+                    'employee_id' => $employeeId,
+                    'date' => $date,
+                ],
+                [
+                    'sss_contribution' => $halfContribution,
+                ]
+            );
         }
     }
 }
