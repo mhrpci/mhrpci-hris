@@ -134,16 +134,16 @@
         }
 
         .profile-section {
-            padding: 10px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .profile-image {
-            width: 80px;
-            height: 100px;
+            width: 75px;
+            height: 95px;
             object-fit: cover;
             border: 2px solid var(--accent-color);
             border-radius: 4px;
@@ -153,35 +153,51 @@
             width: 100%;
             text-align: center;
             background: rgba(0, 0, 0, 0.6);
-            padding: 8px;
+            padding: 8px 6px;
             border-radius: 4px;
         }
 
         .employee-name {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             color: #ffffff;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            line-height: 1.3;
+            word-wrap: break-word;
+            max-width: 100%;
+            padding: 0 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 6px;
         }
 
         .employee-details {
-            font-size: 8px;
-            line-height: 1.4;
+            font-size: 7px;
+            line-height: 1.3;
             color: #ffffff;
+            margin-top: 4px;
         }
 
         .detail-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 3px;
-            padding: 0 4px;
+            margin-bottom: 2px;
+            padding: 0 3px;
+            flex-wrap: wrap;
         }
 
         .detail-label {
             color: #ffffff;
             font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .detail-item span:last-child {
+            text-align: right;
+            flex: 1;
+            min-width: 50%;
+            word-break: break-word;
         }
 
         .card-footer {
