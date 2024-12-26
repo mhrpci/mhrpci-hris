@@ -15,7 +15,7 @@
                     <small class="description">Accountability List</small>
                 </div>
             </a>
-            @can('accountability-create')
+            @canany(['hrcompliance', 'hrpolicy', 'admin', 'super-admin'])
             <a href="{{ route('accountabilities.create') }}" class="contribution-link {{ request()->routeIs('accountabilities.create') ? 'active' : '' }}">
                 <div class="icon-wrapper">
                     <i class="fas fa-plus"></i>
@@ -25,7 +25,7 @@
                     <small class="description">New Accountability</small>
                 </div>
             </a>
-            @endcan
+            @endcanany
         </div>
     </div>
     <div class="row">
