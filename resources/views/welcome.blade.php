@@ -1959,6 +1959,141 @@
             display: block;
             margin-top: 20px;
         }
+
+        /* Enhanced Subsidiaries Section Styles */
+        .subsidiaries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .subsidiary-card {
+            background-color: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .subsidiary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .subsidiary-image {
+            position: relative;
+            padding-top: 60%; /* Adjusted aspect ratio */
+            background-color: #f8f9fa;
+            overflow: hidden;
+        }
+
+        .subsidiary-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Changed to contain for better logo display */
+            padding: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .subsidiary-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        }
+
+        .subsidiary-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .subsidiary-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .subsidiary-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            height: 100%;
+        }
+
+        .card-link:hover {
+            text-decoration: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .subsidiaries-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .subsidiary-name {
+                font-size: 1.2rem;
+            }
+
+            .subsidiary-description {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Read More Link */
+        .read-more-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: auto;
+            transition: all 0.3s ease;
+        }
+
+        .read-more-link i {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .subsidiary-card:hover .read-more-link i {
+            transform: translateX(5px);
+        }
+
+        /* Active state for navigation links */
+        .nav-link.active {
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link.active::after {
+            width: 100% !important;
+        }
     </style>
 </head>
 <body>
@@ -1992,17 +2127,8 @@
                     </div>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
-                    <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
-                    <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
-                    {{-- <li>
-                        <a href="#latest-posts" class="nav-link" title="Read Our Announcements">
-                            Announcements
-                            @if($todayPostsCount > 0)
-                                <span class="today-posts-badge">{{ $todayPostsCount }} new</span>
-                            @endif
-                        </a>
-                    </li> --}}
+                    <li><a href="#about" class="nav-link" data-section="about" title="Learn About Us">About Us</a></li>
+                    <li><a href="#subsidiaries" class="nav-link" data-section="subsidiaries" title="Our Subsidiaries">Subsidiaries</a></li>
                     <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
                 </ul>
                 <div class="auth-buttons">
@@ -2050,9 +2176,8 @@
             </div>
         </div>
         <ul class="nav-links">
-            <li><a href="#about" class="nav-link" title="Learn About Us">About Us</a></li>
-            <li><a href="#subsidiaries" class="nav-link" title="Our Subsidiaries">Subsidiaries</a></li>
-            <li><a href="#contact" class="nav-link" title="Get in Touch">Contact</a></li>
+            <li><a href="#about" class="nav-link" data-section="about" title="Learn About Us">About Us</a></li>
+            <li><a href="#subsidiaries" class="nav-link" data-section="subsidiaries" title="Our Subsidiaries">Subsidiaries</a></li>
             <li><a href="{{ route('careers') }}" title="Join Our Team">Careers</a></li>
         </ul>
         <div class="auth-buttons mobile-only">
@@ -2140,14 +2265,13 @@
                                         <img src="{{ asset('vendor/adminlte/dist/img/cebic.png') }}"
                                              alt="Cebic Industries OPC"
                                              class="subsidiary-img"
-                                             loading="lazy"
-                                             width="200"
-                                             height="200"
-                                             onerror="this.onerror=null; this.src='{{ asset('vendor/adminlte/dist/img/default-subsidiary.png') }}';">
+                                             loading="lazy">
                                     </div>
                                     <div class="subsidiary-info">
-                                        <h3 class="subsidiary-name">CIO</h3>
-                                        <p class="subsidiary-description">{{ Str::limit('Cebic Trading is the original business that laid the foundation for MHRPCI. Initially focused on hospital and office medical supplies, the company now deals in a wide range of products and continues to be a trusted supplier to healthcare providers.', 100) }}</p>
+                                        <div>
+                                            <h3 class="subsidiary-name">CIO</h3>
+                                            <p class="subsidiary-description">{{ Str::limit('Cebic Trading is the original business that laid the foundation for MHRPCI. Initially focused on hospital and office medical supplies, the company now deals in a wide range of products and continues to be a trusted supplier to healthcare providers.', 100) }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </a>
@@ -2690,6 +2814,55 @@
                     default: return '#4285F4';
                 }
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all sections and navigation links
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            // Function to update active state
+            function updateActiveLink() {
+                let current = '';
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - sectionHeight/3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-section') === current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // Add scroll event listener
+            window.addEventListener('scroll', updateActiveLink);
+
+            // Initial call to set active state on page load
+            updateActiveLink();
+
+            // Update active state when clicking navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    // Update active state
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
         });
     </script>
 </body>
