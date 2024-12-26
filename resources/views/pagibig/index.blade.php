@@ -201,6 +201,7 @@
 @endsection
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
@@ -271,7 +272,18 @@
         var table = $('#pagibig-table').DataTable({
             "pageLength": 10,
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "order": [[1, "desc"]]
+            "order": [[2, "desc"]],
+            "columnDefs": [
+                {
+                    targets: [3, 4, 5],
+                    render: function(data, type, row) {
+                        if (type === 'sort' || type === 'type') {
+                            return parseFloat(data.replace(/[^\d.-]/g, ''));
+                        }
+                        return data;
+                    }
+                }
+            ]
         });
 
         $('#export-excel').on('click', function() {
@@ -282,10 +294,10 @@
             var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
                 row[0], // PAGIBIG NO.
                 row[1], // Employee
-                new Date(row[2]).toLocaleString('default', { month: 'long' }), // Contribution Month
-                parseFloat(row[3].replace(/,/g, '')).toFixed(2), // Employee Share
-                parseFloat(row[4].replace(/,/g, '')).toFixed(2), // Employer Share
-                parseFloat(row[5].replace(/,/g, '')).toFixed(2)  // Total Contribution
+                row[2], // Contribution Month (already in correct format)
+                parseFloat(row[3].replace(/[^\d.-]/g, '')).toFixed(2), // Employee Share
+                parseFloat(row[4].replace(/[^\d.-]/g, '')).toFixed(2), // Employer Share
+                parseFloat(row[5].replace(/[^\d.-]/g, '')).toFixed(2)  // Total Contribution
             ])));
 
             // Set column widths
@@ -298,54 +310,51 @@
                 {wch: 18}  // Total Contribution
             ];
 
-            // Style the header row
-            var headerStyle = {
-                font: { bold: true, color: { rgb: "FFFFFF" } },
-                fill: { fgColor: { rgb: "4472C4" } },
-                alignment: { horizontal: "center", vertical: "center" },
-                border: {
-                    top: {style: "thin", color: {auto: 1}},
-                    bottom: {style: "thin", color: {auto: 1}},
-                    left: {style: "thin", color: {auto: 1}},
-                    right: {style: "thin", color: {auto: 1}}
-                }
-            };
-            for (var i = 0; i < header.length; i++) {
-                var cellRef = XLSX.utils.encode_cell({r: 0, c: i});
-                ws[cellRef].s = headerStyle;
-            }
-
-            // Style the data cells
-            var dataStyle = {
-                alignment: { horizontal: "right", vertical: "center" },
-                border: {
-                    top: {style: "thin", color: {auto: 1}},
-                    bottom: {style: "thin", color: {auto: 1}},
-                    left: {style: "thin", color: {auto: 1}},
-                    right: {style: "thin", color: {auto: 1}}
-                }
-            };
-            var currencyStyle = Object.assign({}, dataStyle, { numFmt: "#,##0.00" });
-            var monthStyle = Object.assign({}, dataStyle, {
-                alignment: { horizontal: "center" }
-            });
-
+            // Style the header row and data cells
             var range = XLSX.utils.decode_range(ws['!ref']);
             for (var R = range.s.r; R <= range.e.r; ++R) {
                 for (var C = range.s.c; C <= range.e.c; ++C) {
                     var cellRef = XLSX.utils.encode_cell({r: R, c: C});
                     if (!ws[cellRef]) continue;
                     if (!ws[cellRef].s) ws[cellRef].s = {};
+                    
                     if (R === 0) {
-                        ws[cellRef].s = headerStyle;
+                        // Header style
+                        ws[cellRef].s = {
+                            font: { bold: true, color: { rgb: "FFFFFF" } },
+                            fill: { fgColor: { rgb: "4472C4" } },
+                            alignment: { horizontal: "center", vertical: "center" },
+                            border: {
+                                top: {style: "thin"},
+                                bottom: {style: "thin"},
+                                left: {style: "thin"},
+                                right: {style: "thin"}
+                            }
+                        };
                     } else {
-                        if (C === 2) {
-                            ws[cellRef].s = monthStyle;
-                        } else if (C >= 3 && C <= 5) {
-                            ws[cellRef].s = currencyStyle;
+                        // Data cell style
+                        var style = {
+                            border: {
+                                top: {style: "thin"},
+                                bottom: {style: "thin"},
+                                left: {style: "thin"},
+                                right: {style: "thin"}
+                            }
+                        };
+
+                        if (C >= 3 && C <= 5) {
+                            // Number columns
+                            style.alignment = { horizontal: "right" };
+                            style.numFmt = "#,##0.00";
+                        } else if (C === 2) {
+                            // Date column
+                            style.alignment = { horizontal: "center" };
                         } else {
-                            ws[cellRef].s = dataStyle;
+                            // Text columns
+                            style.alignment = { horizontal: "left" };
                         }
+
+                        ws[cellRef].s = style;
                     }
                 }
             }

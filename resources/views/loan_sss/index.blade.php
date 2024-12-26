@@ -98,99 +98,108 @@
                             <div class="dropdown">
                                 <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a href="{{ route('loan_sss.ledger', $loan->id) }}" class="dropdown-item">
-                                            <i class="fas fa-book"></i>&nbsp;Ledger
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a href="{{ route('loan_sss.ledger', $loan->id) }}" class="dropdown-item">
+                                        <i class="fas fa-book"></i>&nbsp;Ledger
+                                    </a>
+                                    @if($loan->getRemainingBalanceAttribute() == 0)
+                                        <a href="{{ route('loan_sss.edit', $loan->id) }}" class="dropdown-item">
+                                            <i class="fas fa-edit"></i>&nbsp;Update Status
                                         </a>
-                                        @if($loan->getRemainingBalanceAttribute() == 0)
-                                            <a href="{{ route('loan_sss.edit', $loan->id) }}" class="dropdown-item">
-                                                <i class="fas fa-edit"></i>&nbsp;Update Status
-                                            </a>
-                                        @endif
-                                    </div>
+                                    @endif
+                                    @can('super-admin')
+                                    <form action="{{ route('loan_sss.destroy', $loan->id) }}" method="POST" class="delete-form" id="delete-form-{{ $loan->id }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="dropdown-item delete-button" onclick="confirmDelete({{ $loan->id }})">
+                                            <i class="fas fa-trash"></i>&nbsp;Delete
+                                        </button>
+                                    </form>
+                                    @endcan
                                 </div>
                             </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    </div>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+</div>
 
-    @include('loan_sss.create')
-    @endsection
+@include('loan_sss.create')
+@endsection
 
-    @section('css')
-    <style>
-        .contribution-nav {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-        }
-        .contribution-link {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #333;
-            background-color: #f8f9fa;
-            transition: all 0.3s ease;
-            border: 1px solid #dee2e6;
-        }
-        .contribution-link:hover {
-            background-color: #e9ecef;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .contribution-link.active {
-            background-color: #007bff;
-            color: #fff;
-            border-color: #007bff;
-        }
-    .contribution-link .icon-wrapper {
+@section('css')
+<style>
+    .contribution-nav {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .contribution-link {
         display: flex;
         align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: rgba(0,0,0,0.1);
-        margin-right: 10px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #333;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
     }
-    .contribution-link.active .icon-wrapper {
-        background-color: rgba(255,255,255,0.2);
+    .contribution-link:hover {
+        background-color: #e9ecef;
+        text-decoration: none;
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    .contribution-link .icon-wrapper i {
-        font-size: 1.2rem;
+    .contribution-link.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
     }
-    .contribution-link .text-wrapper {
-        display: flex;
-        flex-direction: column;
-    }
-    .contribution-link .title {
-        font-weight: bold;
-        font-size: 1rem;
-    }
-    .contribution-link .description {
-        font-size: 0.75rem;
-        opacity: 0.8;
-    }
-    .contribution-link.active .description {
-        opacity: 0.9;
-    }
+.contribution-link .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.1);
+    margin-right: 10px;
+}
+.contribution-link.active .icon-wrapper {
+    background-color: rgba(255,255,255,0.2);
+}
+.contribution-link .icon-wrapper i {
+    font-size: 1.2rem;
+}
+.contribution-link .text-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+.contribution-link .title {
+    font-weight: bold;
+    font-size: 1rem;
+}
+.contribution-link .description {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+.contribution-link.active .description {
+    opacity: 0.9;
+}
 
-    /* Toast styles */
-    .colored-toast.swal2-icon-success {
-        box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
-    }
-    .colored-toast.swal2-icon-error {
-        box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
-    }
+/* Toast styles */
+.colored-toast.swal2-icon-success {
+    box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+}
+.colored-toast.swal2-icon-error {
+    box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+}
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -198,6 +207,7 @@
 @endsection
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
@@ -341,5 +351,22 @@
         // Remove the AJAX call for generate payments
         // The form submission will handle this now
     });
+
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If confirmed, submit the delete form
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+    }
 </script>
 @endsection

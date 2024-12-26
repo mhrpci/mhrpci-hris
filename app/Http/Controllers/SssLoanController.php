@@ -92,7 +92,7 @@ class SssLoanController extends Controller
                 }
             } else {
                 // If user is not an employee, they must be an admin/super-admin to access
-                if (!auth()->user()->is_admin && !auth()->user()->is_super_admin) {
+                if (!auth()->user()->hasRole('Super Admin') && !auth()->user()->hasRole('Admin')) {
                     abort(403, 'Unauthorized access to this SSS loan ledger.');
                 }
             }
@@ -175,5 +175,16 @@ class SssLoanController extends Controller
     {
         $loan = SssLoan::findOrFail($id);
         return view('loan_sss.update_status', compact('loan'));
+    }
+
+    /**
+     * Remove the specified SSS loan from storage.
+     */
+    public function destroy($id)
+    {
+        $loan = SssLoan::findOrFail($id);
+        $loan->delete();
+
+        return redirect()->route('loan_sss.index')->with('success', 'SSS Loan has been deleted successfully.');
     }
 }

@@ -113,10 +113,10 @@
                                     </a>
                                     @endif
                                     @can('super-admin')
-                                    <form action="{{ route('loan_pagibig.destroy', $loan->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this loan?');">
+                                    <form action="{{ route('loan_pagibig.destroy', $loan->id) }}" method="POST" class="delete-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="dropdown-item">
+                                        <button type="button" class="dropdown-item delete-button">
                                             <i class="fas fa-trash"></i>&nbsp;Delete
                                         </button>
                                     </form>
@@ -210,6 +210,7 @@
 @endsection
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
@@ -359,6 +360,26 @@
 
         // Remove the AJAX call for generate payments
         // The form submission will handle this now
+    });
+
+    $(document).on('click', '.delete-button', function() {
+        const form = $(this).closest('.delete-form');
+        const loanId = form.attr('action').split('/').pop(); // Extract loan ID from the action URL
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit(); // Submit the form if confirmed
+            }
+        });
     });
 </script>
 @endsection

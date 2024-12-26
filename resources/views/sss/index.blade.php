@@ -209,6 +209,7 @@
 @endsection
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
@@ -216,46 +217,108 @@
 
 <script>
     $(document).ready(function () {
-        // Common toast configuration
-        const toastConfig = {
-            timer: 3000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            toast: true,
-            position: 'top-end',
-            background: '#fff',
-            color: '#424242',
-            iconColor: 'white',
-            customClass: {
-                popup: 'colored-toast'
+        // Update DataTable initialization with proper number formatting
+        var table = $('#sss-table').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[2, "desc"]], // Changed to sort by contribution date
+            "columnDefs": [
+                {
+                    targets: [3, 4, 5], // Apply to amount columns
+                    render: function(data, type, row) {
+                        if (type === 'sort' || type === 'type') {
+                            return parseFloat(data.replace(/[^\d.-]/g, ''));
+                        }
+                        return data;
+                    }
+                }
+            ]
+        });
+
+        // Fix Excel export data processing
+        $('#export-excel').on('click', function() {
+            var data = table.rows().data().toArray();
+            var header = ['SSS NO.', 'Employee', 'Contribution Month', 'Employee Share', 'Employer Share', 'Total Contribution'];
+
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
+                row[0], // SSS NO.
+                row[1], // Employee
+                row[2], // Contribution Month (already in correct format)
+                parseFloat(row[3].replace(/[^\d.-]/g, '')).toFixed(2), // Employee Share
+                parseFloat(row[4].replace(/[^\d.-]/g, '')).toFixed(2), // Employer Share
+                parseFloat(row[5].replace(/[^\d.-]/g, '')).toFixed(2)  // Total Contribution
+            ])));
+
+            // Set column widths
+            ws['!cols'] = [
+                {wch: 15}, // SSS NO.
+                {wch: 30}, // Employee
+                {wch: 20}, // Contribution Month
+                {wch: 15}, // Employee Share
+                {wch: 15}, // Employer Share
+                {wch: 18}  // Total Contribution
+            ];
+
+            // Style the header row and data cells
+            var range = XLSX.utils.decode_range(ws['!ref']);
+            for (var R = range.s.r; R <= range.e.r; ++R) {
+                for (var C = range.s.c; C <= range.e.c; ++C) {
+                    var cellRef = XLSX.utils.encode_cell({r: R, c: C});
+                    if (!ws[cellRef]) continue;
+                    if (!ws[cellRef].s) ws[cellRef].s = {};
+                    
+                    if (R === 0) {
+                        // Header style
+                        ws[cellRef].s = {
+                            font: { bold: true, color: { rgb: "FFFFFF" } },
+                            fill: { fgColor: { rgb: "4472C4" } },
+                            alignment: { horizontal: "center", vertical: "center" },
+                            border: {
+                                top: {style: "thin"},
+                                bottom: {style: "thin"},
+                                left: {style: "thin"},
+                                right: {style: "thin"}
+                            }
+                        };
+                    } else {
+                        // Data cell style
+                        var style = {
+                            border: {
+                                top: {style: "thin"},
+                                bottom: {style: "thin"},
+                                left: {style: "thin"},
+                                right: {style: "thin"}
+                            }
+                        };
+
+                        if (C >= 3 && C <= 5) {
+                            // Number columns
+                            style.alignment = { horizontal: "right" };
+                            style.numFmt = "#,##0.00";
+                        } else if (C === 2) {
+                            // Date column
+                            style.alignment = { horizontal: "center" };
+                        } else {
+                            // Text columns
+                            style.alignment = { horizontal: "left" };
+                        }
+
+                        ws[cellRef].s = style;
+                    }
+                }
             }
-        };
 
-        // Success toast
-        @if(Session::has('success'))
-            Swal.fire({
-                ...toastConfig,
-                icon: 'success',
-                title: 'Success',
-                text: "{{ Session::get('success') }}",
-                background: '#28a745',
-                color: '#fff'
-            });
-        @endif
+            XLSX.utils.book_append_sheet(wb, ws, 'SSS Contributions');
+            XLSX.writeFile(wb, 'sss_contributions.xlsx');
+        });
 
-        // Error toast
-        @if(Session::has('error'))
-            Swal.fire({
-                ...toastConfig,
-                icon: 'error',
-                title: 'Error',
-                text: "{{ Session::get('error') }}",
-                background: '#dc3545',
-                color: '#fff'
-            });
-        @endif
+        // Add this to ensure the modal works correctly
+        $('#createAllModal').on('shown.bs.modal', function () {
+            $('#contribution_date').trigger('focus');
+        });
 
-        // Update delete confirmation to use SweetAlert
+        // Update delete confirmation to use SweetAlert with better error handling
         $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
             e.preventDefault();
             let form = $(this).closest('form');
@@ -277,90 +340,42 @@
             });
         });
 
-        var table = $('#sss-table').DataTable({
-            "pageLength": 10,
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "order": [[1, "desc"]]
-        });
-
-        $('#export-excel').on('click', function() {
-            var data = table.rows().data().toArray();
-            var header = ['SSS NO.', 'Employee', 'Contribution Month', 'Employee Share', 'Employer Share', 'Total Contribution'];
-
-            var wb = XLSX.utils.book_new();
-            var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
-                row[0], // SSS NO.
-                row[1], // Employee
-                new Date(row[2]).toLocaleString('default', { month: 'long' }), // Contribution Month
-                parseFloat(row[3].replace(/,/g, '')).toFixed(2), // Employee Share
-                parseFloat(row[4].replace(/,/g, '')).toFixed(2), // Employer Share
-                parseFloat(row[5].replace(/,/g, '')).toFixed(2)  // Total Contribution
-            ])));
-
-            // Set column widths
-            ws['!cols'] = [
-                {wch: 15}, // SSS NO.
-                {wch: 30}, // Employee
-                {wch: 20}, // Contribution Month
-                {wch: 15}, // Employee Share
-                {wch: 15}, // Employer Share
-                {wch: 18}  // Total Contribution
-            ];
-
-            // Style the header row
-            var headerStyle = {
-                font: { bold: true, color: { rgb: "FFFFFF" } },
-                fill: { fgColor: { rgb: "4472C4" } },
-                alignment: { horizontal: "center", vertical: "center" },
-                border: {
-                    top: {style: "thin", color: {auto: 1}},
-                    bottom: {style: "thin", color: {auto: 1}},
-                    left: {style: "thin", color: {auto: 1}},
-                    right: {style: "thin", color: {auto: 1}}
-                }
-            };
-            for (var i = 0; i < header.length; i++) {
-                var cellRef = XLSX.utils.encode_cell({r: 0, c: i});
-                ws[cellRef].s = headerStyle;
+        // Enhanced toast notifications
+        const toastConfig = {
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            background: '#fff',
+            color: '#424242',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast'
             }
+        };
 
-            // Style the data cells
-            var dataStyle = {
-                alignment: { horizontal: "right", vertical: "center" },
-                border: {
-                    top: {style: "thin", color: {auto: 1}},
-                    bottom: {style: "thin", color: {auto: 1}},
-                    left: {style: "thin", color: {auto: 1}},
-                    right: {style: "thin", color: {auto: 1}}
-                }
-            };
-            var currencyStyle = Object.assign({}, dataStyle, { numFmt: "#,##0.00" });
-            var monthStyle = Object.assign({}, dataStyle, {
-                alignment: { horizontal: "center" }
+        @if(Session::has('success'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'success',
+                title: 'Success',
+                text: "{{ Session::get('success') }}",
+                background: '#28a745',
+                color: '#fff'
             });
+        @endif
 
-            var range = XLSX.utils.decode_range(ws['!ref']);
-            for (var R = range.s.r; R <= range.e.r; ++R) {
-                for (var C = range.s.c; C <= range.e.c; ++C) {
-                    var cellRef = XLSX.utils.encode_cell({r: R, c: C});
-                    if (!ws[cellRef]) continue;
-                    if (!ws[cellRef].s) ws[cellRef].s = {};
-                    if (R === 0) {
-                        ws[cellRef].s = headerStyle;
-                    } else {
-                        ws[cellRef].s = C === 2 ? monthStyle : currencyStyle;
-                    }
-                }
-            }
-
-            XLSX.utils.book_append_sheet(wb, ws, 'SSS Contributions');
-            XLSX.writeFile(wb, 'sss_contributions.xlsx');
-        });
-
-        // Add this to ensure the modal works correctly
-        $('#createAllModal').on('shown.bs.modal', function () {
-            $('#contribution_date').trigger('focus')
-        })
+        @if(Session::has('error'))
+            Swal.fire({
+                ...toastConfig,
+                icon: 'error',
+                title: 'Error',
+                text: "{{ Session::get('error') }}",
+                background: '#dc3545',
+                color: '#fff'
+            });
+        @endif
     });
 </script>
 @endsection
