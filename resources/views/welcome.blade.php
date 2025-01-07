@@ -2214,7 +2214,7 @@
         <section class="hero">
             <div class="container">
                 <h1>Welcome to MHR Property Conglomerates, Inc.</h1>
-                <p>Good Success!</p>
+                <p style="font-size: 2.5rem;">Good Success!</p>
                 <a href="#about" class="cta-btn">Discover More</a>
             </div>
         </section>

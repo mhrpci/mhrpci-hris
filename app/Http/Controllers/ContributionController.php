@@ -178,12 +178,17 @@ public function employeeContributions(Request $request, $employee_id)
      */
     public function allEmployeesContribution()
     {
-        // Retrieve all employees
-        $employees = Employee::where('employee_status', 'Active')->get();
-
-        // If there's additional time sheet data you want to include, add the logic here
-        // For example, if there's a TimeSheet model related to Employee:
-        // $employees = Employee::with('timeSheets')->get();
+        $user = Auth::user();
+        
+        // Create the base query
+        $query = Employee::query();
+        
+        // If user is not Super Admin or Admin, only show active employees
+        if (!$user->hasRole(['Super Admin', 'Admin'])) {
+            $query->where('employee_status', 'Active');
+        }
+        
+        $employees = $query->get();
 
         return view('contributions.employees-list', compact('employees'));
     }

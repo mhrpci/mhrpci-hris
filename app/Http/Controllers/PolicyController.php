@@ -63,16 +63,6 @@ class PolicyController extends Controller
 
     public function showPolicy()
     {
-        $policies = Policy::with('section')
-            ->join('sections', 'policies.section_id', '=', 'sections.id')
-            ->orderBy('sections.section_number')
-            ->orderBy('policies.sort_order')
-            ->select('policies.*', 'sections.name as section_name', 'sections.section_number')
-            ->get()
-            ->groupBy(function ($policy) {
-                return 'Section ' . $policy->section_number . ': ' . $policy->section_name;
-            });
-
-        return view('policies.policies', compact('policies'));
+        return view('policies.policies');
     }
 }

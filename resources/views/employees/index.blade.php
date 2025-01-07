@@ -19,6 +19,19 @@
                                 Add Employee <i class="fas fa-plus-circle"></i>
                             </a>
                             @endcan
+                            <div class="dropdown mr-2 mb-2">
+                                <button class="btn btn-warning btn-sm dropdown-toggle rounded-pill" type="button" id="employeeStatusDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Employee Status <i class="fas fa-user-clock"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="employeeStatusDropdown">
+                                    <a class="dropdown-item" href="{{ route('employees.resigned') }}">
+                                        <i class="fas fa-sign-out-alt"></i> Resigned Employees
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('employees.terminated') }}">
+                                        <i class="fas fa-user-times"></i> Terminated Employees
+                                    </a>
+                                </div>
+                            </div>
                             @if(Auth::user()->hasRole(['Super Admin', 'Admin']))
                             <button class="btn btn-primary btn-sm rounded-pill mr-2 mb-2" data-toggle="modal" data-target="#importModal">
                                 Import Employees <i class="fas fa-file-import"></i>
@@ -469,6 +482,10 @@
                 targets: 6, // Targeting the "Joined Date" column (0-based index)
                 type: 'date'
             }
+        ],
+        order: [
+            [4, 'asc'], // Sort by status column (index 4) in ascending order to put 'Active' last
+            [1, 'asc']  // Then sort by name as secondary sort
         ]
     });
 

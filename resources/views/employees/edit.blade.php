@@ -386,7 +386,10 @@
                                         {{ Auth::user()->hasRole('Super Admin') ? '' : 'disabled' }}>
                                     <option value="">Select Department</option>
                                     @foreach($departments as $department)
-                                        <option value="{{ $department->id }}" {{ old('department_id', $employee->department_id) == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                                        <option value="{{ $department->id }}" 
+                                                {{ old('department_id', $employee->department_id) == $department->id ? 'selected' : '' }}>
+                                            {{ $department->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('department_id')
@@ -405,6 +408,11 @@
                                         required
                                         {{ Auth::user()->hasRole('Super Admin') ? '' : 'disabled' }}>
                                     <option value="">Select Position</option>
+                                    @if(old('position_id', $employee->position_id))
+                                        <option value="{{ old('position_id', $employee->position_id) }}" selected>
+                                            {{ $employee->position->name }}
+                                        </option>
+                                    @endif
                                 </select>
                                 @error('position_id')
                                     <span class="invalid-feedback d-block" role="alert">
@@ -416,17 +424,23 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="salary">Salary</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-warning text-white">Php</span>
+                                @if(Auth::user()->hasRole(['Super Admin', 'Admin', 'Finance']) || $employee->rank != 'Managerial')
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-warning text-white">Php</span>
+                                        </div>
+                                        <input type="number" step="0.01" class="form-control @error('salary') is-invalid @enderror" id="salary" name="salary" value="{{ old('salary', $employee->salary) }}" required>
                                     </div>
-                                    <input type="number" step="0.01" class="form-control @error('salary') is-invalid @enderror" id="salary" name="salary" value="{{ old('salary', $employee->salary) }}" required>
-                                </div>
-                                @error('salary')
-                                    <span class="invalid-feedback d-block" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                    @error('salary')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                @else
+                                    <div class="form-control bg-light text-muted">
+                                        <i class="fas fa-lock mr-2"></i>This information is confidential
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -851,21 +865,47 @@ input:not([type="file"]) {
                 }
             @endforeach
 
-            positionDropdown.trigger('change'); // Refresh Select2
+            positionDropdown.trigger('change');
         });
 
-        // If Super Admin, enable the cascade selection on page load
-        @if(Auth::user()->hasRole('Super Admin'))
-            // Trigger initial department change if there's a selected department
-            if ($('#department_id').val()) {
-                $('#department_id').trigger('change');
+        // Ensure department and position are properly set on page load
+        var savedDepartmentId = '{{ old('department_id', $employee->department_id) }}';
+        var savedPositionId = '{{ old('position_id', $employee->position_id) }}';
 
-                // After department change, set the saved position
-                setTimeout(function() {
-                    $('#position_id').val('{{ old('position_id', $employee->position_id) }}').trigger('change');
-                }, 100);
-            }
-        @endif
+        // Set department and trigger change event
+        if (savedDepartmentId) {
+            $('#department_id')
+                .val(savedDepartmentId)
+                .trigger('change');
+
+            // Wait for positions to load, then set the saved position
+            setTimeout(function() {
+                $('#position_id')
+                    .val(savedPositionId)
+                    .trigger('change');
+            }, 100);
+        }
+
+        // If fields are disabled, ensure the hidden input fields exist
+        if ($('#department_id').is(':disabled')) {
+            $('<input>')
+                .attr({
+                    type: 'hidden',
+                    name: 'department_id',
+                    value: savedDepartmentId
+                })
+                .appendTo('form');
+        }
+
+        if ($('#position_id').is(':disabled')) {
+            $('<input>')
+                .attr({
+                    type: 'hidden',
+                    name: 'position_id',
+                    value: savedPositionId
+                })
+                .appendTo('form');
+        }
     });
 </script>
 @stop

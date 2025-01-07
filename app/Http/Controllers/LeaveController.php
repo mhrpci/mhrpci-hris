@@ -378,9 +378,11 @@ class LeaveController extends Controller
             $departments = Department::all();
 
             if ($departmentId) {
-                $employees = Employee::where('department_id', $departmentId)->get();
+                $employees = Employee::where('department_id', $departmentId)
+                    ->where('employee_status', 'Active')
+                    ->get();
             } else {
-                $employees = Employee::all();
+                $employees = Employee::where('employee_status', 'Active')->get();
             }
 
             return view('leaves.all_employees', compact('employees', 'departments', 'departmentId'));

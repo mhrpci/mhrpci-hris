@@ -40,64 +40,102 @@ class PayrollController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'employee_id' => 'nullable|exists:employees,id',
+            'payroll_type' => 'required|in:regular,weekly'
         ]);
 
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
         $specific_employee_id = $request->input('employee_id');
+        $payroll_type = $request->input('payroll_type');
 
         $user = auth()->user();
 
+        // Query builder for employees
+        $employeesQuery = Employee::where('employee_status', 'Active');
+
         if ($specific_employee_id) {
-            $employees = Employee::where('id', $specific_employee_id)
-                                 ->where('employee_status', 'Active')
-                                 ->get();
+            $employeesQuery->where('id', $specific_employee_id);
         } else {
-            if ($user->hasRole('Super Admin')) {
-                $employees = Employee::where('employee_status', 'Active')->get();
+            if (!$user->hasRole('Super Admin')) {
+                $employeesQuery->where('rank', 'Rank File');
+            }
+
+            // Filter employees based on payroll type
+            if ($payroll_type === 'weekly') {
+                $employeesQuery->whereHas('department', function ($query) {
+                    $query->where('name', 'BGPDI');
+                });
             } else {
-                $employees = Employee::where('rank', 'Rank File')
-                                     ->where('employee_status', 'Active')
-                                     ->get();
+                $employeesQuery->whereHas('department', function ($query) {
+                    $query->where('name', '!=', 'BGPDI');
+                });
             }
         }
 
+        $employees = $employeesQuery->get();
+
         $successCount = 0;
         $failCount = 0;
+        $errors = [];
 
         foreach ($employees as $employee) {
             try {
-                if ($this->existingPayroll($employee->id, $start_date, $end_date)) {
-                    \Log::warning("Payroll already exists for employee ID {$employee->id} for the given date range.");
-                    $failCount++;
-                    continue;
+                // Validate payroll type matches employee department
+                if ($specific_employee_id) {
+                    $isDepartmentMatch = ($payroll_type === 'weekly' && $employee->department->name === 'BGPDI') ||
+                                       ($payroll_type === 'regular' && $employee->department->name !== 'BGPDI');
+                    
+                    if (!$isDepartmentMatch) {
+                        throw new \Exception("Invalid payroll type for employee's department");
+                    }
                 }
 
-                $this->payrollService->calculatePayroll($employee->id, $start_date, $end_date);
+                // Check for existing payroll
+                if ($this->existingPayroll($employee->id, $start_date, $end_date)) {
+                    throw new \Exception("Payroll already exists for this period");
+                }
 
-                // Send email notification to employee
-                if ($employee->email_address) {
+                // Calculate payroll
+                $payroll = $this->payrollService->calculatePayroll($employee->id, $start_date, $end_date);
+
+                // Send email notification if successful
+                if ($payroll && $employee->email_address) {
                     \Mail::to($employee->email_address)->send(new \App\Mail\PayrollAvailable([
-                        'employee_name' => $employee->first_name . ' ' . $employee->last_name,
+                        'employee_name' => $employee->full_name,
                         'start_date' => Carbon::parse($start_date)->format('F d, Y'),
-                        'end_date' => Carbon::parse($end_date)->format('F d, Y')
+                        'end_date' => Carbon::parse($end_date)->format('F d, Y'),
+                        'payroll_type' => ucfirst($payroll_type)
                     ]));
                 }
 
                 $successCount++;
             } catch (\Exception $e) {
-                \Log::error("Failed to calculate payroll for employee ID {$employee->id}: " . $e->getMessage());
                 $failCount++;
+                $errors[] = "Failed to process payroll for {$employee->full_name}: {$e->getMessage()}";
+                \Log::error("Payroll generation failed for employee ID {$employee->id}: " . $e->getMessage());
             }
         }
 
-        $message = "Payroll calculated and stored successfully for {$successCount} " .
-                   ($specific_employee_id ? "employee" : "active employees") . ".";
-        if ($failCount > 0) {
-            $message .= " Failed for {$failCount} " . ($specific_employee_id ? "employee" : "employees") . ". Check logs for details.";
-        }
+        // Prepare response message
+        $message = $this->prepareResponseMessage($successCount, $failCount, $specific_employee_id);
+        
+        return redirect()->route('payroll.index')
+            ->with('success', $message)
+            ->with('errors', $errors);
+    }
 
-        return redirect()->route('payroll.index')->with('success', $message);
+    private function prepareResponseMessage($successCount, $failCount, $isSpecific)
+    {
+        $message = "Payroll calculated and stored successfully for {$successCount} " .
+                   ($isSpecific ? "employee" : "active employees") . ".";
+        
+        if ($failCount > 0) {
+            $message .= " Failed for {$failCount} " . 
+                       ($isSpecific ? "employee" : "employees") . 
+                       ". Check logs for details.";
+        }
+        
+        return $message;
     }
 
     // Display payroll details
@@ -357,3 +395,4 @@ class PayrollController extends Controller
             ->exists();
     }
 }
+

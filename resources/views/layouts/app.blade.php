@@ -692,6 +692,390 @@
 .shepherd-modal-overlay-container.shepherd-modal-is-visible {
     opacity: 0.5;
 }
+
+.toast {
+    background-color: white;
+    border-left: 4px solid #007bff;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.navbar-badge {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    right: 5px;
+    top: 9px;
+}
+
+#notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.dropdown-item:active {
+    background-color: #e9ecef;
+    color: #1e2125;
+}
+
+/* Enhanced Notification Styles */
+.notification-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #8e44ad #f1f1f1;
+}
+
+.notification-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.notification-scroll::-webkit-scrollbar-thumb {
+    background: #8e44ad;
+    border-radius: 3px;
+}
+
+#notification-list {
+    width: 350px;
+    padding: 0;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+}
+
+#notification-list .dropdown-header {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.notification-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    text-decoration: none;
+    color: inherit;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+    color: inherit;
+}
+
+.notification-item.unread {
+    background-color: #f0f4ff;
+}
+
+.notification-item.unread:hover {
+    background-color: #e5ebff;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.notification-icon.leave {
+    background-color: #8e44ad;
+    color: white;
+}
+
+.notification-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notification-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: #adb5bd;
+}
+
+.empty-notifications {
+    padding: 2rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-notifications i {
+    font-size: 2.5rem;
+    color: #adb5bd;
+    margin-bottom: 1rem;
+}
+
+.dropdown-footer {
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+/* Toast Notification Styles */
+.toast {
+    background-color: white;
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+}
+
+.toast-header {
+    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 0.75rem 1rem;
+}
+
+.toast-body {
+    padding: 1rem;
+}
+
+/* Navbar Badge */
+.navbar-badge {
+    position: absolute;
+    top: 5px;
+    right: 3px;
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    border-radius: 10px;
+}
+
+.toast-container {
+    min-width: 350px;
+    max-width: 400px;
+}
+
+.toast {
+    background: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+}
+
+.toast-header {
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+}
+
+.toast-header .btn-close {
+    margin-right: -0.5rem;
+}
+
+.toast-body {
+    padding: 1rem;
+}
+
+.leave-details {
+    border-left: 2px solid #e9ecef;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .toast-container {
+        min-width: 100%;
+        padding: 0.5rem;
+    }
+    
+    .toast {
+        margin: 0.5rem;
+    }
+    
+    .notification-icon {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .leave-details {
+        margin-left: 1rem !important;
+        padding-left: 0.5rem !important;
+    }
+}
+
+/* Animation for toast */
+@keyframes toastFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toast.show {
+    animation: toastFadeIn 0.3s ease-out;
+}
+
+.toast-container {
+    min-width: 350px;
+    max-width: 400px;
+}
+
+.toast {
+    background: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+}
+
+.toast-header {
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+}
+
+.toast-body {
+    padding: 1rem;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #8e44ad;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.leave-details {
+    border-left: 2px solid #e9ecef;
+    padding-left: 1rem;
+}
+
+.toast-progress-bar {
+    height: 3px;
+    background: linear-gradient(to right, #8e44ad, #2ecc71);
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 0 0 8px 8px;
+    transition: width 1s linear;
+}
+
+/* Toast animation */
+@keyframes toastFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toast.show {
+    animation: toastFadeIn 0.3s ease-out;
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+    .toast-container {
+        min-width: 100%;
+        padding: 0.5rem;
+    }
+    
+    .toast {
+        margin: 0.5rem;
+    }
+    
+    .notification-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .leave-details {
+        margin-left: 0.5rem;
+        padding-left: 0.5rem;
+    }
+}
+
+.toast-container {
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.toast {
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.toast-icon {
+    font-size: 1.25rem;
+}
+
+.toast-progress {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.7);
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 0 0 8px 8px;
+    animation: toast-progress 8s linear forwards;
+}
+
+@keyframes toast-progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+@keyframes toastFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toast.show {
+    animation: toastFadeIn 0.3s ease-out;
+}
+
+/* Responsive styles */
+@media (max-width: 576px) {
+    .toast-container {
+        padding: 0.5rem;
+    }
+    
+    .toast {
+        margin: 0.5rem;
+        font-size: 0.9rem;
+    }
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
@@ -796,7 +1180,7 @@
                 <!-- Our Policies link with larger text and icon -->
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ url('/policies-page') }}" class="nav-link" style="font-size: 1.2rem; font-weight: 200;">
-                        <i class="fas fa-file-alt mr-2"></i> Our Policies
+                        <i class="fas fa-file-alt mr-2"></i> Terms and Policy of Usage
                     </a>
                 </li>
                 {{-- <li class="nav-item d-none d-sm-inline-block">
@@ -809,6 +1193,43 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+                <!-- Add this notification dropdown before the existing items -->
+                @canany(['admin', 'super-admin', 'hrcomben'])
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#" id="notificationDropdown">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-danger navbar-badge" id="notification-count">0</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right" id="notification-list">
+                        <div class="dropdown-header bg-primary text-white p-3">
+                            <h6 class="m-0">
+                                <i class="fas fa-bell mr-2"></i>
+                                Notifications
+                                <span class="float-right" id="notification-count-text">0 New</span>
+                            </h6>
+                        </div>
+                        
+                        <div class="notification-scroll" id="notification-items">
+                            <!-- Notifications will be dynamically inserted here -->
+                            <div class="empty-notifications text-center p-3 text-muted">
+                                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                <p class="mb-0">You're all caught up!</p>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-footer bg-light p-2 text-center">
+                            <button class="btn btn-sm btn-link text-decoration-none" id="mark-all-read">
+                                <i class="fas fa-check-double mr-1"></i>Mark all as read
+                            </button>
+                            <span class="mx-2">|</span>
+                            <a href="#" class="btn btn-sm btn-link text-decoration-none">
+                                View All Notifications
+                            </a>
+                        </div>
+                    </div>
+                </li>
+                @endcanany
+                
                 <!-- Tour Guide Button -->
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="start-tour" role="button">
@@ -871,15 +1292,6 @@
                 </li>
                 @endcanany
 
-                <!-- Notifications Dropdown Menu -->
-                <li class="nav-item dropdown" id="notification-dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notification-menu">
-                        <a href="{{ route('notifications.all') }}" class="dropdown-item dropdown-footer">See All Notifications</a>
-                    </div>
-                </li>
 
                 @guest
                     <li class="nav-item">
@@ -1189,14 +1601,14 @@
                                     </a>
                                 </li>
                                 @endcanany
-                                @canany(['admin', 'super-admin', 'hrpolicy'])
+                                <!-- @canany(['admin', 'super-admin', 'hrpolicy'])
                                 <li class="nav-item">
                                     <a href="{{ route('policies.index') }}" class="nav-link {{ Request::is('policies*') ? 'active' : '' }}">
                                         <i class="fas fa-file-alt nav-icon"></i>
                                         <p>Company Policy</p>
                                     </a>
                                 </li>
-                                @endcanany
+                                @endcanany -->
                             </ul>
                         </li>
                         @endcanany
@@ -1704,6 +2116,394 @@
                 }
             }, 1000);
         }
+    });
+    </script>
+
+    <!-- Add this before your existing scripts -->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        // Initialize Pusher
+        const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            encrypted: true
+        });
+
+        // Subscribe to the leave requests channel
+        const channel = pusher.subscribe('leave-requests');
+        
+        // Listen for new leave request events
+        channel.bind('new-leave-request', function(data) {
+            if (data.leave) {
+                // Update notification count
+                const countElement = document.getElementById('notification-count');
+                const countTextElement = document.getElementById('notification-count-text');
+                let currentCount = parseInt(countElement.textContent);
+                currentCount += 1;
+                countElement.textContent = currentCount;
+                countTextElement.textContent = `${currentCount} New`;
+                
+                // Create notification item
+                const notificationItem = `
+                    <a href="/leaves/${data.leave.id}" class="notification-item unread">
+                        <div class="notification-icon leave">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">New Leave Request</div>
+                            <div class="notification-text">
+                                ${data.leave.employee_name} has requested leave from ${data.leave.date_from} to ${data.leave.date_to}
+                            </div>
+                            <div class="notification-time">
+                                <i class="far fa-clock mr-1"></i>Just now
+                            </div>
+                        </div>
+                    </a>
+                `;
+                
+                // Remove empty notification message if present
+                const emptyNotification = document.querySelector('.empty-notifications');
+                if (emptyNotification) {
+                    emptyNotification.remove();
+                }
+                
+                // Add to notification list
+                const notificationItems = document.getElementById('notification-items');
+                notificationItems.insertAdjacentHTML('afterbegin', notificationItem);
+                
+                // Show toast notification
+                const toastBody = document.getElementById('notification-toast-body');
+                toastBody.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <div class="notification-icon leave mr-3" style="width: 30px; height: 30px">
+                            <i class="fas fa-calendar-alt fa-sm"></i>
+                        </div>
+                        <div>
+                            <strong class="d-block">${data.leave.employee_name}</strong>
+                            <small class="text-muted">
+                                Requested leave: ${data.leave.date_from} - ${data.leave.date_to}
+                            </small>
+                        </div>
+                    </div>
+                `;
+                
+                // Show the toast
+                $('#notification-toast').toast('show');
+                
+                // Play notification sound
+                const audio = new Audio('/notification-sound.mp3');
+                audio.play();
+                
+                // Show browser notification if permitted
+                if (Notification.permission === "granted") {
+                    new Notification("New Leave Request", {
+                        body: `${data.leave.employee_name} has requested leave`,
+                        icon: "/favicon.ico"
+                    });
+                }
+            }
+        });
+        
+        // Mark all notifications as read
+        document.getElementById('mark-all-read').addEventListener('click', function(e) {
+            e.preventDefault();
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            unreadItems.forEach(item => item.classList.remove('unread'));
+            document.getElementById('notification-count').textContent = '0';
+            document.getElementById('notification-count-text').textContent = '0 New';
+        });
+        
+        // Individual notification click handler
+        document.getElementById('notification-items').addEventListener('click', function(e) {
+            const notificationItem = e.target.closest('.notification-item');
+            if (notificationItem && notificationItem.classList.contains('unread')) {
+                notificationItem.classList.remove('unread');
+                const countElement = document.getElementById('notification-count');
+                const countTextElement = document.getElementById('notification-count-text');
+                let currentCount = parseInt(countElement.textContent);
+                if (currentCount > 0) {
+                    currentCount -= 1;
+                    countElement.textContent = currentCount;
+                    countTextElement.textContent = `${currentCount} New`;
+                }
+            }
+        });
+    </script>
+
+    <!-- Add this toast container at the bottom of your body tag -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1500;">
+        @canany(['admin', 'super-admin'])
+        <!-- Simple Leave Request Toast -->
+        <div id="leaveRequestToast" 
+             class="toast bg-success text-white" 
+             role="alert" 
+             aria-live="assertive" 
+             aria-atomic="true" 
+             data-bs-delay="8000">
+            <div class="d-flex align-items-center p-3">
+                <div class="toast-icon me-3">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div id="leaveRequestContent" class="flex-grow-1">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+            </div>
+            <div class="toast-progress"></div>
+        </div>
+        @endcanany
+    </div>
+
+    <!-- Update the notification script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @canany(['admin', 'super-admin'])
+        
+        // Initialize toast
+        const toastElement = document.getElementById('leaveRequestToast');
+        const toast = new bootstrap.Toast(toastElement, {
+            animation: true,
+            autohide: true,
+            delay: 8000
+        });
+
+        // Initialize Pusher
+        const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            encrypted: true
+        });
+
+        const channel = pusher.subscribe('leave-requests');
+
+        channel.bind('new-leave-request', function(data) {
+            if (data.leave) {
+                // Format dates
+                const dateFrom = new Date(data.leave.date_from).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                const dateTo = new Date(data.leave.date_to).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                // Simple content update
+                const content = `
+                    <div>
+                        <strong>${data.leave.employee_name}</strong> has requested leave
+                        <div class="mt-1 small">
+                            ${dateFrom} - ${dateTo}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('leaveRequestContent').innerHTML = content;
+                
+                // Show toast
+                toast.show();
+                
+                // Play notification sound if tab is not active
+                if (!document.hasFocus()) {
+                    const audio = new Audio('/notification-sound.mp3');
+                    audio.volume = 0.5;
+                    audio.play().catch(error => console.log('Audio playback failed:', error));
+                }
+                
+                // Show browser notification if permitted and tab is not active
+                if (Notification.permission === "granted" && !document.hasFocus()) {
+                    new Notification("New Leave Request", {
+                        body: `${data.leave.employee_name} has requested leave`,
+                        icon: "/favicon.ico",
+                        tag: 'leave-request',
+                        silent: true
+                    });
+                }
+            }
+        });
+
+        // Request notification permission
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
+        @endcanany
+    });
+    </script>
+
+    <!-- Add this after your Pusher initialization -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to load notifications
+        function loadNotifications() {
+            fetch('/notifications')
+                .then(response => response.json())
+                .then(data => {
+                    const notificationItems = document.getElementById('notification-items');
+                    const notifications = data.notifications;
+                    
+                    if (notifications.length === 0) {
+                        notificationItems.innerHTML = `
+                            <div class="empty-notifications text-center p-3 text-muted">
+                                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                <p class="mb-0">You're all caught up!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    notificationItems.innerHTML = notifications.map(notification => `
+                        <a href="/leaves/${notification.leave_id}" 
+                           class="notification-item ${!notification.is_read ? 'unread' : ''}"
+                           data-notification-id="${notification.id}">
+                            <div class="notification-icon leave">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">${notification.data.title}</div>
+                                <div class="notification-text">${notification.message}</div>
+                                <div class="notification-time">
+                                    <i class="far fa-clock mr-1"></i>${notification.created_at}
+                                </div>
+                            </div>
+                        </a>
+                    `).join('');
+                });
+        }
+
+        // Function to update unread count
+        function updateUnreadCount() {
+            fetch('/notifications/unread-count')
+                .then(response => response.json())
+                .then(data => {
+                    const countElement = document.getElementById('notification-count');
+                    const countTextElement = document.getElementById('notification-count-text');
+                    countElement.textContent = data.count;
+                    countTextElement.textContent = `${data.count} New`;
+                });
+        }
+
+        // Load initial notifications and count
+        loadNotifications();
+        updateUnreadCount();
+
+        // Mark notification as read when clicked
+        document.getElementById('notification-items').addEventListener('click', function(e) {
+            const notificationItem = e.target.closest('.notification-item');
+            if (notificationItem && notificationItem.classList.contains('unread')) {
+                const notificationId = notificationItem.dataset.notificationId;
+                
+                fetch(`/notifications/${notificationId}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json'
+                    }
+                }).then(() => {
+                    notificationItem.classList.remove('unread');
+                    updateUnreadCount();
+                });
+            }
+        });
+
+        // Mark all as read
+        document.getElementById('mark-all-read').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            fetch('/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                document.querySelectorAll('.notification-item.unread')
+                    .forEach(item => item.classList.remove('unread'));
+                updateUnreadCount();
+            });
+        });
+
+        // Update when new notification received
+        channel.bind('new-leave-request', function(data) {
+            loadNotifications();
+            updateUnreadCount();
+            // ... rest of your existing new-leave-request handler ...
+        });
+    });
+    </script>
+
+    <!-- Add this modal structure before the closing body tag -->
+    <div class="modal fade" id="celebrantsModal" tabindex="-1" role="dialog" aria-labelledby="celebrantsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="celebrantsModalLabel">
+                        <i class="fas fa-birthday-cake mr-2"></i>Today's Celebrants
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="celebrantsModalBody">
+                    <!-- Celebrants will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <div class="form-check mr-auto">
+                        <input type="checkbox" class="form-check-input" id="dontShowToday">
+                        <label class="form-check-label" for="dontShowToday">Don't show this to me today</label>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this script before the closing body tag -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function checkAndShowCelebrants() {
+            fetch('/api/today-celebrants')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.celebrants && data.celebrants.length > 0 && !data.userDismissed) {
+                        // Update modal content
+                        const modalBody = document.getElementById('celebrantsModalBody');
+                        modalBody.innerHTML = data.celebrants.map(celebrant => `
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="mr-3">
+                                    ${celebrant.profile_picture ? 
+                                        `<img src="${celebrant.profile_picture}" class="rounded-circle" width="50" height="50" alt="${celebrant.name}">` :
+                                        `<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px">
+                                            ${celebrant.name.split(' ').map(n => n[0]).join('')}
+                                        </div>`
+                                    }
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">${celebrant.name}</h6>
+                                    <small class="text-muted">${celebrant.department}</small>
+                                </div>
+                            </div>
+                        `).join('');
+
+                        // Show modal
+                        $('#celebrantsModal').modal('show');
+                    }
+                });
+        }
+
+        // Handle checkbox change
+        document.getElementById('dontShowToday').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                fetch('/api/dismiss-celebrants', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+            }
+        });
+
+        // Check for celebrants when page loads
+        checkAndShowCelebrants();
     });
     </script>
 

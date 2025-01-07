@@ -44,7 +44,8 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
 use App\Http\Controllers\ControllerAnalysisController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\GlobalSearchController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\EmployeeRecordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -304,6 +305,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/employees/create-bulk-users', [EmployeeController::class, 'createBulkUsers'])
         ->name('employees.createBulkUsers');
 
+    Route::get('resigned-employees', [EmployeeController::class, 'resigned'])
+        ->name('employees.resigned');
+    
+    Route::get('terminated-employees', [EmployeeController::class, 'terminated'])
+        ->name('employees.terminated');
+
+        Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount']);
+        Route::get('/notifications', [NotificationController::class, 'getNotifications']);
+        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+
+        Route::get('/notifications', 'NotificationController@index');
+        Route::post('/notifications/{id}/read', 'NotificationController@markAsRead');
+        Route::post('/notifications/mark-all-read', 'NotificationController@markAllAsRead');
+        Route::get('/notifications/unread-count', 'NotificationController@getUnreadCount');
     });
 
     Auth::routes();

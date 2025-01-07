@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use Carbon\Carbon;
+use App\Events\NewLeaveRequest;
 
 class Leave extends Model
 {
@@ -83,6 +84,12 @@ class Leave extends Model
 
     protected static function booted()
     {
+        static::created(function ($leave) {
+            if ($leave->status === 'pending') {
+                event(new NewLeaveRequest($leave));
+            }
+        });
+
         static::updated(function ($leave) {
             // Check if status is updated
             if ($leave->isDirty('status')) {

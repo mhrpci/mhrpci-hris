@@ -40,8 +40,12 @@ class ItInventoryController extends Controller
      */
     public function store(Request $request)
     {
-        ItInventory::create($request->all());
-        return redirect()->route('inventory.index')->with('success', 'Inventory successfully created');
+        try {
+            ItInventory::create($request->all());
+            return redirect()->route('inventory.index')->with('success', 'Inventory successfully created');
+        } catch (\Exception $e) {
+            return redirect()->route('inventory.index')->with('error', 'Failed to create inventory');
+        }
     }
 
     /**
@@ -66,8 +70,12 @@ class ItInventoryController extends Controller
      */
     public function update(Request $request, ItInventory $inventory)
     {
-        $inventory->update($request->all());
-        return redirect()->route('inventory.index')->with('success', 'Inventory successfully updated');
+        try {
+            $inventory->update($request->all());
+            return redirect()->route('inventory.index')->with('success', 'Inventory successfully updated');
+        } catch (\Exception $e) {
+            return redirect()->route('inventory.index')->with('error', 'Failed to update inventory');
+        }
     }
 
     /**
@@ -75,18 +83,25 @@ class ItInventoryController extends Controller
      */
     public function destroy(ItInventory $inventory)
     {
-        $inventory->delete();
-        return redirect()->route('inventory.index');
+        try {
+            $inventory->delete();
+            return redirect()->route('inventory.index')->with('success', 'Inventory successfully deleted');
+        } catch (\Exception $e) {
+            return redirect()->route('inventory.index')->with('error', 'Failed to delete inventory');
+        }
     }
 
     public function import(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,csv',
-        ]);
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,csv',
+            ]);
 
-        Excel::import(new ItInventoryImport, $request->file('file'));
-
-        return redirect()->route('inventory.index')->with('success', 'Inventory data imported successfully');
+            Excel::import(new ItInventoryImport, $request->file('file'));
+            return redirect()->route('inventory.index')->with('success', 'Inventory data imported successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('inventory.index')->with('error', 'Failed to import inventory data');
+        }
     }
 }

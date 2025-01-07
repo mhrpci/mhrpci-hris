@@ -120,12 +120,13 @@ class LoanController extends Controller
      */
     public function allEmployeesLoan()
     {
-        // Retrieve all employees
-        $employees = Employee::where('employee_status', 'Active')->get();
-
-        // If there's additional time sheet data you want to include, add the logic here
-        // For example, if there's a TimeSheet model related to Employee:
-        // $employees = Employee::with('timeSheets')->get();
+        // Get authenticated user
+        $user = Auth::user();
+        
+        // Retrieve employees based on user role
+        $employees = $user->hasRole('Super Admin')
+            ? Employee::all()
+            : Employee::where('employee_status', 'Active')->get();
 
         return view('loans.employees-list', compact('employees'));
     }

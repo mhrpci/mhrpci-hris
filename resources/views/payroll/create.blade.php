@@ -60,6 +60,16 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label for="payroll_type">Payroll Type<span class="text-danger">*</span></label>
+                                        <select name="payroll_type" id="payroll_type" class="form-control" required>
+                                            <option value="regular">Regular (Bi-monthly)</option>
+                                            <option value="weekly">Weekly (BGPDI)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label for="start_date">Start Date<span class="text-danger">*</span></label>
                                         <input type="date" name="start_date" id="start_date" class="form-control" required>
                                     </div>
@@ -141,38 +151,59 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for all select elements
+            // Initialize Select2
             $('select').select2({
                 theme: 'bootstrap4',
                 width: '100%'
             });
 
-            // Function to set end date based on start date
-            function setEndDate(startDateInput, endDateInput) {
+            function setEndDate(startDateInput, endDateInput, payrollType) {
                 var startDate = new Date(startDateInput.val());
                 var endDate = new Date(startDate);
 
-                if (startDate.getDate() >= 11 && startDate.getDate() <= 25) {
-                    endDate.setDate(25);
-                } else if (startDate.getDate() >= 26 || startDate.getDate() <= 10) {
-                    if (startDate.getDate() >= 26) {
-                        endDate.setMonth(startDate.getMonth() + 1);
+                if (payrollType === 'weekly') {
+                    // For weekly payroll (BGPDI)
+                    endDate.setDate(startDate.getDate() + 6); // Add 6 days to make it a week
+                } else {
+                    // For regular bi-monthly payroll
+                    if (startDate.getDate() >= 11 && startDate.getDate() <= 25) {
+                        endDate.setDate(25);
+                    } else if (startDate.getDate() >= 26 || startDate.getDate() <= 10) {
+                        if (startDate.getDate() >= 26) {
+                            endDate.setMonth(startDate.getMonth() + 1);
+                        }
+                        endDate.setDate(10);
                     }
-                    endDate.setDate(10);
                 }
 
                 var formattedEndDate = endDate.toISOString().split('T')[0];
                 endDateInput.val(formattedEndDate);
             }
 
-            // Set end date for main form
+            // Handle payroll type change
+            function handlePayrollTypeChange() {
+                var payrollType = $('#payroll_type').val();
+                var startDate = $('#start_date').val();
+                if (startDate) {
+                    setEndDate($('#start_date'), $('#end_date'), payrollType);
+                }
+            }
+
+            // Event listeners
+            $('#payroll_type').change(handlePayrollTypeChange);
             $('#start_date').change(function() {
-                setEndDate($('#start_date'), $('#end_date'));
+                setEndDate($('#start_date'), $('#end_date'), $('#payroll_type').val());
             });
 
-            // Set end date for modal form
+            // Modal handlers
+            $('#modal_payroll_type').change(function() {
+                if ($('#modal_start_date').val()) {
+                    setEndDate($('#modal_start_date'), $('#modal_end_date'), $(this).val());
+                }
+            });
+
             $('#modal_start_date').change(function() {
-                setEndDate($('#modal_start_date'), $('#modal_end_date'));
+                setEndDate($('#modal_start_date'), $('#modal_end_date'), $('#modal_payroll_type').val());
             });
         });
     </script>

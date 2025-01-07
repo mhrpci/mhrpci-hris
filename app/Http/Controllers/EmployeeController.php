@@ -37,7 +37,7 @@ class EmployeeController extends Controller
      */
     function __construct()
     {
-        $this->middleware(['permission:employee-list|employee-create|employee-edit|employee-delete'], ['only' => ['index', 'show']]);
+        $this->middleware(['permission:employee-list|employee-create|employee-edit|employee-delete'], ['only' => ['index', 'show', 'resigned', 'terminated']]);
         $this->middleware(['permission:employee-create'], ['only' => ['create', 'store']]);
         $this->middleware(['permission:employee-edit'], ['only' => ['edit', 'update']]);
         $this->middleware(['permission:employee-delete'], ['only' => ['destroy']]);
@@ -51,8 +51,8 @@ public function index()
     $user = auth()->user();
     $departments = Department::all();
     
-    // Get all employees - we'll handle authorization through policies instead
-    $employees = Employee::all();
+    // Get only active employees
+    $employees = Employee::where('employee_status', 'Active')->get();
 
     // Determine employment status for each employee
     foreach ($employees as $employee) {
@@ -60,6 +60,46 @@ public function index()
     }
 
     return view('employees.index', compact('employees', 'departments'));
+}
+
+/**
+ * Display a listing of resigned employees.
+ */
+public function resigned()
+{
+    // Get the authenticated user
+    $user = auth()->user();
+    $departments = Department::all();
+    
+    // Get only resigned employees
+    $employees = Employee::where('employee_status', 'Resigned')->get();
+
+    // Determine employment status for each employee
+    foreach ($employees as $employee) {
+        $employee->employment_status = $employee->employmentStatus();
+    }
+
+    return view('employees.resigned', compact('employees', 'departments'));
+}
+
+/**
+ * Display a listing of terminated employees.
+ */
+public function terminated()
+{
+    // Get the authenticated user
+    $user = auth()->user();
+    $departments = Department::all();
+    
+    // Get only terminated employees
+    $employees = Employee::where('employee_status', 'Terminated')->get();
+
+    // Determine employment status for each employee
+    foreach ($employees as $employee) {
+        $employee->employment_status = $employee->employmentStatus();
+    }
+
+    return view('employees.terminated', compact('employees', 'departments'));
 }
 
     /**
@@ -413,27 +453,49 @@ public function update(Request $request, $slug): RedirectResponse
             return response()->json(['message' => 'Employee profile not found'], 404);
         }
     }
-    public function disable(Employee $employee)
+    public function disable(Request $request, Employee $employee)
     {
-        // Update the employee's status to 'Disabled'
-        $employee->update(['employee_status' => 'Resigned']);
+        // Validate the status
+        $request->validate([
+            'status' => 'required|in:Resigned,Terminated'
+        ]);
 
-        // Find the user associated with the employee
-        $user = User::where('email', $employee->email_address)->first();
+        try {
+            DB::beginTransaction();
 
-        if ($user) {
-            // Disable the user by setting a field or using a specific status
-            $user->update(['status' => 'disabled']); // Assuming you have a status field for disabling users
+            // Update the employee's status
+            $employee->update([
+                'employee_status' => $request->status
+            ]);
 
-            // Alternatively, you can use Laravel's built-in `delete` method if you want to remove the user
-            // $user->delete();
+            // Find the user associated with the employee
+            $user = User::where('email', $employee->email_address)->first();
 
-            // Send notification emails
-            Mail::to($employee->email_address)->send(new EmployeeResignationNotification($employee));
-            Mail::to($user->email)->send(new UserAccountDisabledNotification($user));
+            if ($user) {
+                // Disable the user account
+                $user->update(['status' => 'disabled']);
+
+                // Send appropriate notification
+                if ($request->status === 'Resigned') {
+                    Mail::to($employee->email_address)->send(new EmployeeResignationNotification($employee));
+                } else {
+                    // You might want to create a new EmployeeTerminationNotification class
+                    Mail::to($employee->email_address)->send(new UserAccountDisabledNotification($user));
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('employees.index')
+                ->with('success', "Employee marked as {$request->status} successfully.");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Employee status update failed: ' . $e->getMessage());
+            
+            return redirect()->route('employees.index')
+                ->with('error', 'Failed to update employee status. Please try again.');
         }
-
-        return redirect()->route('employees.index')->with('success', 'Employee disabled successfully.');
     }
 
     /**

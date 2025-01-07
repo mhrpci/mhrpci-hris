@@ -50,6 +50,7 @@
                     </div>
 
                     <div class="card-body">
+
                         <div class="table-responsive">
                             <table id="inventory-table" class="table table-bordered table-hover">
                                 <thead>
@@ -81,7 +82,7 @@
                                                             <form action="{{ route('inventory.destroy', $inventory->id) }}" method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="dropdown-item">
+                                                                <button type="submit" class="dropdown-item delete-btn">
                                                                     <i class="fas fa-trash"></i>&nbsp;Delete
                                                                 </button>
                                                             </form>
@@ -116,9 +117,12 @@
         box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
     }
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4/bootstrap-4.min.css">
 @endsection
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function () {
         // Common toast configuration
@@ -135,6 +139,26 @@
                 popup: 'colored-toast'
             }
         };
+
+        // Handle delete button click
+        $(document).on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            const form = $(this).closest('form');
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
 
         // Success toast
         @if(Session::has('success'))
@@ -159,74 +183,6 @@
                 color: '#fff'
             });
         @endif
-
-        // Initialize DataTable
-        $('#inventory-table').DataTable({
-            scrollX: false,
-            autoWidth: true,
-            language: {
-                emptyTable: "No inventory items available at the moment."
-            }
-        });
-
-        // Handle import form submission
-        $('#importForm').on('submit', function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-
-            $.ajax({
-                url: $(this).attr('action'),
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    $('#importModal').modal('hide');
-                    Swal.fire({
-                        ...toastConfig,
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Inventory imported successfully',
-                        background: '#28a745',
-                        color: '#fff'
-                    }).then(() => {
-                        location.reload();
-                    });
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        ...toastConfig,
-                        icon: 'error',
-                        title: 'Import Failed',
-                        text: xhr.responseJSON?.message || 'Something went wrong during import',
-                        background: '#dc3545',
-                        color: '#fff'
-                    });
-                }
-            });
-        });
-
-        // Delete confirmation
-        $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
-            e.preventDefault();
-            let form = $(this).closest('form');
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
     });
 </script>
 @endsection

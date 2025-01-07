@@ -737,9 +737,660 @@
             border-left-color: #6B73FF;
         }
     }
+
+    /* Birthday Modal Styles - Updated for Landscape */
+    .modal-dialog {
+        max-width: 900px; /* Wider modal for landscape */
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        overflow: hidden;
+    }
+
+    .celebrant-profile-card {
+        display: flex;
+        flex-direction: row; /* Change to row for landscape */
+        gap: 2rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .celebrant-left-section {
+        flex: 0 0 250px; /* Fixed width for left section */
+        text-align: center;
+    }
+
+    .celebrant-right-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .celebrant-avatar-large {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 1rem;
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .celebrant-details {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        background: rgba(255, 255, 255, 0.8);
+        transform: translateX(5px);
+    }
+
+    .birthday-message-section {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background: linear-gradient(45deg, rgba(78, 205, 196, 0.1), rgba(69, 183, 209, 0.1));
+        border-radius: 12px;
+        text-align: left;
+    }
+
+    /* Update the modal content structure */
+    @media (max-width: 768px) {
+        .modal-dialog {
+            max-width: 95%;
+            margin: 1rem auto;
+        }
+
+        .celebrant-profile-card {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .celebrant-left-section {
+            flex: 0 0 auto;
+        }
+
+        .celebrant-avatar-large {
+            width: 120px;
+            height: 120px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        .modal-content {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        }
+        .celebrant-card {
+            background: rgba(45, 55, 72, 0.9);
+        }
+        .celebrant-name {
+            color: #e2e8f0;
+        }
+        .department-name {
+            color: #a0aec0;
+        }
+        .birthday-message {
+            color: #e2e8f0;
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .modal-dialog {
+            margin: 1rem;
+        }
+        .celebrant-card {
+            padding: 1rem;
+        }
+        .celebrant-name {
+            font-size: 1.25rem;
+        }
+        .birthday-message .lead {
+            font-size: 1rem;
+        }
+    }
+
+    /* Enhanced Modal Styles */
+    #birthdayModal .modal-content {
+        border: none;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    #birthdayModal .modal-header {
+        padding: 1.5rem 1.5rem 0.5rem;
+    }
+
+    .birthday-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: titlePulse 2s infinite;
+    }
+
+    .close-button {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        background: none;
+        border: none;
+        color: #6c757d;
+        font-size: 1.2rem;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+        padding: 0.5rem;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .close-button:hover {
+        opacity: 1;
+        background-color: rgba(108, 117, 125, 0.1);
+        transform: rotate(90deg);
+    }
+
+    .celebrant-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 1.25rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: slideIn 0.5s ease-out;
+    }
+
+    .celebrant-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .celebrant-avatar {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .celebrant-info {
+        flex: 1;
+        text-align: left;
+    }
+
+    .celebrant-name {
+        color: #2d3748;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .department-name {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    .animated-cake {
+        color: #FF6B6B;
+        animation: bounce 2s infinite;
+    }
+
+    .modal-footer {
+        justify-content: center;
+        padding: 1.5rem;
+    }
+
+    .modal-footer .btn {
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+    }
+
+    .btn-secondary {
+        background: #718096;
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        background: #4a5568;
+    }
+
+    @keyframes titlePulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        #birthdayModal .modal-content {
+            background: linear-gradient(145deg, #2d3748, #1a202c);
+        }
+
+        .celebrant-card {
+            background: rgba(45, 55, 72, 0.9);
+        }
+
+        .celebrant-name {
+            color: #e2e8f0;
+        }
+
+        .department-name {
+            color: #a0aec0;
+        }
+
+        .close-button {
+            color: #e2e8f0;
+        }
+
+        .close-button:hover {
+            background-color: rgba(226, 232, 240, 0.1);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .birthday-title {
+            font-size: 1.5rem;
+        }
+
+        .celebrant-card {
+            padding: 1rem;
+        }
+
+        .celebrant-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .celebrant-name {
+            font-size: 1rem;
+        }
+
+        .modal-footer .btn {
+            padding: 0.4rem 1.2rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Add these styles for balloon canvas positioning */
+    #balloon-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1040; /* Just below modal backdrop (1050) */
+        pointer-events: none; /* Initially no pointer events */
+    }
+
+    /* Adjust modal styles to work with balloon backdrop */
+    #birthdayModal .modal-dialog {
+        position: relative;
+        z-index: 1060; /* Above the balloon canvas */
+    }
+
+    #birthdayModal .modal-content {
+        background: rgba(255, 255, 255, 0.95); /* Slightly transparent background */
+        backdrop-filter: blur(5px); /* Blur effect for background */
+    }
+
+    /* Dark mode adjustment */
+    @media (prefers-color-scheme: dark) {
+        #birthdayModal .modal-content {
+            background: rgba(45, 55, 72, 0.95);
+        }
+    }
+
+    /* Add these styles */
+    .celebrant-profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .celebrant-avatar-large {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .celebrant-avatar-large img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .default-avatar {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: white;
+    }
+
+    .celebrant-details {
+        padding: 1rem;
+    }
+
+    .celebrant-name {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .info-grid {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .info-item i {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+        color: white;
+        border-radius: 50%;
+        font-size: 0.8rem;
+    }
+
+    .birthday-message-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(45deg, rgba(78, 205, 196, 0.1), rgba(69, 183, 209, 0.1));
+        border-radius: 10px;
+    }
+
+    .birthday-wish {
+        font-size: 1.1rem;
+        color: #4a5568;
+        line-height: 1.6;
+    }
+
+    .celebrant-divider {
+        border-color: rgba(0, 0, 0, 0.1);
+        margin: 2rem 0;
+    }
+
+    .birthday-cake-animation {
+        margin-top: 1rem;
+        font-size: 2.5rem;
+    }
+
+    /* Dark mode styles */
+    @media (prefers-color-scheme: dark) {
+        .celebrant-profile-card {
+            background: rgba(45, 55, 72, 0.95);
+        }
+
+        .celebrant-name {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            -webkit-background-clip: text;
+        }
+
+        .info-item {
+            color: #e2e8f0;
+        }
+
+        .birthday-wish {
+            color: #e2e8f0;
+        }
+
+        .birthday-message-section {
+            background: linear-gradient(45deg, rgba(78, 205, 196, 0.05), rgba(69, 183, 209, 0.05));
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .celebrant-profile-card {
+            padding: 1rem;
+        }
+
+        .celebrant-avatar-large {
+            width: 120px;
+            height: 120px;
+        }
+
+        .celebrant-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            font-size: 0.9rem;
+        }
+
+        .birthday-wish {
+            font-size: 1rem;
+        }
+    }
+
+    /* Add styles for the MHR Family message */
+    .mhr-family-message {
+        margin-top: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #FF6B6B;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        animation: glowText 2s ease-in-out infinite;
+    }
+
+    @keyframes glowText {
+        0%, 100% {
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+        }
+        50% {
+            text-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+        }
+    }
+
+    /* Add some CSS for the checkbox styling */
+    .dont-show-again {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #dee2e6;
+        padding: 1rem;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        .dont-show-again {
+            color: #adb5bd;
+        }
+        
+        .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: #adb5bd;
+            border-color: #adb5bd;
+        }
+    }
 </style>
 <div class="container-fluid">
-<!-- Add signature reminder alert -->
+    @if($todaysBirthdays->where('employee_status', 'Active')->isNotEmpty())
+        <!-- Birthday Modal -->
+        @foreach($todaysBirthdays->where('employee_status', 'Active') as $index => $employee)
+        <div class="modal fade" id="birthdayModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="birthdayModalLabel{{ $index }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h4 class="modal-title w-100 text-center" id="birthdayModalLabel{{ $index }}">
+                            <span class="birthday-title">
+                                <i class="fas fa-birthday-cake animated-cake mr-2"></i>
+                                Today's Birthday Celebration!
+                            </span>
+                        </h4>
+                        <button type="button" class="close-button" data-dismiss="modal" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="celebrant-profile-card">
+                            <div class="celebrant-left-section">
+                                <div class="celebrant-avatar-large">
+                                    @if($employee->profile)
+                                        <img src="{{ asset('storage/' . $employee->profile) }}" 
+                                             alt="{{ $employee->first_name }}" 
+                                             class="img-fluid">
+                                    @else
+                                        <div class="default-avatar">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="birthday-cake-animation">
+                                    <i class="fas fa-birthday-cake animated-cake"></i>
+                                    <div class="mhr-family-message">
+                                        From MHR Family
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="celebrant-right-section">
+                                <div class="celebrant-details">
+                                    <h3 class="celebrant-name">
+                                        {{ $employee->first_name }} {{ $employee->last_name }}
+                                    </h3>
+                                    
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <i class="fas fa-building"></i>
+                                            <span>{{ $employee->department->name ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <i class="fas fa-user-tie"></i>
+                                            <span>{{ $employee->position->name ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <i class="fas fa-calendar-day"></i>
+                                            <span>{{ \Carbon\Carbon::parse($employee->birth_date)->format('F d') }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="birthday-message-section">
+                                        <p class="birthday-wish">
+                                            Wishing you a fantastic birthday filled with joy, success, and wonderful moments! 
+                                            May this special day bring you everything you wish for and more. 
+                                            Happy Birthday! 🎈🎉
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Inside each birthday modal, add this before the modal-body closing div -->
+                    <div class="modal-footer justify-content-between">
+                        <div class="dont-show-again">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input dont-show-checkbox" disabled
+                                       id="dontShowAgain{{ $index }}" 
+                                       data-employee-id="{{ $employee->id }}"
+                                       data-birthday-year="{{ date('Y') }}">
+                                <label class="custom-control-label" for="dontShowAgain{{ $index }}">
+                                    Coming Soon...
+                                </label>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    @endif
+    <!-- Add signature reminder alert -->
     @if(!Auth::user()->hasRole('Employee') && empty(Auth::user()->signature))
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <strong>Reminder!</strong> You can set up your user signature in your profile settings.
@@ -1243,8 +1894,6 @@
 </div>
 @endcanany
 
-@endsection
-
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -1316,6 +1965,376 @@
         createLineChart('sssLoanChart', 'SSS Loans', @json($analytics['loans']['sss_loans']['monthly_trend'] ?? []), '#ffc107');
         createLineChart('pagibigLoanChart', 'Pagibig Loans', @json($analytics['loans']['pagibig_loans']['monthly_trend'] ?? []), '#0dcaf0');
         createLineChart('cashAdvanceChart', 'Cash Advances', @json($analytics['loans']['cash_advances']['monthly_trend'] ?? []), '#6c757d');
+    });
+</script>
+@endsection
+
+<script>
+    let animationFrameId = null; // Store the animation frame ID
+    
+    function stopBalloons() {
+        // Cancel the animation frame
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+
+        // Remove the canvas
+        const canvas = document.getElementById('balloon-canvas');
+        if (canvas) {
+            canvas.remove();
+        }
+
+        // Reset score if needed
+        const scoreDisplay = document.getElementById('balloon-score');
+        if (scoreDisplay) {
+            scoreDisplay.textContent = '0';
+        }
+    }
+
+    function startBalloons() {
+        // Clean up any existing canvas first
+        stopBalloons();
+
+        const canvas = document.createElement('canvas');
+        canvas.id = 'balloon-canvas';
+        document.body.insertBefore(canvas, document.body.firstChild);
+
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#FFD93D', '#FF9999', '#A8E6CF'];
+        let selectedBalloon = null;
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let dart = null;
+        let particles = [];
+
+        class Dart {
+            constructor(x, y, targetX, targetY) {
+                this.x = x;
+                this.y = y;
+                const angle = Math.atan2(targetY - y, targetX - x);
+                this.dx = Math.cos(angle) * 15;
+                this.dy = Math.sin(angle) * 15;
+                this.size = 15;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(Math.atan2(this.dy, this.dx));
+                
+                // Draw dart
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(-this.size, -this.size/4);
+                ctx.lineTo(-this.size, this.size/4);
+                ctx.fillStyle = '#333';
+                ctx.fill();
+                
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.dx;
+                this.y += this.dy;
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = Math.random() * 4 + 2;
+                this.speedX = Math.random() * 6 - 3;
+                this.speedY = Math.random() * 6 - 3;
+                this.lifetime = 1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.lifetime;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.speedY += 0.1; // Gravity
+                this.lifetime -= 0.02;
+            }
+        }
+
+        class Balloon {
+            constructor() {
+                this.reset();
+                this.y = canvas.height + 50;
+                this.wobble = 0;
+                this.wobbleSpeed = Math.random() * 0.03 + 0.02;
+                this.size = Math.random() * 30 + 40;
+                this.popped = false;
+                this.clickCount = 0;
+                this.lastClickTime = 0;
+                this.points = Math.floor(Math.random() * 5) + 1; // Random points 1-5
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 50;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.speed = Math.random() * 2 + 1;
+                this.angle = 0;
+            }
+
+            draw() {
+                if (this.popped) return;
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                
+                this.wobble += this.wobbleSpeed;
+                ctx.rotate(Math.sin(this.wobble) * 0.1);
+
+                // Balloon body
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(
+                    this.size/2, -this.size/2,
+                    this.size/2, -this.size,
+                    0, -this.size
+                );
+                ctx.bezierCurveTo(
+                    -this.size/2, -this.size,
+                    -this.size/2, -this.size/2,
+                    0, 0
+                );
+
+                const gradient = ctx.createRadialGradient(
+                    -this.size/4, -this.size/2, 0,
+                    -this.size/4, -this.size/2, this.size
+                );
+                gradient.addColorStop(0, 'white');
+                gradient.addColorStop(0.5, this.color);
+                gradient.addColorStop(1, this.color);
+                
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                // Shine
+                ctx.beginPath();
+                ctx.ellipse(
+                    -this.size/4, -this.size/2,
+                    this.size/6, this.size/4,
+                    Math.PI/4, 0, 2 * Math.PI
+                );
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.fill();
+
+                // String
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(5, 10, 0, 20);
+                ctx.strokeStyle = '#999';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            update() {
+                if (!this.popped) {
+                    if (!isDragging || this !== selectedBalloon) {
+                        this.y -= this.speed;
+                        if (this.y < -this.size * 2) {
+                            this.reset();
+                        }
+                    }
+                }
+            }
+
+            contains(x, y) {
+                const dx = x - this.x;
+                const dy = y - (this.y - this.size/2);
+                return (dx * dx + dy * dy) < (this.size * this.size);
+            }
+
+            pop() {
+                if (!this.popped) {
+                    this.popped = true;
+                    // Create explosion particles
+                    for (let i = 0; i < 20; i++) {
+                        particles.push(new Particle(this.x, this.y, this.color));
+                    }
+                }
+            }
+
+            // Add double-click detection
+            handleClick(time) {
+                if (this.popped) return;
+                
+                if (time - this.lastClickTime < 300) { // 300ms double-click threshold
+                    this.pop();
+                    score += this.points;
+                    if (scoreDisplay) {
+                        scoreDisplay.textContent = score;
+                        
+                        // Add score animation
+                        const pointsPopup = document.createElement('div');
+                        pointsPopup.className = 'points-popup';
+                        pointsPopup.textContent = `+${this.points}`;
+                        pointsPopup.style.position = 'absolute';
+                        pointsPopup.style.left = `${this.x}px`;
+                        pointsPopup.style.top = `${this.y}px`;
+                        document.body.appendChild(pointsPopup);
+                        
+                        setTimeout(() => pointsPopup.remove(), 1000);
+                    }
+                }
+                this.lastClickTime = time;
+            }
+        }
+
+        const balloons = Array.from({ length: 15 }, () => new Balloon());
+
+        function animate() {
+            if (!document.getElementById('balloon-canvas')) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw balloons
+            balloons.forEach(balloon => {
+                balloon.update();
+                balloon.draw();
+            });
+
+            // Update and draw particles
+            particles = particles.filter(particle => particle.lifetime > 0);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Store the animation frame ID so we can cancel it later
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        animate();
+    }
+
+    // Update modal event handlers
+    document.addEventListener('DOMContentLoaded', function() {
+        const todaysBirthdaysCount = {{ $todaysBirthdays->where('employee_status', 'Active')->count() }};
+        let currentModalIndex = 0;
+
+        // Function to generate a unique key for localStorage
+        function getBirthdayKey(employeeId, year) {
+            return `birthday_modal_${employeeId}_${year}`;
+        }
+
+        // Function to check if modal should be shown
+        function shouldShowModal(employeeId, year) {
+            const key = getBirthdayKey(employeeId, year);
+            return !localStorage.getItem(key);
+        }
+
+        // Function to mark modal as "don't show again"
+        function setDontShowAgain(employeeId, year) {
+            const key = getBirthdayKey(employeeId, year);
+            localStorage.setItem(key, 'hidden');
+        }
+
+        // Function to handle checkbox changes
+        function handleDontShowCheckbox(event) {
+            const checkbox = event.target;
+            const employeeId = checkbox.dataset.employeeId;
+            const birthdayYear = checkbox.dataset.birthdayYear;
+            
+            if (checkbox.checked) {
+                setDontShowAgain(employeeId, birthdayYear);
+            } else {
+                const key = getBirthdayKey(employeeId, birthdayYear);
+                localStorage.removeItem(key);
+            }
+        }
+
+        // Add event listeners to all checkboxes
+        document.querySelectorAll('.dont-show-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', handleDontShowCheckbox);
+        });
+
+        function showNextBirthdayModal() {
+            while (currentModalIndex < todaysBirthdaysCount) {
+                const modalElement = document.querySelector(`#birthdayModal${currentModalIndex}`);
+                const checkbox = modalElement.querySelector('.dont-show-checkbox');
+                const employeeId = checkbox.dataset.employeeId;
+                const birthdayYear = checkbox.dataset.birthdayYear;
+
+                if (shouldShowModal(employeeId, birthdayYear)) {
+                    $(`#birthdayModal${currentModalIndex}`).modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+
+                    // When current modal is hidden, show next one
+                    $(`#birthdayModal${currentModalIndex}`).on('hidden.bs.modal', function() {
+                        stopBalloons();
+                        currentModalIndex++;
+                        setTimeout(() => showNextBirthdayModal(), 500);
+                    });
+
+                    // Start balloons when modal is shown
+                    $(`#birthdayModal${currentModalIndex}`).on('shown.bs.modal', function() {
+                        startBalloons();
+                    });
+                    
+                    break; // Exit the while loop after showing a modal
+                } else {
+                    // Skip this modal and move to the next one
+                    currentModalIndex++;
+                }
+            }
+        }
+
+        // Add function to clear preferences (useful for testing or resetting)
+        window.clearBirthdayPreferences = function() {
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.startsWith('birthday_modal_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            console.log('Birthday modal preferences cleared');
+        };
+
+        // Add function to view current preferences (useful for debugging)
+        window.viewBirthdayPreferences = function() {
+            const preferences = {};
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.startsWith('birthday_modal_')) {
+                    preferences[key] = localStorage.getItem(key);
+                }
+            });
+            console.log('Current birthday preferences:', preferences);
+            return preferences;
+        };
+
+        // Start showing modals after a delay
+        setTimeout(() => showNextBirthdayModal(), 1000);
+
+        // Handle escape key for all modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && currentModalIndex < todaysBirthdaysCount) {
+                $(`#birthdayModal${currentModalIndex}`).modal('hide');
+            }
+        });
     });
 </script>
 @endsection

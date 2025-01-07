@@ -110,7 +110,14 @@
                                     <p><strong>Date Hired:</strong> {{ \Carbon\Carbon::parse($employee->date_hired ?: 'N/A')->format('F j, Y') }}</p>
                                     <p><strong>Position:</strong> {{ $employee->position->name }}</p>
                                     <p><strong>Department:</strong> {{ $employee->department->name }} - <strong>Head:</strong> {{ $employee->department->head_name }}</p>
-                                    <p><strong>Monthly Salary:</strong> &#8369;{{ number_format($employee->salary, 2) }}</p>
+                                    <p>
+                                        <strong>Monthly Salary:</strong> 
+                                        @if($employee->rank == 'Managerial' && !Auth::user()->hasAnyRole(['Admin', 'Super Admin', 'Finance']))
+                                            <span class="text-muted">Restricted</span>
+                                        @else
+                                            &#8369;{{ number_format($employee->salary, 2) }}
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
                         </div>

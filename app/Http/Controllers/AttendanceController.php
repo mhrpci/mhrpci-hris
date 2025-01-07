@@ -183,9 +183,15 @@ class AttendanceController extends Controller
     // Generate timesheets or attendance records for all employees
     public function generateTimesheets()
     {
-        $employees = Employee::all();
+        // Get authenticated user
+        $user = Auth::user();
+        
+        // Get employees based on user role
+        $employees = $user->hasRole('Super Admin') 
+            ? Employee::all()
+            : Employee::where('employee_status', 'Active')->get();
+            
         $departments = Department::all();
-
         $timesheets = [];
 
         foreach ($employees as $employee) {
