@@ -6,8 +6,26 @@
     <div class="d-flex align-items-center">
         <i class="fas fa-info-circle fa-2x mr-3"></i>
         <div>
-            <h5 class="alert-heading mb-1">Important Notice</h5>
-            <p class="mb-0">Eligibility for cash advances is restricted to employees with a minimum of one year of service.</p>
+            @php
+                $employee = App\Models\Employee::where('email_address', auth()->user()->email)->first();
+                $hasActiveLoan = $employee ? App\Models\CashAdvance::where('employee_id', $employee->id)
+                    ->where('status', 'active')
+                    ->exists() : false;
+                $oneYearAgo = now()->subYear();
+                $isEligible = $employee && $employee->date_hired <= $oneYearAgo;
+            @endphp
+
+            @if($isEligible)
+                <h5 class="alert-heading mb-1">Loan Status Notice</h5>
+                @if($hasActiveLoan)
+                    <p class="mb-0">Please ensure to regularly check your loan balance. Once fully paid, contact the administrators to update your loan status.</p>
+                @else
+                    <p class="mb-0">You are eligible to apply for a company loan. Please ensure all previous loans are properly closed before applying for a new one.</p>
+                @endif
+            @else
+                <h5 class="alert-heading mb-1">Important Notice</h5>
+                <p class="mb-0">Eligibility for cash advances is restricted to employees with a minimum of one year of service.</p>
+            @endif
         </div>
     </div>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -16,7 +34,7 @@
 </div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-{{ auth()->user()->hasRole('Employee') ? '8' : '12' }}">
             <div class="card">
                 <div class="card-header bg-primary">
                     <h3 class="card-title">Apply for Company Loan</h3>
@@ -123,6 +141,66 @@
                 </div>
             </div>
         </div>
+
+        @if(auth()->user()->hasRole('Employee'))
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h3 class="card-title text-white">
+                        <i class="fas fa-history mr-2"></i>My Recent Applications
+                    </h3>
+                </div>
+                <div class="card-body">
+                    @php
+                        $employee = App\Models\Employee::where('email_address', auth()->user()->email)->first();
+                        $recentApplications = $employee ? App\Models\CashAdvance::where('employee_id', $employee->id)
+                            ->orderBy('created_at', 'desc')
+                            ->take(5)
+                            ->get() : collect();
+                    @endphp
+
+                    @if($recentApplications->isEmpty())
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-file-alt fa-2x mb-2"></i>
+                            <p class="mb-0">No loan applications yet</p>
+                        </div>
+                    @else
+                        <div class="list-group list-group-flush">
+                            @foreach($recentApplications as $application)
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">₱{{ number_format($application->cash_advance_amount, 2) }}</h6>
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar-alt mr-1"></i>
+                                                {{ $application->created_at->format('M d, Y') }}
+                                            </small>
+                                        </div>
+                                        <div>
+                                            <span class="badge badge-{{ $application->status === 'pending' ? 'warning' : ($application->status === 'active' ? 'success' : 'secondary') }}">
+                                                {{ ucfirst($application->status) }}
+                                            </span>
+                                            @if($application->status !== 'pending')
+                                                <a href="{{ route('cash_advances.ledger', $application->id) }}" 
+                                                   class="btn btn-sm btn-outline-primary ml-2">
+                                                    <i class="fas fa-book-open"></i>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{{ route('loans.my-loans') }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-list mr-1"></i>View All Loans
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 @endsection

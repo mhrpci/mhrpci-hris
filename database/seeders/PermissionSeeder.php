@@ -112,6 +112,7 @@ class PermissionSeeder extends Seeder
             'hrhiring',
             'normal-employee',
             'finance',
+            'supervisor',
          ];
 
           // Looping and Inserting Array's Permissions into Permission Table

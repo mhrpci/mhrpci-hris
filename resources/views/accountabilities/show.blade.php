@@ -17,7 +17,7 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Employee ID:</span>
-                        <span class="info-value">{{ $accountability->employee->employee_id }}</span>
+                        <span class="info-value">{{ $accountability->employee->company_id }}</span>
                     </div>
                 </div>
             </div>
@@ -74,6 +74,7 @@
                 </button>
             </form>
             <a href="{{ route('accountabilities.index') }}" class="btn btn-secondary">Back to List</a>
+            <a href="{{ route('accountabilities.transfer', $accountability) }}" class="btn btn-warning">Transfer Items</a>
         </div>
     </div>
 </div>

@@ -1077,6 +1077,218 @@
         font-size: 0.9rem;
     }
 }
+
+/* Select2 AdminLTE Compatibility Styles */
+.select2-container--bootstrap4 .select2-selection {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.select2-container--bootstrap4.select2-container--focus .select2-selection {
+    border-color: #ced4da; /* Changed from #80bdff */
+    box-shadow: none; /* Removed blue box shadow */
+}
+
+.select2-container--bootstrap4 .select2-selection--single {
+    height: calc(2.25rem + 2px) !important;
+}
+
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__placeholder {
+    color: #6c757d;
+    line-height: 2.25rem;
+}
+
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
+    position: absolute;
+    top: 50%;
+    right: 3px;
+    width: 20px;
+    transform: translateY(-50%);
+}
+
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
+    top: 60%;
+    border-color: #6c757d transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    width: 0;
+    height: 0;
+    left: 50%;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
+}
+
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+    line-height: 2.25rem;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple {
+    min-height: calc(2.25rem + 2px) !important;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__rendered {
+    margin: 0;
+    padding: 0;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple .select2-search--inline .select2-search__field {
+    margin-top: 7px;
+    line-height: 1.5;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    padding: 0 8px;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice__remove {
+    color: #fff;
+    margin-right: 4px;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fff;
+    opacity: 0.8;
+}
+
+.select2-container--bootstrap4 .select2-dropdown {
+    border-color: #ced4da;
+    border-radius: 0.25rem;
+}
+
+.select2-container--bootstrap4 .select2-results__option--highlighted[aria-selected] {
+    background-color: #e9ecef !important; /* Changed from #007bff */
+    color: #1e2125 !important; /* Changed from #fff */
+}
+
+.select2-container--bootstrap4 .select2-results__option[aria-selected=true] {
+    background-color: #e9ecef;
+    color: #1e2125;
+}
+
+/* Dark theme compatibility */
+.dark-mode .select2-container--bootstrap4 .select2-selection {
+    background-color: #343a40;
+    border-color: #6c757d;
+    color: #fff;
+}
+
+.dark-mode .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+    color: #fff;
+}
+
+.dark-mode .select2-container--bootstrap4 .select2-selection--single .select2-selection__placeholder {
+    color: #adb5bd;
+}
+
+.dark-mode .select2-container--bootstrap4 .select2-dropdown {
+    background-color: #343a40;
+    border-color: #6c757d;
+}
+
+.dark-mode .select2-container--bootstrap4 .select2-results__option {
+    color: #fff;
+}
+
+.dark-mode .select2-container--bootstrap4 .select2-results__option[aria-selected=true] {
+    background-color: #495057;
+    color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    #notification-list {
+        position: fixed !important; /* Force position */
+        top: 56px !important; /* Height of navbar */
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important; /* Full width on mobile */
+        margin: 0 !important;
+        border-radius: 0 !important;
+        max-height: calc(100vh - 56px); /* Viewport height minus navbar */
+    }
+
+    .notification-scroll {
+        max-height: calc(100vh - 160px); /* Adjust for header and footer */
+    }
+
+    .dropdown-header, .dropdown-footer {
+        position: sticky; /* Keep header/footer visible */
+        background: inherit;
+        z-index: 1;
+    }
+
+    .dropdown-header {
+        top: 0;
+    }
+
+    .dropdown-footer {
+        bottom: 0;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .notification-item {
+        padding: 1rem !important;
+    }
+
+    .notification-icon {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+    }
+
+    .notification-content {
+        width: 100%;
+    }
+}
+
+/* Medium devices */
+@media (min-width: 577px) and (max-width: 992px) {
+    #notification-list {
+        width: 320px;
+    }
+}
+
+/* Ensure dropdown stays within viewport */
+@media (min-width: 993px) {
+    .dropdown-menu-xl {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+}
+
+/* Animation for dropdown */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-menu.show {
+    animation: slideIn 0.2s ease-out;
+}
+
+/* Improve touch interaction on mobile */
+@media (hover: none) and (pointer: coarse) {
+    .notification-item {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+
+    .notification-item:active {
+        background-color: #f8f9fa;
+    }
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
@@ -1099,10 +1311,42 @@
     <script>
         window.addEventListener('load', function() {
             if (typeof jQuery !== 'undefined') {
-                // Initialize Select2 for all select elements
+                // Initialize Select2 with custom configuration
                 $('select').select2({
                     theme: 'bootstrap4',
-                    width: '100%'
+                    width: '100%',
+                    dropdownAutoWidth: true,
+                    placeholder: 'Select an option',
+                    allowClear: true,
+                    containerCssClass: ':all:',
+                    dropdownCssClass: function() {
+                        // Check if dark mode is active
+                        return document.body.classList.contains('dark-mode') ? 'select2-dropdown-dark' : '';
+                    }
+                });
+
+                // Update Select2 dropdown theme when switching between light/dark mode
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === 'class') {
+                            $('select').each(function() {
+                                $(this).select2('destroy');
+                                $(this).select2({
+                                    theme: 'bootstrap4',
+                                    width: '100%',
+                                    dropdownAutoWidth: true,
+                                    placeholder: 'Select an option',
+                                    allowClear: true,
+                                    containerCssClass: ':all:',
+                                    dropdownCssClass: document.body.classList.contains('dark-mode') ? 'select2-dropdown-dark' : ''
+                                });
+                            });
+                        }
+                    });
+                });
+
+                observer.observe(document.body, {
+                    attributes: true
                 });
             }
         });
@@ -1195,7 +1439,7 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Add this notification dropdown before the existing items -->
-                @canany(['admin', 'super-admin', 'hrcomben'])
+                @canany(['admin', 'super-admin', 'hrcomben', 'supervisor', 'normal-employee'])
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" id="notificationDropdown">
                         <i class="far fa-bell"></i>
@@ -1399,7 +1643,7 @@
                         </li>
                         @endif
                       @endauth
-                        @canany(['admin', 'super-admin', 'hrcomben', 'normal-employee'])
+                        @canany(['admin', 'super-admin', 'hrcomben', 'normal-employee','supervisor'])
                         <li class="nav-item has-treeview {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-clock"></i>
@@ -1409,7 +1653,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                            @canany(['admin', 'super-admin', 'hrcomben'])
+                            @canany(['admin', 'super-admin', 'hrcomben','supervisor'])
                                 <li class="nav-item">
                                     <a href="{{ url('/attendances') }}" class="nav-link {{ Request::is('attendances*') || Request::is('timesheets*') ? 'active' : '' }}">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
@@ -1430,7 +1674,7 @@
                             </ul>
                         </li>
                     @endcanany
-                    @canany(['admin', 'super-admin', 'hrcomben','normal-employee'])
+                    @canany(['admin', 'super-admin', 'hrcomben','normal-employee','supervisor'])
                     <li class="nav-item has-treeview {{ Request::is('leaves*') || Request::is('leaves-employees*') || Request::is('my-leave-sheet*') || Request::is('my-leave-detail*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ Request::is('leaves*') || Request::is('leaves-employees*') || Request::is('my-leave-sheet*') || Request::is('my-leave-detail*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-calendar"></i>
@@ -1440,7 +1684,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @canany(['admin', 'super-admin', 'hrcomben'])
+                                @canany(['admin', 'super-admin', 'hrcomben','supervisor'])
                                 <li class="nav-item">
                                     <a href="{{ url('/leaves') }}" class="nav-link {{ Request::is('leaves') || request()->routeIs('leaves.show*') ? 'active' : '' }}">
                                         <i class="fas fa-list nav-icon"></i>
@@ -2120,316 +2364,6 @@
     });
     </script>
 
-    <!-- Add this before your existing scripts -->
-    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script>
-        // Initialize Pusher
-        const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
-            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
-            encrypted: true
-        });
-
-        // Subscribe to the leave requests channel
-        const channel = pusher.subscribe('leave-requests');
-        
-        // Listen for new leave request events
-        channel.bind('new-leave-request', function(data) {
-            if (data.leave) {
-                // Update notification count
-                const countElement = document.getElementById('notification-count');
-                const countTextElement = document.getElementById('notification-count-text');
-                let currentCount = parseInt(countElement.textContent);
-                currentCount += 1;
-                countElement.textContent = currentCount;
-                countTextElement.textContent = `${currentCount} New`;
-                
-                // Create notification item
-                const notificationItem = `
-                    <a href="/leaves/${data.leave.id}" class="notification-item unread">
-                        <div class="notification-icon leave">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">New Leave Request</div>
-                            <div class="notification-text">
-                                ${data.leave.employee_name} has requested leave from ${data.leave.date_from} to ${data.leave.date_to}
-                            </div>
-                            <div class="notification-time">
-                                <i class="far fa-clock mr-1"></i>Just now
-                            </div>
-                        </div>
-                    </a>
-                `;
-                
-                // Remove empty notification message if present
-                const emptyNotification = document.querySelector('.empty-notifications');
-                if (emptyNotification) {
-                    emptyNotification.remove();
-                }
-                
-                // Add to notification list
-                const notificationItems = document.getElementById('notification-items');
-                notificationItems.insertAdjacentHTML('afterbegin', notificationItem);
-                
-                // Show toast notification
-                const toastBody = document.getElementById('notification-toast-body');
-                toastBody.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <div class="notification-icon leave mr-3" style="width: 30px; height: 30px">
-                            <i class="fas fa-calendar-alt fa-sm"></i>
-                        </div>
-                        <div>
-                            <strong class="d-block">${data.leave.employee_name}</strong>
-                            <small class="text-muted">
-                                Requested leave: ${data.leave.date_from} - ${data.leave.date_to}
-                            </small>
-                        </div>
-                    </div>
-                `;
-                
-                // Show the toast
-                $('#notification-toast').toast('show');
-                
-                // Play notification sound
-                const audio = new Audio('/notification-sound.mp3');
-                audio.play();
-                
-                // Show browser notification if permitted
-                if (Notification.permission === "granted") {
-                    new Notification("New Leave Request", {
-                        body: `${data.leave.employee_name} has requested leave`,
-                        icon: "/favicon.ico"
-                    });
-                }
-            }
-        });
-        
-        // Mark all notifications as read
-        document.getElementById('mark-all-read').addEventListener('click', function(e) {
-            e.preventDefault();
-            const unreadItems = document.querySelectorAll('.notification-item.unread');
-            unreadItems.forEach(item => item.classList.remove('unread'));
-            document.getElementById('notification-count').textContent = '0';
-            document.getElementById('notification-count-text').textContent = '0 New';
-        });
-        
-        // Individual notification click handler
-        document.getElementById('notification-items').addEventListener('click', function(e) {
-            const notificationItem = e.target.closest('.notification-item');
-            if (notificationItem && notificationItem.classList.contains('unread')) {
-                notificationItem.classList.remove('unread');
-                const countElement = document.getElementById('notification-count');
-                const countTextElement = document.getElementById('notification-count-text');
-                let currentCount = parseInt(countElement.textContent);
-                if (currentCount > 0) {
-                    currentCount -= 1;
-                    countElement.textContent = currentCount;
-                    countTextElement.textContent = `${currentCount} New`;
-                }
-            }
-        });
-    </script>
-
-    <!-- Add this toast container at the bottom of your body tag -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1500;">
-        @canany(['admin', 'super-admin'])
-        <!-- Simple Leave Request Toast -->
-        <div id="leaveRequestToast" 
-             class="toast bg-success text-white" 
-             role="alert" 
-             aria-live="assertive" 
-             aria-atomic="true" 
-             data-bs-delay="8000">
-            <div class="d-flex align-items-center p-3">
-                <div class="toast-icon me-3">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <div id="leaveRequestContent" class="flex-grow-1">
-                    <!-- Content will be dynamically inserted here -->
-                </div>
-            </div>
-            <div class="toast-progress"></div>
-        </div>
-        @endcanany
-    </div>
-
-    <!-- Update the notification script -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        @canany(['admin', 'super-admin'])
-        
-        // Initialize toast
-        const toastElement = document.getElementById('leaveRequestToast');
-        const toast = new bootstrap.Toast(toastElement, {
-            animation: true,
-            autohide: true,
-            delay: 8000
-        });
-
-        // Initialize Pusher
-        const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
-            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
-            encrypted: true
-        });
-
-        const channel = pusher.subscribe('leave-requests');
-
-        channel.bind('new-leave-request', function(data) {
-            if (data.leave) {
-                // Format dates
-                const dateFrom = new Date(data.leave.date_from).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric'
-                });
-                
-                const dateTo = new Date(data.leave.date_to).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric'
-                });
-                
-                // Simple content update
-                const content = `
-                    <div>
-                        <strong>${data.leave.employee_name}</strong> has requested leave
-                        <div class="mt-1 small">
-                            ${dateFrom} - ${dateTo}
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('leaveRequestContent').innerHTML = content;
-                
-                // Show toast
-                toast.show();
-                
-                // Play notification sound if tab is not active
-                if (!document.hasFocus()) {
-                    const audio = new Audio('/notification-sound.mp3');
-                    audio.volume = 0.5;
-                    audio.play().catch(error => console.log('Audio playback failed:', error));
-                }
-                
-                // Show browser notification if permitted and tab is not active
-                if (Notification.permission === "granted" && !document.hasFocus()) {
-                    new Notification("New Leave Request", {
-                        body: `${data.leave.employee_name} has requested leave`,
-                        icon: "/favicon.ico",
-                        tag: 'leave-request',
-                        silent: true
-                    });
-                }
-            }
-        });
-
-        // Request notification permission
-        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission();
-        }
-
-        @endcanany
-    });
-    </script>
-
-    <!-- Add this after your Pusher initialization -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Function to load notifications
-        function loadNotifications() {
-            fetch('/notifications')
-                .then(response => response.json())
-                .then(data => {
-                    const notificationItems = document.getElementById('notification-items');
-                    const notifications = data.notifications;
-                    
-                    if (notifications.length === 0) {
-                        notificationItems.innerHTML = `
-                            <div class="empty-notifications text-center p-3 text-muted">
-                                <i class="fas fa-check-circle fa-2x mb-2"></i>
-                                <p class="mb-0">You're all caught up!</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    notificationItems.innerHTML = notifications.map(notification => `
-                        <a href="/leaves/${notification.leave_id}" 
-                           class="notification-item ${!notification.is_read ? 'unread' : ''}"
-                           data-notification-id="${notification.id}">
-                            <div class="notification-icon leave">
-                                <i class="fas fa-calendar-alt"></i>
-                            </div>
-                            <div class="notification-content">
-                                <div class="notification-title">${notification.data.title}</div>
-                                <div class="notification-text">${notification.message}</div>
-                                <div class="notification-time">
-                                    <i class="far fa-clock mr-1"></i>${notification.created_at}
-                                </div>
-                            </div>
-                        </a>
-                    `).join('');
-                });
-        }
-
-        // Function to update unread count
-        function updateUnreadCount() {
-            fetch('/notifications/unread-count')
-                .then(response => response.json())
-                .then(data => {
-                    const countElement = document.getElementById('notification-count');
-                    const countTextElement = document.getElementById('notification-count-text');
-                    countElement.textContent = data.count;
-                    countTextElement.textContent = `${data.count} New`;
-                });
-        }
-
-        // Load initial notifications and count
-        loadNotifications();
-        updateUnreadCount();
-
-        // Mark notification as read when clicked
-        document.getElementById('notification-items').addEventListener('click', function(e) {
-            const notificationItem = e.target.closest('.notification-item');
-            if (notificationItem && notificationItem.classList.contains('unread')) {
-                const notificationId = notificationItem.dataset.notificationId;
-                
-                fetch(`/notifications/${notificationId}/read`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json'
-                    }
-                }).then(() => {
-                    notificationItem.classList.remove('unread');
-                    updateUnreadCount();
-                });
-            }
-        });
-
-        // Mark all as read
-        document.getElementById('mark-all-read').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            fetch('/notifications/mark-all-read', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json'
-                }
-            }).then(() => {
-                document.querySelectorAll('.notification-item.unread')
-                    .forEach(item => item.classList.remove('unread'));
-                updateUnreadCount();
-            });
-        });
-
-        // Update when new notification received
-        channel.bind('new-leave-request', function(data) {
-            loadNotifications();
-            updateUnreadCount();
-            // ... rest of your existing new-leave-request handler ...
-        });
-    });
-    </script>
 
     <!-- Add this modal structure before the closing body tag -->
     <div class="modal fade" id="celebrantsModal" tabindex="-1" role="dialog" aria-labelledby="celebrantsModalLabel" aria-hidden="true">

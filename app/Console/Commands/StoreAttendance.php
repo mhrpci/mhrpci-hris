@@ -15,7 +15,7 @@ class StoreAttendance extends Command
 
     public function handle()
     {
-        $startDate = Carbon::createFromFormat('Y-m-d', '2024-09-01');
+        $startDate = Carbon::createFromFormat('Y-m-d', '2024-12-26');
         $today = Carbon::now();
 
         if ($today->lt($startDate)) {
@@ -30,7 +30,13 @@ class StoreAttendance extends Command
 
     protected function markAbsentIfNoAttendance($date)
     {
-        $employees = Employee::all();
+        // Check for holiday first
+        $holiday = Holiday::whereDate('date', $date)->first();
+        if ($holiday) {
+            return; // Skip absent marking if it's a holiday
+        }
+
+        $employees = Employee::where('employee_status', 'Active')->get();
         $currentDayOfWeek = Carbon::createFromFormat('Y-m-d', $date)->dayOfWeek;
 
         foreach ($employees as $employee) {
@@ -52,24 +58,33 @@ class StoreAttendance extends Command
 
     protected function markAbsentForPreviousDays($startDate, $endDate)
     {
-        $employees = Employee::all();
+        $employees = Employee::where('employee_status', 'Active')->get();
+        $holidays = Holiday::whereBetween('date', [$startDate, $endDate])->get();
         $currentDate = clone $startDate;
 
         while ($currentDate->lte($endDate)) {
             $formattedDate = $currentDate->toDateString();
-            $dayOfWeek = $currentDate->dayOfWeek;
+            
+            // Check if current date is a holiday
+            $isHoliday = $holidays->contains(function ($holiday) use ($formattedDate) {
+                return Carbon::parse($holiday->date)->toDateString() === $formattedDate;
+            });
 
-            foreach ($employees as $employee) {
-                $attendance = Attendance::where('employee_id', $employee->id)
-                    ->whereDate('date_attended', $formattedDate)
-                    ->first();
+            if (!$isHoliday) {
+                $dayOfWeek = $currentDate->dayOfWeek;
 
-                if (!$attendance) {
-                    $this->createAbsentRecord($employee, $formattedDate, $dayOfWeek);
-                } elseif (is_null($attendance->time_in) && is_null($attendance->time_out)) {
-                    $this->updateAbsentRecord($attendance, $dayOfWeek);
-                } elseif (!is_null($attendance->time_in) && is_null($attendance->time_out)) {
-                    $this->updateNoClockOutRecord($attendance);
+                foreach ($employees as $employee) {
+                    $attendance = Attendance::where('employee_id', $employee->id)
+                        ->whereDate('date_attended', $formattedDate)
+                        ->first();
+
+                    if (!$attendance) {
+                        $this->createAbsentRecord($employee, $formattedDate, $dayOfWeek);
+                    } elseif (is_null($attendance->time_in) && is_null($attendance->time_out)) {
+                        $this->updateAbsentRecord($attendance, $dayOfWeek);
+                    } elseif (!is_null($attendance->time_in) && is_null($attendance->time_out)) {
+                        $this->updateNoClockOutRecord($attendance);
+                    }
                 }
             }
 
@@ -81,14 +96,19 @@ class StoreAttendance extends Command
 
     protected function markAttendanceForHolidays($startDate, $endDate)
     {
-        $employees = Employee::all();
-        $holidays = $this->getHolidays();
+        $employees = Employee::where('employee_status', 'Active')->get();
+        $holidays = Holiday::whereBetween('date', [$startDate, $endDate])->get();
         $currentDate = clone $startDate;
 
         while ($currentDate->lte($endDate)) {
             $formattedDate = $currentDate->toDateString();
+            
+            // Find holiday for current date
+            $holiday = $holidays->first(function ($holiday) use ($formattedDate) {
+                return Carbon::parse($holiday->date)->toDateString() === $formattedDate;
+            });
 
-            if ($holidays->contains($formattedDate)) {
+            if ($holiday) {
                 foreach ($employees as $employee) {
                     $attendance = Attendance::where('employee_id', $employee->id)
                         ->whereDate('date_attended', $formattedDate)
@@ -103,8 +123,8 @@ class StoreAttendance extends Command
                             [
                                 'time_in' => '08:00:00',
                                 'time_out' => '17:00:00',
-                                'remarks' => 'Holiday',
-                                'hours_worked' => '08:00:00',
+                                'remarks' => $holiday->type . ' - ' . $holiday->title,
+                                'hours_worked' => $holiday->type === Holiday::TYPE_REGULAR ? '08:00:00' : '00:00:00',
                             ]
                         );
                     }
@@ -115,13 +135,6 @@ class StoreAttendance extends Command
         }
 
         $this->info('Attendance marked for holidays for employees with no records.');
-    }
-
-    protected function getHolidays()
-    {
-        return Holiday::pluck('date')->map(function ($holiday) {
-            return Carbon::parse($holiday)->toDateString();
-        });
     }
 
     private function createAbsentRecord($employee, $date, $currentDayOfWeek)

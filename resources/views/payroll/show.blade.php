@@ -75,7 +75,6 @@
                                     $deductions = [
                                         'Late Deduction' => $payroll->late_deduction,
                                         'Undertime Deduction' => $payroll->undertime_deduction,
-                                        'Absent Deduction' => $payroll->absent_deduction,
                                         'SSS Contribution' => $payroll->sss_contribution,
                                         'Pag-IBIG Contribution' => $payroll->pagibig_contribution,
                                         'PhilHealth Contribution' => $payroll->philhealth_contribution,

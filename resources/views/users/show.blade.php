@@ -50,12 +50,7 @@
                                 </div>
                                 <div class="card-body">
                                     <p><strong>Bio:</strong> {{ $user->bio }}</p>
-                                    <p><strong>Roles:</strong>
-                                        @forelse($user->getRoleNames() as $role)
-                                            <span class="badge badge-secondary">{{ $role }}</span>
-                                        @empty
-                                            <span class="badge badge-secondary">No roles assigned</span>
-                                        @endforelse
+                                    <p><strong>Department:</strong> {{ $user->department->name }}</p>
                                     </p>
                                 </div>
                             </div>

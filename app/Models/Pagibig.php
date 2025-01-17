@@ -54,47 +54,63 @@ class Pagibig extends Model
 
     public static function createPagibigContributions(Pagibig $pagibig)
     {
-        $employerContribution = $pagibig->employer_contribution / 2;
-        $contributionDate = $pagibig->contribution_date;
+        $employee = Employee::find($pagibig->employee_id);
 
-        // Dates for contributions
-        $firstDate = $contributionDate->copy()->setDay(10);
-        $secondDate = $contributionDate->copy()->setDay(25);
+        if ($employee->department->name === 'BGPDI') {
+            // For BGPDI employees - weekly contributions (1/4 of the total)
+            $quarterContribution = $pagibig->employer_contribution / 4;
+            $contributionDate = $pagibig->contribution_date;
 
-        // Create first contribution (10th of the month)
-        PagibigContribution::create([
-            'employee_id' => $pagibig->employee_id,
-            'pagibig_contribution' => $employerContribution,
-            'date' => $firstDate,
-        ]);
+            // Set weekly dates
+            $weeklyDates = [
+                $contributionDate->copy()->setDay(7),
+                $contributionDate->copy()->setDay(14),
+                $contributionDate->copy()->setDay(21),
+                $contributionDate->copy()->setDay(28),
+            ];
 
-        // Store in Contribution model for 10th
-        Contribution::updateOrCreate(
-            [
-                'employee_id' => $pagibig->employee_id,
-                'date' => $firstDate,
-            ],
-            [
-                'pagibig_contribution' => $employerContribution,
-            ]
-        );
+            foreach ($weeklyDates as $date) {
+                PagibigContribution::create([
+                    'employee_id' => $pagibig->employee_id,
+                    'pagibig_contribution' => $quarterContribution,
+                    'date' => $date,
+                ]);
 
-        // Create second contribution (25th of the month)
-        PagibigContribution::create([
-            'employee_id' => $pagibig->employee_id,
-            'pagibig_contribution' => $employerContribution,
-            'date' => $secondDate,
-        ]);
+                Contribution::updateOrCreate(
+                    [
+                        'employee_id' => $pagibig->employee_id,
+                        'date' => $date,
+                    ],
+                    [
+                        'pagibig_contribution' => $quarterContribution,
+                    ]
+                );
+            }
+        } else {
+            // Original bi-monthly logic for other departments
+            $employerContribution = $pagibig->employer_contribution / 2;
+            $contributionDate = $pagibig->contribution_date;
 
-        // Store in Contribution model for 25th
-        Contribution::updateOrCreate(
-            [
-                'employee_id' => $pagibig->employee_id,
-                'date' => $secondDate,
-            ],
-            [
-                'pagibig_contribution' => $employerContribution,
-            ]
-        );
+            $firstDate = $contributionDate->copy()->setDay(10);
+            $secondDate = $contributionDate->copy()->setDay(25);
+
+            foreach ([$firstDate, $secondDate] as $date) {
+                PagibigContribution::create([
+                    'employee_id' => $pagibig->employee_id,
+                    'pagibig_contribution' => $employerContribution,
+                    'date' => $date,
+                ]);
+
+                Contribution::updateOrCreate(
+                    [
+                        'employee_id' => $pagibig->employee_id,
+                        'date' => $date,
+                    ],
+                    [
+                        'pagibig_contribution' => $employerContribution,
+                    ]
+                );
+            }
+        }
     }
 }

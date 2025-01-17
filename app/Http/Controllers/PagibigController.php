@@ -15,13 +15,16 @@ class PagibigController extends Controller
         $contributions = Pagibig::all();
         $activeEmployeesCount = Employee::where('employee_status', 'Active')
             ->whereNotNull('pagibig_no')
+            ->whereRaw('DATEDIFF(CURRENT_DATE, date_hired) >= 60')
             ->count();
         return view('pagibig.index', compact('contributions', 'employees', 'activeEmployeesCount'));
     }
 
     public function create()
     {
-        $employees = Employee::whereNotNull('pagibig_no')->get();
+        $employees = Employee::whereNotNull('pagibig_no')
+        ->where('employee_status', 'Active')
+        ->get();
         return view('pagibig.create', compact('employees'));
     }
 
@@ -71,6 +74,7 @@ class PagibigController extends Controller
 
         $activeEmployees = Employee::where('employee_status', 'Active')
             ->whereNotNull('pagibig_no')
+            ->whereRaw('DATEDIFF(CURRENT_DATE, date_hired) >= 60')
             ->get();
 
         DB::beginTransaction();

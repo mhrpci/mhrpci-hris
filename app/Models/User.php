@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use NotificationChannels\WebPush\HasPushSubscriptions;
+use App\Models\Department;
 
 class User extends Authenticatable
 {
@@ -38,6 +39,7 @@ class User extends Authenticatable
         'device_id',
         'device_token',
         'signature',
+        'department_id',
     ];
 
     /**
@@ -125,6 +127,11 @@ class User extends Authenticatable
     {
         // Example: assuming you have a column 'employee_type' in users table
         return $this->employee_type === 'employee'; // Adjust this based on your actual implementation
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 
 }

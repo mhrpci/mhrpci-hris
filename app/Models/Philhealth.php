@@ -46,49 +46,66 @@ class Philhealth extends Model
     public function storeWithContributions()
     {
         $this->save();
-
+        
+        $employee = Employee::find($this->employee_id);
         $contributionDate = Carbon::parse($this->contribution_date);
-        $firstHalfDate = Carbon::create($contributionDate->year, $contributionDate->month, 10);
-        $secondHalfDate = Carbon::create($contributionDate->year, $contributionDate->month, 25);
 
-        $halfContribution = $this->employee_contribution / 2;
-        $roundedHalfContribution = round($halfContribution, 2);
+        if ($employee->department->name === 'BGPDI') {
+            // For BGPDI employees - weekly contributions (1/4 of the total)
+            $quarterContribution = $this->employee_contribution / 4;
+            $roundedQuarterContribution = round($quarterContribution, 2);
 
-        // Create first contribution (10th of the month)
-        PhilhealthContribution::create([
-            'employee_id' => $this->employee_id,
-            'philhealth_contribution' => $roundedHalfContribution,
-            'date' => $firstHalfDate,
-        ]);
+            // Set weekly dates
+            $weeklyDates = [
+                Carbon::create($contributionDate->year, $contributionDate->month, 7),
+                Carbon::create($contributionDate->year, $contributionDate->month, 14),
+                Carbon::create($contributionDate->year, $contributionDate->month, 21),
+                Carbon::create($contributionDate->year, $contributionDate->month, 28),
+            ];
 
-        // Store in Contribution model for 10th
-        Contribution::updateOrCreate(
-            [
-                'employee_id' => $this->employee_id,
-                'date' => $firstHalfDate,
-            ],
-            [
-                'philhealth_contribution' => $roundedHalfContribution,
-            ]
-        );
+            foreach ($weeklyDates as $date) {
+                PhilhealthContribution::create([
+                    'employee_id' => $this->employee_id,
+                    'philhealth_contribution' => $roundedQuarterContribution,
+                    'date' => $date,
+                ]);
 
-        // Create second contribution (25th of the month)
-        PhilhealthContribution::create([
-            'employee_id' => $this->employee_id,
-            'philhealth_contribution' => $roundedHalfContribution,
-            'date' => $secondHalfDate,
-        ]);
+                Contribution::updateOrCreate(
+                    [
+                        'employee_id' => $this->employee_id,
+                        'date' => $date,
+                    ],
+                    [
+                        'philhealth_contribution' => $roundedQuarterContribution,
+                    ]
+                );
+            }
+        } else {
+            // Original bi-monthly logic for other departments
+            $halfContribution = $this->employee_contribution / 2;
+            $roundedHalfContribution = round($halfContribution, 2);
 
-        // Store in Contribution model for 25th
-        Contribution::updateOrCreate(
-            [
-                'employee_id' => $this->employee_id,
-                'date' => $secondHalfDate,
-            ],
-            [
-                'philhealth_contribution' => $roundedHalfContribution,
-            ]
-        );
+            $firstHalfDate = Carbon::create($contributionDate->year, $contributionDate->month, 10);
+            $secondHalfDate = Carbon::create($contributionDate->year, $contributionDate->month, 25);
+
+            foreach ([$firstHalfDate, $secondHalfDate] as $date) {
+                PhilhealthContribution::create([
+                    'employee_id' => $this->employee_id,
+                    'philhealth_contribution' => $roundedHalfContribution,
+                    'date' => $date,
+                ]);
+
+                Contribution::updateOrCreate(
+                    [
+                        'employee_id' => $this->employee_id,
+                        'date' => $date,
+                    ],
+                    [
+                        'philhealth_contribution' => $roundedHalfContribution,
+                    ]
+                );
+            }
+        }
 
         return $this;
     }

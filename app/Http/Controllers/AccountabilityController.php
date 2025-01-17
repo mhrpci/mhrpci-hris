@@ -119,5 +119,56 @@ class AccountabilityController extends Controller
         $accountability->delete();
         return redirect()->route('accountabilities.index')->with('success', 'Accountability deleted successfully.');
     }
+
+    public function transfer(Accountability $accountability)
+    {
+        $employees = Employee::where('id', '!=', $accountability->employee_id)->get();
+        return view('accountabilities.transfer', compact('accountability', 'employees'));
+    }
+
+    public function processTransfer(Request $request, Accountability $accountability)
+    {
+        $validated = $request->validate([
+            'new_employee_id' => 'required|exists:employees,id',
+            'transfer_notes' => 'nullable|string',
+        ]);
+
+        // Create new accountability for the new employee
+        $newAccountability = Accountability::create([
+            'employee_id' => $validated['new_employee_id'],
+            'notes' => "Transferred from {$accountability->employee->full_name}. " . ($validated['transfer_notes'] ?? ''),
+        ]);
+
+        // Transfer all IT inventories to the new accountability
+        foreach ($accountability->itInventories as $inventory) {
+            $accountability->returnInventory($inventory);
+            $newAccountability->assignInventory($inventory);
+        }
+
+        // Copy documents if they exist
+        if ($accountability->documents) {
+            $newAccountability->documents = $accountability->documents;
+            $newAccountability->save();
+        }
+
+        // Check if the old accountability has any remaining inventories
+        if ($accountability->itInventories()->count() === 0) {
+            // If no inventories remain, delete the old accountability
+            $accountability->delete();
+            $message = 'Accountability successfully transferred and old record deleted.';
+        } else {
+            // If some inventories remain, just mark as inactive
+            $accountability->update([
+                'status' => 'inactive',
+                'notes' => ($accountability->notes ? $accountability->notes . "\n" : '') . 
+                          "Transferred to {$newAccountability->employee->full_name} on " . now()->format('Y-m-d H:i:s'),
+            ]);
+            $message = 'Accountability successfully transferred to new employee.';
+        }
+
+        return redirect()
+            ->route('accountabilities.show', $newAccountability)
+            ->with('success', $message);
+    }
 }
 

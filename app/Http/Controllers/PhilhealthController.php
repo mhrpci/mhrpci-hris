@@ -15,13 +15,16 @@ class PhilhealthController extends Controller
         $contributions = Philhealth::all();
         $activeEmployeesCount = Employee::where('employee_status', 'Active')
             ->whereNotNull('philhealth_no')
+            ->whereRaw('DATEDIFF(CURRENT_DATE, date_hired) >= 60')
             ->count();
         return view('philhealth.index', compact('contributions', 'employees', 'activeEmployeesCount'));
     }
 
     public function create()
     {
-        $employees = Employee::whereNotNull('philhealth_no')->get();
+        $employees = Employee::whereNotNull('philhealth_no')
+        ->where('employee_status', 'Active')
+        ->get();
         return view('philhealth.create', compact('employees'));
     }
 
@@ -75,6 +78,7 @@ class PhilhealthController extends Controller
 
         $activeEmployees = Employee::where('employee_status', 'Active')
             ->whereNotNull('philhealth_no')
+            ->whereRaw('DATEDIFF(CURRENT_DATE, date_hired) >= 60')
             ->get();
 
         DB::beginTransaction();

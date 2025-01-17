@@ -17,13 +17,16 @@ class SssController extends Controller
         $contributions = Sss::all();
         $activeEmployeesCount = Employee::where('employee_status', 'Active')
             ->whereNotNull('sss_no')
+            ->whereRaw('DATEDIFF(CURRENT_DATE, date_hired) >= 60')
             ->count();
         return view('sss.index', compact('contributions', 'employees', 'activeEmployeesCount'));
     }
 
     public function create()
     {
-        $employees = Employee::whereNotNull('sss_no')->get();
+        $employees = Employee::whereNotNull('sss_no')
+            ->where('employee_status', 'Active')
+            ->get();
         return view('sss.create', compact('employees'));
     }
 
@@ -72,6 +75,7 @@ class SssController extends Controller
 
         $activeEmployees = Employee::where('employee_status', 'Active')
             ->whereNotNull('sss_no')
+            ->whereRaw('DATEDIFF(CURRENT_DATE, date_hired) >= 60')
             ->get();
 
         DB::beginTransaction();

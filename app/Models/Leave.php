@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use Carbon\Carbon;
-use App\Events\NewLeaveRequest;
 
 class Leave extends Model
 {
@@ -18,6 +17,7 @@ class Leave extends Model
         'employee_id',
         'date_from',
         'date_to',
+        'leave_type',
         'type_id',
         'reason_to_leave',
         'approved_by',
@@ -29,6 +29,12 @@ class Leave extends Model
     ];
 
     protected $primaryKey = 'id'; // This is already the default, but just to be explicit
+
+    protected $casts = [
+        'date_from' => 'datetime',
+        'date_to' => 'datetime',
+        // ... any other casts ...
+    ];
 
     public function employee(): BelongsTo
     {
@@ -80,22 +86,6 @@ class Leave extends Model
             }
             $employee->save();
         }
-    }
-
-    protected static function booted()
-    {
-        static::created(function ($leave) {
-            if ($leave->status === 'pending') {
-                event(new NewLeaveRequest($leave));
-            }
-        });
-
-        static::updated(function ($leave) {
-            // Check if status is updated
-            if ($leave->isDirty('status')) {
-                $leave->updateLeaveType();
-            }
-        });
     }
 
     public function getLeavePaymentStatus()

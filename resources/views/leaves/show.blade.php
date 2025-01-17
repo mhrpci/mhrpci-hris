@@ -161,8 +161,8 @@
         max-width: 200px;
         position: absolute;
         bottom: 0;
-        mix-blend-mode: darken;
-        opacity: 0.8;
+        mix-blend-mode: multiply;
+        opacity: 1;
     }
 
     .signature-label {
@@ -363,6 +363,33 @@
             flex-direction: column;
         }
     }
+
+    /* Add these styles to your existing CSS */
+    .modal-fullscreen {
+        width: 100vw;
+        max-width: none;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .modal-fullscreen .modal-content {
+        height: 100vh;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .signature-wrapper {
+        width: 100%;
+        background-color: #fff;
+        position: relative;
+    }
+
+    #signaturePad {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        cursor: crosshair;
+    }
 </style>
 <div class="button-container">
     <button type="button" class="btn btn-info btn-responsive" onclick="printLeaveForm()">
@@ -416,22 +443,39 @@
     <div class="employee-request">
         <div class="request-text">
             I hereby request for <span class="input-line" data-field="duration">
-                @if($leave->diffhours)
-                    @php
-                        $hours = $leave->diffhours['hours'];
-                        $minutes = $leave->diffhours['minutes'] ?? 0;
-
-                        // Convert everything to days with decimal places
-                        $totalDays = $hours / 24 + $minutes / (24 * 60);
-
-                        // Round to 2 decimal places
-                        $totalDays = round($totalDays, 2);
-                    @endphp
-                    {{ $totalDays }}
+                @if($leave->leave_type == 'Halfday' || $leave->leave_type == 'Undertime')
+                    @if($leave->diffhours)
+                        @php
+                            $hours = $leave->diffhours['hours'];
+                            $minutes = $leave->diffhours['minutes'] ?? 0;
+                        @endphp
+                        {{ $hours }}
+                    @else
+                        {{ $leave->duration ?? '' }}
+                    @endif
                 @else
-                    {{ $leave->duration ?? '' }}
+                    @if($leave->diffhours)
+                        @php
+                            $hours = $leave->diffhours['hours'];
+                            $minutes = $leave->diffhours['minutes'] ?? 0;
+
+                            // Convert everything to days with decimal places
+                            $totalDays = $hours / 24 + $minutes / (24 * 60);
+
+                            // Round to 2 decimal places 
+                            $totalDays = round($totalDays, 2);
+                        @endphp
+                        {{ $totalDays }}
+                    @else
+                        {{ $leave->duration ?? '' }}
+                    @endif
                 @endif
-            </span> day/s
+            </span> 
+            @if($leave->leave_type === 'Halfday' || $leave->leave_type === 'Undertime')
+                hours
+            @else
+                day/s
+            @endif
         </div>
         <div class="checkbox-group">
             <div class="checkbox-item">
@@ -573,48 +617,54 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label for="status">Status Decision</label>
+                        <select class="form-control @error('status') is-invalid @enderror"
+                                name="status"
+                                id="status"
+                                required>
+                            <option value="">Select Status</option>
+                            <option value="approved">Approve</option>
+                            <option value="rejected">Reject</option>
+                        </select>
+                        @error('status')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group mt-4">
+                        <button type="button" class="btn btn-primary" id="proceedWithStatus">
+                            Proceed
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signature Modal -->
+    <div class="modal fade" id="signatureModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Your Signature</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0">
                     <form action="{{ route('leaves.update-status', $leave->id) }}" method="POST" id="statusUpdateForm">
                         @csrf
                         @method('PUT')
-
-                        <!-- Status Selection -->
-                        <div class="form-group">
-                            <label for="status">Status Decision</label>
-                            <select class="form-control @error('status') is-invalid @enderror"
-                                    name="status"
-                                    id="status"
-                                    required>
-                                <option value="">Select Status</option>
-                                <option value="approved" {{ old('status') == 'approved' ? 'selected' : '' }}>Approve</option>
-                                <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Reject</option>
-                            </select>
-                            @error('status')
-                                <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
+                        <input type="hidden" name="status" id="finalStatus">
+                        <input type="hidden" name="approved_by_signature" id="signatureInput">
+                        
+                        <div class="signature-wrapper" style="height: calc(100vh - 180px);">
+                            <canvas id="signaturePad"></canvas>
                         </div>
-
-                        <!-- Approver's Digital Signature Pad -->
-                        <div class="form-group mt-3">
-                            <label>Approver's Signature</label>
-                            <div class="border rounded p-3">
-                                <canvas id="signaturePad" class="signature-pad" width="400" height="200"></canvas>
-                                <input type="hidden" name="approved_by_signature" id="signatureInput">
-                            </div>
-                            <div class="mt-2">
-                                <button type="button" class="btn btn-sm btn-secondary" id="clearSignature">
-                                    Clear Signature
-                                </button>
-                            </div>
-                            @error('approved_by_signature')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-primary" id="submitStatus">
-                                Update Status
-                            </button>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="clearSignature">Clear</button>
+                            <button type="submit" class="btn btn-primary" id="submitStatus">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -623,42 +673,28 @@
     </div>
 
     <!-- Validation Signature Modal -->
-    <div class="modal fade" id="validateSignatureModal" tabindex="-1" role="dialog" aria-labelledby="validateSignatureModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="validateSignatureModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="validateSignatureModalLabel">Add Validation Signature</h5>
+                    <h5 class="modal-title">Add Validation Signature</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-0">
                     <form action="{{ route('leaves.update-validation', $leave->id) }}" method="POST" id="validationForm">
                         @csrf
                         @method('PUT')
-
-                        <!-- Validator's Digital Signature Pad -->
-                        <div class="form-group mt-3">
-                            <label>Validator's Signature</label>
-                            <div class="border rounded p-3">
-                                <canvas id="validationSignaturePad" class="signature-pad" width="400" height="200"></canvas>
-                                <input type="hidden" name="validated_by_signature" id="validationSignatureInput">
-                            </div>
-                            <div class="mt-2">
-                                <button type="button" class="btn btn-sm btn-secondary" id="clearValidationSignature">
-                                    Clear Signature
-                                </button>
-                            </div>
-                            @error('validated_by_signature')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                        <input type="hidden" name="validated_by_signature" id="validationSignatureInput">
+                        
+                        <div class="signature-wrapper" style="height: calc(100vh - 180px);">
+                            <canvas id="validationSignaturePad"></canvas>
                         </div>
-
-                        <!-- Submit Button -->
-                        <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-success">
-                                Add Validation
-                            </button>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="clearValidationSignature">Clear</button>
+                            <button type="submit" class="btn btn-success">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -672,55 +708,129 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize signature pads
-        const initSignaturePad = (canvasId, clearButtonId) => {
-            const canvas = document.getElementById(canvasId);
-            const signaturePad = new SignaturePad(canvas, {
+        let signaturePad;
+        let validationSignaturePad;
+        
+        // Initialize the signature pad when the modal is shown
+        $('#signatureModal').on('shown.bs.modal', function() {
+            const canvas = document.getElementById('signaturePad');
+            const wrapper = document.querySelector('.signature-wrapper');
+            
+            // Set canvas size to match wrapper
+            canvas.width = wrapper.offsetWidth;
+            canvas.height = wrapper.offsetHeight;
+            
+            // Initialize with enhanced signature settings
+            signaturePad = new SignaturePad(canvas, {
                 backgroundColor: 'rgb(255, 255, 255)',
-                penColor: 'rgb(0, 0, 0)'
+                penColor: 'rgb(0, 0, 0)',
+                minWidth: 2,        // Minimum line width
+                maxWidth: 4,        // Maximum line width
+                throttle: 16,       // Smoothing factor
+                velocityFilterWeight: 0.7,  // Makes lines smoother
+                dotSize: 3,         // Size of a single dot
             });
 
-            // Clear signature button
-            document.getElementById(clearButtonId).addEventListener('click', function() {
-                signaturePad.clear();
-            });
-
-            return signaturePad;
-        };
-
-        // Initialize both signature pads
-        const approverSignaturePad = initSignaturePad('signaturePad', 'clearSignature');
-        const validationSignaturePad = initSignaturePad('validationSignaturePad', 'clearValidationSignature');
-
-        // Status Update Form submission
-        document.getElementById('statusUpdateForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            if (approverSignaturePad.isEmpty()) {
-                alert('Please provide approver\'s signature');
+            // Set canvas context properties for better rendering
+            const ctx = canvas.getContext('2d');
+            ctx.lineCap = 'round';    // Round line endings
+            ctx.lineJoin = 'round';   // Round line joins
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';  // Subtle shadow
+            ctx.shadowBlur = 1;       // Shadow blur effect
+        });
+        
+        // Handle the proceed button click
+        document.getElementById('proceedWithStatus').addEventListener('click', function() {
+            const status = document.getElementById('status').value;
+            
+            if (!status) {
+                alert('Please select a status');
                 return;
             }
-
-            // Get signature data
-            document.getElementById('signatureInput').value = approverSignaturePad.toDataURL();
-
-            // Submit form
+            
+            // Store the selected status
+            document.getElementById('finalStatus').value = status;
+            
+            if (status === 'approved') {
+                // Close the first modal and open the signature modal
+                $('#updateStatusModal').modal('hide');
+                $('#signatureModal').modal('show');
+            } else {
+                // For rejected status, submit the form directly
+                document.getElementById('statusUpdateForm').submit();
+            }
+        });
+        
+        // Clear signature button
+        document.getElementById('clearSignature').addEventListener('click', function() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        });
+        
+        // Form submission
+        document.getElementById('statusUpdateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const status = document.getElementById('finalStatus').value;
+            
+            if (status === 'approved' && signaturePad && signaturePad.isEmpty()) {
+                alert('Please provide your signature');
+                return;
+            }
+            
+            if (status === 'approved') {
+                document.getElementById('signatureInput').value = signaturePad.toDataURL();
+            }
+            
             this.submit();
         });
 
-        // Validation Form submission
+        // Initialize the validation signature pad when its modal is shown
+        $('#validateSignatureModal').on('shown.bs.modal', function() {
+            const canvas = document.getElementById('validationSignaturePad');
+            const wrapper = document.querySelector('#validateSignatureModal .signature-wrapper');
+            
+            // Set canvas size to match wrapper
+            canvas.width = wrapper.offsetWidth;
+            canvas.height = wrapper.offsetHeight;
+            
+            // Initialize with enhanced signature settings
+            validationSignaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgb(255, 255, 255)',
+                penColor: 'rgb(0, 0, 0)',
+                minWidth: 2,
+                maxWidth: 4,
+                throttle: 16,
+                velocityFilterWeight: 0.7,
+                dotSize: 3,
+            });
+
+            // Set canvas context properties for better rendering
+            const ctx = canvas.getContext('2d');
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+            ctx.shadowBlur = 1;
+        });
+
+        // Clear validation signature button
+        document.getElementById('clearValidationSignature').addEventListener('click', function() {
+            if (validationSignaturePad) {
+                validationSignaturePad.clear();
+            }
+        });
+
+        // Validation form submission
         document.getElementById('validationForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            if (validationSignaturePad.isEmpty()) {
-                alert('Please provide validator\'s signature');
+            
+            if (validationSignaturePad && validationSignaturePad.isEmpty()) {
+                alert('Please provide your signature');
                 return;
             }
-
-            // Get signature data
+            
             document.getElementById('validationSignatureInput').value = validationSignaturePad.toDataURL();
-
-            // Submit form
             this.submit();
         });
     });
@@ -893,8 +1003,8 @@
                     max-width: 148px;
                     position: absolute;
                     bottom: 0;
-                    mix-blend-mode: darken;
-                    opacity: 0.8;
+                    mix-blend-mode: multiply;
+                    opacity: 1;
                 }
 
                 .signature-label {

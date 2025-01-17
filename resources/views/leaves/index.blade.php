@@ -234,131 +234,133 @@
 @endsection
 
 @section('js')
-<script>
-    $(document).ready(function () {
-        // Updated toast configuration with dark mode support
-        const toastConfig = {
-            timer: 3000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            toast: true,
-            position: 'top-end',
-            iconColor: 'white',
-            customClass: {
-                popup: 'colored-toast'
-            }
-        };
-
-        // Success toast with dark mode support
-        @if(Session::has('success'))
-            Swal.fire({
-                ...toastConfig,
-                icon: 'success',
-                title: 'Success',
-                text: "{{ Session::get('success') }}",
+    <!-- Include SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // Updated toast configuration with dark mode support
+            const toastConfig = {
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-right',
+                iconColor: 'green',
                 customClass: {
-                    popup: 'colored-toast swal2-success'
+                    popup: 'colored-toast'
                 }
-            });
-        @endif
+            };
 
-        // Error toast with dark mode support
-        @if(Session::has('error'))
-            Swal.fire({
-                ...toastConfig,
-                icon: 'error',
-                title: 'Error',
-                text: "{{ Session::get('error') }}",
-                customClass: {
-                    popup: 'colored-toast swal2-error'
-                }
-            });
-        @endif
-
-        // Initialize DataTable with responsive configuration
-        var table = $('#leave-table').DataTable({
-            responsive: true,
-            language: {
-                emptyTable: "No leave requests available at the moment."
-            },
-            columnDefs: [
-                { targets: 'no-sort', orderable: false },
-                { responsivePriority: 1, targets: [0, 3, 5] }, // Priority columns
-                { responsivePriority: 2, targets: [1, 2] },
-                { responsivePriority: 3, targets: 4 }
-            ],
-            dom: '<"d-flex flex-column flex-md-row justify-content-between align-items-center"<"mb-2 mb-md-0"l><"d-flex"f>>rtip',
-            pageLength: 10,
-            ordering: true,
-            autoWidth: false
-        });
-
-        // Make table responsive to window resize
-        $(window).on('resize', function () {
-            table.columns.adjust().responsive.recalc();
-        });
-
-        // Updated filter notifications
-        $('#status-filter').on('change', function() {
-            const value = this.value;
-            table.column(3).search(value).draw();
-
-            if (value) {
+            // Success toast with dark mode support
+            @if(Session::has('success'))
                 Swal.fire({
                     ...toastConfig,
-                    icon: 'info',
-                    title: 'Filter Applied',
-                    text: `Showing ${value.charAt(0).toUpperCase() + value.slice(1)} leaves`,
+                    icon: 'success',
+                    title: 'Success',
+                    text: "{{ Session::get('success') }}",
                     customClass: {
-                        popup: 'colored-toast swal2-info'
+                        popup: 'colored-toast swal2-success'
                     }
                 });
-            }
-        });
+            @endif
 
-        // Updated read filter notifications
-        $('#read-filter').on('change', function() {
-            const value = this.value;
-            const searchTerm = value === 'read' ? 'Read' : (value === 'new' ? 'New' : '');
-            table.column(4).search(searchTerm).draw();
-
-            if (value) {
+            // Error toast with dark mode support
+            @if(Session::has('error'))
                 Swal.fire({
                     ...toastConfig,
-                    icon: 'info',
-                    title: 'Filter Applied',
-                    text: `Showing ${value === 'read' ? 'read' : 'unread'} leaves`,
+                    icon: 'error',
+                    title: 'Error',
+                    text: "{{ Session::get('error') }}",
                     customClass: {
-                        popup: 'colored-toast swal2-info'
+                        popup: 'colored-toast swal2-error'
                     }
                 });
-            }
-        });
+            @endif
 
-        // Updated delete confirmation with dark mode support
-        $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
-            e.preventDefault();
-            const form = $(this).closest('form');
+            // Initialize DataTable with responsive configuration
+            var table = $('#leave-table').DataTable({
+                responsive: true,
+                language: {
+                    emptyTable: "No leave requests available at the moment."
+                },
+                columnDefs: [
+                    { targets: 'no-sort', orderable: false },
+                    { responsivePriority: 1, targets: [0, 3, 5] }, // Priority columns
+                    { responsivePriority: 2, targets: [1, 2] },
+                    { responsivePriority: 3, targets: 4 }
+                ],
+                dom: '<"d-flex flex-column flex-md-row justify-content-between align-items-center"<"mb-2 mb-md-0"l><"d-flex"f>>rtip',
+                pageLength: 10,
+                ordering: true,
+                autoWidth: false
+            });
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel',
-                reverseButtons: true,
-                customClass: {
-                    popup: 'swal2-modal-custom'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
+            // Make table responsive to window resize
+            $(window).on('resize', function () {
+                table.columns.adjust().responsive.recalc();
+            });
+
+            // Updated filter notifications
+            $('#status-filter').on('change', function() {
+                const value = this.value;
+                table.column(3).search(value).draw();
+
+                if (value) {
+                    Swal.fire({
+                        ...toastConfig,
+                        icon: 'info',
+                        title: 'Filter Applied',
+                        text: `Showing ${value.charAt(0).toUpperCase() + value.slice(1)} leaves`,
+                        customClass: {
+                            popup: 'colored-toast swal2-info'
+                        }
+                    });
                 }
             });
+
+            // Updated read filter notifications
+            $('#read-filter').on('change', function() {
+                const value = this.value;
+                const searchTerm = value === 'read' ? 'Read' : (value === 'new' ? 'New' : '');
+                table.column(4).search(searchTerm).draw();
+
+                if (value) {
+                    Swal.fire({
+                        ...toastConfig,
+                        icon: 'info',
+                        title: 'Filter Applied',
+                        text: `Showing ${value === 'read' ? 'read' : 'unread'} leaves`,
+                        customClass: {
+                            popup: 'colored-toast swal2-info'
+                        }
+                    });
+                }
+            });
+
+            // Updated delete confirmation with dark mode support
+            $(document).on('click', '.dropdown-item[type="submit"]', function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'swal2-modal-custom'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
         });
-    });
-</script>
+    </script>
 @endsection

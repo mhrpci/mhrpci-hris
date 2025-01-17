@@ -21,37 +21,47 @@ class PayrollService
         }
 
         // Initialize dates
-        $start = Carbon::parse($start_date);
-        $end = Carbon::parse($end_date);
+        $start = Carbon::parse($start_date)->startOfDay();
+        $end = Carbon::parse($end_date)->endOfDay();
 
         // Different calculation logic based on department
         if ($employee->department->name === "BGPDI") {
             // For BGPDI: Weekly salary calculation
             $daily_salary = $employee->salary / 26;
-            $working_days = $this->calculateWorkingDays($start, $end);
+            $working_days = $this->calculateWorkingDays($employee);
             $gross_salary = $daily_salary * $working_days;
 
             // Adjust contributions for weekly payment (divide monthly contributions by 4)
             $contributions = Contribution::where('employee_id', $employee_id)
-                ->whereBetween('date', [$start, $end])
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('date', [$start, $end])
+                        ->orWhereMonth('date', $start->month)
+                        ->orWhereMonth('date', $end->month);
+                })
+                ->orderBy('date', 'desc')
                 ->first();
 
-            if ($contributions) {
-                $contributions->sss_contribution = ($contributions->sss_contribution ?? 0) / 4;
-                $contributions->pagibig_contribution = ($contributions->pagibig_contribution ?? 0) / 4;
-                $contributions->philhealth_contribution = ($contributions->philhealth_contribution ?? 0) / 4;
-                $contributions->tin_contribution = ($contributions->tin_contribution ?? 0) / 4;
+            if (!$contributions) {
+                // If no contributions found for current period, get the most recent one
+                $contributions = Contribution::where('employee_id', $employee_id)
+                    ->orderBy('date', 'desc')
+                    ->first();
             }
 
-            // Adjust loans for weekly payment
             $loans = Loan::where('employee_id', $employee_id)
-                ->whereBetween('date', [$start, $end])
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('date', [$start, $end])
+                        ->orWhereMonth('date', $start->month)
+                        ->orWhereMonth('date', $end->month);
+                })
+                ->orderBy('date', 'desc')
                 ->first();
 
-            if ($loans) {
-                $loans->sss_loan = ($loans->sss_loan ?? 0) / 4;
-                $loans->pagibig_loan = ($loans->pagibig_loan ?? 0) / 4;
-                $loans->cash_advance = ($loans->cash_advance ?? 0) / 4;
+            if (!$loans) {
+                // If no loans found for current period, get the most recent one
+                $loans = Loan::where('employee_id', $employee_id)
+                    ->orderBy('date', 'desc')
+                    ->first();
             }
         } else {
             // Original bi-monthly calculation for non-BGPDI employees
@@ -60,17 +70,41 @@ class PayrollService
             }
 
             $daily_salary = $employee->salary / 26;
-            $working_days = $this->calculateWorkingDays($start, $end);
+            $working_days = $this->calculateWorkingDays($employee);
             $gross_salary = $daily_salary * $working_days;
 
             // Regular contributions and loans (unchanged)
             $contributions = Contribution::where('employee_id', $employee_id)
-                ->whereBetween('date', [$start, $end])
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('date', [$start, $end])
+                        ->orWhereMonth('date', $start->month)
+                        ->orWhereMonth('date', $end->month);
+                })
+                ->orderBy('date', 'desc')
                 ->first();
 
+            if (!$contributions) {
+                // If no contributions found for current period, get the most recent one
+                $contributions = Contribution::where('employee_id', $employee_id)
+                    ->orderBy('date', 'desc')
+                    ->first();
+            }
+
             $loans = Loan::where('employee_id', $employee_id)
-                ->whereBetween('date', [$start, $end])
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('date', [$start, $end])
+                        ->orWhereMonth('date', $start->month)
+                        ->orWhereMonth('date', $end->month);
+                })
+                ->orderBy('date', 'desc')
                 ->first();
+
+            if (!$loans) {
+                // If no loans found for current period, get the most recent one
+                $loans = Loan::where('employee_id', $employee_id)
+                    ->orderBy('date', 'desc')
+                    ->first();
+            }
         }
 
         // Fetch attendance records within the date range
@@ -115,20 +149,15 @@ class PayrollService
         }
 
         // Check for dates with no attendance records
-        $total_no_attendance_days = $this->calculateNoAttendanceDays($employee_id, $start_date, $end_date);
-        $no_attendance_deduction = $total_no_attendance_days * $daily_salary;
+        // $total_no_attendance_days = $this->calculateNoAttendanceDays($employee_id, $start_date, $end_date);
+        // $no_attendance_deduction = $total_no_attendance_days * $daily_salary;
 
         // Fetch Overtime Pay records and calculate total overtime pay
-        $overtime_pay_records = OvertimePay::where('employee_id', $employee_id)
-            ->whereBetween('date', [$start, $end])
-            ->get();
-
-        foreach ($overtime_pay_records as $record) {
-            $overtime_pay += $record->calculateOvertimePay();
-        }
+        $overtime_pay = OvertimePay::getTotalOvertimePay($employee_id, $start_date, $end_date);
 
         // Total deductions include absent, late, undertime deductions, and no attendance deductions
-        $total_deductions = $absent_deduction + $late_deduction + $undertime_deduction + $no_attendance_deduction;
+        $total_deductions = $late_deduction + $undertime_deduction; 
+        // $absent_deduction + 
 
         // Deduct Contributions (if within payroll period)
         $contribution_deductions = 0;
@@ -148,7 +177,7 @@ class PayrollService
         }
 
         // Calculate Net Salary
-        $net_salary = $gross_salary - $total_deductions - $contribution_deductions - $loan_deductions + $overtime_pay;
+        $net_salary = $gross_salary - $total_deductions - $contribution_deductions - $loan_deductions + $overtime_pay - $absent_deduction;
 
         // Calculate Total Earnings
         $total_earnings = $this->calculateTotalEarnings($gross_salary, $overtime_pay);
@@ -163,7 +192,7 @@ class PayrollService
             'late_deduction' => $late_deduction,
             'undertime_deduction' => $undertime_deduction,
             'absent_deduction' => $absent_deduction,
-            'no_attendance_deduction' => $no_attendance_deduction,
+            // 'no_attendance_deduction' => $no_attendance_deduction,
             'sss_contribution' => $contributions->sss_contribution ?? 0,
             'pagibig_contribution' => $contributions->pagibig_contribution ?? 0,
             'philhealth_contribution' => $contributions->philhealth_contribution ?? 0,
@@ -178,49 +207,39 @@ class PayrollService
         return $payroll;
     }
 
-    private function calculateNoAttendanceDays($employee_id, $start_date, $end_date)
-    {
-        // Initialize the start and end date
-        $start = Carbon::parse($start_date);
-        $end = Carbon::parse($end_date);
+    // private function calculateNoAttendanceDays($employee_id, $start_date, $end_date)
+    // {
+    //     // Initialize the start and end date
+    //     $start = Carbon::parse($start_date)->startOfDay();
+    //     $end = Carbon::parse($end_date)->endOfDay();
 
-        // Get all attendance dates within the range
-        $attendance_dates = Attendance::where('employee_id', $employee_id)
-            ->whereBetween('date_attended', [$start, $end])
-            ->pluck('date_attended')
-            ->toArray();
+    //     // Get all attendance dates within the range
+    //     $attendance_dates = Attendance::where('employee_id', $employee_id)
+    //         ->whereBetween('date_attended', [$start, $end])
+    //         ->pluck('date_attended')
+    //         ->toArray();
 
-        $total_no_attendance_days = 0;
-        $current_date = $start->copy();
+    //     $total_no_attendance_days = 0;
+    //     $current_date = $start->copy();
 
-        while ($current_date->lte($end)) {
-            // If the current date is not a Sunday and there's no attendance record, count it as a no attendance day
-            if (!$current_date->isSunday() && !in_array($current_date->toDateString(), $attendance_dates)) {
-                $total_no_attendance_days++;
-            }
-            $current_date->addDay();
-        }
+    //     while ($current_date->lte($end)) {
+    //         // If the current date is not a Sunday and there's no attendance record, count it as a no attendance day
+    //         if (!$current_date->isSunday() && !in_array($current_date->toDateString(), $attendance_dates)) {
+    //             $total_no_attendance_days++;
+    //         }
+    //         $current_date->addDay();
+    //     }
 
-        return $total_no_attendance_days;
-    }
+    //     return $total_no_attendance_days;
+    // }
 
     private function calculateTotalEarnings($basic_salary, $overtime_pay)
     {
         return $basic_salary + $overtime_pay;
     }
 
-    private function calculateWorkingDays(Carbon $start, Carbon $end)
+    private function calculateWorkingDays($employee)
     {
-        $working_days = 0;
-        $current_date = $start->copy();
-
-        while ($current_date->lte($end)) {
-            if (!$current_date->isSunday()) {
-                $working_days++;
-            }
-            $current_date->addDay();
-        }
-
-        return $working_days;
+        return $employee->department->name === "BGPDI" ? 7 : 13;
     }
 }

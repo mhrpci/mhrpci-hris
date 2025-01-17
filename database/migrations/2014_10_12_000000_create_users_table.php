@@ -25,6 +25,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->date('date_hired')->nullable();
+            $table->string('department_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

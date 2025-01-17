@@ -31,10 +31,16 @@ class LeaveController extends Controller
      */
     public function index()
     {
-
-
-        $leaves = Leave::all();
-        $employees = Employee::all();
+        if (auth()->user()->hasRole('Supervisor')) {
+            $leaves = Leave::whereHas('employee', function($query) {
+                $query->where('department_id', auth()->user()->department_id);
+            })->get();
+            $employees = Employee::where('department_id', auth()->user()->department_id)->get();
+        } else {
+            $leaves = Leave::all();
+            $employees = Employee::all();
+        }
+        
         return view('leaves.index', compact('leaves', 'employees'));
     }
 
@@ -69,7 +75,7 @@ class LeaveController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'employee_id' => 'required|integer|exists:employees,id',
-            'leave_type' => 'required|string|in:Leave,Undertime',
+            'leave_type' => 'required|string|in:Leave,Undertime,Halfday',
             'date_from' => 'required|date',
             'date_to' => 'required|date|after_or_equal:date_from',
             'type_id' => 'required|exists:types,id',
@@ -227,7 +233,7 @@ class LeaveController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'employee_id' => 'required|integer',
-            'leave_type' => 'required|string|in:Leave,Undertime', // Add leave_type validation
+            'leave_type' => 'required|string|in:Leave,Undertime,Halfday',
             'date_from' => 'required|date',
             'date_to' => 'required|date|after_or_equal:date_from',
             'type_id' => 'required',
@@ -556,14 +562,26 @@ class LeaveController extends Controller
 
     private function calculateLeaveTaken($employeeId, $typeId, $currentLeaveId)
     {
-        return Leave::where('employee_id', $employeeId)
+        $leaves = Leave::where('employee_id', $employeeId)
             ->where('type_id', $typeId)
             ->where('id', '<=', $currentLeaveId)
             ->where('status', 'approved')
-            ->get()
-            ->sum(function ($leave) {
-                return $this->calculateCurrentLeaveDays($leave);
-            });
+            ->get();
+
+        $total = 0;
+        foreach ($leaves as $leave) {
+            $days = $this->calculateCurrentLeaveDays($leave);
+            if (is_array($days)) {
+                // Convert hours and minutes to days with 2 decimal places
+                $daysValue = ($days['hours'] / 24) + ($days['minutes'] / (24 * 60));
+                $total += round($daysValue, 2);
+            } else {
+                $total += $days;
+            }
+        }
+
+        // Ensure final total also has 2 decimal places
+        return round($total, 2);
     }
 
     private function calculateCurrentLeaveDays($leave)
@@ -572,10 +590,32 @@ class LeaveController extends Controller
             return 0;
         }
 
-        $dateFrom = \Carbon\Carbon::parse($leave->date_from)->startOfDay();
-        $dateTo = \Carbon\Carbon::parse($leave->date_to)->startOfDay();
+        $dateFrom = \Carbon\Carbon::parse($leave->date_from);
+        $dateTo = \Carbon\Carbon::parse($leave->date_to);
 
-        // Don't include the date_to in the count
-        return $dateFrom->diffInDays($dateTo);
+        if ($leave->leave_type == 'Halfday' || $leave->leave_type == 'Undertime') {
+            // Calculate hours and minutes difference
+            $diffInMinutes = $dateFrom->diffInMinutes($dateTo);
+            $hours = floor($diffInMinutes / 60);
+            $minutes = $diffInMinutes % 60;
+
+            return [
+                'hours' => $hours,
+                'minutes' => $minutes
+            ];
+        } else if ($leave->leave_type == 'Leave') {
+            // For Leave type, calculate hours and minutes
+            $diffInMinutes = $dateFrom->diffInMinutes($dateTo);
+            $hours = floor($diffInMinutes / 60);
+            $minutes = $diffInMinutes % 60;
+
+            return [
+                'hours' => $hours,
+                'minutes' => $minutes
+            ];
+        } else {
+            // For other types, calculate days
+            return $dateFrom->diffInDays($dateTo);
+        }
     }
 }

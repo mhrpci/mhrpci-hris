@@ -27,7 +27,7 @@
         "phpoffice/phpspreadsheet": "^1.29",
         "predis/predis": "^2.2",
         "psr/http-message": "^2.0",
-        "pusher/pusher-php-server": "^7.2",
+        "pusher/pusher-php-server": "*",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.0"
     },

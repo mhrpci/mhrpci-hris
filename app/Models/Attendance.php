@@ -22,7 +22,8 @@ class Attendance extends Model
         'UNDERTIME' => 'UnderTime',
         'OVERTIME' => 'Overtime',
         'PRESENT' => 'Present',
-        'NO_CLOCK_OUT' => 'No Clock Out'
+        'NO_CLOCK_OUT' => 'No Clock Out',
+        'HALF_DAY' => 'Half Day'
     ];
 
     public static function getRemarks()
@@ -71,17 +72,35 @@ class Attendance extends Model
         }
 
         if ($dayOfWeek == Carbon::SATURDAY) {
-            $timeOut = $this->time_out ? Carbon::parse($this->time_out) : null;
-            $overtimeThreshold = Carbon::parse('18:00:00');
+            // Get employee's employment status and calculate days since hiring
+            $employmentStatus = $this->employee->employment_status ?? null;
+            $daysEmployed = Carbon::parse($this->employee->date_hired)->diffInDays(Carbon::now());
 
-            if ($timeOut && $timeOut->gte($overtimeThreshold)) {
-                $this->remarks = 'Overtime';
-                $this->overtime_hours = $this->calculateOvertimeHours();
-            } else {
+            // For non-regular employees with 30 or more days of employment
+            if ($employmentStatus !== 'REGULAR EMPLOYEE' && $daysEmployed >= 30) {
+                $this->time_in = '08:00:00';
+                $this->time_out = '17:00:00';
                 $this->remarks = 'Saturday';
+                $this->hours_worked = '08:00:00';
+                $this->leave_payment_status = 'With Pay';
+                return;
+            }
+            // For non-regular employees with less than 30 days of employment
+            else if ($employmentStatus !== 'REGULAR EMPLOYEE' && $daysEmployed < 30) {
+                $this->time_in = null;
+                $this->time_out = null;
+                $this->remarks = 'Saturday';
+                $this->hours_worked = '00:00:00';
+                $this->leave_payment_status = 'Without Pay';
+                return;
             }
 
-            $this->hours_worked = $this->getHoursWorkedAttribute();
+            // For regular employees
+            $this->time_in = '08:00:00';
+            $this->time_out = '17:00:00';
+            $this->remarks = 'Saturday';
+            $this->hours_worked = '08:00:00';
+            $this->leave_payment_status = 'With Pay';
             return;
         }
 
@@ -116,11 +135,35 @@ class Attendance extends Model
 
     private function setHolidayAttendance()
     {
-        $this->time_in = '08:00:00';
-        $this->time_out = '17:00:00';
-        $this->remarks = 'Holiday';
-        $this->hours_worked = '08:00:00';
-        $this->leave_payment_status = 'With Pay';
+        // Get employee's employment status and calculate days since hiring
+        $employmentStatus = $this->employee->employment_status ?? null;
+        $daysEmployed = Carbon::parse($this->employee->date_hired)->diffInDays(Carbon::now());
+
+        // For non-regular employees with 30 or more days of employment
+        if ($employmentStatus !== 'REGULAR EMPLOYEE' && $daysEmployed >= 30) {
+            $this->time_in = '08:00:00';
+            $this->time_out = '17:00:00';
+            $this->remarks = 'Holiday';
+            $this->hours_worked = '08:00:00';
+            $this->leave_payment_status = 'With Pay';
+            return;
+        }
+        // For non-regular employees with less than 30 days of employment
+        else if ($employmentStatus !== 'REGULAR EMPLOYEE' && $daysEmployed < 30) {
+            $this->time_in = null;
+            $this->time_out = null;
+            $this->remarks = 'Holiday';
+            $this->hours_worked = '00:00:00';
+            $this->leave_payment_status = 'Without Pay';
+            return;
+        }
+
+        // For regular employees (detailed setup)
+        $this->time_in = '08:00:00';      // Standard start time
+        $this->time_out = '17:00:00';     // Standard end time
+        $this->remarks = 'Holiday';        // Mark as holiday
+        $this->hours_worked = '08:00:00';  // Full day of work credited
+        $this->leave_payment_status = 'With Pay';  // Regular employees always get paid holidays
     }
 
     private function setLeaveAttendance($leave)
@@ -145,12 +188,23 @@ class Attendance extends Model
     {
         $shiftStart = Carbon::parse('08:00:00');
         $shiftEnd = Carbon::parse('17:00:00');
+        $halfDayTime = Carbon::parse('12:00:00');
 
         $timeIn = $this->time_in ? Carbon::parse($this->time_in) : null;
         $timeOut = $this->time_out ? Carbon::parse($this->time_out) : null;
 
         if (!$timeIn && !$timeOut) {
             $this->setNoWorkDay('Absent');
+            return;
+        }
+
+        // Check for Half Day condition
+        if ($timeIn && $timeOut && 
+            $timeIn->format('H:i:s') === '08:00:00' && 
+            $timeOut->format('H:i:s') === '12:00:00') {
+            $this->remarks = 'Half Day';
+            $this->hours_worked = '04:00:00';
+            $this->leave_payment_status = 'With Pay';
             return;
         }
 

@@ -45,8 +45,13 @@
                                     <div class="form-group">
                                         <label for="type">Holiday Type<span class="text-danger">*</span></label>
                                         <select name="type" id="type" class="form-control" required>
-                                            <option value="special holiday" {{ old('type') == 'special holiday' ? 'selected' : '' }}>Special Holiday</option>
-                                            <option value="regular holiday" {{ old('type') == 'regular holiday' ? 'selected' : '' }}>Regular Holiday</option>
+                                            <option value="">Select Holiday Type</option>
+                                            <option value="{{ App\Models\Holiday::TYPE_REGULAR }}" {{ old('type') == App\Models\Holiday::TYPE_REGULAR ? 'selected' : '' }}>
+                                                Regular Holiday
+                                            </option>
+                                            <option value="{{ App\Models\Holiday::TYPE_SPECIAL }}" {{ old('type') == App\Models\Holiday::TYPE_SPECIAL ? 'selected' : '' }}>
+                                                Special Non-Working Holiday
+                                            </option>
                                         </select>
                                     </div>
                                 </div>

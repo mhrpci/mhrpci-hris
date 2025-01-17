@@ -367,6 +367,7 @@ public function update(Request $request, $slug): RedirectResponse
             'profile_image' => $employee->profile,
             'contact_no' => $employee->contact_no,
             'date_hired' => $employee->date_hired,
+            'department' => $employee->department->name,
         ];
 
         if ($request->hasFile('profile_image')) {

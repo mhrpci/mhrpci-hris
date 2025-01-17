@@ -44,8 +44,6 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
 use App\Http\Controllers\ControllerAnalysisController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\EmployeeRecordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -311,15 +309,10 @@ Route::middleware('auth')->group(function () {
     Route::get('terminated-employees', [EmployeeController::class, 'terminated'])
         ->name('employees.terminated');
 
-        Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount']);
-        Route::get('/notifications', [NotificationController::class, 'getNotifications']);
-        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
-        Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
 
-        Route::get('/notifications', 'NotificationController@index');
-        Route::post('/notifications/{id}/read', 'NotificationController@markAsRead');
-        Route::post('/notifications/mark-all-read', 'NotificationController@markAllAsRead');
-        Route::get('/notifications/unread-count', 'NotificationController@getUnreadCount');
-    });
+    Route::get('/accountabilities/{accountability}/transfer', [AccountabilityController::class, 'transfer'])->name('accountabilities.transfer');
+    Route::post('/accountabilities/{accountability}/process-transfer', [AccountabilityController::class, 'processTransfer'])->name('accountabilities.process-transfer');
+
+});
 
     Auth::routes();

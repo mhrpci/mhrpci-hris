@@ -38,16 +38,34 @@ public function calculateOvertimePay(): float
     }
 
     $dailySalary = $employee->salary / 26; // Daily salary calculation
-    $overtimePayRate = $dailySalary / 8;
+    $overtimePayRate = $dailySalary / 8; // Hourly rate
 
-    // Calculate the overtime pay
+    // Calculate the overtime pay for this record
     $overtimePay = $overtimePayRate * $this->overtime_hours * $this->overtime_rate;
 
-    // Save the overtime pay to the current instance
+    // Update the overtime_pay field
     $this->overtime_pay = $overtimePay;
-    $this->save(); // Save the updated overtime_pay to the database
+    $this->save();
 
-    return $this->overtime_pay;
+    return $overtimePay;
+}
+
+/**
+ * Get total overtime pay for a specific employee within a date range
+ *
+ * @param int $employeeId
+ * @param string $startDate
+ * @param string $endDate
+ * @return float
+ */
+public static function getTotalOvertimePay(int $employeeId, string $startDate, string $endDate): float
+{
+    return self::where('employee_id', $employeeId)
+        ->whereBetween('date', [$startDate, $endDate])
+        ->get()
+        ->sum(function ($record) {
+            return $record->calculateOvertimePay();
+        });
 }
 
 }

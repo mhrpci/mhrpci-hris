@@ -16,157 +16,285 @@
                     <!-- /.card-header -->
                     <div class="card-body">
                         @if(Auth::user()->hasRole('Employee'))
-                            @if(!$employees->first()->signature)
-                                <div class="col-md-12 mb-3">
-                                    <div class="alert alert-warning">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <strong>Notice:</strong> Please add your signature to your employee profile before applying for leave. 
-                                        <a href="{{ url('/my-profile') }}" class="alert-link">Update your profile here</a>.
-                                    </div>
-                                </div>
-                            @endif
-                        @endif
-                        <form action="{{ route('leaves.store') }}" method="POST">
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-6">
-                                    @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('HR ComBen'))
-                                        <div class="form-group">
-                                            <label for="employee_id">Employee</label>
-                                            <select id="employee_id" name="employee_id" class="form-control" required>
-                                                <option value="">Select Employee</option>
-                                                @foreach($employees as $employee)
-                                                    <option value="{{ $employee->id }}">{{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }}</option>
-                                                @endforeach
-                                            </select>
+                            <!-- Employee View - Modern Card Layout -->
+                            <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <div class="card shadow-sm border-0 mb-4">
+                                        <div class="card-body text-center py-5">
+                                            <i class="fas fa-calendar-plus fa-4x text-primary mb-3"></i>
+                                            <h4 class="mb-4">Ready to Request Leave?</h4>
+                                            <p class="text-muted mb-4">Submit your leave application with just a few clicks</p>
+                                            <button type="button" class="btn btn-primary btn-lg px-5 rounded-pill shadow-sm" data-toggle="modal" data-target="#leaveRequestModal">
+                                                <i class="fas fa-plus-circle mr-2"></i> Apply for Leave
+                                            </button>
                                         </div>
-                                    @else
-                                        <div class="form-group">
-                                            <label for="employee_id">Employee:</label>
-                                            <select name="employee_id" id="employee_id" class="form-control">
-                                                @foreach($employees->where('first_name', Auth::user()->first_name) as $employee)
-                                                    <option value="{{ $employee->id }}" selected>{{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }}</option>
-                                                @endforeach
-                                            </select>
+                                    </div>
+
+                                    <!-- Quick Info Cards -->
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card border-0 shadow-sm" data-toggle="modal" data-target="#leaveBalanceModal" style="cursor: pointer;">
+                                                <div class="card-body text-center p-4">
+                                                    <i class="fas fa-clock text-info mb-3 fa-2x"></i>
+                                                    <h6 class="mb-2">Leave Balance</h6>
+                                                    <p class="text-muted mb-0">Check your available leaves</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    @endif
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="leave_type">Leave Type<span class="text-danger">*</span></label>
-                                        <select id="leave_type" name="leave_type" class="form-control" required onchange="toggleDateInputs()">
-                                            <option value="">Select Leave Type</option>
-                                            <option value="Leave">Leave</option>
-                                            <option value="Undertime">Undertime</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="date_from">Date From<span class="text-danger">*</span></label>
-                                        <input type="datetime-local" id="date_from" name="date_from" class="form-control"
-                                            value="{{ old('date_from') }}" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="date_to">Date To<span class="text-danger">*</span></label>
-                                        <input type="datetime-local" id="date_to" name="date_to" class="form-control"
-                                            value="{{ old('date_to') }}" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label id="typeLabel" for="type_id">Type of Leave<span class="text-danger">*</span></label>
-                                        <select id="type_id" name="type_id" class="form-control" required>
-                                            <option value="">Select Type of Leave</option>
-                                            @foreach($types as $type)
-                                                <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="reason_to_leave">Reason<span class="text-danger">*</span></label>
-                                        <textarea id="reason_to_leave" name="reason_to_leave" class="form-control" required></textarea>
-                                    </div>
-                                </div>
-                                <!-- Add signature for Employees -->
-                                <div class="d-none">
-                                @if(Auth::user()->hasRole('Employee'))
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Employee Signature<span class="text-danger">*</span></label>
-                                        <div class="border rounded p-3">
-                                            @if($employees->first()->signature)
-                                                <div class="text-center mb-3">
-                                                    <img src="{{ Storage::url($employees->first()->signature) }}" alt="Employee Signature" class="img-fluid" style="max-height: 200px;">
-                                                    <input type="hidden" name="signature" id="signature" value="{{ $employees->first()->signature }}">
+                                        <div class="col-md-4">
+                                            <div class="card border-0 shadow-sm" onclick="window.location.href='{{ route('leaves.my_leave_sheet') }}'" style="cursor: pointer;">
+                                                <div class="card-body text-center p-4">
+                                                    <i class="fas fa-history text-warning mb-3 fa-2x"></i>
+                                                    <h6 class="mb-2">Recent Requests</h6>
+                                                    <p class="text-muted mb-0">View your leave history</p>
                                                 </div>
-                                            @else
-                                                <div class="alert alert-warning text-center mb-3">
-                                                    No signature found. Please update your signature in your profile.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card border-0 shadow-sm" data-toggle="modal" data-target="#helpModal">
+                                                <div class="card-body text-center p-4">
+                                                    <i class="fas fa-question-circle text-success mb-3 fa-2x"></i>
+                                                    <h6 class="mb-2">Need Help?</h6>
+                                                    <p class="text-muted mb-0">Contact HR department</p>
                                                 </div>
-                                                <input type="hidden" name="signature" id="signature" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Leave Request Modal -->
+                            <div class="modal fade" id="leaveRequestModal" tabindex="-1" role="dialog" aria-labelledby="leaveRequestModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="leaveRequestModalLabel">Leave Application Form</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            @if(!$employees->first()->signature)
+                                                <div class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    <strong>Notice:</strong> Please add your signature to your profile before applying for leave. 
+                                                    <a href="{{ url('/my-profile') }}" class="alert-link">Update your profile here</a>.
+                                                </div>
                                             @endif
+                                            <form id="leaveRequestForm" action="{{ route('leaves.store') }}" method="POST">
+                                                @csrf
+                                                <!-- Hidden Employee ID -->
+                                                <input type="hidden" name="employee_id" value="{{ $employees->first()->id }}">
+                                                
+                                                <div class="form-group">
+                                                    <label for="leave_type">Leave Type<span class="text-danger">*</span></label>
+                                                    <select id="leave_type" name="leave_type" class="form-control select2" required onchange="toggleDateInputs()">
+                                                        <option value="">Select Leave Type</option>
+                                                        <option value="Leave">Leave</option>
+                                                        <option value="Halfday">Halfday</option>
+                                                        <option value="Undertime">Undertime</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="date_from">Date From<span class="text-danger">*</span></label>
+                                                            <input type="datetime-local" id="date_from" name="date_from" class="form-control" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="date_to">Date To<span class="text-danger">*</span></label>
+                                                            <input type="datetime-local" id="date_to" name="date_to" class="form-control" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label id="typeLabel" for="type_id">Type of Leave<span class="text-danger">*</span></label>
+                                                    <select id="type_id" name="type_id" class="form-control select2" required>
+                                                        <option value="">Select Type of Leave</option>
+                                                        @foreach($types as $type)
+                                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="reason_to_leave">Reason<span class="text-danger">*</span></label>
+                                                    <textarea id="reason_to_leave" name="reason_to_leave" class="form-control" rows="3" required></textarea>
+                                                </div>
+
+                                                @if($employees->first()->signature)
+                                                    <div class="form-group">
+                                                        <label>Your Signature</label>
+                                                        <div class="border rounded p-2 text-center">
+                                                            <img src="{{ Storage::url($employees->first()->signature) }}" alt="Employee Signature" class="img-fluid" style="max-height: 100px;">
+                                                            <input type="hidden" name="signature" value="{{ $employees->first()->signature }}">
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" form="leaveRequestForm" class="btn btn-primary" id="submitBtn">
+                                                <span class="normal-text">Submit Leave Request</span>
+                                                <span class="loading-text d-none">
+                                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                    Submitting...
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <!-- Existing form for Admin/Super Admin/HR ComBen -->
+                            <form action="{{ route('leaves.store') }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('HR ComBen'))
+                                            <div class="form-group">
+                                                <label for="employee_id">Employee</label>
+                                                <select id="employee_id" name="employee_id" class="form-control" required>
+                                                    <option value="">Select Employee</option>
+                                                    @foreach($employees as $employee)
+                                                        <option value="{{ $employee->id }}">{{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @else
+                                            <div class="form-group">
+                                                <label for="employee_id">Employee:</label>
+                                                <select name="employee_id" id="employee_id" class="form-control">
+                                                    @foreach($employees->where('first_name', Auth::user()->first_name) as $employee)
+                                                        <option value="{{ $employee->id }}" selected>{{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="leave_type">Leave Type<span class="text-danger">*</span></label>
+                                            <select id="leave_type" name="leave_type" class="form-control" required onchange="toggleDateInputs()">
+                                                <option value="">Select Leave Type</option>
+                                                <option value="Leave">Leave</option>
+                                                <option value="Halfday">Halfday</option>
+                                                <option value="Undertime">Undertime</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="date_from">Date From<span class="text-danger">*</span></label>
+                                            <input type="datetime-local" id="date_from" name="date_from" class="form-control"
+                                                value="{{ old('date_from') }}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="date_to">Date To<span class="text-danger">*</span></label>
+                                            <input type="datetime-local" id="date_to" name="date_to" class="form-control"
+                                                value="{{ old('date_to') }}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label id="typeLabel" for="type_id">Type of Leave<span class="text-danger">*</span></label>
+                                            <select id="type_id" name="type_id" class="form-control" required>
+                                                <option value="">Select Type of Leave</option>
+                                                @foreach($types as $type)
+                                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="reason_to_leave">Reason<span class="text-danger">*</span></label>
+                                            <textarea id="reason_to_leave" name="reason_to_leave" class="form-control" required></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- Add signature for Employees -->
+                                    <div class="d-none">
+                                    @if(Auth::user()->hasRole('Employee'))
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Employee Signature<span class="text-danger">*</span></label>
+                                            <div class="border rounded p-3">
+                                                @if($employees->first()->signature)
+                                                    <div class="text-center mb-3">
+                                                        <img src="{{ Storage::url($employees->first()->signature) }}" alt="Employee Signature" class="img-fluid" style="max-height: 200px;">
+                                                        <input type="hidden" name="signature" id="signature" value="{{ $employees->first()->signature }}">
+                                                    </div>
+                                                @else
+                                                    <div class="alert alert-warning text-center mb-3">
+                                                        No signature found. Please update your signature in your profile.
+                                                    </div>
+                                                    <input type="hidden" name="signature" id="signature" value="">
+                                                @endif
+                                                @error('signature')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Employee Signature<span class="text-danger">*</span></label>
+                                            <div class="border rounded p-3" id="signatureContainer">
+                                                <div class="text-center mb-3">
+                                                    <!-- Signature will be loaded here dynamically -->
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="signature" id="signature" value="">
                                             @error('signature')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
+                                    @endif
+                                    </div>
                                 </div>
-                                @else
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Employee Signature<span class="text-danger">*</span></label>
-                                        <div class="border rounded p-3" id="signatureContainer">
-                                            <div class="text-center mb-3">
-                                                <!-- Signature will be loaded here dynamically -->
+                             {{-- <!-- Add the following after the "Reason" textarea -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="payment_status">Payment Status</label>
+                                            <div class="form-check">
+                                                <input type="checkbox" id="payment_status" class="form-check-input" disabled>
+                                                <label class="form-check-label" for="payment_status" id="payment_status_label">With Pay</label>
                                             </div>
                                         </div>
-                                        <input type="hidden" name="signature" id="signature" value="">
-                                        @error('signature')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
                                     </div>
-                                </div>
-                                @endif
-                                </div>
-                            </div>
-                         {{-- <!-- Add the following after the "Reason" textarea -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="payment_status">Payment Status</label>
-                                        <div class="form-check">
-                                            <input type="checkbox" id="payment_status" class="form-check-input" disabled>
-                                            <label class="form-check-label" for="payment_status" id="payment_status_label">With Pay</label>
+                                </div> --}}
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="btn-group" role="group" aria-label="Button group">
+                                        @if(Auth::user()->hasRole('Employee'))
+                                            <button type="submit" class="btn btn-primary">Apply</button>&nbsp;&nbsp;
+                                        @else
+                                            <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
+                                        @endif
+                                            @can('super-admin')
+                                            <a href="{{ route('leaves.index') }}" class="btn btn-info">Back</a>
+                                            @endcan
                                         </div>
                                     </div>
                                 </div>
-                            </div> --}}
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="btn-group" role="group" aria-label="Button group">
-                                    @if(Auth::user()->hasRole('Employee'))
-                                        <button type="submit" class="btn btn-primary">Apply</button>&nbsp;&nbsp;
-                                    @else
-                                        <button type="submit" class="btn btn-primary">Create</button>&nbsp;&nbsp;
-                                    @endif
-                                        @can('super-admin')
-                                        <a href="{{ route('leaves.index') }}" class="btn btn-info">Back</a>
-                                        @endcan
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        @endif
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -177,11 +305,205 @@
         <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
+
+    <!-- Leave Balance Modal -->
+    <div class="modal fade" id="leaveBalanceModal" tabindex="-1" role="dialog" aria-labelledby="leaveBalanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="leaveBalanceModalLabel">
+                        <i class="fas fa-clock text-info mr-2"></i>
+                        Leave Balance
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center py-5">
+                    <div class="coming-soon-animation mb-4">
+                        <i class="fas fa-cog fa-spin fa-4x text-info"></i>
+                    </div>
+                    <h4 class="mb-3">Coming Soon!</h4>
+                    <p class="text-muted">We're working hard to bring you this feature.</p>
+                    <p class="text-muted">Stay tuned for updates!</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @section('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    <!-- Add SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        /* Toast styles */
+        .colored-toast.swal2-icon-success {
+            box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
+        }
+        .colored-toast.swal2-icon-error {
+            box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
+        }
+        
+        /* Button loading state styles */
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .loading-text, .normal-text {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .d-none {
+            display: none !important;
+        }
+        
+        /* Enhanced UI Styles */
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-lg {
+            padding: 12px 30px;
+            font-weight: 500;
+        }
+        
+        .rounded-pill {
+            border-radius: 50px;
+        }
+        
+        .shadow-sm {
+            box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+        }
+        
+        .text-primary {
+            color: #4e73df!important;
+        }
+        
+        .text-info {
+            color: #36b9cc!important;
+        }
+        
+        .text-warning {
+            color: #f6c23e!important;
+        }
+        
+        .text-success {
+            color: #1cc88a!important;
+        }
+        
+        /* Quick Info Cards hover effect */
+        .card:hover {
+            cursor: pointer;
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        }
+        
+        /* Modal enhancements */
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid rgba(0,0,0,.1);
+            background-color: #f8f9fc;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid rgba(0,0,0,.1);
+            background-color: #f8f9fc;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        /* Help Modal Styles */
+        #helpModal .modal-header {
+            border-radius: 15px 15px 0 0;
+        }
+        
+        #helpModal .btn-link {
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        #helpModal .btn-link:hover {
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        
+        #helpModal .card-header {
+            border: none;
+            background-color: #f8f9fc;
+        }
+        
+        #helpModal .accordion .card {
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        #helpModal .accordion .card-body {
+            padding: 1.25rem;
+            font-size: 0.95rem;
+        }
+        
+        #helpModal .list-unstyled li:last-child {
+            margin-bottom: 0 !important;
+        }
+        
+        #helpModal .alert-info {
+            background-color: #f8f9fc;
+            border-color: #e3e6f0;
+            color: #4e73df;
+        }
+
+        /* Coming Soon Animation */
+        .coming-soon-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Modal enhancements */
+        #leaveBalanceModal .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        #leaveBalanceModal .modal-dialog {
+            max-width: 400px;
+        }
+
+        #leaveBalanceModal .fa-cog {
+            filter: drop-shadow(0 0 10px rgba(54, 185, 204, 0.3));
+        }
+    </style>
 @stop
 @section('js')
+    <!-- Add SweetAlert2 JS before other scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -276,6 +598,54 @@
                     color: '#fff'
                 });
             @endif
+
+            // Initialize select2 in modal
+            $('#leaveRequestModal select').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                dropdownParent: $('#leaveRequestModal')
+            });
+
+            // Reset form when modal is closed
+            $('#leaveRequestModal').on('hidden.bs.modal', function () {
+                $('#leaveRequestForm')[0].reset();
+                $('#leaveRequestModal select').val('').trigger('change');
+            });
+
+            // Form validation before submit
+            $('#leaveRequestForm').on('submit', function(e) {
+                const dateFrom = new Date($('#date_from').val());
+                const dateTo = new Date($('#date_to').val());
+
+                if (dateFrom > dateTo) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Dates',
+                        text: 'Date From cannot be later than Date To',
+                        confirmButtonColor: '#3085d6'
+                    });
+                    return false;
+                }
+
+                // Show loading state
+                const submitBtn = $('#submitBtn');
+                submitBtn.prop('disabled', true);
+                submitBtn.find('.normal-text').addClass('d-none');
+                submitBtn.find('.loading-text').removeClass('d-none');
+
+                // Submit form normally
+                return true;
+            });
+
+            // Reset button state when modal is closed
+            $('#leaveRequestModal').on('hidden.bs.modal', function () {
+                const submitBtn = $('#submitBtn');
+                submitBtn.prop('disabled', false);
+                submitBtn.find('.normal-text').removeClass('d-none');
+                submitBtn.find('.loading-text').addClass('d-none');
+                // ... existing modal hidden code ...
+            });
         });
     </script>
 
@@ -323,17 +693,150 @@
         if (leaveType === 'Leave') {
             dateFrom.type = 'date';
             dateTo.type = 'date';
-            typeLabel.innerHTML = 'Type of Leave<span class="text-danger">*</span>'; // Reset label with asterisk
-        } else if (leaveType === 'Undertime') {
+            typeLabel.innerHTML = 'Type of Leave<span class="text-danger">*</span>';
+        } else if (leaveType === 'Undertime' || leaveType === 'Halfday') {
             dateFrom.type = 'datetime-local';
             dateTo.type = 'datetime-local';
-            typeLabel.innerHTML = 'Undertime deducted to<span class="text-danger">*</span>'; // Change label to Undertime with asterisk
+            typeLabel.innerHTML = leaveType === 'Undertime' ? 
+                'Undertime deducted to<span class="text-danger">*</span>' : 
+                'Halfday deducted to<span class="text-danger">*</span>';
         } else {
             dateFrom.type = 'datetime-local';
             dateTo.type = 'datetime-local';
-            typeLabel.innerHTML = 'Type of Leave<span class="text-danger">*</span>'; // Reset label with asterisk when no selection
+            typeLabel.innerHTML = 'Undertime deducted to<span class="text-danger">*</span>';
         }
     }
 </script>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="helpModalLabel">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Leave Application Guide
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="accordion" id="leaveHelpAccordion">
+                    <!-- How to Apply -->
+                    <div class="card border-0 mb-2">
+                        <div class="card-header bg-light" id="howToApplyHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left text-success" type="button" data-toggle="collapse" data-target="#howToApplyCollapse">
+                                    <i class="fas fa-file-alt mr-2"></i> How to Apply for Leave
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="howToApplyCollapse" class="collapse show" data-parent="#leaveHelpAccordion">
+                            <div class="card-body">
+                                <ol class="pl-3">
+                                    <li>Click the "Apply for Leave" button on the main page</li>
+                                    <li>Select your leave type (Leave or Undertime)</li>
+                                    <li>Choose the appropriate dates</li>
+                                    <li>Select the type of leave from the dropdown</li>
+                                    <li>Provide a clear reason for your leave</li>
+                                    <li>Review your application before submitting</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Types -->
+                    <div class="card border-0 mb-2">
+                        <div class="card-header bg-light" id="leaveTypesHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left collapsed text-success" type="button" data-toggle="collapse" data-target="#leaveTypesCollapse">
+                                    <i class="fas fa-list-ul mr-2"></i> Types of Leave
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="leaveTypesCollapse" class="collapse" data-parent="#leaveHelpAccordion">
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-3">
+                                        <strong class="text-success">Vacation Leave:</strong>
+                                        <p class="text-muted mb-0">For personal time off, holidays, or recreational purposes.</p>
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong class="text-success">Sick Leave:</strong>
+                                        <p class="text-muted mb-0">For medical appointments, illness, or recovery.</p>
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong class="text-success">Emergency Leave:</strong>
+                                        <p class="text-muted mb-0">For urgent personal or family matters.</p>
+                                    </li>
+                                    <li>
+                                        <strong class="text-success">Undertime:</strong>
+                                        <p class="text-muted mb-0">For leaving work earlier than scheduled hours.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Important Notes -->
+                    <div class="card border-0 mb-2">
+                        <div class="card-header bg-light" id="notesHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left collapsed text-success" type="button" data-toggle="collapse" data-target="#notesCollapse">
+                                    <i class="fas fa-exclamation-circle mr-2"></i> Important Notes
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="notesCollapse" class="collapse" data-parent="#leaveHelpAccordion">
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <ul class="mb-0">
+                                        <li>Submit your leave application at least 3 days in advance (except for emergencies)</li>
+                                        <li>Ensure you have sufficient leave credits before applying</li>
+                                        <li>Attach supporting documents if required (for sick leave or emergency leave)</li>
+                                        <li>Keep track of your leave balance regularly</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact HR -->
+                    <div class="card border-0">
+                        <div class="card-header bg-light" id="contactHeading">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left collapsed text-success" type="button" data-toggle="collapse" data-target="#contactCollapse">
+                                    <i class="fas fa-phone-alt mr-2"></i> Contact HR Department
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="contactCollapse" class="collapse" data-parent="#leaveHelpAccordion">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-envelope text-success fa-2x mr-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Email</h6>
+                                        <p class="mb-0">hr@company.com</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-phone-alt text-success fa-2x mr-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Phone</h6>
+                                        <p class="mb-0">+1 234 567 890</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection

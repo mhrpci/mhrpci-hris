@@ -22,6 +22,7 @@ class RoleSeeder extends Seeder
         $hrpolicy = Role::create(['name' => 'HR Policy']);
         $hrhiring = Role::create(['name' => 'HR Hiring']);
         $financeHead = Role::create(['name' => 'Finance']);
+        $superVisor = Role::create(['name' => 'Supervisor']);
 
         $admin->givePermissionTo([
             'user-list',
@@ -142,6 +143,13 @@ class RoleSeeder extends Seeder
             'payroll-list',
             'normal-employee',
 
+        ]);
+
+        $superVisor->givePermissionTo([
+            'attendance-list',
+            'leave-list',
+            'leave-edit',
+            'supervisor',
         ]);
     }
 }

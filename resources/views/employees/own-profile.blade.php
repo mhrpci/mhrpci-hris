@@ -25,12 +25,24 @@
             <div class="mb-4">
                 <div class="nav-buttons-wrapper overflow-auto">
                     <div class="d-flex">
-                        <button class="btn btn-primary flex-shrink-0 mr-2 mb-2" onclick="showSection('personal')">Personal Info</button>
-                        <button class="btn btn-success flex-shrink-0 mr-2 mb-2" onclick="showSection('work')">Work Details</button>
-                        <button class="btn btn-info flex-shrink-0 mr-2 mb-2" onclick="showSection('education')">Education</button>
-                        <button class="btn btn-warning flex-shrink-0 mr-2 mb-2" onclick="showSection('address')">Address</button>
-                        <button class="btn btn-secondary flex-shrink-0 mr-2 mb-2" onclick="showSection('government')">Government IDs</button>
-                        <button class="btn btn-dark flex-shrink-0 mr-2 mb-2" onclick="showSection('signature')">Signature</button>
+                        <button class="btn btn-primary flex-shrink-0 mr-2 mb-2" onclick="showSection('personal')">
+                            <i class="fas fa-user mr-1"></i> Personal Info
+                        </button>
+                        <button class="btn btn-success flex-shrink-0 mr-2 mb-2" onclick="showSection('work')">
+                            <i class="fas fa-briefcase mr-1"></i> Work Details
+                        </button>
+                        <button class="btn btn-info flex-shrink-0 mr-2 mb-2" onclick="showSection('education')">
+                            <i class="fas fa-graduation-cap mr-1"></i> Education
+                        </button>
+                        <button class="btn btn-warning flex-shrink-0 mr-2 mb-2" onclick="showSection('address')">
+                            <i class="fas fa-home mr-1"></i> Address
+                        </button>
+                        <button class="btn btn-secondary flex-shrink-0 mr-2 mb-2" onclick="showSection('government')">
+                            <i class="fas fa-id-card mr-1"></i> Government IDs
+                        </button>
+                        <button class="btn btn-dark flex-shrink-0 mr-2 mb-2" onclick="showSection('signature')">
+                            <i class="fas fa-signature mr-1"></i> Signature
+                        </button>
                     </div>
                 </div>
             </div>
@@ -177,7 +189,7 @@
 
 <!-- Signature Modal -->
 <div class="modal fade" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="signatureModalLabel">
@@ -187,14 +199,16 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body d-flex flex-column">
                 @if($employee->signature)
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle mr-1"></i>
                         Your existing signature will be replaced when you save a new one.
                     </div>
                 @endif
-                <canvas id="signatureCanvas" class="border rounded" width="700" height="200"></canvas>
+                <div class="flex-grow-1 position-relative">
+                    <canvas id="signatureCanvas" class="border rounded position-absolute w-100 h-100"></canvas>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="clearSignature()">Clear</button>
@@ -209,113 +223,220 @@
 
 @push('styles')
 <style>
+    /* Base styles */
     .card {
         border: none;
         border-radius: 10px;
-        margin-bottom: 1rem;
-    }
-    .card-header {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-    .shadow-sm {
-        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
-    }
-    .info-section {
-        display: none;
-        transition: all 0.3s ease;
-    }
-    .btn {
-        border-radius: 5px;
-        padding: 8px 16px;
-        transition: all 0.3s ease;
-    }
-    .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .modal-content {
-        border: none;
-        border-radius: 15px;
-    }
-    .modal-header {
-        background-color: #f8f9fa;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-    }
-    #signatureCanvas {
-        cursor: crosshair;
-        background-color: #fff;
-    }
-    .signature-display img {
-        filter: brightness(1.1) contrast(1.2);
+        margin-bottom: 1.5rem;
     }
 
+    /* Enhanced Responsive Grid Layout */
+    @media (max-width: 1200px) {
+        .col-lg-3 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        
+        .col-lg-9 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        
+        /* Center profile section on medium screens */
+        .col-lg-3 .card {
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    /* Enhanced Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding: 10px;
+        }
+
+        .card {
+            margin-bottom: 1rem;
+        }
+
+        .card-body {
+            padding: 0.875rem;
+        }
+
+        /* Adjust profile image size */
+        .rounded-circle {
+            width: 120px !important;
+            height: 120px !important;
+        }
+
+        /* Make buttons more touch-friendly */
+        .btn {
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+        }
+
+        /* Improve navigation buttons scrolling */
+        .nav-buttons-wrapper {
+            padding-bottom: 5px;
+            margin-bottom: -5px;
+        }
+
+        .d-flex {
+            flex-wrap: nowrap;
+            padding-bottom: 5px;
+        }
+
+        /* Adjust text sizes for better readability */
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h5 {
+            font-size: 1.1rem;
+        }
+
+        p {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    /* Small Screen Optimizations */
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding: 8px;
+        }
+
+        /* Stack government ID fields */
+        #government .col-md-3 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Adjust modal padding */
+        .modal-body {
+            padding: 1rem;
+        }
+
+        .modal-footer {
+            padding: 0.75rem;
+        }
+
+        /* Make signature canvas more manageable */
+        #signatureCanvas {
+            height: 120px !important;
+        }
+    }
+
+    /* Enhanced Navigation Buttons */
+    .nav-buttons-wrapper {
+        position: relative;
+        margin-bottom: 1.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-buttons-wrapper .d-flex {
+        gap: 8px;
+    }
+
+    .btn {
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    /* Improved Info Section Transitions */
     .info-section {
         display: none;
         opacity: 0;
-        transform: translateX(20px);
+        transform: translateY(10px);
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
     .info-section.active {
         display: block;
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 
-    .nav-buttons-wrapper {
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    /* Enhanced Card Shadows and Hover Effects */
+    .shadow-sm {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05), 
+                    0 1px 2px rgba(0,0,0,0.1) !important;
+        transition: box-shadow 0.3s ease;
     }
 
-    .nav-buttons-wrapper::-webkit-scrollbar { /* WebKit */
-        display: none;
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08), 
+                    0 2px 4px rgba(0,0,0,0.12) !important;
+    }
+
+    /* Improved Image Display */
+    .signature-display img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Better Touch Area for Buttons */
+    @media (max-width: 992px) {
+        .btn {
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    /* Signature Canvas Styles */
+    #signatureCanvas {
+        touch-action: none;
+        background: #fff;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    /* Adjust modal size for better signature space */
+    .modal-xl {
+        max-width: 90%;
     }
 
     @media (max-width: 768px) {
-        .container-fluid {
-            padding: 10px;
-        }
-
-        .card-body {
-            padding: 1rem;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            font-size: 0.9rem;
-        }
-
         #signatureCanvas {
-            width: 100% !important;
-            height: 150px !important;
+            height: 200px !important;
         }
-
-        .modal-dialog {
-            margin: 0.5rem;
-        }
-    }
-
-    /* Improve government IDs section responsiveness */
-    @media (max-width: 576px) {
-        #government .row > div {
-            flex: 0 0 100%;
-            max-width: 100%;
+        
+        .modal-xl {
+            max-width: 95%;
+            margin: 10px;
         }
     }
 
-    /* Improve profile image responsiveness */
-    @media (max-width: 992px) {
-        .rounded-circle {
-            width: 150px !important;
-            height: 150px !important;
-        }
+    /* Fullscreen Modal Styles */
+    .modal-fullscreen {
+        width: 100vw;
+        max-width: none;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .modal-fullscreen .modal-content {
+        height: 100vh;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .modal-fullscreen .modal-body {
+        height: calc(100vh - 120px); /* Adjust for header and footer */
+        padding: 20px;
     }
 </style>
 @endpush
@@ -390,9 +511,10 @@
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
         ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 4;
         ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.stroke();
 
         [lastX, lastY] = [e.offsetX, e.offsetY];
@@ -419,9 +541,10 @@
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(offsetX, offsetY);
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             ctx.stroke();
 
             [lastX, lastY] = [offsetX, offsetY];
@@ -541,16 +664,31 @@
     function resizeCanvas() {
         const canvas = document.getElementById('signatureCanvas');
         if (canvas) {
-            const modalBody = canvas.parentElement;
-            canvas.width = modalBody.offsetWidth - 30; // Adjust for padding
-            canvas.height = window.innerWidth < 768 ? 150 : 200;
-            clearSignature(); // Clear canvas after resize
+            const container = canvas.parentElement;
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
         }
     }
 
-    // Update modal events
+    // Ensure canvas is resized when modal opens
     $('#signatureModal').on('shown.bs.modal', function () {
         resizeCanvas();
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if ($('#signatureModal').hasClass('show')) {
+            resizeCanvas();
+        }
     });
 </script>
 @endpush

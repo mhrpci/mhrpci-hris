@@ -395,4 +395,3 @@ class PayrollController extends Controller
             ->exists();
     }
 }
-

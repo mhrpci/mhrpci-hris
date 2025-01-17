@@ -79,33 +79,6 @@ class SuperAdminSeeder extends Seeder
         ]);
         $hrcomben->assignRole('HR ComBen');
 
-
-        // Creating IT Staff User
-        $it = User::create([
-           'first_name' => 'IT',
-           'middle_name' => ' ',
-           'last_name' => 'Staff',
-           'suffix' => ' ',
-           'email' => 'it@staff.inventory',
-           'bio' => 'IT Inventory',
-           'password' => Hash::make('Edssa#081021'),
-           'profile_image' => '',
-       ]);
-       $it->assignRole('IT Staff');
-
-       // Creating HR Policy User
-       $hrpolicy = User::create([
-        'first_name' => 'HR',
-        'middle_name' => ' ',
-        'last_name' => 'Policy',
-        'suffix' => ' ',
-        'email' => 'hr@policy.com',
-        'bio' => 'HR Policy',
-        'password' => Hash::make('HrPolicy@2024'),
-        'profile_image' => '',
-    ]);
-    $hrpolicy->assignRole('HR Policy');
-
            // Creating HR Policy User
        $hrhiring = User::create([
         'first_name' => 'HR',
@@ -118,5 +91,103 @@ class SuperAdminSeeder extends Seeder
         'profile_image' => '',
     ]);
     $hrhiring->assignRole('HR Hiring');
+
+        // Creating MHRHCI Admin User
+        $mhrhci = User::create([
+            'first_name' => 'MHRHCI',
+            'middle_name' => ' ',
+            'last_name' => 'Admin',
+            'suffix' => ' ',
+            'email' => 'mhrhci@admin.com',
+            'bio' => 'MHRHCI Admin',
+            'password' => Hash::make('Mhrhci@2024'),
+            'profile_image' => '',
+            'department_id' => '3',
+        ]);
+        $mhrhci->assignRole('Supervisor');
+
+        // Creating Supply Chain Admin User
+        $supplyChain = User::create([
+            'first_name' => 'Supply',
+            'middle_name' => ' ',
+            'last_name' => 'Chain',
+            'suffix' => ' ',
+            'email' => 'supply@chain.com',
+            'bio' => 'Supply Chain Admin',
+            'password' => Hash::make('Supply@2024'),
+            'profile_image' => '',
+            'department_id' => '4',
+        ]);
+        $supplyChain->assignRole('Supervisor');
+
+        // Creating BGPDI Admin User
+        $bgpdi = User::create([
+            'first_name' => 'BGPDI',
+            'middle_name' => ' ',
+            'last_name' => 'Admin',
+            'suffix' => ' ',
+            'email' => 'bgpdi@admin.com',
+            'bio' => 'BGPDI Admin',
+            'password' => Hash::make('Bgpdi@2024'),
+            'profile_image' => '',
+            'department_id' => '6',
+        ]);
+        $bgpdi->assignRole('Supervisor');
+
+        // Creating VHI Admin User
+        $vhi = User::create([
+            'first_name' => 'VHI',
+            'middle_name' => ' ',
+            'last_name' => 'Admin',
+            'suffix' => ' ',
+            'email' => 'vhi@admin.com',
+            'bio' => 'VHI Admin',
+            'password' => Hash::make('Vhi@2024'),
+            'profile_image' => '',
+            'department_id' => '5',
+        ]);
+        $vhi->assignRole('Supervisor');
+
+        // Creating Finance Admin User
+        $finance = User::create([
+            'first_name' => 'Finance',
+            'middle_name' => ' ',
+            'last_name' => 'Admin',
+            'suffix' => ' ',
+            'email' => 'finance@admin.com',
+            'bio' => 'Finance Admin',
+            'password' => Hash::make('Finance@admin2024'),
+            'profile_image' => '',
+            'department_id' => '2',
+        ]);
+        $finance->assignRole('Supervisor');
+
+        // Creating HR Admin User
+        $hr = User::create([
+            'first_name' => 'HR',
+            'middle_name' => ' ',
+            'last_name' => 'Admin',
+            'suffix' => ' ',
+            'email' => 'hr@admin.com',
+            'bio' => 'HR Admin',
+            'password' => Hash::make('Hr@admin2024'),
+            'profile_image' => '',
+            'department_id' => '1',
+        ]);
+        $hr->assignRole('Supervisor');
+
+        // Creating Admin Supervisor User
+        $adminSupervisor = User::create([
+            'first_name' => 'Admin',
+            'middle_name' => ' ',
+            'last_name' => 'Supervisor',
+            'suffix' => ' ',
+            'email' => 'admin@supervisor.com',
+            'bio' => 'Admin Supervisor',
+            'password' => Hash::make('Admin@supervisor2024'),
+            'profile_image' => '',
+            'department_id' => '3',
+        ]);
+        $adminSupervisor->assignRole('Supervisor');
     }
 }

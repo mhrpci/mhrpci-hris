@@ -25,7 +25,14 @@ class AttendanceController extends Controller
     // Display all attendance records
     public function index()
     {
-        $attendances = Attendance::all();
+        if (auth()->user()->hasRole('Supervisor')) {
+            $attendances = Attendance::whereHas('employee', function($query) {
+                $query->where('department_id', auth()->user()->department_id);
+            })->get();
+        } else {
+            $attendances = Attendance::all();
+        }
+        
         return view('attendances.index', compact('attendances'));
     }
 

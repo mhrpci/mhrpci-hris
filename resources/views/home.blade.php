@@ -1297,12 +1297,71 @@
             border-color: #adb5bd;
         }
     }
+
+    /* Add styles for the confirmation message */
+    .alert-info {
+        background-color: #cce5ff;
+        border-color: #b8daff;
+        color: #004085;
+        padding: 0.5rem 1rem;
+        margin-top: 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dont-show-again {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        border-color: #007bff;
+        background-color: #007bff;
+    }
+
+    .custom-checkbox .custom-control-label {
+        cursor: pointer;
+    }
+
+    .custom-checkbox .custom-control-label:hover {
+        color: #007bff;
+    }
 </style>
 <div class="container-fluid">
+    <!-- Signature Reminder Alert - Moved to top and enhanced styling -->
+    @if(Auth::user()->hasRole('Employee'))
+        @if(!$employees->first()->signature)
+            <div class="col-md-12 mb-4">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert" 
+                     style="border-left: 5px solid #ffc107; background-color: #fff3cd; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle fa-2x mr-3" style="color: #ffc107;"></i>
+                        <div>
+                            <h5 class="alert-heading mb-1">Action Required</h5>
+                            <p class="mb-0">
+                                <strong>Notice:</strong> Please add your signature to your employee profile before applying for leave. 
+                                <a href="{{ url('/my-profile') }}" class="alert-link">Update your profile here</a>.
+                            </p>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        @endif
+    @endif
+
     @if($todaysBirthdays->where('employee_status', 'Active')->isNotEmpty())
         <!-- Birthday Modal -->
         @foreach($todaysBirthdays->where('employee_status', 'Active') as $index => $employee)
-        <div class="modal fade" id="birthdayModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="birthdayModalLabel{{ $index }}" aria-hidden="true">
+        <div class="modal fade" id="birthdayModal{{ $index }}" tabindex="-1" role="dialog" aria-labelledby="birthdayModalLabel{{ $index }}" aria-hidden="true" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-0">
@@ -1323,16 +1382,16 @@
                                     @if($employee->profile)
                                         <img src="{{ asset('storage/' . $employee->profile) }}" 
                                              alt="{{ $employee->first_name }}" 
-                                             class="img-fluid">
+                                             class="img-fluid rounded">
                                     @else
                                         <div class="default-avatar">
-                                            <i class="fas fa-user-circle"></i>
+                                            <i class="fas fa-user-circle fa-5x"></i>
                                         </div>
                                     @endif
                                 </div>
                                 <div class="birthday-cake-animation">
-                                    <i class="fas fa-birthday-cake animated-cake"></i>
-                                    <div class="mhr-family-message">
+                                    <i class="fas fa-birthday-cake animated-cake fa-3x"></i>
+                                    <div class="mhr-family-message mt-3">
                                         From MHR Family
                                     </div>
                                 </div>
@@ -1340,7 +1399,7 @@
                             
                             <div class="celebrant-right-section">
                                 <div class="celebrant-details">
-                                    <h3 class="celebrant-name">
+                                    <h3 class="celebrant-name mb-3">
                                         {{ $employee->first_name }} {{ $employee->last_name }}
                                     </h3>
                                     
@@ -1370,16 +1429,15 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Inside each birthday modal, add this before the modal-body closing div -->
                     <div class="modal-footer justify-content-between">
                         <div class="dont-show-again">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input dont-show-checkbox" disabled
+                                <input type="checkbox" class="custom-control-input dont-show-checkbox" 
                                        id="dontShowAgain{{ $index }}" 
                                        data-employee-id="{{ $employee->id }}"
                                        data-birthday-year="{{ date('Y') }}">
                                 <label class="custom-control-label" for="dontShowAgain{{ $index }}">
-                                    Coming Soon...
+                                    Don't show again
                                 </label>
                             </div>
                         </div>
@@ -1389,27 +1447,6 @@
             </div>
         </div>
         @endforeach
-    @endif
-    <!-- Add signature reminder alert -->
-    @if(!Auth::user()->hasRole('Employee') && empty(Auth::user()->signature))
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <strong>Reminder!</strong> You can set up your user signature in your profile settings.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-    <!-- Add signature reminder alert -->
-    @if(Auth::user()->hasRole('Employee'))
-        @if(!$employees->first()->signature)
-            <div class="col-md-12 mb-3">
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Notice:</strong> Please add your signature to your employee profile before applying for leave. 
-                    <a href="{{ url('/my-profile') }}" class="alert-link">Update your profile here</a>.
-                </div>
-            </div>
-        @endif
     @endif
 
     <div class="row">
@@ -2232,109 +2269,116 @@
     document.addEventListener('DOMContentLoaded', function() {
         const todaysBirthdaysCount = {{ $todaysBirthdays->where('employee_status', 'Active')->count() }};
         let currentModalIndex = 0;
+        let modalShown = false;
 
         // Function to generate a unique key for localStorage
-        function getBirthdayKey(employeeId, year) {
-            return `birthday_modal_${employeeId}_${year}`;
+        function getBirthdayKey(employeeId) {
+            return `birthday_modal_${employeeId}_dont_show`;
         }
 
         // Function to check if modal should be shown
-        function shouldShowModal(employeeId, year) {
-            const key = getBirthdayKey(employeeId, year);
+        function shouldShowModal(employeeId) {
+            const key = getBirthdayKey(employeeId);
             return !localStorage.getItem(key);
         }
 
-        // Function to mark modal as "don't show again"
-        function setDontShowAgain(employeeId, year) {
-            const key = getBirthdayKey(employeeId, year);
+        // Function to mark modal as permanently hidden
+        function markModalAsHidden(employeeId) {
+            const key = getBirthdayKey(employeeId);
             localStorage.setItem(key, 'hidden');
         }
 
-        // Function to handle checkbox changes
-        function handleDontShowCheckbox(event) {
-            const checkbox = event.target;
-            const employeeId = checkbox.dataset.employeeId;
-            const birthdayYear = checkbox.dataset.birthdayYear;
-            
-            if (checkbox.checked) {
-                setDontShowAgain(employeeId, birthdayYear);
-            } else {
-                const key = getBirthdayKey(employeeId, birthdayYear);
-                localStorage.removeItem(key);
-            }
-        }
-
-        // Add event listeners to all checkboxes
-        document.querySelectorAll('.dont-show-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', handleDontShowCheckbox);
-        });
-
+        // Function to show next birthday modal
         function showNextBirthdayModal() {
-            while (currentModalIndex < todaysBirthdaysCount) {
+            if (currentModalIndex < todaysBirthdaysCount && !modalShown) {
                 const modalElement = document.querySelector(`#birthdayModal${currentModalIndex}`);
+                if (!modalElement) return;
+
                 const checkbox = modalElement.querySelector('.dont-show-checkbox');
                 const employeeId = checkbox.dataset.employeeId;
-                const birthdayYear = checkbox.dataset.birthdayYear;
 
-                if (shouldShowModal(employeeId, birthdayYear)) {
-                    $(`#birthdayModal${currentModalIndex}`).modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-
-                    // When current modal is hidden, show next one
-                    $(`#birthdayModal${currentModalIndex}`).on('hidden.bs.modal', function() {
-                        stopBalloons();
-                        currentModalIndex++;
-                        setTimeout(() => showNextBirthdayModal(), 500);
-                    });
+                // Check if the modal should be shown
+                if (shouldShowModal(employeeId)) {
+                    modalShown = true;
+                    $(modalElement).modal('show');
 
                     // Start balloons when modal is shown
-                    $(`#birthdayModal${currentModalIndex}`).on('shown.bs.modal', function() {
+                    $(modalElement).on('shown.bs.modal', function() {
                         startBalloons();
+                        
+                        // Check if the modal was previously hidden
+                        const isHidden = localStorage.getItem(getBirthdayKey(employeeId));
+                        if (isHidden) {
+                            checkbox.checked = true;
+                        }
                     });
-                    
-                    break; // Exit the while loop after showing a modal
+
+                    // When current modal is hidden
+                    $(modalElement).on('hidden.bs.modal', function() {
+                        stopBalloons();
+                        modalShown = false;
+                        currentModalIndex++;
+                        setTimeout(showNextBirthdayModal, 500);
+                    });
                 } else {
-                    // Skip this modal and move to the next one
                     currentModalIndex++;
+                    showNextBirthdayModal();
                 }
             }
         }
 
-        // Add function to clear preferences (useful for testing or resetting)
-        window.clearBirthdayPreferences = function() {
-            const keys = Object.keys(localStorage);
-            keys.forEach(key => {
-                if (key.startsWith('birthday_modal_')) {
-                    localStorage.removeItem(key);
+        // Handle checkbox changes
+        document.querySelectorAll('.dont-show-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const employeeId = this.dataset.employeeId;
+                
+                if (this.checked) {
+                    // Mark modal as permanently hidden
+                    markModalAsHidden(employeeId);
+                    
+                    // Show confirmation message
+                    const confirmMessage = document.createElement('div');
+                    confirmMessage.className = 'alert alert-info mt-2';
+                    confirmMessage.textContent = 'This birthday modal will not be shown again.';
+                    this.closest('.dont-show-again').appendChild(confirmMessage);
+                    
+                    // Remove confirmation message after 3 seconds
+                    setTimeout(() => {
+                        confirmMessage.remove();
+                    }, 3000);
+                } else {
+                    // Remove the hidden status if unchecked
+                    localStorage.removeItem(getBirthdayKey(employeeId));
                 }
             });
-            console.log('Birthday modal preferences cleared');
-        };
-
-        // Add function to view current preferences (useful for debugging)
-        window.viewBirthdayPreferences = function() {
-            const preferences = {};
-            const keys = Object.keys(localStorage);
-            keys.forEach(key => {
-                if (key.startsWith('birthday_modal_')) {
-                    preferences[key] = localStorage.getItem(key);
-                }
-            });
-            console.log('Current birthday preferences:', preferences);
-            return preferences;
-        };
-
-        // Start showing modals after a delay
-        setTimeout(() => showNextBirthdayModal(), 1000);
-
-        // Handle escape key for all modals
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && currentModalIndex < todaysBirthdaysCount) {
-                $(`#birthdayModal${currentModalIndex}`).modal('hide');
-            }
         });
+
+        // Function to check localStorage status on page load
+        function initializeCheckboxes() {
+            document.querySelectorAll('.dont-show-checkbox').forEach(checkbox => {
+                const employeeId = checkbox.dataset.employeeId;
+                const isHidden = localStorage.getItem(getBirthdayKey(employeeId));
+                checkbox.checked = !!isHidden;
+            });
+        }
+
+        // Initialize checkboxes
+        initializeCheckboxes();
+
+        // Start showing modals after a short delay
+        setTimeout(showNextBirthdayModal, 1000);
     });
+
+    // Function to check if user has logged in today
+    function hasLoggedInToday() {
+        const today = new Date().toDateString();
+        return localStorage.getItem('last_login_date') === today;
+    }
+
+    // Function to mark today's login
+    function markTodayLogin() {
+        const today = new Date().toDateString();
+        localStorage.setItem('last_login_date', today);
+    }
 </script>
 @endsection
