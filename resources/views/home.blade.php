@@ -460,91 +460,172 @@
 
     /* Enhanced Analytics Dashboard Styles */
     .analytics-dashboard {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        padding: 15px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        background: linear-gradient(to bottom right, #f8f9fa, #ffffff);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
 
     .analytics-card {
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        border: none;
     }
 
     .analytics-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
     .analytics-title {
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-weight: 600;
-        margin-bottom: 0.75rem;
-        color: #333;
+        color: #2d3748;
+        padding: 0.75rem 1rem;
         border-bottom: 1px solid #e9ecef;
-        padding-bottom: 0.25rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        border-radius: 12px 12px 0 0;
     }
 
     .analytics-icon {
-        font-size: 1rem;
-        margin-right: 5px;
+        font-size: 1.2rem;
+        margin-right: 10px;
+        opacity: 0.8;
     }
 
-    .analytics-number {
-        font-size: 1.1rem;
-        font-weight: 700;
+    .analytics-content {
+        padding: 1.25rem;
+    }
+
+    .analytics-metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
     }
 
     .analytics-label {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         color: #6c757d;
+        font-weight: 500;
     }
 
-    .progress {
-        height: 5px;
-        border-radius: 2px;
+    .analytics-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #2193b0, #6dd5ed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     .chart-container {
         position: relative;
-        height: 100px;
+        height: 150px;
+        margin-top: 1rem;
+        padding: 10px;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
     }
 
-    @media (max-width: 768px) {
+    .trend-info {
+        text-align: center;
+        margin-top: 1rem;
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    /* Section Headers */
+    .analytics-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-header {
+        background: linear-gradient(45deg, #4b6cb7, #182848);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .section-header i {
+        margin-right: 10px;
+        font-size: 1.5rem;
+    }
+
+    .section-header h5 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+        .analytics-dashboard {
+            background: linear-gradient(to bottom right, #1a202c, #2d3748);
+        }
+
         .analytics-card {
-            margin-bottom: 1rem;
+            background: #2d3748;
         }
+
         .analytics-title {
-            font-size: 0.9rem;
+            background: #1a202c;
+            color: #e2e8f0;
+            border-bottom-color: #4a5568;
         }
+
+        .analytics-label {
+            color: #a0aec0;
+        }
+
         .analytics-number {
+            background: linear-gradient(45deg, #60a5fa, #93c5fd);
+            -webkit-background-clip: text;
+        }
+
+        .chart-container {
+            background: #1a202c;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .trend-info {
+            background: #1a202c;
+            color: #a0aec0;
+        }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .analytics-dashboard {
+            padding: 15px;
+        }
+
+        .analytics-title {
             font-size: 1rem;
         }
-        .analytics-label {
-            font-size: 0.75rem;
-        }
-        .chart-container {
-            height: 80px;
-        }
-    }
 
-    @media (max-width: 576px) {
-        .analytics-dashboard {
-            padding: 10px;
-        }
-        .card-body {
-            padding: 0.75rem;
-        }
-        .analytics-title {
-            font-size: 0.85rem;
-        }
         .analytics-number {
-            font-size: 0.95rem;
+            font-size: 1.25rem;
         }
+
         .chart-container {
-            height: 60px;
+            height: 120px;
+        }
+
+        .section-header {
+            padding: 0.75rem 1rem;
         }
     }
 
@@ -1799,133 +1880,135 @@
 <!-- Analytics Dashboard -->
 @canany(['super-admin', 'admin'])
 <div class="analytics-dashboard mt-4">
-    <h4 class="mb-3 text-center">Analytics Dashboard</h4>
+    <h4 class="text-center mb-4">Analytics Overview</h4>
 
     <!-- Contributions Section -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white py-2">
-            <h5 class="mb-0"><i class="fas fa-chart-line mr-2"></i>Contribution Analytics</h5>
+    <div class="analytics-section">
+        <div class="section-header">
+            <i class="fas fa-chart-line"></i>
+            <h5>Contribution Analytics</h5>
         </div>
-        <div class="card-body">
-            <div class="row">
-                @php
-                    $contributionItems = [
-                        [
-                            'title' => 'SSS',
-                            'icon' => 'fas fa-shield-alt',
-                            'color' => 'primary',
-                            'total' => $analytics['sss']['total_contributions'],
-                            'count' => $analytics['sss']['contribution_count'],
-                            'chartId' => 'sssChart',
-                            'data' => $analytics['sss']['monthly_trend']
-                        ],
-                        [
-                            'title' => 'Pagibig',
-                            'icon' => 'fas fa-home',
-                            'color' => 'success',
-                            'total' => $analytics['pagibig']['total_contributions'],
-                            'count' => $analytics['pagibig']['contribution_count'],
-                            'chartId' => 'pagibigChart',
-                            'data' => $analytics['pagibig']['monthly_trend']
-                        ],
-                        [
-                            'title' => 'Philhealth',
-                            'icon' => 'fas fa-heartbeat',
-                            'color' => 'danger',
-                            'total' => $analytics['philhealth']['total_contributions'],
-                            'count' => $analytics['philhealth']['contribution_count'],
-                            'chartId' => 'philhealthChart',
-                            'data' => $analytics['philhealth']['monthly_trend']
-                        ],
-                    ];
-                @endphp
+        <div class="row">
+            @php
+                $contributionItems = [
+                    [
+                        'title' => 'SSS Contributions',
+                        'icon' => 'fas fa-shield-alt',
+                        'color' => 'primary',
+                        'total' => $analytics['sss']['total_contributions'],
+                        'count' => $analytics['sss']['contribution_count'],
+                        'chartId' => 'sssChart',
+                        'data' => $analytics['sss']['monthly_trend']
+                    ],
+                    [
+                        'title' => 'Pagibig Contributions',
+                        'icon' => 'fas fa-home',
+                        'color' => 'success',
+                        'total' => $analytics['pagibig']['total_contributions'],
+                        'count' => $analytics['pagibig']['contribution_count'],
+                        'chartId' => 'pagibigChart',
+                        'data' => $analytics['pagibig']['monthly_trend']
+                    ],
+                    [
+                        'title' => 'Philhealth Contributions',
+                        'icon' => 'fas fa-heartbeat',
+                        'color' => 'danger',
+                        'total' => $analytics['philhealth']['total_contributions'],
+                        'count' => $analytics['philhealth']['contribution_count'],
+                        'chartId' => 'philhealthChart',
+                        'data' => $analytics['philhealth']['monthly_trend']
+                    ],
+                ];
+            @endphp
 
-                @foreach($contributionItems as $item)
-                <div class="col-md-4 mb-3">
-                    <div class="card analytics-card h-100 border-{{ $item['color'] }}">
-                        <div class="card-body p-3">
-                            <h6 class="analytics-title text-{{ $item['color'] }}">
-                                <i class="{{ $item['icon'] }} analytics-icon"></i>{{ $item['title'] }}
-                            </h6>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="analytics-label">Total Contributions</span>
-                                <span class="analytics-number text-{{ $item['color'] }}">₱{{ number_format($item['total'], 2) }}</span>
-                            </div>
-                            <div class="chart-container mt-3">
-                                <canvas id="{{ $item['chartId'] }}"></canvas>
-                            </div>
-                            <div class="text-center mt-2">
-                                <small class="text-muted">Monthly Trend - {{ $item['count'] }} contributions</small>
-                            </div>
+            @foreach($contributionItems as $item)
+            <div class="col-md-4 mb-4">
+                <div class="analytics-card">
+                    <div class="analytics-title">
+                        <i class="{{ $item['icon'] }} text-{{ $item['color'] }}"></i>
+                        {{ $item['title'] }}
+                    </div>
+                    <div class="analytics-content">
+                        <div class="analytics-metric">
+                            <span class="analytics-label">Total Contributions</span>
+                            <span class="analytics-number">₱{{ number_format($item['total'], 2) }}</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="{{ $item['chartId'] }}"></canvas>
+                        </div>
+                        <div class="trend-info">
+                            <i class="fas fa-info-circle"></i>
+                            Monthly Trend - {{ $item['count'] }} contributions
                         </div>
                     </div>
                 </div>
-                @endforeach
             </div>
+            @endforeach
         </div>
     </div>
 
     <!-- Loans Section -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-info text-white py-2">
-            <h5 class="mb-0"><i class="fas fa-money-bill-wave mr-2"></i>Loan Analytics</h5>
+    <div class="analytics-section">
+        <div class="section-header">
+            <i class="fas fa-money-bill-wave"></i>
+            <h5>Loan Analytics</h5>
         </div>
-        <div class="card-body">
-            <div class="row">
-                @php
-                    $loanItems = [
-                        [
-                            'title' => 'SSS Loans',
-                            'icon' => 'fas fa-money-bill-wave',
-                            'color' => 'warning',
-                            'total' => $analytics['loans']['sss_loans']['total_amount'],
-                            'count' => $analytics['loans']['sss_loans']['loan_count'],
-                            'chartId' => 'sssLoanChart',
-                            'data' => $analytics['loans']['sss_loans']['monthly_trend'] ?? []
-                        ],
-                        [
-                            'title' => 'Pagibig Loans',
-                            'icon' => 'fas fa-hand-holding-usd',
-                            'color' => 'info',
-                            'total' => $analytics['loans']['pagibig_loans']['total_amount'],
-                            'count' => $analytics['loans']['pagibig_loans']['loan_count'],
-                            'chartId' => 'pagibigLoanChart',
-                            'data' => $analytics['loans']['pagibig_loans']['monthly_trend'] ?? []
-                        ],
-                        [
-                            'title' => 'Cash Advances',
-                            'icon' => 'fas fa-hand-holding-usd',
-                            'color' => 'secondary',
-                            'total' => $analytics['loans']['cash_advances']['total_amount'],
-                            'count' => $analytics['loans']['cash_advances']['advance_count'],
-                            'chartId' => 'cashAdvanceChart',
-                            'data' => $analytics['loans']['cash_advances']['monthly_trend'] ?? []
-                        ],
-                    ];
-                @endphp
+        <div class="row">
+            @php
+                $loanItems = [
+                    [
+                        'title' => 'SSS Loans',
+                        'icon' => 'fas fa-money-bill-wave',
+                        'color' => 'warning',
+                        'total' => $analytics['loans']['sss_loans']['total_amount'],
+                        'count' => $analytics['loans']['sss_loans']['loan_count'],
+                        'chartId' => 'sssLoanChart',
+                        'data' => $analytics['loans']['sss_loans']['monthly_trend'] ?? []
+                    ],
+                    [
+                        'title' => 'Pagibig Loans',
+                        'icon' => 'fas fa-hand-holding-usd',
+                        'color' => 'info',
+                        'total' => $analytics['loans']['pagibig_loans']['total_amount'],
+                        'count' => $analytics['loans']['pagibig_loans']['loan_count'],
+                        'chartId' => 'pagibigLoanChart',
+                        'data' => $analytics['loans']['pagibig_loans']['monthly_trend'] ?? []
+                    ],
+                    [
+                        'title' => 'Cash Advances',
+                        'icon' => 'fas fa-hand-holding-usd',
+                        'color' => 'secondary',
+                        'total' => $analytics['loans']['cash_advances']['total_amount'],
+                        'count' => $analytics['loans']['cash_advances']['advance_count'],
+                        'chartId' => 'cashAdvanceChart',
+                        'data' => $analytics['loans']['cash_advances']['monthly_trend'] ?? []
+                    ],
+                ];
+            @endphp
 
-                @foreach($loanItems as $item)
-                <div class="col-md-4 mb-3">
-                    <div class="card analytics-card h-100 border-{{ $item['color'] }}">
-                        <div class="card-body p-3">
-                            <h6 class="analytics-title text-{{ $item['color'] }}">
-                                <i class="{{ $item['icon'] }} analytics-icon"></i>{{ $item['title'] }}
-                            </h6>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="analytics-label">Total Amount</span>
-                                <span class="analytics-number text-{{ $item['color'] }}">₱{{ number_format($item['total'], 2) }}</span>
-                            </div>
-                            <div class="chart-container mt-3">
-                                <canvas id="{{ $item['chartId'] }}"></canvas>
-                            </div>
-                            <div class="text-center mt-2">
-                                <small class="text-muted">Monthly Trend - {{ $item['count'] }} active</small>
-                            </div>
+            @foreach($loanItems as $item)
+            <div class="col-md-4 mb-4">
+                <div class="analytics-card">
+                    <div class="analytics-title">
+                        <i class="{{ $item['icon'] }} text-{{ $item['color'] }}"></i>
+                        {{ $item['title'] }}
+                    </div>
+                    <div class="analytics-content">
+                        <div class="analytics-metric">
+                            <span class="analytics-label">Total Amount</span>
+                            <span class="analytics-number">₱{{ number_format($item['total'], 2) }}</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="{{ $item['chartId'] }}"></canvas>
+                        </div>
+                        <div class="trend-info">
+                            <i class="fas fa-info-circle"></i>
+                            Monthly Trend - {{ $item['count'] }} active
                         </div>
                     </div>
                 </div>
-                @endforeach
             </div>
+            @endforeach
         </div>
     </div>
 </div>

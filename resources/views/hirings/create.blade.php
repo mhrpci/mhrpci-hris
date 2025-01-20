@@ -15,27 +15,32 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="position"><i class="fas fa-briefcase mr-2"></i>Position</label>
-                                    <input type="text" class="form-control" id="position" name="position" required>
+                                    <input type="text" class="form-control" id="position" name="position" 
+                                        placeholder="e.g. Senior Software Engineer" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="location"><i class="fas fa-map-marker-alt mr-2"></i>Location</label>
-                                    <input type="text" class="form-control" id="location" name="location" required>
+                                    <input type="text" class="form-control" id="location" name="location" 
+                                        placeholder="e.g. New York, NY or Remote" required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="description"><i class="fas fa-align-left mr-2"></i>Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                            <textarea class="form-control" id="description" name="description" rows="4" 
+                                placeholder="Describe the role, responsibilities, and what a typical day looks like..." required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="requirements"><i class="fas fa-list-ul mr-2"></i>Requirements</label>
-                            <textarea class="form-control" id="requirements" name="requirements" rows="4" required></textarea>
+                            <textarea class="form-control" id="requirements" name="requirements" rows="4" 
+                                placeholder="List required skills, experience, education, and qualifications..." required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="benefits"><i class="fas fa-gift mr-2"></i>Benefits</label>
-                            <textarea class="form-control" id="benefits" name="benefits" rows="4" required></textarea>
+                            <textarea class="form-control" id="benefits" name="benefits" rows="4" 
+                                placeholder="List company benefits, perks, and compensation details..." required></textarea>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-success btn-lg px-5">

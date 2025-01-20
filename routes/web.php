@@ -43,6 +43,7 @@ use App\Http\Controllers\PagibigLoanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
 use App\Http\Controllers\ControllerAnalysisController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -312,6 +313,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/accountabilities/{accountability}/transfer', [AccountabilityController::class, 'transfer'])->name('accountabilities.transfer');
     Route::post('/accountabilities/{accountability}/process-transfer', [AccountabilityController::class, 'processTransfer'])->name('accountabilities.process-transfer');
+
+    Route::get('/notifications', [NotificationController::class, 'getNotifications']);
+    Route::get('/notifications/latest', [NotificationController::class, 'getLatestNotifications']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
+    Route::delete('/notifications', [NotificationController::class, 'clearAll']);
+    Route::get('/notifications/preferences', [NotificationController::class, 'getPreferences']);
+    Route::put('/notifications/preferences', [NotificationController::class, 'updatePreferences']);
 
 });
 

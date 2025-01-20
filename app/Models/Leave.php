@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\LeaveRequestNotification;
 
 class Leave extends Model
 {
@@ -158,5 +160,4 @@ class Leave extends Model
             default => 'secondary'
         };
     }
-
 }

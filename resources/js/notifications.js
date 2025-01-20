@@ -5,24 +5,142 @@ window.Pusher = Pusher;
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    forceTLS: true
+    key: process.env.MIX_PUSHER_APP_KEY,
+    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    encrypted: true
 });
 
-// Ensure userId is available
-const userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+class NotificationHandler {
+    constructor() {
+        this.notificationCount = 0;
+        this.notificationList = document.getElementById('notification-list');
+        this.notificationBadge = document.querySelector('.navbar-badge');
+        this.initializeNotifications();
+    }
 
-if (userId) {
-    Echo.private(`App.Models.User.${userId}`)
-        .notification((notification) => {
-            new Notification(notification.title, {
-                body: notification.body,
+    initializeNotifications() {
+        if (window.Laravel.user) {
+            this.listenForNotifications();
+            this.loadExistingNotifications();
+        }
+    }
+
+    listenForNotifications() {
+        window.Echo.private(`App.Models.User.${window.Laravel.user.id}`)
+            .notification((notification) => {
+                this.handleNewNotification(notification);
             });
+    }
+
+    async loadExistingNotifications() {
+        try {
+            const response = await fetch('/notifications/get');
+            const data = await response.json();
+            this.updateNotificationCount(data.unread_count);
+            this.renderNotifications(data.notifications);
+        } catch (error) {
+            console.error('Error loading notifications:', error);
+        }
+    }
+
+    handleNewNotification(notification) {
+        this.notificationCount++;
+        this.updateNotificationCount(this.notificationCount);
+        this.addNotificationToList(notification);
+        this.showToast(notification);
+    }
+
+    updateNotificationCount(count) {
+        this.notificationCount = count;
+        if (this.notificationBadge) {
+            this.notificationBadge.textContent = count;
+            this.notificationBadge.style.display = count > 0 ? 'block' : 'none';
+        }
+    }
+
+    addNotificationToList(notification) {
+        if (!this.notificationList) return;
+
+        const notificationHtml = this.createNotificationHtml(notification);
+        this.notificationList.insertAdjacentHTML('afterbegin', notificationHtml);
+    }
+
+    createNotificationHtml(notification) {
+        let icon, title, description;
+
+        if (notification.type.includes('LeaveRequestNotification')) {
+            icon = 'fa-calendar';
+            title = 'Leave Request';
+            description = `${notification.employee_name} - ${notification.leave_type}`;
+        } else if (notification.type.includes('CashAdvanceNotification')) {
+            icon = 'fa-money-bill';
+            title = 'Cash Advance Request';
+            description = `${notification.employee_name} - ₱${notification.amount}`;
+        }
+
+        return `
+            <a href="#" class="dropdown-item notification-item ${notification.read_at ? '' : 'unread'}" 
+               data-notification-id="${notification.id}">
+                <div class="notification-icon">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-text">${description}</div>
+                    <div class="notification-time">
+                        ${moment(notification.timestamp).fromNow()}
+                    </div>
+                </div>
+            </a>
+        `;
+    }
+
+    showToast(notification) {
+        const toast = new bootstrap.Toast(document.createElement('div'));
+        toast.element.innerHTML = this.createToastHtml(notification);
+        document.querySelector('.toast-container').appendChild(toast.element);
+        toast.show();
+
+        // Remove toast after it's hidden
+        toast.element.addEventListener('hidden.bs.toast', () => {
+            toast.element.remove();
         });
-} else {
-    console.error('User ID not found');
+    }
+
+    createToastHtml(notification) {
+        let icon, title;
+        
+        if (notification.type.includes('LeaveRequestNotification')) {
+            icon = 'fa-calendar';
+            title = 'New Leave Request';
+        } else if (notification.type.includes('CashAdvanceNotification')) {
+            icon = 'fa-money-bill';
+            title = 'New Cash Advance Request';
+        }
+
+        return `
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                <div class="toast-header">
+                    <i class="fas ${icon} mr-2"></i>
+                    <strong class="mr-auto">${title}</strong>
+                    <small>${moment(notification.timestamp).fromNow()}</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    ${notification.employee_name} has submitted a new request.
+                </div>
+                <div class="toast-progress"></div>
+            </div>
+        `;
+    }
 }
+
+// Initialize when document is ready
+document.addEventListener('DOMContentLoaded', () => {
+    new NotificationHandler();
+});
 
 // Request notification permission
 if (Notification.permission === 'default') {
