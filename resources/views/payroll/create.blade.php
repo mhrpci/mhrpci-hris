@@ -115,6 +115,13 @@
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
+                            <label for="modal_payroll_type">Payroll Type<span class="text-danger">*</span></label>
+                            <select name="payroll_type" id="modal_payroll_type" class="form-control" required>
+                                <option value="regular">Regular (Bi-monthly)</option>
+                                <option value="weekly">Weekly (BGPDI)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="employee_id">Select Employee<span class="text-danger">*</span></label>
                             <select name="employee_id" id="employee_id" class="form-control" required>
                                 <option value="">Select an employee</option>
