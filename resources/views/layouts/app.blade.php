@@ -695,9 +695,96 @@
 }
 
 .toast {
-    background-color: white;
-    border-left: 4px solid #007bff;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    background-color: #28a745 !important; /* Success green background */
+    color: #ffffff !important; /* White text */
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    opacity: 1 !important;
+}
+
+.toast-header {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px 8px 0 0 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.toast-header strong {
+    color: #ffffff !important;
+}
+
+.toast-header .close {
+    color: #ffffff !important;
+    text-shadow: none !important;
+    opacity: 0.8 !important;
+}
+
+.toast-header .close:hover {
+    opacity: 1 !important;
+}
+
+.toast-body {
+    color: #ffffff !important;
+    padding: 1rem !important;
+}
+
+.toast-icon {
+    color: #ffffff !important;
+}
+
+.toast-progress {
+    height: 3px !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    width: 100% !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    border-radius: 0 0 8px 8px !important;
+    animation: toast-progress 8s linear forwards !important;
+}
+
+/* Toast container positioning */
+.toast-container {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+    min-width: 350px !important;
+    max-width: 400px !important;
+}
+
+/* Toast animation */
+@keyframes toastFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toast.show {
+    animation: toastFadeIn 0.3s ease-out !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .toast-container {
+        padding: 0.5rem !important;
+        min-width: auto !important;
+        width: calc(100% - 2rem) !important;
+        right: 1rem !important;
+        left: 1rem !important;
+    }
+    
+    .toast {
+        margin: 0.5rem !important;
+        font-size: 0.9rem !important;
+    }
 }
 
 .navbar-badge {
@@ -792,6 +879,11 @@
     color: white;
 }
 
+.notification-icon.cash-advance {
+    background-color: #2ecc71;
+    color: white;
+}
+
 .notification-content {
     flex-grow: 1;
     min-width: 0;
@@ -831,251 +923,6 @@
 .dropdown-footer {
     border-top: 1px solid #dee2e6;
     border-radius: 0 0 0.5rem 0.5rem;
-}
-
-/* Toast Notification Styles */
-.toast {
-    background-color: white;
-    border: none;
-    border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    min-width: 300px;
-}
-
-.toast-header {
-    border-radius: 0.5rem 0.5rem 0 0;
-    padding: 0.75rem 1rem;
-}
-
-.toast-body {
-    padding: 1rem;
-}
-
-/* Navbar Badge */
-.navbar-badge {
-    position: absolute;
-    top: 5px;
-    right: 3px;
-    font-size: 0.6rem;
-    padding: 2px 4px;
-    border-radius: 10px;
-}
-
-.toast-container {
-    min-width: 350px;
-    max-width: 400px;
-}
-
-.toast {
-    background: white;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 1;
-}
-
-.toast-header {
-    border-radius: 8px 8px 0 0;
-    padding: 0.75rem 1rem;
-}
-
-.toast-header .btn-close {
-    margin-right: -0.5rem;
-}
-
-.toast-body {
-    padding: 1rem;
-}
-
-.leave-details {
-    border-left: 2px solid #e9ecef;
-}
-
-/* Responsive adjustments */
-@media (max-width: 576px) {
-    .toast-container {
-        min-width: 100%;
-        padding: 0.5rem;
-    }
-    
-    .toast {
-        margin: 0.5rem;
-    }
-    
-    .notification-icon {
-        width: 32px !important;
-        height: 32px !important;
-    }
-    
-    .leave-details {
-        margin-left: 1rem !important;
-        padding-left: 0.5rem !important;
-    }
-}
-
-/* Animation for toast */
-@keyframes toastFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.toast.show {
-    animation: toastFadeIn 0.3s ease-out;
-}
-
-.toast-container {
-    min-width: 350px;
-    max-width: 400px;
-}
-
-.toast {
-    background: white;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 1;
-}
-
-.toast-header {
-    border-radius: 8px 8px 0 0;
-    padding: 0.75rem 1rem;
-}
-
-.toast-body {
-    padding: 1rem;
-}
-
-.notification-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #8e44ad;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.leave-details {
-    border-left: 2px solid #e9ecef;
-    padding-left: 1rem;
-}
-
-.toast-progress-bar {
-    height: 3px;
-    background: linear-gradient(to right, #8e44ad, #2ecc71);
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-radius: 0 0 8px 8px;
-    transition: width 1s linear;
-}
-
-/* Toast animation */
-@keyframes toastFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.toast.show {
-    animation: toastFadeIn 0.3s ease-out;
-}
-
-/* Responsive styles */
-@media (max-width: 576px) {
-    .toast-container {
-        min-width: 100%;
-        padding: 0.5rem;
-    }
-    
-    .toast {
-        margin: 0.5rem;
-    }
-    
-    .notification-icon {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .leave-details {
-        margin-left: 0.5rem;
-        padding-left: 0.5rem;
-    }
-}
-
-.toast-container {
-    min-width: 300px;
-    max-width: 400px;
-}
-
-.toast {
-    border: none !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-}
-
-.toast-icon {
-    font-size: 1.25rem;
-}
-
-.toast-progress {
-    height: 3px;
-    background: rgba(255, 255, 255, 0.7);
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-radius: 0 0 8px 8px;
-    animation: toast-progress 8s linear forwards;
-}
-
-@keyframes toast-progress {
-    from {
-        width: 100%;
-    }
-    to {
-        width: 0%;
-    }
-}
-
-@keyframes toastFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.toast.show {
-    animation: toastFadeIn 0.3s ease-out;
-}
-
-/* Responsive styles */
-@media (max-width: 576px) {
-    .toast-container {
-        padding: 0.5rem;
-    }
-    
-    .toast {
-        margin: 0.5rem;
-        font-size: 0.9rem;
-    }
 }
 
 /* Select2 AdminLTE Compatibility Styles */
@@ -1289,6 +1136,200 @@
         background-color: #f8f9fa;
     }
 }
+
+/* Notification Styles */
+.notifications-menu {
+    width: 300px;
+    padding: 0;
+}
+
+.notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.dropdown-header {
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    background-color: #f8f9fa;
+}
+
+.notification-item {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.75rem;
+}
+
+/* Dark mode support */
+.dark-mode .notifications-menu {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.dark-mode .dropdown-header {
+    background-color: #2c3136;
+    color: #fff;
+}
+
+.dark-mode .notification-item:hover {
+    background-color: #3f474e;
+}
+
+/* Replace the existing toast styles with these enhanced styles */
+.toast-container {
+    position: fixed !important;
+    top: 20px !important; /* Changed from bottom to top */
+    right: 20px !important;
+    z-index: 9999 !important;
+    min-width: 350px !important;
+    max-width: 400px !important;
+}
+
+.toast {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+    opacity: 1 !important;
+    overflow: hidden !important;
+    margin-bottom: 1rem !important;
+}
+
+.toast-header {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 0.8rem 1rem !important;
+    position: relative !important;
+}
+
+.toast-header strong {
+    color: #ffffff !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+}
+
+.toast-header .close {
+    color: #ffffff !important;
+    text-shadow: none !important;
+    opacity: 0.8 !important;
+    font-size: 1.2rem !important;
+    padding: 0.5rem !important;
+    margin: -0.5rem -0.5rem -0.5rem auto !important;
+}
+
+.toast-header .close:hover {
+    opacity: 1 !important;
+}
+
+.toast-body {
+    padding: 1rem !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+}
+
+.toast-progress {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 4px !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    z-index: 1 !important;
+}
+
+.toast-progress::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    animation: progress 5s linear forwards !important;
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast.showing {
+    animation: slideInRight 0.3s ease-out !important;
+}
+
+.toast.hide {
+    animation: slideOutRight 0.3s ease-out !important;
+}
+
+/* Toast variations */
+.toast.success {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%) !important;
+}
+
+.toast.warning {
+    background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%) !important;
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+}
+
+.toast.info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .toast-container {
+        top: 10px !important;
+        right: 10px !important;
+        left: 10px !important;
+        min-width: auto !important;
+    }
+    
+    .toast {
+        margin: 0 0 0.5rem 0 !important;
+        font-size: 0.9rem !important;
+    }
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
@@ -1438,42 +1479,31 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Add this notification dropdown before the existing items -->
-                @canany(['admin', 'super-admin', 'hrcomben', 'supervisor', 'normal-employee'])
+                <!-- Notifications Dropdown Menu -->
+                @auth
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#" id="notificationDropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#" id="notifications-dropdown">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-danger navbar-badge" id="notification-count">0</span>
+                        <span class="badge badge-warning navbar-badge notification-count">0</span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right" id="notification-list">
-                        <div class="dropdown-header bg-primary text-white p-3">
-                            <h6 class="m-0">
-                                <i class="fas fa-bell mr-2"></i>
-                                Notifications
-                                <span class="float-right" id="notification-count-text">0 New</span>
-                            </h6>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notification-list">
+                        <div class="dropdown-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h6 class="m-0">Notifications</h6>
+                            <a href="{{ url('/all-notifications') }}" class="text-white small">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
                         </div>
-                        
-                        <div class="notification-scroll" id="notification-items">
-                            <!-- Notifications will be dynamically inserted here -->
-                            <div class="empty-notifications text-center p-3 text-muted">
-                                <i class="fas fa-check-circle fa-2x mb-2"></i>
-                                <p class="mb-0">You're all caught up!</p>
-                            </div>
+                        <div class="notification-scroll notifications-list">
+                            <!-- Notifications will be inserted here dynamically -->
                         </div>
-
-                        <div class="dropdown-footer bg-light p-2 text-center">
-                            <button class="btn btn-sm btn-link text-decoration-none" id="mark-all-read">
-                                <i class="fas fa-check-double mr-1"></i>Mark all as read
-                            </button>
-                            <span class="mx-2">|</span>
-                            <a href="#" class="btn btn-sm btn-link text-decoration-none">
-                                View All Notifications
+                        <div class="dropdown-footer p-2 text-center">
+                            <a href="{{ route('notifications.all') }}" class="text-dark">
+                                <small>View All Notifications</small>
                             </a>
                         </div>
                     </div>
                 </li>
-                @endcanany
+                @endauth
                 
                 <!-- Tour Guide Button -->
                 <li class="nav-item">
@@ -1493,7 +1523,7 @@
                         <i class="fas fa-bullhorn"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        @canany(['admin', 'super-admin'])
+                        @canany(['super-admin'])
                         <a href="{{ url('types') }}" class="dropdown-item">
                             <i class="fas fa-folder mr-2"></i> Leave Type
                         </a>
@@ -2068,6 +2098,73 @@
 
             // Call this function on page load
             loadSavedNavbarPosition();
+
+            // Notifications handling
+            function loadNotifications() {
+                $.ajax({
+                    url: '/notifications/get',
+                    method: 'GET',
+                    success: function(response) {
+                        updateNotifications(response);
+                    },
+                    error: function(xhr) {
+                        console.error('Error loading notifications:', xhr);
+                    }
+                });
+            }
+
+            function updateNotifications(data) {
+                $('.notification-count').text(data.count);
+                $('.notifications-list').html(data.notifications);
+                
+                if (data.toast && data.toast.message) {
+                    showToast(data.toast);
+                }
+            }
+
+            function showToast(toastData) {
+                const toast = `
+                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                        <div class="toast-header">
+                            <i class="${toastData.icon} mr-2"></i>
+                            <strong class="mr-auto">${toastData.title}</strong>
+                            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="toast-body">
+                            ${toastData.message}
+                        </div>
+                        <div class="toast-progress"></div>
+                    </div>
+                `;
+
+                // Create toast container if it doesn't exist
+                if (!$('.toast-container').length) {
+                    $('body').append('<div class="toast-container"></div>');
+                }
+
+                // Add toast to container and show it
+                const $toast = $(toast);
+                $('.toast-container').append($toast);
+                $toast.toast('show');
+
+                // Remove toast after it's hidden
+                $toast.on('hidden.bs.toast', function() {
+                    $(this).remove();
+                });
+            }
+
+            // Load notifications on page load
+            loadNotifications();
+
+            // Set up Echo to listen for new notifications
+            window.Echo.channel('notifications')
+                .listen('NewNotification', (e) => {
+                    updateNotifications(e);
+                });
+
+            // No need for setInterval as we're using real-time updates
         });
     </script>
 

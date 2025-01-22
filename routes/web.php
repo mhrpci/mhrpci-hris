@@ -264,8 +264,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/overtime-hours/{employeeId}', [OverTimePayController::class, 'getOvertimeHours'])->name('overtime.hours');
 
     // Notifications routes
-    Route::get('notifications/get',[NotificationsController::class, 'getNotificationsData'])->name('notifications.get');
-    Route::get('/notifications/all', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
+    Route::get('/notifications/get', [NotificationsController::class, 'getNotificationsData']);
+    Route::post('/notifications/mark-as-read', [NotificationsController::class, 'markAsRead']);
+    Route::delete('/notifications/clear', [NotificationsController::class, 'clearAll']);
 
     // Report routes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -298,8 +299,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/controller-analysis/excel', [ControllerAnalysisController::class, 'downloadExcel'])->name('controller.analysis.excel');
         Route::get('/controller-analysis/word', [ControllerAnalysisController::class, 'downloadWord'])->name('controller.analysis.word');
 
-    Route::post('/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
-    Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+    Route::post('/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead']);
+    Route::post('/notifications/mark-all-read', [NotificationsController::class, 'markAllAsRead']);
 
     Route::post('/employees/create-bulk-users', [EmployeeController::class, 'createBulkUsers'])
         ->name('employees.createBulkUsers');
@@ -313,13 +314,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/accountabilities/{accountability}/transfer', [AccountabilityController::class, 'transfer'])->name('accountabilities.transfer');
     Route::post('/accountabilities/{accountability}/process-transfer', [AccountabilityController::class, 'processTransfer'])->name('accountabilities.process-transfer');
-
-    Route::get('/notifications', [NotificationController::class, 'getNotifications']);
-    Route::get('/notifications/latest', [NotificationController::class, 'getLatestNotifications']);
-    Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
-    Route::delete('/notifications', [NotificationController::class, 'clearAll']);
-    Route::get('/notifications/preferences', [NotificationController::class, 'getPreferences']);
-    Route::put('/notifications/preferences', [NotificationController::class, 'updatePreferences']);
+    
+    Route::get('/notifications/get', [NotificationsController::class, 'getNotificationsData']);
+    Route::post('/notifications/mark-as-read', [NotificationsController::class, 'markAsRead']);
+    Route::delete('/notifications/clear', [NotificationsController::class, 'clearAll']);
+    Route::get('/notifications/all', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
 
 });
 

@@ -20,6 +20,8 @@ class CashAdvance extends Model
         'status',
         'signature',
         'reference_number',
+        'approved_by',
+        'rejected_by',
     ];
 
     protected $casts = [
@@ -82,5 +84,15 @@ class CashAdvance extends Model
     public function payments()
     {
         return $this->hasMany(CashAdvancePayment::class);
+    }
+
+    public function approvedByUser()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function rejectedByUser()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
     }
 }

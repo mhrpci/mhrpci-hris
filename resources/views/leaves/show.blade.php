@@ -395,7 +395,7 @@
     <button type="button" class="btn btn-info btn-responsive" onclick="printLeaveForm()">
         <i class="fas fa-print"></i> Print
     </button>
-    @if(auth()->user()->hasRole(['Super Admin', 'Admin']) && $leave->status === 'pending')
+    @if(auth()->user()->hasRole(['Super Admin', 'Admin', 'Supervisor']) && $leave->status === 'pending')
         <button type="button" class="btn btn-primary btn-responsive"
                 data-toggle="modal" data-target="#updateStatusModal">
             <i class="fas fa-edit"></i> Update Leave Status
@@ -569,6 +569,17 @@
             </div>
             <div class="signature-label">Employee Signature</div>
         </div>
+        @if($leave->status === 'rejected')
+        <div class="signature-block">
+            <div class="signature-container">
+                <div class="signature-line" data-signature="rejected">
+                    <br>
+                    <span data-name="rejected">{{ $leave->rejectedByUser->first_name ?? ' ' }} {{ $leave->rejectedByUser->last_name ?? ' ' }}</span>
+                </div>
+            </div>
+            <div class="signature-label">Rejected by</div>
+        </div>
+        @else
         <div class="signature-block">
             <div class="signature-container">
                 <div class="signature-line" data-signature="approved">
@@ -583,6 +594,7 @@
             </div>
             <div class="signature-label">Approved by</div>
         </div>
+        @endif
         <div class="signature-block">
             <div class="signature-container">
                 <div class="signature-line" data-signature="validated">
@@ -606,7 +618,7 @@
         </div>
     </div>
 
-    <!-- Update the Status Modal -->
+    <!-- Update Status Modal -->
     <div class="modal fade" id="updateStatusModal" tabindex="-1" role="dialog" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -616,27 +628,45 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="status">Status Decision</label>
-                        <select class="form-control @error('status') is-invalid @enderror"
-                                name="status"
-                                id="status"
-                                required>
-                            <option value="">Select Status</option>
-                            <option value="approved">Approve</option>
-                            <option value="rejected">Reject</option>
-                        </select>
-                        @error('status')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
+                <form id="statusUpdateForm" action="{{ route('leaves.update-status', $leave->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <input type="hidden" name="status" id="finalStatus">
+                        <input type="hidden" name="approved_by_signature" id="signatureInput">
+                        
+                        <div class="form-group">
+                            <label for="status">Status Decision</label>
+                            <select class="form-control @error('status') is-invalid @enderror"
+                                    id="statusSelect"
+                                    required>
+                                <option value="">Select Status</option>
+                                <option value="approved">Approve</option>
+                                <option value="rejected">Reject</option>
+                            </select>
+                            @error('status')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group" id="rejectionReasonGroup" style="display: none;">
+                            <label for="rejection_reason">Rejection Reason</label>
+                            <textarea class="form-control @error('rejection_reason') is-invalid @enderror"
+                                      name="rejection_reason"
+                                      id="rejection_reason"
+                                      rows="3"></textarea>
+                            @error('rejection_reason')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="button" class="btn btn-primary" id="proceedWithStatus">
+                                Proceed
+                            </button>
+                        </div>
                     </div>
-                    <div class="form-group mt-4">
-                        <button type="button" class="btn btn-primary" id="proceedWithStatus">
-                            Proceed
-                        </button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -652,21 +682,14 @@
                     </button>
                 </div>
                 <div class="modal-body p-0">
-                    <form action="{{ route('leaves.update-status', $leave->id) }}" method="POST" id="statusUpdateForm">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="status" id="finalStatus">
-                        <input type="hidden" name="approved_by_signature" id="signatureInput">
-                        
-                        <div class="signature-wrapper" style="height: calc(100vh - 180px);">
-                            <canvas id="signaturePad"></canvas>
-                        </div>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="clearSignature">Clear</button>
-                            <button type="submit" class="btn btn-primary" id="submitStatus">Submit</button>
-                        </div>
-                    </form>
+                    <div class="signature-wrapper" style="height: calc(100vh - 180px);">
+                        <canvas id="signaturePad"></canvas>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="clearSignature">Clear</button>
+                        <button type="button" class="btn btn-primary" id="submitSignature">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -701,6 +724,28 @@
             </div>
         </div>
     </div>
+
+    <br>
+    <!-- Add this section to display rejection details -->
+    @if($leave->status === 'rejected')
+        <div class="alert alert-danger mt-3 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-times-circle mr-2"></i>
+                <strong class="mr-3">Leave Request Rejected</strong>
+                <span class="mr-3">
+                    <strong>Rejected At:</strong> 
+                    @if($leave->rejected_at)
+                        {{ \Carbon\Carbon::parse($leave->rejected_at)->format('F j, Y g:i A') }}
+                    @else
+                        N/A
+                    @endif
+                </span>
+                @if($leave->rejection_reason)
+                    <span><strong>Reason:</strong> {{ $leave->rejection_reason }}</span>
+                @endif
+            </div>
+        </div>
+    @endif
 </div>
 @endsection
 
@@ -716,38 +761,40 @@
             const canvas = document.getElementById('signaturePad');
             const wrapper = document.querySelector('.signature-wrapper');
             
-            // Set canvas size to match wrapper
             canvas.width = wrapper.offsetWidth;
             canvas.height = wrapper.offsetHeight;
             
-            // Initialize with enhanced signature settings
             signaturePad = new SignaturePad(canvas, {
                 backgroundColor: 'rgb(255, 255, 255)',
-                penColor: 'rgb(0, 0, 0)',
-                minWidth: 2,        // Minimum line width
-                maxWidth: 4,        // Maximum line width
-                throttle: 16,       // Smoothing factor
-                velocityFilterWeight: 0.7,  // Makes lines smoother
-                dotSize: 3,         // Size of a single dot
+                penColor: 'rgb(0, 0, 0)'
             });
-
-            // Set canvas context properties for better rendering
-            const ctx = canvas.getContext('2d');
-            ctx.lineCap = 'round';    // Round line endings
-            ctx.lineJoin = 'round';   // Round line joins
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';  // Subtle shadow
-            ctx.shadowBlur = 1;       // Shadow blur effect
         });
         
-        // Handle the proceed button click
+        // Add status change handler
+        document.getElementById('statusSelect').addEventListener('change', function() {
+            const rejectionReasonGroup = document.getElementById('rejectionReasonGroup');
+            if (this.value === 'rejected') {
+                rejectionReasonGroup.style.display = 'block';
+            } else {
+                rejectionReasonGroup.style.display = 'none';
+            }
+        });
+        
+        // Update the proceed button handler
         document.getElementById('proceedWithStatus').addEventListener('click', function() {
-            const status = document.getElementById('status').value;
+            const status = document.getElementById('statusSelect').value;
+            const rejectionReason = document.getElementById('rejection_reason').value;
             
             if (!status) {
                 alert('Please select a status');
                 return;
             }
             
+            if (status === 'rejected' && !rejectionReason.trim()) {
+                alert('Please provide a reason for rejection');
+                return;
+            }
+
             // Store the selected status
             document.getElementById('finalStatus').value = status;
             
@@ -768,22 +815,19 @@
             }
         });
         
-        // Form submission
-        document.getElementById('statusUpdateForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const status = document.getElementById('finalStatus').value;
-            
-            if (status === 'approved' && signaturePad && signaturePad.isEmpty()) {
+        // Submit signature button
+        document.getElementById('submitSignature').addEventListener('click', function() {
+            if (signaturePad.isEmpty()) {
                 alert('Please provide your signature');
                 return;
             }
-            
-            if (status === 'approved') {
-                document.getElementById('signatureInput').value = signaturePad.toDataURL();
-            }
-            
-            this.submit();
+
+            // Get the signature data
+            const signatureData = signaturePad.toDataURL();
+            document.getElementById('signatureInput').value = signatureData;
+
+            // Submit the form
+            document.getElementById('statusUpdateForm').submit();
         });
 
         // Initialize the validation signature pad when its modal is shown

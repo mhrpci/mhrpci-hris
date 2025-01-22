@@ -170,11 +170,13 @@
                                 <div class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <h6 class="mb-1">₱{{ number_format($application->cash_advance_amount, 2) }}</h6>
-                                            <small class="text-muted">
-                                                <i class="far fa-calendar-alt mr-1"></i>
-                                                {{ $application->created_at->format('M d, Y') }}
-                                            </small>
+                                            <a href="{{ route('cash_advances.show', $application->id) }}" class="text-decoration-none">
+                                                <h6 class="mb-1">₱{{ number_format($application->cash_advance_amount, 2) }}</h6>
+                                                <small class="text-muted">
+                                                    <i class="far fa-calendar-alt mr-1"></i>
+                                                    {{ $application->created_at->format('M d, Y') }}
+                                                </small>
+                                            </a>
                                         </div>
                                         <div>
                                             <span class="badge badge-{{ $application->status === 'pending' ? 'warning' : ($application->status === 'active' ? 'success' : 'secondary') }}">

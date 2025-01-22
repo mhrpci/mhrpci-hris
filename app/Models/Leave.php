@@ -28,14 +28,22 @@ class Leave extends Model
         'signature',
         'approved_by_signature',
         'validated_by_signature',
+        'rejected_by',
     ];
 
     protected $primaryKey = 'id'; // This is already the default, but just to be explicit
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
+        'rejected_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
         'date_from' => 'datetime',
         'date_to' => 'datetime',
-        // ... any other casts ...
     ];
 
     public function employee(): BelongsTo
@@ -51,6 +59,11 @@ class Leave extends Model
     public function approvedByUser()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function rejectedByUser()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
     }
 
     public function getDiffhoursAttribute()

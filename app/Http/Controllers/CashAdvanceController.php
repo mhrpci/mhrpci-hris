@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use App\Models\Loan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Auth;
 class CashAdvanceController extends Controller
 {
     public function index()
@@ -130,9 +130,30 @@ class CashAdvanceController extends Controller
         }
     }
 
-    public function show(CashAdvance $cashAdvance)
+    public function show($id)
     {
+        $cashAdvance = CashAdvance::findOrFail($id);
+        if (!Auth::user()->hasRole('Employee')) {
+            $this->markAsRead($cashAdvance);
+        } else {
+            $this->markAsViewed($cashAdvance);
+        }
         return view('cash_advances.show', compact('cashAdvance'));
+    }
+
+    private function markAsRead(CashAdvance $cashAdvance)
+    {
+        if (!$cashAdvance->is_read) {
+            $cashAdvance->is_read = true;
+            $cashAdvance->save();
+        }
+    }
+    private function markAsViewed(CashAdvance $cashAdvance)
+    {
+        if (!$cashAdvance->is_view) {
+            $cashAdvance->is_view = true;
+            $cashAdvance->save();
+        }
     }
 
     public function edit(CashAdvance $cashAdvance)
@@ -143,12 +164,52 @@ class CashAdvanceController extends Controller
     public function update(Request $request, CashAdvance $cashAdvance)
     {
         $validatedData = $request->validate([
-            'status' => 'required|in:active,complete',
+            'status' => 'required|in:active,declined,complete',
+            'reason' => 'nullable|string|max:255',
         ]);
 
-        $cashAdvance->update($validatedData);
+        try {
+            $user = Auth::user();
+            
+            if ($validatedData['status'] === 'active') {
+                // Approve the cash advance
+                $cashAdvance->update([
+                    'status' => 'active',
+                    'approved_by' => $user->id,
+                    'rejected_by' => null, // Clear any previous rejection
+                    'is_read' => false,    // Reset read status for notifications
+                    'is_view' => false     // Reset view status for notifications
+                ]);
 
-        return redirect()->route('cash_advances.index')->with('success', 'Cash Advance status updated successfully.');
+                $message = 'Cash Advance has been approved successfully.';
+            } 
+            elseif ($validatedData['status'] === 'declined') {
+                // Reject the cash advance
+                $cashAdvance->update([
+                    'status' => 'declined',
+                    'rejected_by' => $user->id,
+                    'approved_by' => null, // Clear any previous approval
+                    'is_read' => false,    // Reset read status for notifications
+                    'is_view' => false     // Reset view status for notifications
+                ]);
+
+                $message = 'Cash Advance has been declined.';
+            }
+            else {
+                // Handle complete status
+                $cashAdvance->update([
+                    'status' => 'complete'
+                ]);
+
+                $message = 'Cash Advance has been marked as complete.';
+            }
+
+            return redirect()->route('cash_advances.index')->with('success', $message);
+        } catch (\Exception $e) {
+            Log::error('Cash Advance Update Error: ' . $e->getMessage());
+            return redirect()->route('cash_advances.index')
+                ->with('error', 'An error occurred while updating the cash advance. Please try again.');
+        }
     }
 
     public function destroy(CashAdvance $cashAdvance)

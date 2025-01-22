@@ -1413,6 +1413,204 @@
     .custom-checkbox .custom-control-label:hover {
         color: #007bff;
     }
+
+    /* Add these styles for the floating action card */
+    .floating-actions-card {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 300px;
+        z-index: 1000;
+        animation: float 3s ease-in-out infinite;
+        transition: all 0.3s ease;
+    }
+
+    .floating-actions-card.minimized {
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .floating-actions-card .card-header {
+        cursor: move;
+        user-select: none;
+    }
+
+    .minimize-btn {
+        position: absolute;
+        right: 40px;
+        top: 15px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .close-float-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        cursor: pointer;
+    }
+
+    .floating-action-btn {
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .floating-action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        transition: 0.5s;
+    }
+
+    .floating-action-btn:hover::before {
+        left: 100%;
+    }
+
+    .floating-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        padding: 5px 8px;
+        border-radius: 50%;
+        font-size: 12px;
+        background: #dc3545;
+        color: white;
+        display: none;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .floating-actions-card {
+            bottom: 20px;
+            right: 20px;
+            width: 280px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .floating-actions-card {
+            bottom: 15px;
+            right: 15px;
+            width: 260px;
+        }
+    }
+
+    .floating-actions-card {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 280px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background: #fff;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .floating-actions-card.minimized {
+        width: 56px;
+        height: 56px;
+        overflow: hidden;
+        border-radius: 28px;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        background: #4a90e2;
+        color: white;
+        border-radius: 12px 12px 0 0;
+        cursor: move;
+    }
+
+    .header-controls {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+    }
+
+    .control-btn {
+        background: none;
+        border: none;
+        color: white;
+        padding: 4px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    }
+
+    .control-btn:hover {
+        opacity: 1;
+    }
+
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        color: white;
+        text-decoration: none;
+        transition: transform 0.2s;
+    }
+
+    .action-btn:hover {
+        transform: translateX(4px);
+        color: white;
+    }
+
+    .leave-btn {
+        background: #4a90e2;
+    }
+
+    .loan-btn {
+        background: #2ecc71;
+    }
+
+    @media (max-width: 768px) {
+        .floating-actions-card {
+            width: 240px;
+            bottom: 16px;
+            right: 16px;
+        }
+
+        .action-btn {
+            padding: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .floating-actions-card {
+            width: 200px;
+        }
+    }
 </style>
 <div class="container-fluid">
     <!-- Signature Reminder Alert - Moved to top and enhanced styling -->
@@ -1803,7 +2001,6 @@
             @endcan
         </div>
 </div>
-
 <script>
     (function() {
         function updateClock() {
@@ -2463,5 +2660,107 @@
         const today = new Date().toDateString();
         localStorage.setItem('last_login_date', today);
     }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const floatingCard = document.getElementById('floatingCard');
+    if (!floatingCard) return;
+
+    const minimizeBtn = document.getElementById('minimizeBtn');
+    const closeFloatBtn = document.getElementById('closeFloatBtn');
+    const dragHandle = document.getElementById('dragHandle');
+
+    let isDragging = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    // Minimize functionality
+    minimizeBtn.addEventListener('click', () => {
+        floatingCard.classList.toggle('minimized');
+        minimizeBtn.classList.toggle('fa-minus');
+        minimizeBtn.classList.toggle('fa-plus');
+    });
+
+    // Close functionality
+    closeFloatBtn.addEventListener('click', () => {
+        floatingCard.style.display = 'none';
+        // Store in session that user has closed the card
+        sessionStorage.setItem('floatingCardClosed', 'true');
+    });
+
+    // Check if card was previously closed in this session
+    if (sessionStorage.getItem('floatingCardClosed') === 'true') {
+        floatingCard.style.display = 'none';
+    }
+
+    // Dragging functionality
+    function dragStart(e) {
+        if (e.type === "touchstart") {
+            initialX = e.touches[0].clientX - xOffset;
+            initialY = e.touches[0].clientY - yOffset;
+        } else {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+        }
+
+        if (e.target === dragHandle) {
+            isDragging = true;
+        }
+    }
+
+    function dragEnd() {
+        isDragging = false;
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            e.preventDefault();
+
+            if (e.type === "touchmove") {
+                currentX = e.touches[0].clientX - initialX;
+                currentY = e.touches[0].clientY - initialY;
+            } else {
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+            }
+
+            xOffset = currentX;
+            yOffset = currentY;
+
+            setTranslate(currentX, currentY, floatingCard);
+        }
+    }
+
+    function setTranslate(xPos, yPos, el) {
+        el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+    }
+
+    dragHandle.addEventListener('touchstart', dragStart, false);
+    dragHandle.addEventListener('touchend', dragEnd, false);
+    dragHandle.addEventListener('touchmove', drag, false);
+
+    dragHandle.addEventListener('mousedown', dragStart, false);
+    document.addEventListener('mouseup', dragEnd, false);
+    document.addEventListener('mousemove', drag, false);
+
+    // Show badges if there are pending items (example logic)
+    function checkPendingItems() {
+        // Add your logic to check for pending leaves/loans
+        const hasPendingLeave = false; // Replace with actual check
+        const hasPendingLoan = false; // Replace with actual check
+
+        document.getElementById('leaveBadge').style.display = hasPendingLeave ? 'block' : 'none';
+        document.getElementById('loanBadge').style.display = hasPendingLoan ? 'block' : 'none';
+    }
+
+    // Check for pending items periodically
+    checkPendingItems();
+    setInterval(checkPendingItems, 300000); // Check every 5 minutes
+});
 </script>
 @endsection

@@ -6,9 +6,15 @@
         <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
             <h2><i class="fas fa-file-invoice-dollar me-2"></i> Cash Advance Details</h2>
             <div>
+                @if(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin'))
                 <a href="{{ route('cash_advances.index') }}" class="btn btn-light">
                     <i class="fas fa-arrow-left me-1"></i>Back to List
                 </a>
+                @else
+                <a href="javascript:void(0)" onclick="window.history.back()" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back
+                </a>
+                @endif
             </div>
         </div>
 
@@ -76,6 +82,17 @@
                                         </span>
                                     </td>
                                 </tr>
+                                @if($cashAdvance->status === 'active')
+                                    <tr>
+                                        <th class="bg-light">Approved By:</th>
+                                        <td>{{ $cashAdvance->approvedByUser->first_name . ' ' . $cashAdvance->approvedByUser->last_name ?? 'N/A' }}</td>
+                                    </tr>
+                                @elseif($cashAdvance->status === 'declined')
+                                    <tr>
+                                        <th class="bg-light">Rejected By:</th>
+                                        <td>{{ $cashAdvance->rejectedByUser->first_name . ' ' . $cashAdvance->rejectedByUser->last_name ?? 'N/A' }}</td>
+                                    </tr>
+                                @endif
                                 <tr>
                                     <th class="bg-light">Remaining Balance:</th>
                                     <td class="font-weight-bold {{ $cashAdvance->remainingBalance() > 0 ? 'text-danger' : 'text-success' }}">
@@ -110,7 +127,8 @@
 
         <div class="card-footer bg-light">
             <div class="d-flex justify-content-between align-items-center">
-                <div>
+            @if(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Admin'))
+                <div class="d-flex gap-2">
                     @if($cashAdvance->status === 'pending')
                         <form action="{{ route('cash_advances.update', $cashAdvance) }}" method="POST" class="d-inline">
                             @csrf
@@ -120,10 +138,19 @@
                                 <i class="fas fa-check me-1"></i>Approve Cash Advance
                             </button>
                         </form>
+
+                        <form action="{{ route('cash_advances.update', $cashAdvance) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="status" value="declined">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-times me-1"></i>Decline Cash Advance
+                            </button>
+                        </form>
                     @endif
                 </div>
-                <div>
-                    <a href="{{ route('cash_advances.edit', $cashAdvance) }}" class="btn btn-primary me-2">
+                <div class="d-flex gap-2">
+                    <a href="{{ route('cash_advances.edit', $cashAdvance) }}" class="btn btn-primary">
                         <i class="fas fa-edit me-1"></i>Edit
                     </a>
                     <form action="{{ route('cash_advances.destroy', $cashAdvance) }}" method="POST" class="d-inline"
@@ -135,6 +162,7 @@
                         </button>
                     </form>
                 </div>
+                @endif
             </div>
         </div>
     </div>

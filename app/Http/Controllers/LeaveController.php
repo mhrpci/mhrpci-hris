@@ -144,8 +144,11 @@ class LeaveController extends Controller
         try {
             $leave = Leave::findOrFail($id);
             $employees = Employee::all();
-            $this->markAsRead($leave);
-
+            if (!Auth::user()->hasRole('Employee')) {
+                $this->markAsRead($leave);
+            } else {
+                $this->markAsView($leave);
+            }
             // Calculate leave balances up to this leave ID
             $vacationTaken = $this->calculateLeaveTaken($leave->employee->id, 1, $id);
             $sickTaken = $this->calculateLeaveTaken($leave->employee->id, 2, $id);
@@ -205,10 +208,33 @@ class LeaveController extends Controller
 
     private function markAsRead(Leave $leave)
     {
-        if (!$leave->is_read) {
+        DB::beginTransaction();
+        try {
             $leave->is_read = true;
             $leave->read_at = now();
             $leave->save();
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Failed to mark leave #' . $leave->id . ' as read: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function markAsView(Leave $leave)
+    {
+        DB::beginTransaction();
+        try {
+            $leave->is_view = true;
+            $leave->view_at = now();
+            $leave->save();
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Failed to mark leave #' . $leave->id . ' as viewed: ' . $e->getMessage());
+            throw $e;
         }
     }
     /**
@@ -269,7 +295,8 @@ class LeaveController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'status' => 'required|in:pending,rejected,approved',
-            'approved_by_signature' => 'required|string',
+            'approved_by_signature' => 'required_if:status,approved|nullable|string',
+            'rejection_reason' => 'required_if:status,rejected|nullable|string|max:500',
         ]);
 
         // Find the leave request
@@ -279,41 +306,52 @@ class LeaveController extends Controller
             // Process approved_by signature
             $approvedSignatureFileName = null;
 
-            if ($request->filled('approved_by_signature')) {
+            if ($validatedData['status'] === 'approved' && $request->filled('approved_by_signature')) {
                 $signatureData = $request->input('approved_by_signature');
                 $approvedSignatureFileName = $this->processSignature($signatureData, 'approved');
             }
 
-            // Calculate taken days for this type of leave
-            $takenDays = $this->calculateLeaveTaken($leave->employee->id, $leave->type_id, $leave->id);
-
-            // Determine if the leave should be with pay
-            $isWithPay = false;
-            if ($leave->employee->employment_status === 'REGULAR') {
-                $maxDays = match($leave->type_id) {
-                    1 => $leave->employee->vacation_leave,
-                    2 => $leave->employee->sick_leave,
-                    3 => $leave->employee->emergency_leave,
-                    default => 0
-                };
-
-                $isWithPay = $takenDays <= $maxDays;
-            }
-
-            // Update leave status and signature
+            // Update leave status and related fields
             $leave->status = $validatedData['status'];
-            $leave->approved_by = Auth::id();
-            $leave->approved_by_signature = $approvedSignatureFileName;
-
-            // Only update payment status if it's being approved
+            
             if ($validatedData['status'] === 'approved') {
+                $leave->approved_by = Auth::id();
+                $leave->approved_by_signature = $approvedSignatureFileName;
+                $leave->rejected_by = null;
+                $leave->rejected_at = null;
+                $leave->rejection_reason = null;
+                
+                // Calculate and set payment status
+                $takenDays = $this->calculateLeaveTaken($leave->employee->id, $leave->type_id, $leave->id);
+                $isWithPay = false;
+                if ($leave->employee->employment_status === 'REGULAR') {
+                    $maxDays = match($leave->type_id) {
+                        1 => $leave->employee->vacation_leave,
+                        2 => $leave->employee->sick_leave,
+                        3 => $leave->employee->emergency_leave,
+                        default => 0
+                    };
+                    $isWithPay = $takenDays <= $maxDays;
+                }
                 $leave->payment_status = $isWithPay ? 'With Pay' : 'Without Pay';
+                
+            } elseif ($validatedData['status'] === 'rejected') {
+                $leave->rejected_by = Auth::id();
+                $leave->rejected_at = now();
+                $leave->rejection_reason = $request->input('rejection_reason');
+                $leave->approved_by = null;
+                $leave->approved_by_signature = null;
+                $leave->payment_status = null;
             }
 
             $leave->save();
 
+            $message = $validatedData['status'] === 'approved' 
+                ? 'Leave request has been approved successfully.'
+                : 'Leave request has been rejected successfully.';
+
             return redirect()->route('leaves.show', $id)
-                ->with('success', 'Leave status updated successfully.');
+                ->with('success', $message);
 
         } catch (\Exception $e) {
             // Clean up signature file if it exists
@@ -321,6 +359,7 @@ class LeaveController extends Controller
                 Storage::disk('public')->delete($approvedSignatureFileName);
             }
 
+            \Log::error('Leave status update failed: ' . $e->getMessage());
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['error' => 'Failed to update leave status: ' . $e->getMessage()]);
@@ -517,15 +556,6 @@ class LeaveController extends Controller
                 \Log::error('Leave Show Error: ' . $e->getMessage());
                 \Log::error($e->getTraceAsString());
                 throw $e;
-            }
-        }
-
-        private function markAsView(Leave $leave)
-        {
-            if (!$leave->is_view) {
-                $leave->is_view = true;
-                $leave->view_at = now();
-                $leave->save();
             }
         }
 
