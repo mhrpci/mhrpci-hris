@@ -1611,6 +1611,284 @@
             width: 200px;
         }
     }
+
+    .holiday-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition: transform 0.2s;
+    }
+
+    .holiday-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .today-holiday {
+        background: linear-gradient(135deg, #6B8DD6 0%, #8E37D7 100%);
+        color: white;
+    }
+
+    .holiday-icon {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .today-holiday .holiday-icon {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .holiday-details {
+        flex: 1;
+    }
+
+    .holiday-details h4 {
+        margin: 0 0 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .holiday-description {
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0;
+    }
+
+    .today-holiday .holiday-description {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .holiday-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .holiday-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .holiday-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .holiday-list::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    /* Enhanced Modal Styles */
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+    }
+
+    .animated-icon {
+        animation: bounce 2s infinite;
+    }
+
+    .close-button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .close-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+    }
+
+    /* Holiday Card Styles */
+    .holiday-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .holiday-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .today-holiday {
+        background: linear-gradient(135deg, #6B8DD6 0%, #8E37D7 100%);
+        color: white;
+    }
+
+    .holiday-icon {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .holiday-icon.pulse {
+        animation: pulse 2s infinite;
+    }
+
+    /* Post Card Styles */
+    .post-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .post-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #20BF55 0%, #01BAEF 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .post-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+        color: #2d3748;
+    }
+
+    .post-body {
+        font-size: 1rem;
+        color: #4a5568;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .post-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: #718096;
+    }
+
+    /* Custom Scrollbar */
+    .custom-scrollbar {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 3px;
+    }
+
+    /* Don't Show Again Styles */
+    .dont-show-again {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .confirmation-message {
+        font-size: 0.875rem;
+        color: #48bb78;
+        margin-top: 0.5rem;
+        display: none;
+    }
+
+    /* Animations */
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .modal-dialog {
+            margin: 1rem;
+        }
+
+        .holiday-card, .post-card {
+            padding: 1rem;
+        }
+
+        .holiday-icon, .post-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .post-title {
+            font-size: 1.1rem;
+        }
+
+        .post-body {
+            font-size: 0.95rem;
+        }
+
+        .post-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
 </style>
 <div class="container-fluid">
     <!-- Signature Reminder Alert - Moved to top and enhanced styling -->
@@ -2762,5 +3040,281 @@ document.addEventListener('DOMContentLoaded', function() {
     checkPendingItems();
     setInterval(checkPendingItems, 300000); // Check every 5 minutes
 });
+</script>
+
+<!-- Enhanced Holiday Modal -->
+@if($upcomingHolidays->isNotEmpty() || $todayHoliday)
+    <div class="modal fade" id="holidayModal" tabindex="-1" role="dialog" aria-labelledby="holidayModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header bg-primary text-white">
+                    <div class="modal-title-wrapper w-100 text-center">
+                        <h4 class="modal-title" id="holidayModalLabel">
+                            <i class="fas fa-calendar-alt fa-lg animated-icon me-2"></i>
+                            Holidays in {{ $currentMonthName }}
+                        </h4>
+                        <p class="modal-subtitle mb-0">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Stay informed about upcoming holidays
+                        </p>
+                    </div>
+                    <button type="button" class="close-button" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body custom-scrollbar">
+                    <!-- Today's Holiday Section -->
+                    @if($todayHoliday)
+                        <div class="today-holiday-section mb-4">
+                            <div class="section-header">
+                                <div class="today-badge">
+                                    <span class="pulse-dot"></span>
+                                    Today's Holiday
+                                </div>
+                            </div>
+                            <div class="holiday-card today-holiday">
+                                <div class="holiday-icon-wrapper">
+                                    <div class="holiday-icon pulse">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <div class="holiday-content">
+                                    <h4 class="holiday-title">{{ $todayHoliday->title }}</h4>
+                                    <div class="holiday-date">
+                                        <i class="far fa-calendar-alt text-primary me-2"></i>
+                                        {{ \Carbon\Carbon::parse($todayHoliday->date)->format('F j, Y') }}
+                                    </div>
+                                    <p class="holiday-description">{{ $todayHoliday->description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Upcoming Holidays Section -->
+                    @if($upcomingHolidays->isNotEmpty())
+                        <div class="upcoming-holidays-section">
+                            <div class="section-header">
+                                <h5 class="section-title">
+                                    <i class="fas fa-calendar-week text-primary me-2"></i>
+                                    Upcoming Holidays
+                                </h5>
+                                <div class="holiday-count">
+                                    {{ $upcomingHolidays->count() }} upcoming {{ Str::plural('holiday', $upcomingHolidays->count()) }}
+                                </div>
+                            </div>
+                            <div class="holiday-list">
+                                @foreach($upcomingHolidays as $holiday)
+                                    <div class="holiday-card" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
+                                        <div class="holiday-icon-wrapper">
+                                            <div class="holiday-icon">
+                                                <i class="fas fa-calendar-day"></i>
+                                            </div>
+                                        </div>
+                                        <div class="holiday-content">
+                                            <h4 class="holiday-title">{{ $holiday->title }}</h4>
+                                            <div class="holiday-date">
+                                                <i class="far fa-calendar-alt text-primary me-2"></i>
+                                                {{ \Carbon\Carbon::parse($holiday->date)->format('F j, Y') }}
+                                                <span class="days-until">
+                                                    ({{ \Carbon\Carbon::parse($holiday->date)->diffForHumans() }})
+                                                </span>
+                                            </div>
+                                            <p class="holiday-description">{{ $holiday->description }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <div class="dont-show-again">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="dontShowHolidayAgain">
+                            <label class="custom-control-label" for="dontShowHolidayAgain">
+                                <i class="fas fa-bell-slash me-1"></i>
+                                Don't show again this month
+                            </label>
+                        </div>
+                        <div class="confirmation-message"></div>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        <i class="fas fa-check me-1"></i>
+                        Got it
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
+<!-- Enhanced Posts Modal -->
+@if($todayPosts->isNotEmpty())
+    <div class="modal fade" id="postsModal" tabindex="-1" role="dialog" aria-labelledby="postsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header bg-success text-white">
+                    <div class="modal-title-wrapper w-100 text-center">
+                        <h4 class="modal-title" id="postsModalLabel">
+                            <i class="fas fa-bullhorn fa-lg animated-icon me-2"></i>
+                            Today's Announcements
+                        </h4>
+                        <p class="modal-subtitle mb-0">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Stay updated with the latest announcements
+                        </p>
+                    </div>
+                    <button type="button" class="close-button" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body custom-scrollbar">
+                    <div class="posts-header">
+                        <div class="posts-count">
+                            {{ $todayPosts->count() }} new {{ Str::plural('announcement', $todayPosts->count()) }} today
+                        </div>
+                    </div>
+                    <div class="posts-list">
+                        @foreach($todayPosts as $post)
+                            <div class="post-card" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
+                                <div class="post-header">
+                                    <div class="post-icon-wrapper">
+                                        <div class="post-icon">
+                                            <i class="fas fa-newspaper"></i>
+                                        </div>
+                                    </div>
+                                    <div class="post-meta-header">
+                                        <h4 class="post-title">{{ $post->title }}</h4>
+                                        <div class="post-timestamp">
+                                            <i class="far fa-clock text-success me-1"></i>
+                                            Posted {{ $post->created_at->diffForHumans() }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <div class="post-body">{{ $post->content }}</div>
+                                    <div class="post-meta">
+                                        <div class="post-category">
+                                            <i class="fas fa-tag text-success me-1"></i>
+                                            {{ $post->category ?? 'General' }}
+                                        </div>
+                                        @if($post->date_end)
+                                            <div class="post-expiry">
+                                                <i class="far fa-calendar-times text-warning me-1"></i>
+                                                Expires {{ \Carbon\Carbon::parse($post->date_end)->format('F j, Y') }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    @if($post->attachments_count > 0)
+                                        <div class="post-attachments">
+                                            <i class="fas fa-paperclip text-secondary me-1"></i>
+                                            {{ $post->attachments_count }} {{ Str::plural('attachment', $post->attachments_count) }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <div class="dont-show-again">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="dontShowPostsAgain">
+                            <label class="custom-control-label" for="dontShowPostsAgain">
+                                <i class="fas fa-bell-slash me-1"></i>
+                                Don't show again today
+                            </label>
+                        </div>
+                        <div class="confirmation-message"></div>
+                    </div>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">
+                        <i class="fas fa-check me-1"></i>
+                        Got it
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to check if modals should be shown
+        function shouldShowModal(key) {
+            return !localStorage.getItem(key);
+        }
+
+        // Function to set modal as shown
+        function setModalAsShown(key, duration) {
+            const expiryTime = new Date();
+            if (duration === 'month') {
+                expiryTime.setMonth(expiryTime.getMonth() + 1);
+            } else {
+                expiryTime.setDate(expiryTime.getDate() + 1); // Default to daily
+            }
+            localStorage.setItem(key, expiryTime.getTime());
+        }
+
+        // Function to check if stored time has expired
+        function hasExpired(key) {
+            const storedTime = localStorage.getItem(key);
+            if (!storedTime) return true;
+            return new Date().getTime() > parseInt(storedTime);
+        }
+
+        // Holiday Modal Handler
+        const holidayModal = document.getElementById('holidayModal');
+        if (holidayModal && shouldShowModal('holiday_modal_shown') && hasExpired('holiday_modal_shown')) {
+            $(holidayModal).modal('show');
+        }
+
+        // Posts Modal Handler
+        const postsModal = document.getElementById('postsModal');
+        if (postsModal && shouldShowModal('posts_modal_shown') && hasExpired('posts_modal_shown')) {
+            $(postsModal).modal('show');
+        }
+
+        // Handle "Don't show again" for Holiday Modal
+        const dontShowHolidayAgain = document.getElementById('dontShowHolidayAgain');
+        if (dontShowHolidayAgain) {
+            dontShowHolidayAgain.addEventListener('change', function() {
+                const confirmationDiv = this.closest('.dont-show-again').querySelector('.confirmation-message');
+                if (this.checked) {
+                    setModalAsShown('holiday_modal_shown', 'month');
+                    confirmationDiv.textContent = 'Holiday notifications won\'t show again this month.';
+                    confirmationDiv.style.display = 'block';
+                } else {
+                    localStorage.removeItem('holiday_modal_shown');
+                    confirmationDiv.style.display = 'none';
+                }
+            });
+        }
+
+        // Handle "Don't show again" for Posts Modal
+        const dontShowPostsAgain = document.getElementById('dontShowPostsAgain');
+        if (dontShowPostsAgain) {
+            dontShowPostsAgain.addEventListener('change', function() {
+                const confirmationDiv = this.closest('.dont-show-again').querySelector('.confirmation-message');
+                if (this.checked) {
+                    setModalAsShown('posts_modal_shown', 'day');
+                    confirmationDiv.textContent = 'Post notifications won\'t show again today.';
+                    confirmationDiv.style.display = 'block';
+                } else {
+                    localStorage.removeItem('posts_modal_shown');
+                    confirmationDiv.style.display = 'none';
+                }
+            });
+        }
+    });
 </script>
 @endsection

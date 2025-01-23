@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #1e40af;
-            --secondary-color: #1e3a8a;
-            --background-color: #f0f9ff;
+            --primary-color: #0f2c5c;    /* Darker blue for professionalism */
+            --secondary-color: #1a365d;
+            --background-color: #f8fafc;  /* Lighter, cleaner background */
             --text-color: #1e293b;
-            --accent-color: #3b82f6;
-            --hover-color: #2563eb;
+            --accent-color: #2563eb;
+            --hover-color: #1e40af;
         }
         body {
             background-color: var(--background-color);
@@ -28,7 +28,7 @@
             -webkit-touch-callout: none;
         }
         .container-fluid {
-            max-width: 1200px;
+            max-width: 1000px;  /* Slightly narrower for better readability */
             padding: 2rem 1rem;
         }
         .section-title {
@@ -193,103 +193,173 @@
             opacity: 0.02;
             z-index: 9999;
         }
+        
+        /* New header section */
+        .policy-header {
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .policy-header .company-logo {
+            max-width: 180px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .policy-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .policy-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 1rem;
+        }
+        
+        /* Enhanced policy page styling */
+        .policy-page {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .policy-title {
+            background-color: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.75rem 2rem;
+        }
+        
+        .policy-content {
+            padding: 2.5rem;
+            font-size: 1.05rem;
+        }
+        
+        /* Enhanced typography */
+        .policy-content h4 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1.25rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+        
+        .policy-content ul {
+            margin-bottom: 1.5rem;
+        }
+        
+        .policy-content li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+        
+        /* Official document footer */
+        .policy-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
     </style>
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-            <a href="javascript:history.back()" class="btn-back">
-                <i class="fas fa-arrow-left me-2"></i> Back
-            </a>
+        <a href="javascript:history.back()" class="btn-back">
+            <i class="fas fa-arrow-left me-2"></i> Back
+        </a>
+        
+        <div class="policy-header">
             <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="Company Logo" class="company-logo">
+            <h1>Terms of Use and Privacy Policy</h1>
+            <div class="policy-meta">
+                <span><i class="fas fa-calendar-alt me-2"></i> Last Updated: {{ date('F d, Y') }}</span>
+                <span><i class="fas fa-file-alt me-2"></i> Document Version: 1.0</span>
+            </div>
         </div>
-
-        <h1 class="text-center mb-5" style="color: var(--secondary-color); font-weight: 700; font-size: 2.5rem;">Terms of Use and Privacy Policy</h1>
-
+        
         <div id="policies-container">
             <div class="policy-page">
                 <h3 class="policy-title">Terms of Use</h3>
                 <div class="policy-content">
-                    <h4>1. Acceptance of Terms</h4>
-                    <p>By accessing and using the Human Resources and Information System (HRIS) ("the System"), you agree to comply with these Terms of Use. If you do not agree, you may not use the System.</p>
-                    
-                    <h4>2. Purpose of the System</h4>
-                    <p>The System is designed to manage and streamline human resource activities, including but not limited to employee management, attendance tracking, payroll processing, and performance evaluations.</p>
+                    <p>Welcome to the Human Resource Information System (HRIS). This platform is designed to help you manage and access important work-related information such as Payroll, Attendance, Leaves, Loans, Employee Information, and Contributions. By using this system, you agree to follow these guidelines to ensure its secure and proper use.</p>
 
-                    <h4>3. User Responsibilities</h4>
-                    <p>3.1 Authorized Access: Access to the System is restricted to authorized personnel only. Sharing login credentials is strictly prohibited.</p>
-                    
-                    <p>3.2 Accurate Information: Users are responsible for ensuring the accuracy of the data entered into the System. Deliberate entry of false information may result in disciplinary or legal action.</p>
-                    
-                    <p>3.3 Prohibited Activities: Users must not:</p>
+                    <h4>1. Purpose of the HRIS</h4>
+                    <p>The HRIS is provided to facilitate employee access to:</p>
                     <ul>
-                        <li>Attempt to hack, disrupt, or manipulate the System.</li>
-                        <li>Use the System for any unlawful activities.</li>
-                        <li>Share confidential data accessed through the System without proper authorization.</li>
+                        <li>Payroll and payslips</li>
+                        <li>Attendance records and schedules</li>
+                        <li>Leave balances and applications</li>
+                        <li>Loan applications and tracking</li>
+                        <li>Personal and employment information</li>
+                        <li>Government contributions (e.g., SSS, PhilHealth, Pag-IBIG)</li>
+                    </ul>
+                    <p>Use the system responsibly and only for its intended purposes.</p>
+
+                    <h4>2. Access and Security</h4>
+                    <ul>
+                        <li>Authorized Access Only: Access is granted to employees for official use. Unauthorized access is strictly prohibited.</li>
+                        <li>Protect Your Login: Do not share your username or password with anyone. You are responsible for all activities under your account.</li>
+                        <li>Secure Your Session: Always log out after using the HRIS, especially on shared or public devices.</li>
+                        <li>Report Issues: Notify HR or IT immediately if you notice suspicious activity or unauthorized access.</li>
                     </ul>
 
-                    <h4>4. System Availability</h4>
-                    <p>The System may experience periodic downtime for maintenance or upgrades. We are not liable for any loss resulting from such downtime.</p>
-
-                    <h4>5. Intellectual Property</h4>
-                    <p>All content, software, and features within the System are the intellectual property of [Your Company Name] and are protected by applicable laws. Unauthorized reproduction or redistribution is strictly prohibited.</p>
-
-                    <h4>6. Termination of Access</h4>
-                    <p>Access to the System may be terminated or suspended at the discretion of the organization for non-compliance with these terms or misuse of the System.</p>
-
-                    <h4>7. Limitation of Liability</h4>
-                    <p>The organization is not responsible for any direct, indirect, incidental, or consequential damages arising from the use of the System.</p>
-                </div>
-            </div>
-
-            <div class="policy-page">
-                <h3 class="policy-title">Privacy Policy</h3>
-                <div class="policy-content">
-                    <h4>1. Introduction</h4>
-                    <p>This Privacy Policy outlines how the System collects, uses, and protects your personal information.</p>
-
-                    <h4>2. Information Collection</h4>
-                    <p>2.1 Personal Information: The System collects personal information such as name, address, contact details, job title, and payroll details.</p>
-                    
-                    <p>2.2 Usage Data: The System automatically collects data about your activities within the System, including log-in times and actions performed.</p>
-
-                    <h4>3. Use of Information</h4>
-                    <p>3.1 Purpose of Use: Information collected is used for HR management purposes, including payroll processing, compliance reporting, attendance tracking, and employee evaluations.</p>
-                    
-                    <p>3.2 Data Sharing: Personal information may be shared with third-party vendors or government agencies only when required for payroll, tax, or legal compliance purposes.</p>
-
-                    <h4>4. Data Protection</h4>
-                    <p>4.1 Security Measures: The System employs encryption, firewalls, and access controls to safeguard your data.</p>
-                    
-                    <p>4.2 User Responsibility: Users are responsible for maintaining the confidentiality of their login credentials and promptly reporting any suspected unauthorized access.</p>
-
-                    <h4>5. Data Retention</h4>
-                    <p>Personal data is retained for the duration of employment and as required by applicable laws. Data may be anonymized or securely deleted after retention periods lapse.</p>
-
-                    <h4>6. Rights of Users</h4>
-                    <p>Users have the right to:</p>
+                    <h4>3. Data Privacy and Confidentiality</h4>
                     <ul>
-                        <li>Access their personal information.</li>
-                        <li>Request corrections to inaccuracies.</li>
-                        <li>Withdraw consent for specific data uses, where applicable.</li>
+                        <li>Protect Personal Data: The HRIS contains confidential information. Do not download, share, or copy data unless authorized.</li>
+                        <li>Work-Related Use Only: Use the HRIS exclusively for work-related tasks. Personal or inappropriate use is not allowed.</li>
+                        <li>Follow Privacy Laws: Comply with the Data Privacy Act of 2012 and company policies regarding the handling of sensitive information.</li>
                     </ul>
 
-                    <h4>7. Cookies and Tracking</h4>
-                    <p>The System may use cookies or similar technologies to improve user experience. You may disable cookies via browser settings, but this may impact functionality.</p>
+                    <h4>4. Information Accuracy</h4>
+                    <ul>
+                        <li>Provide Accurate Information: Ensure that all data you input, such as leave applications, attendance logs, or personal details, is accurate and truthful.</li>
+                        <li>Avoid Falsification: Deliberately providing false information is a serious violation and may result in disciplinary action.</li>
+                    </ul>
 
-                    <h4>8. Changes to Privacy Policy</h4>
-                    <p>We reserve the right to modify this Privacy Policy at any time. Changes will be communicated via email or an in-System notification.</p>
+                    <h4>5. Prohibited Actions</h4>
+                    <p>To maintain the integrity of the HRIS, the following actions are not allowed:</p>
+                    <ul>
+                        <li>Sharing payroll or employee data with unauthorized individuals.</li>
+                        <li>Altering or tampering with attendance, payroll, or leave records.</li>
+                        <li>Using the HRIS for personal gain, inappropriate activities, or illegal purposes.</li>
+                        <li>Uploading, installing, or introducing unauthorized files or programs into the system.</li>
+                    </ul>
 
-                    <h4>9. Contact Information</h4>
-                    <p>For inquiries regarding these terms or your data, contact us at:</p>
-                    <p>{{ config('app.company_name') }}<br>
-                    {{ config('app.company_address') }}<br>
-                    {{ config('app.company_email') }}<br>
-                    {{ config('app.company_phone') }}</p>
+                    <h4>6. System Monitoring and Maintenance</h4>
+                    <ul>
+                        <li>Activity Monitoring: Your use of the HRIS is monitored to ensure compliance with these terms.</li>
+                        <li>Maintenance Downtime: The HRIS may occasionally be unavailable for updates or repairs. Whenever possible, you will be informed in advance.</li>
+                    </ul>
 
-                    <p>By using the System, you acknowledge that you have read, understood, and agreed to these Terms of Use and Privacy Policy.</p>
+                    <h4>7. Non-Compliance and Consequences</h4>
+                    <ul>
+                        <li>Disciplinary Action: Misuse of the HRIS or failure to follow these guidelines may result in warnings, access restrictions, or termination of employment.</li>
+                        <li>Legal Action: Violations of data privacy laws may lead to criminal or civil liability.</li>
+                    </ul>
+
+                    <h4>8. Updates to Terms</h4>
+                    <p>The company may update these Terms and Conditions as necessary. You will be notified of any changes, and continued use of the HRIS indicates your acceptance of the updated terms.</p>
+
+                    <h4>9. Acceptance of Terms</h4>
+                    <p>By logging into and using the HRIS, you confirm that you have read, understood, and agreed to these Terms and Conditions.</p>
+                    <p>For questions or concerns, please contact the HR Department or IT Support.</p>
                 </div>
             </div>
+        </div>
+        
+        <div class="policy-footer">
+            <p>This document is officially maintained by {{ config('app.name') }} Human Resources Department</p>
+            <p>For inquiries, contact us on Telegram: <a href="https://t.me/MhrHrDepartment" target="_blank">
+                <i class="fab fa-telegram"></i> HR DEPARTMENT</a></p>
         </div>
     </div>
 
