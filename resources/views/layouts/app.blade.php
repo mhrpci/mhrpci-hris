@@ -1305,7 +1305,7 @@
 }
 
 .toast.warning {
-    background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%) !important;
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
 }
 
 .toast.error {
@@ -1329,6 +1329,80 @@
         margin: 0 0 0.5rem 0 !important;
         font-size: 0.9rem !important;
     }
+}
+
+/* Toast Container Styles */
+.toast-container {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+    min-width: 350px !important;
+    max-width: 400px !important;
+    pointer-events: none; /* Allows clicking through the container */
+}
+
+.toast {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+    opacity: 1 !important;
+    overflow: hidden !important;
+    margin-bottom: 1rem !important;
+    pointer-events: auto; /* Re-enable pointer events for individual toasts */
+    max-height: 200px !important; /* Prevent oversized toasts */
+    transition: all 0.3s ease !important;
+}
+
+/* Toast Types */
+.toast.success {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%) !important;
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+}
+
+.toast.warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+}
+
+.toast.info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+}
+
+/* Toast Components */
+.toast-header {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 0.8rem 1rem !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.toast-body {
+    padding: 1rem !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    word-wrap: break-word !important;
+    max-height: 150px !important;
+    overflow-y: auto !important;
+}
+
+/* Progress Bar */
+.toast-progress {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 0 !important; /* Start at 0 width */
+    height: 4px !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    transition: width linear !important;
 }
 </style>
     <!-- Google Font: Source Sans Pro -->
@@ -2492,33 +2566,46 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         function checkAndShowCelebrants() {
-            fetch('/api/today-celebrants')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.celebrants && data.celebrants.length > 0 && !data.userDismissed) {
-                        // Update modal content
-                        const modalBody = document.getElementById('celebrantsModalBody');
-                        modalBody.innerHTML = data.celebrants.map(celebrant => `
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="mr-3">
-                                    ${celebrant.profile_picture ? 
-                                        `<img src="${celebrant.profile_picture}" class="rounded-circle" width="50" height="50" alt="${celebrant.name}">` :
-                                        `<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px">
-                                            ${celebrant.name.split(' ').map(n => n[0]).join('')}
-                                        </div>`
-                                    }
-                                </div>
-                                <div>
-                                    <h6 class="mb-0">${celebrant.name}</h6>
-                                    <small class="text-muted">${celebrant.department}</small>
-                                </div>
+            fetch('/api/today-celebrants', {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.celebrants && data.celebrants.length > 0 && !data.userDismissed) {
+                    // Update modal content
+                    const modalBody = document.getElementById('celebrantsModalBody');
+                    modalBody.innerHTML = data.celebrants.map(celebrant => `
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="mr-3">
+                                ${celebrant.profile_picture ? 
+                                    `<img src="${celebrant.profile_picture}" class="rounded-circle" width="50" height="50" alt="${celebrant.name}">` :
+                                    `<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px">
+                                        ${celebrant.name.split(' ').map(n => n[0]).join('')}
+                                    </div>`
+                                }
                             </div>
-                        `).join('');
+                            <div>
+                                <h6 class="mb-0">${celebrant.name}</h6>
+                                <small class="text-muted">${celebrant.department}</small>
+                            </div>
+                        </div>
+                    `).join('');
 
-                        // Show modal
-                        $('#celebrantsModal').modal('show');
-                    }
-                });
+                    // Show modal
+                    $('#celebrantsModal').modal('show');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching celebrants:', error);
+            });
         }
 
         // Handle checkbox change
@@ -2527,9 +2614,14 @@
                 fetch('/api/dismiss-celebrants', {
                     method: 'POST',
                     headers: {
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
+                })
+                .catch(error => {
+                    console.error('Error dismissing celebrants:', error);
                 });
             }
         });

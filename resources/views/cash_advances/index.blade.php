@@ -152,7 +152,38 @@
     </table>
 </div>
 </div>
-@include('cash_advances.generate_payments')
+<!-- Modal for generating payment for specific employee -->
+<div class="modal fade" id="generatePaymentModal" tabindex="-1" role="dialog" aria-labelledby="generatePaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generatePaymentModalLabel">Generate Payment for Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('cash_advances.generate_payment_for_employee') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="employee_id">Select Employee</label>
+                        <select name="employee_id" id="employee_id" class="form-control" required>
+                            <option value="" selected disabled>Select Employee</option>
+                            @foreach($employees as $employee)
+                                <option value="{{ $employee->id }}">{{ $employee->last_name }}, {{ $employee->first_name }} {{ $employee->middle_name ?? '' }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Generate Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('css')
@@ -238,10 +269,16 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
-        // Initialize Select2 for all select elements
-        $('select').select2({
+        // Enhanced Select2 initialization with better configuration
+        $('#employee_id').select2({
             theme: 'bootstrap4',
-            width: '100%'
+            width: '100%',
+            placeholder: 'Select Employee',
+            allowClear: true,
+            dropdownParent: $('#generatePaymentModal'),
+            escapeMarkup: function(markup) {
+                return markup;
+            }
         });
 
         // Initialize DataTable
@@ -266,107 +303,101 @@
 
         // Export to Excel functionality
         $('#export-excel').on('click', function() {
+            // Get table data properly by mapping through visible rows
             var data = table.rows().data().toArray();
-            var header = ['Employee Name', 'Loan Amount', 'Repayment Term', 'Monthly Amortization', 'Total Repayment', 'Status'];
+            var header = ['Reference Number', 'Employee Name', 'Loan Amount', 'Repayment Term', 'Monthly Amortization', 'Total Repayment', 'Remaining Balance', 'Status'];
+
+            // Prepare data with proper text extraction
+            var exportData = data.map(function(row) {
+                return [
+                    row[0], // Reference Number
+                    row[1], // Employee Name
+                    row[2].replace('₱', '').replace(/,/g, ''), // Loan Amount
+                    row[3].replace(' Months', '').replace(' Month', ''), // Repayment Term
+                    row[4].replace('₱', '').replace(/,/g, ''), // Monthly Amortization
+                    row[5].replace('₱', '').replace(/,/g, ''), // Total Repayment
+                    row[6].replace('₱', '').replace(/,/g, ''), // Remaining Balance
+                    $(row[7]).text().trim() // Status (properly extract text from badge)
+                ];
+            });
 
             var wb = XLSX.utils.book_new();
-            var ws = XLSX.utils.aoa_to_sheet([header].concat(data.map(row => [
-                row[0], // Employee Name
-                parseFloat(row[1].replace(/[₱,]/g, '')).toFixed(2), // Loan Amount
-                row[2], // Repayment Term
-                parseFloat(row[3].replace(/[₱,]/g, '')).toFixed(2), // Monthly Amortization
-                parseFloat(row[4].replace(/[₱,]/g, '')).toFixed(2), // Total Repayment
-                $(row[5]).text() // Status (extract text from HTML)
-            ])));
+            var ws = XLSX.utils.aoa_to_sheet([header].concat(exportData));
 
             // Set column widths
             ws['!cols'] = [
+                {wch: 20}, // Reference Number
                 {wch: 30}, // Employee Name
                 {wch: 15}, // Loan Amount
                 {wch: 15}, // Repayment Term
                 {wch: 20}, // Monthly Amortization
                 {wch: 18}, // Total Repayment
-                {wch: 10}  // Status
+                {wch: 18}, // Remaining Balance
+                {wch: 12}  // Status
             ];
 
-            // Style the header row
+            // Style configurations
             var headerStyle = {
                 font: { bold: true, color: { rgb: "FFFFFF" } },
                 fill: { fgColor: { rgb: "4472C4" } },
-                alignment: { horizontal: "center", vertical: "center" },
+                alignment: { horizontal: "center", vertical: "center", wrapText: true },
                 border: {
-                    top: {style: "thin", color: {auto: 1}},
-                    bottom: {style: "thin", color: {auto: 1}},
-                    left: {style: "thin", color: {auto: 1}},
-                    right: {style: "thin", color: {auto: 1}}
+                    top: {style: "thin"},
+                    bottom: {style: "thin"},
+                    left: {style: "thin"},
+                    right: {style: "thin"}
                 }
             };
-            for (var i = 0; i < header.length; i++) {
-                var cellRef = XLSX.utils.encode_cell({r: 0, c: i});
-                ws[cellRef].s = headerStyle;
-            }
 
-            // Style the data cells
             var dataStyle = {
-                alignment: { horizontal: "right", vertical: "center" },
+                alignment: { vertical: "center" },
                 border: {
-                    top: {style: "thin", color: {auto: 1}},
-                    bottom: {style: "thin", color: {auto: 1}},
-                    left: {style: "thin", color: {auto: 1}},
-                    right: {style: "thin", color: {auto: 1}}
+                    top: {style: "thin"},
+                    bottom: {style: "thin"},
+                    left: {style: "thin"},
+                    right: {style: "thin"}
                 }
             };
-            var currencyStyle = Object.assign({}, dataStyle, { numFmt: '"₱"#,##0.00' });
-            var monthStyle = Object.assign({}, dataStyle, {
-                alignment: { horizontal: "center" }
-            });
 
+            // Apply styles to all cells
             var range = XLSX.utils.decode_range(ws['!ref']);
             for (var R = range.s.r; R <= range.e.r; ++R) {
                 for (var C = range.s.c; C <= range.e.c; ++C) {
                     var cellRef = XLSX.utils.encode_cell({r: R, c: C});
                     if (!ws[cellRef]) continue;
-                    if (!ws[cellRef].s) ws[cellRef].s = {};
+                    
                     if (R === 0) {
+                        // Header row
                         ws[cellRef].s = headerStyle;
                     } else {
-                        if (C === 0) {
-                            ws[cellRef].s = Object.assign({}, dataStyle, { alignment: { horizontal: "left" } });
-                        } else if (C === 2) {
-                            ws[cellRef].s = monthStyle;
-                        } else if (C === 1 || C === 3 || C === 4) {
-                            ws[cellRef].s = currencyStyle;
+                        // Data rows
+                        var style = {...dataStyle};
+                        
+                        // Specific column alignments and formats
+                        if (C === 0 || C === 1) {
+                            // Reference Number and Employee Name
+                            style.alignment = {...style.alignment, horizontal: "left"};
+                        } else if (C === 3) {
+                            // Repayment Term
+                            style.alignment = {...style.alignment, horizontal: "center"};
+                        } else if (C === 2 || C === 4 || C === 5 || C === 6) {
+                            // Amount columns
+                            style.alignment = {...style.alignment, horizontal: "right"};
+                            style.numFmt = '"₱"#,##0.00';
                         } else {
-                            ws[cellRef].s = dataStyle;
+                            // Status
+                            style.alignment = {...style.alignment, horizontal: "center"};
                         }
+                        
+                        ws[cellRef].s = style;
                     }
                 }
             }
 
+            // Generate and download the file
             XLSX.utils.book_append_sheet(wb, ws, 'Cash Advances');
-            XLSX.writeFile(wb, 'cash_advances.xlsx');
+            XLSX.writeFile(wb, 'cash_advances_' + new Date().toISOString().split('T')[0] + '.xlsx');
         });
-
-        // // Handle form submission for generate payments
-        // $('form[action="{{ route('cash_advances.generate_payments') }}"]').on('submit', function(e) {
-        //     e.preventDefault();
-        //     $.ajax({
-        //         url: $(this).attr('action'),
-        //         type: 'POST',
-        //         data: $(this).serialize(),
-        //         success: function(response) {
-        //             if (response.success) {
-        //                 alert('Payments generated successfully!');
-        //                 location.reload();
-        //             } else {
-        //                 alert('Error generating payments: ' + response.message);
-        //             }
-        //         },
-        //         error: function() {
-        //             alert('An error occurred while generating payments.');
-        //         }
-        //     });
-        // });
 
         // Common toast configuration
         const toastConfig = {
