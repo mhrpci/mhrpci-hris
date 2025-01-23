@@ -26,7 +26,7 @@
             </div>
         </a>
         @endcan
-        @canany(['HR ComBen', 'Admin', 'Super Admin'])
+        @canany(['hrcomben', 'admin', 'super-admin'])
         <a href="{{ url('/timesheets') }}" class="contribution-link {{ request()->routeIs('attendances.timesheets') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-calendar-alt"></i>
