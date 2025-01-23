@@ -129,7 +129,7 @@ public function store(Request $request): RedirectResponse
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
             'company_id' => 'required|unique:employees,company_id',
-            'profile' => 'nullable|image|max:2048', // limit file size to 2MB
+            'profile' => 'nullable|image', // limit file size to 2MB
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',

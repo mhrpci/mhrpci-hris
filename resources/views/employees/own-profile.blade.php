@@ -32,7 +32,8 @@
         <!-- Right column with detailed information -->
         <div class="col-lg-9">
             <div class="mb-4">
-                <div class="nav-buttons-wrapper overflow-auto">
+                <!-- Desktop Navigation Buttons -->
+                <div class="nav-buttons-wrapper d-none d-md-block overflow-auto">
                     <div class="d-flex">
                         <button class="btn btn-primary flex-shrink-0 mr-2 mb-2" onclick="showSection('personal')">
                             <i class="fas fa-user mr-1"></i> Personal Info
@@ -52,6 +53,35 @@
                         <button class="btn btn-dark flex-shrink-0 mr-2 mb-2" onclick="showSection('signature')">
                             <i class="fas fa-signature mr-1"></i> Signature
                         </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Dropdown Select -->
+                <div class="d-md-none">
+                    <div class="mobile-nav-wrapper">
+                        <select class="form-control custom-select" onchange="showSection(this.value)">
+                            <option value="personal" class="select-option">
+                                <span class="option-icon">📋</span> Personal Information
+                            </option>
+                            <option value="work" class="select-option">
+                                <span class="option-icon">💼</span> Work Details & Position
+                            </option>
+                            <option value="education" class="select-option">
+                                <span class="option-icon">🎓</span> Educational Background
+                            </option>
+                            <option value="address" class="select-option">
+                                <span class="option-icon">🏠</span> Current Address
+                            </option>
+                            <option value="government" class="select-option">
+                                <span class="option-icon">🪪</span> Government Credentials
+                            </option>
+                            <option value="signature" class="select-option">
+                                <span class="option-icon">✍️</span> Digital Signature
+                            </option>
+                        </select>
+                        <div class="select-arrow">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -231,15 +261,17 @@
 
 <!-- Profile Image Modal -->
 <div class="modal fade" id="updateProfileImageModal" tabindex="-1" role="dialog" aria-labelledby="updateProfileImageModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateProfileImageModalLabel">Update Profile Image</h5>
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title h6 font-weight-bold" id="updateProfileImageModalLabel">
+                    <i class="fas fa-camera mr-2"></i>Update Profile Image
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body px-4">
                 @if($employee->profile_updated_at && now()->diffInDays($employee->profile_updated_at) < 60)
                     @php
                         $nextUpdateDate = \Carbon\Carbon::parse($employee->profile_updated_at)->addDays(60);
@@ -247,24 +279,50 @@
                     @endphp
                     <div class="alert alert-warning">
                         <i class="fas fa-clock mr-2"></i>
-                        Profile updates are limited to once every 60 days.<br>
-                        Next update available on: <strong>{{ $nextUpdateDate->format('F d, Y') }}</strong><br>
-                        ({{ $daysRemaining }} days remaining)
+                        <div class="d-flex flex-column">
+                            <span class="font-weight-bold mb-2">Profile updates are limited to once every 60 days.</span>
+                            <span>Next update available on: <strong>{{ $nextUpdateDate->format('F d, Y') }}</strong></span>
+                            <span class="mt-1">({{ $daysRemaining }} days remaining)</span>
+                        </div>
                     </div>
                 @else
+                <div class="alert alert-info mb-3">
+                    <h5 class="font-weight-bold mb-3" style="font-size: 1.1rem; color: #1a3353;">
+                        <i class="fas fa-info-circle mr-2"></i>Photo Requirements:
+                    </h5>
+                    <ul class="list-unstyled mb-0" style="font-size: 1rem; line-height: 1.6;">
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                            <span>Must be presentable</span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                            <span>White background</span>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                            <span>Proper business attire</span>
+                        </li>
+                    </ul>
+                </div>
                     <form id="profileImageForm" enctype="multipart/form-data">
                         <div class="upload-box">
                             <input type="file" class="file-input" id="profile" name="profile" accept="image/jpeg,image/png,image/jpg">
-                            <div class="upload-content">
-                                <div id="defaultUploadContent">
-                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                                    <p class="upload-text">Drag and drop your image here<br>or click to browse</p>
-                                    <p class="upload-formats">Accepted formats: JPG, JPEG, PNG</p>
+                            <div class="upload-content p-4">
+                                <div id="defaultUploadContent" class="text-center">
+                                    <i class="fas fa-cloud-upload-alt upload-icon fa-3x mb-3 text-primary"></i>
+                                    <p class="upload-text h6 mb-2">
+                                        <span class="d-none d-sm-inline">Drag and drop your image here<br>or </span>
+                                        <span>click to browse</span>
+                                    </p>
+                                    <p class="upload-formats small text-muted">Accepted formats: JPG, JPEG, PNG</p>
                                 </div>
-                                <div id="imagePreview" style="display: none;">
-                                    <img src="" alt="Preview" class="preview-image">
-                                    <p class="file-name mt-2"></p>
-                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removeImage()">
+                                <div id="imagePreview" style="display: none;" class="text-center">
+                                    <div class="preview-wrapper mb-3">
+                                        <img src="" alt="Preview" class="preview-image img-fluid rounded">
+                                    </div>
+                                    <p class="file-name small text-muted mb-2"></p>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeImage()">
                                         <i class="fas fa-times"></i> Remove
                                     </button>
                                 </div>
@@ -273,10 +331,12 @@
                     </form>
                 @endif
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <div class="modal-footer border-top-0">
+                <button type="button" class="btn btn-light font-weight-bold" data-dismiss="modal">Cancel</button>
                 @if(!$employee->profile_updated_at || now()->diffInDays($employee->profile_updated_at) >= 60)
-                    <button type="button" class="btn btn-primary" onclick="updateProfileImage()">Save changes</button>
+                    <button type="button" class="btn btn-primary font-weight-bold px-4" onclick="updateProfileImage()">
+                        Save changes
+                    </button>
                 @endif
             </div>
         </div>
@@ -286,239 +346,419 @@
 
 @push('styles')
 <style>
-    /* Base styles */
+    /* Core Layout & Components */
     .card {
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         margin-bottom: 1.5rem;
+        background: #fff;
+        transition: all 0.3s ease;
     }
 
-    /* Enhanced Responsive Grid Layout */
-    @media (max-width: 1200px) {
-        .col-lg-3 {
-            flex: 0 0 100%;
-            max-width: 100%;
-            margin-bottom: 1.5rem;
-        }
-        
-        .col-lg-9 {
-            flex: 0 0 100%;
-            max-width: 100%;
-        }
-        
-        /* Center profile section on medium screens */
-        .col-lg-3 .card {
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    /* Enhanced Mobile Responsiveness */
-    @media (max-width: 768px) {
-        .container-fluid {
-            padding: 10px;
-        }
-
-        .card {
-            margin-bottom: 1rem;
-        }
-
-        .card-body {
-            padding: 0.875rem;
-        }
-
-        /* Adjust profile image size */
-        .rounded-circle {
-            width: 120px !important;
-            height: 120px !important;
-        }
-
-        /* Make buttons more touch-friendly */
-        .btn {
-            padding: 8px 16px;
-            font-size: 0.95rem;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            white-space: nowrap;
-        }
-
-        /* Improve navigation buttons scrolling */
-        .nav-buttons-wrapper {
-            padding-bottom: 5px;
-            margin-bottom: -5px;
-        }
-
-        .d-flex {
-            flex-wrap: nowrap;
-            padding-bottom: 5px;
-        }
-
-        /* Adjust text sizes for better readability */
-        h2 {
-            font-size: 1.5rem;
-        }
-
-        h5 {
-            font-size: 1.1rem;
-        }
-
-        p {
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-        }
+    /* Profile Section Enhancements */
+    .profile-image-wrapper {
+        position: relative;
+        display: inline-block;
+        margin: 1rem auto;
     }
 
-    /* Small Screen Optimizations */
-    @media (max-width: 576px) {
-        .container-fluid {
-            padding: 8px;
-        }
+    .profile-image {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
 
-        /* Stack government ID fields */
-        #government .col-md-3 {
-            flex: 0 0 100%;
-            max-width: 100%;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Adjust modal padding */
-        .modal-body {
-            padding: 1rem;
-        }
-
-        .modal-footer {
-            padding: 0.75rem;
-        }
-
-        /* Make signature canvas more manageable */
-        #signatureCanvas {
-            height: 120px !important;
-        }
+    .profile-image:hover {
+        transform: scale(1.02);
     }
 
     /* Enhanced Navigation Buttons */
     .nav-buttons-wrapper {
-        position: relative;
-        margin-bottom: 1.5rem;
-        -webkit-overflow-scrolling: touch;
+        background: rgba(255,255,255,0.95);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    .nav-buttons-wrapper .d-flex {
+    .nav-button {
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        min-width: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         gap: 8px;
     }
 
-    .btn {
-        transition: all 0.2s ease;
-        position: relative;
-        overflow: hidden;
+    .nav-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    .btn:active {
-        transform: translateY(1px);
-    }
-
-    /* Improved Info Section Transitions */
+    /* Section Content Styling */
     .info-section {
-        display: none;
         opacity: 0;
         transform: translateY(10px);
-        transition: opacity 0.3s ease, transform 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .info-section.active {
-        display: block;
         opacity: 1;
         transform: translateY(0);
     }
 
-    /* Enhanced Card Shadows and Hover Effects */
-    .shadow-sm {
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05), 
-                    0 1px 2px rgba(0,0,0,0.1) !important;
-        transition: box-shadow 0.3s ease;
+    .section-content {
+        padding: 1.5rem;
     }
 
-    .card:hover {
-        box-shadow: 0 4px 8px rgba(0,0,0,0.08), 
-                    0 2px 4px rgba(0,0,0,0.12) !important;
-    }
-
-    /* Improved Image Display */
-    .signature-display img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    /* Better Touch Area for Buttons */
-    @media (max-width: 992px) {
-        .btn {
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    /* Responsive Breakpoints */
+    @media (max-width: 1400px) {
+        .container-fluid {
+            max-width: 1140px;
+            margin: 0 auto;
         }
     }
 
-    /* Signature Canvas Styles */
-    #signatureCanvas {
-        touch-action: none;
-        background: #fff;
-        border: 1px solid #dee2e6 !important;
+    @media (max-width: 1200px) {
+        .profile-image {
+            width: 150px;
+            height: 150px;
+        }
+
+        .nav-button {
+            min-width: 120px;
+            padding: 0.6rem 1rem;
+        }
     }
 
-    /* Adjust modal size for better signature space */
-    .modal-xl {
-        max-width: 90%;
+    @media (max-width: 992px) {
+        .container-fluid {
+            padding: 1rem;
+        }
+
+        .profile-section {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .nav-buttons-wrapper .d-flex {
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .nav-buttons-wrapper .d-flex::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     @media (max-width: 768px) {
-        #signatureCanvas {
-            height: 200px !important;
+        .profile-image {
+            width: 120px;
+            height: 120px;
         }
-        
-        .modal-xl {
-            max-width: 95%;
-            margin: 10px;
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .section-content {
+            padding: 1rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .nav-button {
+            min-width: auto;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .custom-select {
+            font-size: 0.95rem;
+            padding: 0.6rem;
         }
     }
 
-    /* Fullscreen Modal Styles */
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding: 0.75rem;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+        }
+
+        .card {
+            border-radius: 8px;
+        }
+
+        .nav-button {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        .section-content {
+            padding: 0.75rem;
+        }
+
+        .custom-select {
+            font-size: 0.9rem;
+            padding: 0.5rem;
+        }
+    }
+
+    /* Enhanced Modal Styles */
     .modal-fullscreen {
-        width: 100vw;
-        max-width: none;
-        height: 100vh;
-        margin: 0;
+        padding: 0 !important;
     }
 
     .modal-fullscreen .modal-content {
-        height: 100vh;
-        border: 0;
         border-radius: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
 
-    .modal-fullscreen .modal-body {
-        height: calc(100vh - 120px); /* Adjust for header and footer */
-        padding: 20px;
+    .modal-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
     }
 
-    /* Upload Box Styles */
+    /* Upload Box Refinements */
     .upload-box {
-        position: relative;
-        width: 100%;
-        min-height: 300px;
-        border: 2px dashed #dee2e6;
-        border-radius: 8px;
-        background-color: #f8f9fa;
+        border: 2px dashed #e0e0e0;
+        border-radius: 12px;
+        background: #f8f9fa;
         transition: all 0.3s ease;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .upload-box.dragover {
-        background-color: #e9ecef;
-        border-color: #6c757d;
+        border-color: #007bff;
+        background: rgba(0,123,255,0.05);
     }
 
-    .upload-box .file-input {
+    .upload-content {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    /* Animation Keyframes */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(-10px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Utility Classes */
+    .smooth-transition {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Enhanced Mobile Dropdown Styling */
+    .mobile-nav-wrapper {
+        position: relative;
+        margin: 1rem 0;
+    }
+
+    .custom-select {
+        width: 100%;
+        padding: 1.25rem 1.5rem;
+        height: 60px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #2c3e50;
+        background-color: #ffffff;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        transition: all 0.25s ease-in-out;
+        cursor: pointer;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .custom-select:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52,152,219,0.15);
+        outline: none;
+    }
+
+    .custom-select:hover {
+        border-color: #3498db;
+        background-color: #f8f9fa;
+    }
+
+    /* Select Arrow Styling */
+    .select-arrow {
+        position: absolute;
+        right: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        transition: transform 0.2s ease;
+    }
+
+    .select-arrow i {
+        color: #3498db;
+        font-size: 1rem;
+    }
+
+    .custom-select:focus + .select-arrow {
+        transform: translateY(-50%) rotate(180deg);
+    }
+
+    /* Option Styling */
+    .select-option {
+        padding: 12px 16px;
+        margin: 4px 0;
+        font-weight: 500;
+    }
+
+    .option-icon {
+        margin-right: 8px;
+        font-size: 1.1em;
+    }
+
+    /* Mobile Responsive Adjustments */
+    @media (max-width: 768px) {
+        .mobile-nav-wrapper {
+            margin: 0.875rem 0;
+        }
+
+        .custom-select {
+            height: 55px;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .mobile-nav-wrapper {
+            margin: 0.75rem 0;
+        }
+
+        .custom-select {
+            height: 50px;
+            padding: 0.875rem 1.125rem;
+            font-size: 0.95rem;
+        }
+
+        .select-arrow {
+            right: 1rem;
+        }
+
+        .select-arrow i {
+            font-size: 0.875rem;
+        }
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+        .custom-select {
+            background-color: #2c3e50;
+            color: #ffffff;
+            border-color: #34495e;
+        }
+
+        .custom-select:hover {
+            background-color: #34495e;
+        }
+
+        .select-arrow i {
+            color: #3498db;
+        }
+    }
+
+    /* Smooth Animation for Section Changes */
+    .info-section {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Loading State */
+    .custom-select:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        background-color: #f8f9fa;
+    }
+
+    /* Active State */
+    .custom-select:active {
+        transform: scale(0.99);
+    }
+
+    /* Better Touch Area for Mobile */
+    @media (hover: none) and (pointer: coarse) {
+        .custom-select {
+            min-height: 60px;
+        }
+    }
+
+    /* Enhanced Modal Responsive Styles */
+    #updateProfileImageModal .modal-dialog {
+        max-width: 500px;
+        margin: 1.75rem auto;
+    }
+
+    #updateProfileImageModal .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    #updateProfileImageModal .upload-box {
+        border: 2px dashed #dee2e6;
+        border-radius: 12px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        position: relative;
+        min-height: 200px;
+    }
+
+    #updateProfileImageModal .upload-box.dragover {
+        border-color: #007bff;
+        background: rgba(0, 123, 255, 0.05);
+    }
+
+    #updateProfileImageModal .file-input {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -526,77 +766,152 @@
         left: 0;
         opacity: 0;
         cursor: pointer;
-        z-index: 2;
     }
 
-    .upload-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        width: 90%;
+    #updateProfileImageModal .preview-wrapper {
+        max-width: 300px;
+        margin: 0 auto;
     }
 
-    .upload-icon {
-        font-size: 48px;
-        color: #6c757d;
-        margin-bottom: 15px;
-    }
-
-    .upload-text {
-        font-size: 16px;
-        color: #495057;
-        margin-bottom: 10px;
-    }
-
-    .upload-formats {
-        font-size: 12px;
-        color: #6c757d;
-    }
-
-    .preview-image {
-        max-width: 100%;
+    #updateProfileImageModal .preview-image {
         max-height: 200px;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        width: auto;
+        object-fit: contain;
     }
 
-    .file-name {
-        font-size: 14px;
-        color: #495057;
-        margin: 8px 0;
-        word-break: break-all;
+    /* Mobile Specific Styles */
+    @media (max-width: 576px) {
+        #updateProfileImageModal .modal-dialog {
+            margin: 0.5rem;
+        }
+
+        #updateProfileImageModal .modal-content {
+            border-radius: 12px;
+        }
+
+        #updateProfileImageModal .modal-body {
+            padding: 1rem;
+        }
+
+        #updateProfileImageModal .upload-box {
+            min-height: 180px;
+        }
+
+        #updateProfileImageModal .upload-icon {
+            font-size: 2em;
+        }
+
+        #updateProfileImageModal .upload-text {
+            font-size: 0.9rem;
+        }
+
+        #updateProfileImageModal .upload-formats {
+            font-size: 0.8rem;
+        }
+
+        #updateProfileImageModal .preview-image {
+            max-height: 150px;
+        }
+    }
+
+    /* Tablet Specific Styles */
+    @media (min-width: 577px) and (max-width: 768px) {
+        #updateProfileImageModal .modal-dialog {
+            max-width: 450px;
+            margin: 1rem auto;
+        }
+
+        #updateProfileImageModal .upload-box {
+            min-height: 220px;
+        }
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        #updateProfileImageModal .upload-box {
+            cursor: pointer;
+        }
+
+        #updateProfileImageModal .btn {
+            padding: 0.5rem 1rem;
+            min-height: 44px;
+        }
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+        #updateProfileImageModal .upload-box {
+            background: #2d3436;
+            border-color: #4a5568;
+        }
+
+        #updateProfileImageModal .modal-content {
+            background: #1a202c;
+            color: #fff;
+        }
+
+        #updateProfileImageModal .text-muted {
+            color: #a0aec0 !important;
+        }
+
+        #updateProfileImageModal .close {
+            color: #fff;
+        }
+
+        #updateProfileImageModal .btn-light {
+            background: #2d3436;
+            color: #fff;
+            border-color: #4a5568;
+        }
     }
 </style>
 @endpush
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function showSection(sectionId) {
+        // Update dropdown and add loading state
+        const mobileSelect = document.querySelector('.custom-select');
+        if (mobileSelect) {
+            mobileSelect.value = sectionId;
+            mobileSelect.disabled = true;
+        }
+
+        // Hide all sections with fade out
         const sections = document.querySelectorAll('.info-section');
         sections.forEach(section => {
-            section.style.display = 'none';
+            section.style.opacity = '0';
+            section.style.transform = 'translateX(20px)';
+            setTimeout(() => {
+                section.style.display = 'none';
+            }, 300);
         });
 
-        const selectedSection = document.getElementById(sectionId);
-        selectedSection.style.display = 'block';
-
-        // Add slide-in animation
-        selectedSection.style.opacity = '0';
-        selectedSection.style.transform = 'translateX(20px)';
+        // Show selected section with fade in
         setTimeout(() => {
+            const selectedSection = document.getElementById(sectionId);
+            selectedSection.style.display = 'block';
+            
+            // Trigger reflow
+            selectedSection.offsetHeight;
+
             selectedSection.style.opacity = '1';
             selectedSection.style.transform = 'translateX(0)';
-        }, 50);
+
+            // Re-enable select after transition
+            if (mobileSelect) {
+                setTimeout(() => {
+                    mobileSelect.disabled = false;
+                }, 300);
+            }
+        }, 300);
     }
 
-    // Show personal info by default
+    // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
         showSection('personal');
+        initializeSignatureCanvas();
+        initializeProfileUpload();
     });
 
     let canvas = null;
@@ -605,8 +920,11 @@
     let lastX = 0;
     let lastY = 0;
 
-    document.addEventListener('DOMContentLoaded', function() {
+    // Signature Canvas Functions
+    function initializeSignatureCanvas() {
         canvas = document.getElementById('signatureCanvas');
+        if (!canvas) return;
+
         ctx = canvas.getContext('2d');
 
         // Set up canvas drawing events
@@ -615,20 +933,18 @@
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mouseout', stopDrawing);
 
-        // Set up touch events for mobile
+        // Touch events
         canvas.addEventListener('touchstart', handleTouch);
         canvas.addEventListener('touchmove', handleTouch);
         canvas.addEventListener('touchend', stopDrawing);
 
-        // Add resize handler
+        // Resize handling
         window.addEventListener('resize', resizeCanvas);
-
-        // Initial canvas setup
         resizeCanvas();
 
-        // Show first section by default
-        showSection('personal');
-    });
+        // Modal event
+        $('#signatureModal').on('shown.bs.modal', resizeCanvas);
+    }
 
     function startDrawing(e) {
         isDrawing = true;
@@ -809,11 +1125,6 @@
         }
     }
 
-    // Ensure canvas is resized when modal opens
-    $('#signatureModal').on('shown.bs.modal', function () {
-        resizeCanvas();
-    });
-
     // Handle window resize
     window.addEventListener('resize', function() {
         if ($('#signatureModal').hasClass('show')) {
@@ -868,82 +1179,59 @@
         });
     }
 
-    // Add these new functions for drag and drop functionality
-    document.addEventListener('DOMContentLoaded', function() {
+    // Profile Upload Functions
+    function initializeProfileUpload() {
         const uploadBox = document.querySelector('.upload-box');
+        if (!uploadBox) return;
+
         const fileInput = document.getElementById('profile');
         const defaultContent = document.getElementById('defaultUploadContent');
         const imagePreview = document.getElementById('imagePreview');
         const previewImage = imagePreview.querySelector('img');
         const fileName = imagePreview.querySelector('.file-name');
 
+        // Drag and drop handlers
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadBox.addEventListener(eventName, preventDefaults, false);
+            uploadBox.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
         });
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
+        // Highlight effects
         ['dragenter', 'dragover'].forEach(eventName => {
-            uploadBox.addEventListener(eventName, highlight, false);
+            uploadBox.addEventListener(eventName, () => uploadBox.classList.add('dragover'));
         });
 
         ['dragleave', 'drop'].forEach(eventName => {
-            uploadBox.addEventListener(eventName, unhighlight, false);
+            uploadBox.addEventListener(eventName, () => uploadBox.classList.remove('dragover'));
         });
 
-        function highlight(e) {
-            uploadBox.classList.add('dragover');
-        }
-
-        function unhighlight(e) {
-            uploadBox.classList.remove('dragover');
-        }
-
-        uploadBox.addEventListener('drop', handleDrop, false);
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const file = dt.files[0];
-            handleFile(file);
-        }
-
-        fileInput.addEventListener('change', function(e) {
-            handleFile(this.files[0]);
-        });
+        // File handling
+        uploadBox.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
+        fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
 
         function handleFile(file) {
-            if (file) {
-                if (validateFile(file)) {
-                    displayPreview(file);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid File',
-                        text: 'Please upload only JPG, JPEG, or PNG files.'
-                    });
-                }
+            if (!file) return;
+
+            if (['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    previewImage.src = e.target.result;
+                    fileName.textContent = file.name;
+                    defaultContent.style.display = 'none';
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File',
+                    text: 'Please upload only JPG, JPEG, or PNG files.'
+                });
             }
         }
-
-        function validateFile(file) {
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-            return validTypes.includes(file.type);
-        }
-
-        function displayPreview(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                fileName.textContent = file.name;
-                defaultContent.style.display = 'none';
-                imagePreview.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        }
-    });
+    }
 
     function removeImage() {
         const fileInput = document.getElementById('profile');

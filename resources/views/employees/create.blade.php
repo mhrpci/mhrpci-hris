@@ -67,8 +67,8 @@
                                 <div class="row">
                                 <div class="col-md-6">
                                  <div class="form-group">
-                                        <label for="profile">Profile Picture<span class="text-danger">*</span></label>
-                                        <input type="file" id="profile" name="profile" class="form-control" accept="image/*" onchange="previewImage(event)" required>
+                                        <label for="profile">Profile Picture</label>
+                                        <input type="file" id="profile" name="profile" class="form-control" accept="image/*" onchange="previewImage(event)">
                                  </div>
                               </div>
                             <div class="col-md-6">
