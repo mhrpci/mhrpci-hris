@@ -170,7 +170,7 @@
                         <select name="employee_id" id="employee_id" class="form-control" required>
                             <option value="" selected disabled>Select Employee</option>
                             @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}">{{ $employee->last_name }}, {{ $employee->first_name }} {{ $employee->middle_name ?? '' }}</option>
+                                <option value="{{ $employee->id }}">{{ $employee->company_id }} - {{ $employee->last_name }}, {{ $employee->first_name }} {{ $employee->middle_name ?? '' }} {{ $employee->suffix ?? '' }}</option>
                             @endforeach
                         </select>
                     </div>

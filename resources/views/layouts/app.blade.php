@@ -625,75 +625,6 @@
     margin-top: 0.5rem;
 }
 
-/* Tour Guide Styles */
-.shepherd-button {
-    background: #8e44ad !important;
-    border: none;
-    border-radius: 3px;
-    color: #fff;
-    cursor: pointer;
-    margin-right: 8px;
-    padding: 8px 18px;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
-}
-
-.shepherd-button:hover {
-    background: #732d91 !important;
-}
-
-.shepherd-button.shepherd-button-secondary {
-    background: #6c757d !important;
-}
-
-.shepherd-button.shepherd-button-secondary:hover {
-    background: #5a6268 !important;
-}
-
-.shepherd-text {
-    color: #495057;
-    font-size: 1rem;
-    line-height: 1.6;
-    padding: 1rem;
-}
-
-.shepherd-title {
-    color: #8e44ad;
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.shepherd-header {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.shepherd-footer {
-    padding: 0.5rem 1rem;
-    border-top: 1px solid #dee2e6;
-}
-
-.shepherd-element {
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    max-width: 400px;
-}
-
-.shepherd-arrow:before {
-    background: #fff !important;
-}
-
-.shepherd-enabled.shepherd-element {
-    opacity: 1;
-}
-
-.shepherd-modal-overlay-container.shepherd-modal-is-visible {
-    opacity: 0.5;
-}
-
 .toast {
     background-color: #28a745 !important; /* Success green background */
     color: #ffffff !important; /* White text */
@@ -1404,6 +1335,339 @@
     background: rgba(255, 255, 255, 0.3) !important;
     transition: width linear !important;
 }
+
+/* Quick Actions Styling */
+.quick-action-item {
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.quick-action-item:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+}
+
+.quick-action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: white;
+}
+
+.quick-action-item .media {
+    align-items: center;
+}
+
+.quick-action-item .dropdown-item-title {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.quick-action-item .text-sm {
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .quick-action-item .media {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .quick-action-icon {
+        margin: 0 auto 0.5rem;
+    }
+
+    .quick-action-item .text-sm {
+        display: none;
+    }
+}
+
+/* Dark Mode Support */
+.dark-mode .quick-action-item:hover {
+    background-color: #343a40;
+}
+
+.dark-mode .quick-action-item .dropdown-item-title {
+    color: #fff;
+}
+
+.dark-mode .quick-action-item .text-sm {
+    color: #adb5bd;
+}
+
+/* Animation */
+.dropdown-menu.show {
+    animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add these styles in the existing <style> section */
+.quick-actions-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1040;
+}
+
+.quick-actions-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Remove hardcoded background color - will be set by JS */
+}
+
+.quick-actions-button:hover {
+    background-color: #732d91;
+    transform: scale(1.1);
+}
+
+.quick-actions-button i {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.quick-actions-button.active i {
+    transform: rotate(45deg);
+}
+
+.quick-actions-card {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1039;
+}
+
+.quick-actions-card.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.quick-actions-header {
+    padding: 15px;
+    color: white;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    /* Remove hardcoded background color - will be set by JS */
+}
+
+.quick-actions-header i {
+    margin-right: 10px;
+}
+
+.quick-actions-content {
+    padding: 15px;
+}
+
+.quick-action-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.quick-action-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    text-decoration: none;
+}
+
+.quick-action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    color: white;
+}
+
+.quick-action-text {
+    flex: 1;
+}
+
+.quick-action-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #333;
+}
+
+.quick-action-description {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Theme Customization Styles */
+.theme-option-wrapper {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-option-wrapper label {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.theme-option {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.theme-option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.theme-option.active {
+    border-color: #fff;
+}
+
+.theme-option.active::after {
+    content: '\2714';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Theme Colors */
+.theme-primary { background: #007bff; }
+.theme-secondary { background: #6c757d; }
+.theme-success { background: #28a745; }
+.theme-danger { background: #dc3545; }
+.theme-warning { background: #ffc107; }
+.theme-info { background: #17a2b8; }
+.theme-dark { background: #343a40; }
+.theme-purple { background: #6f42c1; }
+.theme-indigo { background: #6610f2; }
+.theme-pink { background: #e83e8c; }
+
+/* ... existing code ... */
+
+/* Enhanced Quick Actions Button Styles */
+.quick-actions-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-actions-button i {
+    font-size: 24px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.quick-actions-button.active i {
+    transform: rotate(45deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .quick-actions-button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .quick-actions-button i {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .quick-actions-fab {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .quick-actions-button {
+        width: 42px;
+        height: 42px;
+    }
+
+    .quick-actions-button i {
+        font-size: 18px;
+    }
+}
+
+/* Add hover effect for better visibility */
+.quick-actions-button:hover i {
+    transform: scale(1.1);
+}
+
+.quick-actions-button.active:hover i {
+    transform: rotate(45deg) scale(1.1);
+}
+
+/* Ensure icon visibility on light backgrounds */
+.quick-actions-button i {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
 </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
@@ -1422,56 +1686,40 @@
 
     @stack('styles')
 
-    <!-- Initialize Select2 after jQuery is loaded -->
+    <!-- Initialize Select2 -->
     <script>
-        window.addEventListener('load', function() {
-            if (typeof jQuery !== 'undefined') {
-                // Initialize Select2 with custom configuration
-                $('select').select2({
+        $(document).ready(function() {
+            // Basic Select2 initialization with essential options
+            $('select').select2({
+                theme: 'bootstrap4',
+                width: '100%',
+                placeholder: 'Select an option',
+                allowClear: true
+            });
+
+            // Handle dark mode changes
+            const observer = new MutationObserver(function() {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                $('select').select2('destroy').select2({
                     theme: 'bootstrap4',
                     width: '100%',
-                    dropdownAutoWidth: true,
                     placeholder: 'Select an option',
                     allowClear: true,
-                    containerCssClass: ':all:',
-                    dropdownCssClass: function() {
-                        // Check if dark mode is active
-                        return document.body.classList.contains('dark-mode') ? 'select2-dropdown-dark' : '';
-                    }
+                    dropdownCssClass: isDarkMode ? 'select2-dropdown-dark' : ''
                 });
+            });
 
-                // Update Select2 dropdown theme when switching between light/dark mode
-                const observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.attributeName === 'class') {
-                            $('select').each(function() {
-                                $(this).select2('destroy');
-                                $(this).select2({
-                                    theme: 'bootstrap4',
-                                    width: '100%',
-                                    dropdownAutoWidth: true,
-                                    placeholder: 'Select an option',
-                                    allowClear: true,
-                                    containerCssClass: ':all:',
-                                    dropdownCssClass: document.body.classList.contains('dark-mode') ? 'select2-dropdown-dark' : ''
-                                });
-                            });
-                        }
-                    });
-                });
-
-                observer.observe(document.body, {
-                    attributes: true
-                });
-            }
+            // Watch for dark mode changes
+            observer.observe(document.body, { attributes: true });
         });
     </script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <meta name="app-env" content="{{ config('app.env') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+
+    <!-- Add this in the head section after other CSS links -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/10.0.1/css/shepherd.css"/>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -1504,13 +1752,7 @@
                         <div class="theme-option bg-indigo" data-theme="indigo"></div>
                         <div class="theme-option bg-purple" data-theme="purple"></div>
                         <div class="theme-option bg-pink" data-theme="pink"></div>
-                        <div class="theme-option bg-navy" data-theme="navy"></div>
-                        <div class="theme-option bg-lightblue" data-theme="lightblue"></div>
-                        <div class="theme-option bg-teal" data-theme="teal"></div>
-                        <div class="theme-option bg-cyan" data-theme="cyan"></div>
                         <div class="theme-option bg-dark" data-theme="dark"></div>
-                        <div class="theme-option bg-gray-dark" data-theme="gray-dark"></div>
-                        <div class="theme-option bg-gray" data-theme="gray"></div>
                     </div>
                 </div>
                  <!-- New navbar position options -->
@@ -1553,7 +1795,15 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Notifications Dropdown Menu -->
+                <!-- Add the tour guide button before notifications -->
+                <li class="nav-item">
+                    <button id="startTour" class="nav-link btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Start App Tour">
+                        <i class="fas fa-route"></i>
+                        <span class="d-none d-md-inline ml-1">Tour Guide</span>
+                    </button>
+                </li>
+
+                <!-- Existing notifications and other items -->
                 @auth
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#" id="notifications-dropdown">
@@ -1579,13 +1829,6 @@
                 </li>
                 @endauth
                 
-                <!-- Tour Guide Button -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="start-tour" role="button">
-                        <i class="fas fa-question-circle"></i>
-                        <span class="d-none d-sm-inline-block ml-1">Tour Guide</span>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
                         <i class="fas fa-cogs"></i>
@@ -2244,298 +2487,6 @@
 
     @yield('js')
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tour = new Shepherd.Tour({
-            useModalOverlay: true,
-            defaultStepOptions: {
-                classes: 'shadow-md bg-purple-dark',
-                scrollTo: true,
-                cancelIcon: {
-                    enabled: true
-                }
-            }
-        });
-
-        // Welcome Step
-        tour.addStep({
-            id: 'welcome',
-            text: `<h3 class="shepherd-title">Welcome to MHR Property Conglomerates HRIS! 👋</h3>
-                   <p>This comprehensive tour will guide you through our system's main interface components and features.</p>`,
-            buttons: [
-                {
-                    text: 'Skip Tour',
-                    action: tour.complete,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Start Tour',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Main Sidebar Overview
-        tour.addStep({
-            id: 'sidebar-overview',
-            text: `<h3 class="shepherd-title">Main Navigation Sidebar</h3>
-                   <p>This is your primary navigation menu, containing all essential modules and features:</p>
-                   <ul>
-                       <li>Dashboard - Overview of key metrics</li>
-                       <li>Employee Management - Handle employee records</li>
-                       <li>Attendance & Leave Management</li>
-                       <li>Payroll & Benefits</li>
-                       <li>And more based on your role permissions</li>
-                   </ul>`,
-            attachTo: {
-                element: '.main-sidebar',
-                on: 'right'
-            },
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Next',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Brand Logo
-        tour.addStep({
-            id: 'brand-logo',
-            text: `<h3 class="shepherd-title">Company Brand</h3>
-                   <p>Click here to return to the dashboard at any time. The logo serves as your home button.</p>`,
-            attachTo: {
-                element: '.brand-link',
-                on: 'right'
-            },
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Next',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Navbar Overview
-        tour.addStep({
-            id: 'navbar-overview',
-            text: `<h3 class="shepherd-title">Top Navigation Bar</h3>
-                   <p>The top navigation bar provides quick access to important features:</p>
-                   <ul>
-                       <li>Menu Toggle - Collapse/Expand sidebar</li>
-                       <li>Our Policies - Quick access to company policies</li>
-                       <li>Global Search - Find anything quickly</li>
-                       <li>Notifications - Stay updated with alerts</li>
-                       <li>User Profile - Access your account settings</li>
-                   </ul>`,
-            attachTo: {
-                element: '.main-header',
-                on: 'bottom'
-            },
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Next',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Menu Toggle
-        tour.addStep({
-            id: 'menu-toggle',
-            text: `<h3 class="shepherd-title">Menu Toggle</h3>
-                   <p>Click this button to collapse or expand the sidebar, giving you more workspace when needed.</p>`,
-            attachTo: {
-                element: '[data-widget="pushmenu"]',
-                on: 'right'
-            },
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Next',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Notifications - Add element check before creating step
-        const notificationElement = document.querySelector('#notification-dropdown');
-        if (notificationElement) {
-            tour.addStep({
-                id: 'notifications',
-                text: `<h3 class="shepherd-title">Notifications Center</h3>
-                       <p>Stay informed with real-time notifications about:</p>
-                       <ul>
-                           <li>Leave requests and approvals</li>
-                           <li>Payroll updates</li>
-                           <li>Important announcements</li>
-                           <li>System updates</li>
-                       </ul>`,
-                attachTo: {
-                    element: '#notification-dropdown',
-                    on: 'bottom'
-                },
-                buttons: [
-                    {
-                        text: 'Back',
-                        action: tour.back,
-                        classes: 'shepherd-button-secondary'
-                    },
-                    {
-                        text: 'Next',
-                        action: tour.next
-                    }
-                ]
-            });
-        }
-
-        // User Profile Dropdown
-        tour.addStep({
-            id: 'user-profile',
-            text: `<h3 class="shepherd-title">User Profile Menu</h3>
-                   <p>Access your personal settings and options:</p>
-                   <ul>
-                       <li>View and edit your profile</li>
-                       <li>Change your password</li>
-                       <li>Manage account settings</li>
-                       <li>Sign out of the system</li>
-                   </ul>`,
-            attachTo: {
-                element: '.user-menu',
-                on: 'bottom'
-            },
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Next',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Right Sidebar (Theme Customization)
-        tour.addStep({
-            id: 'right-sidebar',
-            text: `<h3 class="shepherd-title">Theme Customization</h3>
-                   <p>Personalize your interface appearance:</p>
-                   <ul>
-                       <li>Choose from multiple color themes</li>
-                       <li>Adjust navbar position (Fixed/Static)</li>
-                       <li>Customize sidebar appearance</li>
-                       <li>Your preferences are saved automatically</li>
-                   </ul>`,
-            attachTo: {
-                element: '[data-widget="control-sidebar"]',
-                on: 'left'
-            },
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Next',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Content Area
-        tour.addStep({
-            id: 'content-area',
-            text: `<h3 class="shepherd-title">Main Content Area</h3>
-                   <p>This is where your selected module's content will be displayed. The area adjusts automatically based on your sidebar state and screen size.</p>`,
-            attachTo: {
-                element: '.content-wrapper',
-                on: 'left'
-            },
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Next',
-                    action: tour.next
-                }
-            ]
-        });
-
-        // Final Step
-        tour.addStep({
-            id: 'end',
-            text: `<h3 class="shepherd-title">Tour Complete! 🎉</h3>
-                   <p>You're now familiar with the main interface components. Remember:</p>
-                   <ul>
-                       <li>You can restart this tour anytime using the Tour Guide button</li>
-                       <li>Explore each module to discover more features</li>
-                       <li>Contact support if you need additional help</li>
-                   </ul>`,
-            buttons: [
-                {
-                    text: 'Back',
-                    action: tour.back,
-                    classes: 'shepherd-button-secondary'
-                },
-                {
-                    text: 'Finish',
-                    action: tour.complete
-                }
-            ]
-        });
-
-        // Start tour button - Add element check
-        const startTourButton = document.getElementById('start-tour');
-        if (startTourButton) {
-            startTourButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                tour.start();
-            });
-        }
-
-        // Save tour progress in localStorage
-        tour.on('complete', () => {
-            localStorage.setItem('tourCompleted', 'true');
-        });
-
-        // Check if first-time user
-        if (!localStorage.getItem('tourCompleted')) {
-            // Show tour prompt for first-time users
-            setTimeout(() => {
-                if (confirm('Would you like to take a quick tour of the system?')) {
-                    tour.start();
-                }
-            }, 1000);
-        }
-    });
-    </script>
-
-
     <!-- Add this modal structure before the closing body tag -->
     <div class="modal fade" id="celebrantsModal" tabindex="-1" role="dialog" aria-labelledby="celebrantsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -2631,5 +2582,519 @@
     });
     </script>
 
+    <!-- Remove the existing Quick Actions dropdown from the navbar -->
+
+    <!-- Add this before the closing </body> tag -->
+@canany(['admin', 'super-admin', 'hrcomben', 'hrcompliance', 'hrpolicy', 'normal-employee', 'supervisor', 'finance'])
+    <div class="quick-actions-fab">
+        <button class="quick-actions-button" id="quickActionsToggle" title="Quick Actions">
+            <i class="fas fa-cog"></i>
+        </button>
+        
+        <div class="quick-actions-card" id="quickActionsCard">
+            <div class="quick-actions-header">
+                <i class="fas fa-bolt"></i>
+                <span>Quick Actions</span>
+            </div>
+        @if(Auth::user()->hasRole('Employee'))
+            <div class="quick-actions-content">
+                <a href="{{ route('leaves.create') }}" class="quick-action-item">
+                    <div class="quick-action-icon bg-success">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <div class="quick-action-title">Apply Leave</div>
+                        <div class="quick-action-description">Request time off work</div>
+                    </div>
+                </a>
+                
+                <a href="{{ route('cash_advances.create') }}" class="quick-action-item">
+                    <div class="quick-action-icon bg-info">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <div class="quick-action-title">Apply Company Loan</div>
+                        <div class="quick-action-description">Request financial assistance</div>
+                    </div>
+                </a>
+            @endif
+                <a href="https://t.me/edmarcrescencio" target="_blank" class="quick-action-item" id="helpAction">
+                    <div class="quick-action-icon bg-warning">
+                        <i class="fab fa-telegram"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <div class="quick-action-title">IT Support</div>
+                        <div class="quick-action-description">Contact IT via Telegram</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+@endcanany
+    <!-- Add this script before the closing </body> tag -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const quickActionsToggle = document.getElementById('quickActionsToggle');
+        const quickActionsCard = document.getElementById('quickActionsCard');
+        
+        // Toggle quick actions card
+        quickActionsToggle.addEventListener('click', function() {
+            quickActionsCard.classList.toggle('show');
+            this.classList.toggle('active');
+        });
+        
+        // Close quick actions when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInside = quickActionsToggle.contains(event.target) || 
+                                quickActionsCard.contains(event.target);
+            
+            if (!isClickInside && quickActionsCard.classList.contains('show')) {
+                quickActionsCard.classList.remove('show');
+                quickActionsToggle.classList.remove('active');
+            }
+        });
+        
+        // Prevent closing when clicking inside the card
+        quickActionsCard.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
+    </script>
+
+    <!-- Theme Management System -->
+    <script>
+    const ThemeManager = {
+        themes: {
+            primary: {
+                navbar: 'navbar-dark navbar-primary',
+                sidebar: 'sidebar-dark-primary',
+                brand: 'bg-primary'
+            },
+            secondary: {
+                navbar: 'navbar-dark navbar-secondary',
+                sidebar: 'sidebar-dark-secondary',
+                brand: 'bg-secondary'
+            },
+            success: {
+                navbar: 'navbar-dark navbar-success',
+                sidebar: 'sidebar-dark-success',
+                brand: 'bg-success'
+            },
+            danger: {
+                navbar: 'navbar-dark navbar-danger',
+                sidebar: 'sidebar-dark-danger',
+                brand: 'bg-danger'
+            },
+            warning: {
+                navbar: 'navbar-light navbar-warning',
+                sidebar: 'sidebar-dark-warning',
+                brand: 'bg-warning'
+            },
+            info: {
+                navbar: 'navbar-dark navbar-info',
+                sidebar: 'sidebar-dark-info',
+                brand: 'bg-info'
+            },
+            dark: {
+                navbar: 'navbar-dark navbar-dark',
+                sidebar: 'sidebar-dark-dark',
+                brand: 'bg-dark'
+            },
+            purple: {
+                navbar: 'navbar-dark navbar-purple',
+                sidebar: 'sidebar-dark-purple',
+                brand: 'bg-purple'
+            },
+            indigo: {
+                navbar: 'navbar-dark navbar-indigo',
+                sidebar: 'sidebar-dark-indigo',
+                brand: 'bg-indigo'
+            },
+            pink: {
+                navbar: 'navbar-dark navbar-pink',
+                sidebar: 'sidebar-dark-pink',
+                brand: 'bg-pink'
+            }
+        },
+
+        themeColors: {
+            primary: '#007bff',
+            secondary: '#6c757d',
+            success: '#28a745',
+            danger: '#dc3545',
+            warning: '#ffc107',
+            info: '#17a2b8',
+            dark: '#343a40',
+            purple: '#6f42c1',
+            indigo: '#6610f2',
+            pink: '#e83e8c'
+        },
+
+        init() {
+            this.loadSavedTheme();
+            this.bindEvents();
+        },
+
+        bindEvents() {
+            $('.theme-option').on('click', (e) => {
+                const theme = $(e.currentTarget).data('theme');
+                this.applyTheme(theme);
+                this.saveTheme(theme);
+                this.updateActiveState(e.currentTarget);
+            });
+        },
+
+        applyTheme(themeName) {
+            const theme = this.themes[themeName];
+            const themeColor = this.themeColors[themeName];
+            if (!theme) return;
+
+            // Existing theme applications
+            $('.main-header')
+                .removeClass(Object.values(this.themes).map(t => t.navbar).join(' '))
+                .addClass(theme.navbar);
+
+            $('.main-sidebar')
+                .removeClass(Object.values(this.themes).map(t => t.sidebar).join(' '))
+                .addClass(theme.sidebar);
+
+            $('.brand-link')
+                .removeClass(Object.values(this.themes).map(t => t.brand).join(' '))
+                .addClass(theme.brand);
+
+            // Apply theme to Quick Actions
+            $('.quick-actions-button').css('background-color', themeColor);
+            $('.quick-actions-header').css('background-color', themeColor);
+
+            // Update hover effect for quick actions button
+            const darkerColor = this.adjustColor(themeColor, -20); // Darken by 20%
+            const style = document.createElement('style');
+            style.textContent = `
+                .quick-actions-button:hover {
+                    background-color: ${darkerColor} !important;
+                    transform: scale(1.1);
+                }
+            `;
+            // Remove any previous dynamic styles
+            document.querySelectorAll('style[data-theme-style]').forEach(el => el.remove());
+            style.setAttribute('data-theme-style', 'true');
+            document.head.appendChild(style);
+
+            // Update navbar colors
+            this.updateNavbarColors(theme.navbar);
+        },
+
+        updateNavbarColors(navbarClass) {
+            const isDark = navbarClass.includes('navbar-dark');
+            const textColor = isDark ? '#ffffff' : '#000000';
+            
+            $('.main-header .nav-link').css('color', textColor);
+            $('.main-header .navbar-brand').css('color', textColor);
+            
+            // Preserve dropdown text colors
+            $('.main-header .dropdown-menu a').css('color', '#212529');
+        },
+
+        saveTheme(theme) {
+            localStorage.setItem('selectedTheme', theme);
+        },
+
+        loadSavedTheme() {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'primary';
+            this.applyTheme(savedTheme);
+            this.updateActiveState($(`.theme-option[data-theme="${savedTheme}"]`));
+        },
+
+        updateActiveState(element) {
+            $('.theme-option').removeClass('active');
+            $(element).addClass('active');
+        },
+
+        // Helper function to darken/lighten colors
+        adjustColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return '#' + (
+                0x1000000 +
+                (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+                (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+                (B < 255 ? (B < 1 ? 0 : B) : 255)
+            ).toString(16).slice(1);
+        }
+    };
+
+    // Initialize Theme Manager
+    $(document).ready(() => {
+        ThemeManager.init();
+    });
+    </script>
+
+    <!-- Add this before closing body tag -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/10.0.1/js/shepherd.min.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltip
+        $('#startTour').tooltip();
+
+        // Configure tour
+        const tour = new Shepherd.Tour({
+            useModalOverlay: true,
+            defaultStepOptions: {
+                classes: 'shadow-md bg-purple-dark',
+                scrollTo: true,
+                cancelIcon: {
+                    enabled: true
+                }
+            },
+            tourName: 'app-tour'
+        });
+
+        // Define tour steps
+        tour.addStep({
+            id: 'welcome',
+            text: `
+                <div class="text-center">
+                    <h3 class="font-weight-bold mb-3">Welcome to MHRPCI-HRIS! 👋</h3>
+                    <p>Let's take a quick tour of the main features.</p>
+                </div>
+            `,
+            buttons: [
+                {
+                    text: 'Skip Tour',
+                    action: tour.complete,
+                    classes: 'btn btn-secondary'
+                },
+                {
+                    text: 'Start Tour',
+                    action: tour.next,
+                    classes: 'btn btn-primary'
+                }
+            ]
+        });
+
+        // Sidebar navigation
+        tour.addStep({
+            id: 'sidebar',
+            text: 'The sidebar contains all main navigation items. Click items to access different sections.',
+            attachTo: {
+                element: '.main-sidebar',
+                on: 'right'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'btn btn-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next,
+                    classes: 'btn btn-primary'
+                }
+            ]
+        });
+
+        // Quick actions
+        if (document.querySelector('.quick-actions-fab')) {
+            tour.addStep({
+                id: 'quick-actions',
+                text: 'Access common actions quickly from this floating button.',
+                attachTo: {
+                    element: '.quick-actions-fab',
+                    on: 'left'
+                },
+                buttons: [
+                    {
+                        text: 'Back',
+                        action: tour.back,
+                        classes: 'btn btn-secondary'
+                    },
+                    {
+                        text: 'Next',
+                        action: tour.next,
+                        classes: 'btn btn-primary'
+                    }
+                ]
+            });
+        }
+
+        // Notifications
+        tour.addStep({
+            id: 'notifications',
+            text: 'Check your notifications here. The badge shows unread notifications.',
+            attachTo: {
+                element: '#notifications-dropdown',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'btn btn-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next,
+                    classes: 'btn btn-primary'
+                }
+            ]
+        });
+
+        // Theme customization
+        tour.addStep({
+            id: 'theme',
+            text: 'Customize the app appearance using the theme settings.',
+            attachTo: {
+                element: '[data-widget="control-sidebar"]',
+                on: 'left'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'btn btn-secondary'
+                },
+                {
+                    text: 'Next',
+                    action: tour.next,
+                    classes: 'btn btn-primary'
+                }
+            ]
+        });
+
+        // User menu
+        tour.addStep({
+            id: 'user-menu',
+            text: 'Access your profile and account settings here.',
+            attachTo: {
+                element: '.user-menu',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    text: 'Back',
+                    action: tour.back,
+                    classes: 'btn btn-secondary'
+                },
+                {
+                    text: 'Finish',
+                    action: tour.complete,
+                    classes: 'btn btn-primary'
+                }
+            ]
+        });
+
+        // Handle tour button click
+        document.getElementById('startTour').addEventListener('click', function() {
+            // Check if tour was completed before
+            const tourCompleted = localStorage.getItem('tourCompleted');
+            
+            if (!tourCompleted) {
+                tour.start();
+            } else {
+                // Ask if user wants to take the tour again
+                if (confirm('You have already completed the tour. Would you like to take it again?')) {
+                    tour.start();
+                }
+            }
+        });
+
+        // Mark tour as completed when finished
+        tour.on('complete', function() {
+            localStorage.setItem('tourCompleted', 'true');
+        });
+
+        // Add responsive handling
+        function updateTourAttachment() {
+            if (window.innerWidth < 768) {
+                // Adjust attachments for mobile
+                tour.steps.forEach(step => {
+                    if (step.options.attachTo) {
+                        step.options.attachTo.on = 'bottom';
+                    }
+                });
+            }
+        }
+
+        // Update on resize
+        window.addEventListener('resize', updateTourAttachment);
+        updateTourAttachment();
+
+        // Add tour button animation
+        const tourButton = document.getElementById('startTour');
+        if (!localStorage.getItem('tourCompleted')) {
+            tourButton.classList.add('pulse-animation');
+        }
+    });
+    </script>
+
+    <style>
+    /* Tour button styles */
+    #startTour {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    #startTour:hover {
+        transform: scale(1.1);
+    }
+
+    /* Pulse animation for new users */
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(142, 68, 173, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(142, 68, 173, 0);
+        }
+    }
+
+    /* Custom tour styles */
+    .shepherd-content {
+        border-radius: 8px !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .shepherd-text {
+        font-size: 1rem !important;
+        padding: 1.5rem !important;
+    }
+
+    .shepherd-footer {
+        padding: 0.75rem !important;
+        border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .shepherd-button {
+        margin: 0 0.5rem !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 4px !important;
+        font-weight: 500 !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .shepherd-text {
+            font-size: 0.9rem !important;
+            padding: 1rem !important;
+        }
+
+        .shepherd-button {
+            padding: 0.4rem 0.8rem !important;
+            font-size: 0.9rem !important;
+        }
+    }
+    </style>
 </body>
 </html>
