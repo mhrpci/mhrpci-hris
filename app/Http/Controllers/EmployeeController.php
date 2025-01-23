@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
 
 class EmployeeController extends Controller
 {
@@ -816,6 +817,132 @@ public function processSecureDownload(Request $request)
         return response()->json([
             'success' => false,
             'message' => 'Failed to process secure download'
+        ], 500);
+    }
+}
+
+public function updateProfile(Request $request)
+{
+    try {
+        // Get authenticated user
+        $user = auth()->user();
+
+        // Find employee with matching email
+        $employee = Employee::where('email_address', $user->email)->first();
+
+        // Check if employee exists and matches the authenticated user
+        if (!$employee) {
+            Log::warning('Unauthorized profile update attempt by user: ' . $user->id);
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to update this profile.'
+            ], 403);
+        }
+
+        // Check if profile was updated within the last 60 days
+        if ($employee->profile_updated_at && 
+            now()->diffInDays($employee->profile_updated_at) < 60) {
+            $nextUpdateDate = Carbon::parse($employee->profile_updated_at)->addDays(60);
+            $daysRemaining = now()->diffInDays($nextUpdateDate);
+            
+            return response()->json([
+                'success' => false,
+                'message' => "Profile can only be updated every 60 days. Please wait {$daysRemaining} more days.",
+                'next_update_date' => $nextUpdateDate->format('Y-m-d'),
+                'days_remaining' => $daysRemaining
+            ], 403);
+        }
+
+        // Validate the request with specific image requirements
+        $validator = Validator::make($request->all(), [
+            'profile' => [
+                'required',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'max:2048', // 2MB max size
+            ]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Process the uploaded image
+        if ($request->hasFile('profile')) {
+            $image = $request->file('profile');
+
+            // Generate unique filename with timestamp and employee ID
+            $filename = 'profile_' . $employee->id . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $path = 'profiles/' . $filename;
+
+            // Ensure the profiles directory exists
+            if (!Storage::disk('public')->exists('profiles')) {
+                Storage::disk('public')->makeDirectory('profiles');
+            }
+
+            // Delete old profile if exists
+            if ($employee->profile && Storage::disk('public')->exists($employee->profile)) {
+                Storage::disk('public')->delete($employee->profile);
+            }
+
+            // Store new profile image
+            $stored = Storage::disk('public')->putFileAs(
+                'profiles',
+                $image,
+                $filename
+            );
+
+            if (!$stored) {
+                throw new \Exception('Failed to store profile image file');
+            }
+
+            // Update employee record with new profile and update timestamp
+            $updated = $employee->update([
+                'profile' => $path,
+                'profile_updated_at' => now()
+            ]);
+
+            if (!$updated) {
+                // If employee update fails, delete the uploaded image
+                Storage::disk('public')->delete($path);
+                throw new \Exception('Failed to update employee record');
+            }
+
+            // Also update the associated user's profile image if exists
+            if ($user) {
+                $user->update([
+                    'profile_image' => $path
+                ]);
+            }
+
+            Log::info('Profile image updated successfully for employee ID: ' . $employee->id, [
+                'file_size' => $image->getSize(),
+                'file_type' => $image->getMimeType(),
+                'file_path' => $path,
+                'next_update_available' => now()->addDays(60)->format('Y-m-d')
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile image updated successfully',
+                'path' => Storage::url($path),
+                'next_update_available' => now()->addDays(60)->format('Y-m-d')
+            ]);
+        }
+
+        throw new \Exception('No profile image file provided');
+
+    } catch (\Exception $e) {
+        Log::error('Profile image update failed: ' . $e->getMessage());
+        Log::error($e->getTraceAsString());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to update profile image: ' . $e->getMessage()
         ], 500);
     }
 }

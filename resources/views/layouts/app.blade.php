@@ -1688,29 +1688,46 @@
 
     <!-- Initialize Select2 -->
     <script>
-        $(document).ready(function() {
-            // Basic Select2 initialization with essential options
-            $('select').select2({
-                theme: 'bootstrap4',
-                width: '100%',
-                placeholder: 'Select an option',
-                allowClear: true
-            });
-
-            // Handle dark mode changes
-            const observer = new MutationObserver(function() {
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                $('select').select2('destroy').select2({
+        window.addEventListener('load', function() {
+            if (typeof jQuery !== 'undefined') {
+                // Initialize Select2 with custom configuration
+                $('select').select2({
                     theme: 'bootstrap4',
                     width: '100%',
+                    dropdownAutoWidth: true,
                     placeholder: 'Select an option',
                     allowClear: true,
-                    dropdownCssClass: isDarkMode ? 'select2-dropdown-dark' : ''
+                    containerCssClass: ':all:',
+                    dropdownCssClass: function() {
+                        // Check if dark mode is active
+                        return document.body.classList.contains('dark-mode') ? 'select2-dropdown-dark' : '';
+                    }
                 });
-            });
 
-            // Watch for dark mode changes
-            observer.observe(document.body, { attributes: true });
+                // Update Select2 dropdown theme when switching between light/dark mode
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === 'class') {
+                            $('select').each(function() {
+                                $(this).select2('destroy');
+                                $(this).select2({
+                                    theme: 'bootstrap4',
+                                    width: '100%',
+                                    dropdownAutoWidth: true,
+                                    placeholder: 'Select an option',
+                                    allowClear: true,
+                                    containerCssClass: ':all:',
+                                    dropdownCssClass: document.body.classList.contains('dark-mode') ? 'select2-dropdown-dark' : ''
+                                });
+                            });
+                        }
+                    });
+                });
+
+                observer.observe(document.body, {
+                    attributes: true
+                });
+            }
         });
     </script>
 

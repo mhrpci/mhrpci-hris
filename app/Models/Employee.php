@@ -49,7 +49,13 @@ class Employee extends Model
         'employment_status',
         'employee_status',
         'signature',
+        'profile_updated_at',
     ];
+
+    protected $dates = [
+        'profile_updated_at',
+    ];
+
     public function saveEmploymentStatus()
     {
         $this->employment_status = $this->employmentStatus();

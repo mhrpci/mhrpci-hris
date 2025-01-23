@@ -320,6 +320,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/notifications/clear', [NotificationsController::class, 'clearAll']);
     Route::get('/notifications/all', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
 
+    Route::post('/employees/update-profile', [EmployeeController::class, 'updateProfile'])->name('employees.update-profile');
+
+    Route::post('/employee/profile', [EmployeeController::class, 'updateProfile'])
+        ->name('employee.profile.update')
+        ->middleware(['auth', 'verified']);
+
 });
 
     Auth::routes();

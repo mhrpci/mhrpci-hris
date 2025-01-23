@@ -90,7 +90,7 @@
                                         <div class="col-md-6 mb-3">
                                             <div class="form-group">
                                                 <label for="email">Email</label>
-                                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="form-control" placeholder="Enter email address" required>
+                                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="form-control" placeholder="Enter email address" required readonly>
                                                 @error('email')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror

@@ -7,10 +7,19 @@
         <div class="col-lg-3">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <img class="rounded-circle mb-3 shadow"
-                         src="{{ $employee->profile ? asset('storage/' . $employee->profile) : asset('images/default-avatar.png') }}"
-                         alt="{{ $employee->first_name }} {{ $employee->last_name }}"
-                         style="width: 180px; height: 180px; object-fit: cover;">
+                    <div class="position-relative d-inline-block">
+                        <img class="rounded-circle mb-3 shadow"
+                             src="{{ $employee->profile ? asset('storage/' . $employee->profile) : asset('images/default-avatar.png') }}"
+                             alt="{{ $employee->first_name }} {{ $employee->last_name }}"
+                             style="width: 180px; height: 180px; object-fit: cover;">
+                        @if(auth()->user()->email === $employee->email_address)
+                            <button class="btn btn-sm btn-primary position-absolute bottom-0 end-0 mb-3 me-2" 
+                                    data-toggle="modal" 
+                                    data-target="#updateProfileImageModal">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        @endif
+                    </div>
                     <h2 class="font-weight-bold">{{ $employee->first_name }} {{ $employee->last_name }}</h2>
                     <p class="text-muted mb-2">{{ $employee->email_address }}</p>
                     <p class="mb-1"><strong>Phone:</strong> {{ $employee->contact_no }}</p>
@@ -215,6 +224,60 @@
                 <button type="button" class="btn btn-primary" onclick="saveSignature()">
                     {{ $employee->signature ? 'Update Signature' : 'Save Signature' }}
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Image Modal -->
+<div class="modal fade" id="updateProfileImageModal" tabindex="-1" role="dialog" aria-labelledby="updateProfileImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateProfileImageModalLabel">Update Profile Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if($employee->profile_updated_at && now()->diffInDays($employee->profile_updated_at) < 60)
+                    @php
+                        $nextUpdateDate = \Carbon\Carbon::parse($employee->profile_updated_at)->addDays(60);
+                        $daysRemaining = now()->diffInDays($nextUpdateDate);
+                    @endphp
+                    <div class="alert alert-warning">
+                        <i class="fas fa-clock mr-2"></i>
+                        Profile updates are limited to once every 60 days.<br>
+                        Next update available on: <strong>{{ $nextUpdateDate->format('F d, Y') }}</strong><br>
+                        ({{ $daysRemaining }} days remaining)
+                    </div>
+                @else
+                    <form id="profileImageForm" enctype="multipart/form-data">
+                        <div class="upload-box">
+                            <input type="file" class="file-input" id="profile" name="profile" accept="image/jpeg,image/png,image/jpg">
+                            <div class="upload-content">
+                                <div id="defaultUploadContent">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <p class="upload-text">Drag and drop your image here<br>or click to browse</p>
+                                    <p class="upload-formats">Accepted formats: JPG, JPEG, PNG</p>
+                                </div>
+                                <div id="imagePreview" style="display: none;">
+                                    <img src="" alt="Preview" class="preview-image">
+                                    <p class="file-name mt-2"></p>
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removeImage()">
+                                        <i class="fas fa-times"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                @if(!$employee->profile_updated_at || now()->diffInDays($employee->profile_updated_at) >= 60)
+                    <button type="button" class="btn btn-primary" onclick="updateProfileImage()">Save changes</button>
+                @endif
             </div>
         </div>
     </div>
@@ -437,6 +500,73 @@
     .modal-fullscreen .modal-body {
         height: calc(100vh - 120px); /* Adjust for header and footer */
         padding: 20px;
+    }
+
+    /* Upload Box Styles */
+    .upload-box {
+        position: relative;
+        width: 100%;
+        min-height: 300px;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .upload-box.dragover {
+        background-color: #e9ecef;
+        border-color: #6c757d;
+    }
+
+    .upload-box .file-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .upload-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 90%;
+    }
+
+    .upload-icon {
+        font-size: 48px;
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+
+    .upload-text {
+        font-size: 16px;
+        color: #495057;
+        margin-bottom: 10px;
+    }
+
+    .upload-formats {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .preview-image {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .file-name {
+        font-size: 14px;
+        color: #495057;
+        margin: 8px 0;
+        word-break: break-all;
     }
 </style>
 @endpush
@@ -690,5 +820,139 @@
             resizeCanvas();
         }
     });
+
+    function updateProfileImage() {
+        const formData = new FormData(document.getElementById('profileImageForm'));
+        const saveButton = document.querySelector('[onclick="updateProfileImage()"]');
+        const originalText = saveButton.innerHTML;
+        
+        // Show loading state
+        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        saveButton.disabled = true;
+
+        axios.post('/employee/profile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(response => {
+            if (response.data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Profile image has been updated successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Profile update error:', error);
+            let errorMessage = 'Failed to update profile image';
+            
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: errorMessage
+            });
+        })
+        .finally(() => {
+            saveButton.innerHTML = originalText;
+            saveButton.disabled = false;
+        });
+    }
+
+    // Add these new functions for drag and drop functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadBox = document.querySelector('.upload-box');
+        const fileInput = document.getElementById('profile');
+        const defaultContent = document.getElementById('defaultUploadContent');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = imagePreview.querySelector('img');
+        const fileName = imagePreview.querySelector('.file-name');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadBox.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            uploadBox.classList.remove('dragover');
+        }
+
+        uploadBox.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            handleFile(file);
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            handleFile(this.files[0]);
+        });
+
+        function handleFile(file) {
+            if (file) {
+                if (validateFile(file)) {
+                    displayPreview(file);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid File',
+                        text: 'Please upload only JPG, JPEG, or PNG files.'
+                    });
+                }
+            }
+        }
+
+        function validateFile(file) {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            return validTypes.includes(file.type);
+        }
+
+        function displayPreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                fileName.textContent = file.name;
+                defaultContent.style.display = 'none';
+                imagePreview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function removeImage() {
+        const fileInput = document.getElementById('profile');
+        const defaultContent = document.getElementById('defaultUploadContent');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        fileInput.value = '';
+        defaultContent.style.display = 'block';
+        imagePreview.style.display = 'none';
+    }
 </script>
 @endpush
