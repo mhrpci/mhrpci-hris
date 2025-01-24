@@ -227,31 +227,35 @@
 </div>
 
 <!-- Signature Modal -->
-<div class="modal fade" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel" aria-hidden="true">
+<div class="modal fade signature-modal" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header py-2 px-3">
                 <h5 class="modal-title" id="signatureModalLabel">
+                    <i class="fas fa-signature mr-2"></i>
                     {{ $employee->signature ? 'Update Your Signature' : 'Add Your Signature' }}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body d-flex flex-column">
+            <div class="modal-body d-flex flex-column p-0">
                 @if($employee->signature)
-                    <div class="alert alert-info">
+                    <div class="alert alert-info m-2">
                         <i class="fas fa-info-circle mr-1"></i>
                         Your existing signature will be replaced when you save a new one.
                     </div>
                 @endif
-                <div class="flex-grow-1 position-relative">
-                    <canvas id="signatureCanvas" class="border rounded position-absolute w-100 h-100"></canvas>
+                <div class="signature-container flex-grow-1 position-relative">
+                    <canvas id="signatureCanvas" class="signature-canvas"></canvas>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="clearSignature()">Clear</button>
-                <button type="button" class="btn btn-primary" onclick="saveSignature()">
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-lg btn-secondary" onclick="clearSignature()">
+                    <i class="fas fa-eraser mr-1"></i> Clear
+                </button>
+                <button type="button" class="btn btn-lg btn-primary" onclick="saveSignature()">
+                    <i class="fas fa-save mr-1"></i> 
                     {{ $employee->signature ? 'Update Signature' : 'Save Signature' }}
                 </button>
             </div>
@@ -345,6 +349,8 @@
 @endsection
 
 @push('styles')
+<!-- Add SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <style>
     /* Core Layout & Components */
     .card {
@@ -864,10 +870,117 @@
             border-color: #4a5568;
         }
     }
+
+    /* Signature Modal Specific Styles */
+    .signature-modal .modal-dialog.modal-fullscreen {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        max-width: none;
+    }
+
+    .signature-modal .modal-content {
+        height: 100vh;
+        border: none;
+        border-radius: 0;
+    }
+
+    .signature-modal .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .signature-modal .modal-body {
+        background-color: #ffffff;
+        overflow: hidden;
+    }
+
+    .signature-container {
+        width: 100%;
+        height: calc(100vh - 120px);
+        background: #fff;
+        position: relative;
+        border: 1px solid #dee2e6;
+    }
+
+    .signature-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        cursor: crosshair;
+        background-color: #ffffff;
+    }
+
+    /* Add helper text */
+    .signature-container::before {
+        content: 'Sign here';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ccc;
+        font-size: 2rem;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.5;
+    }
+
+    /* Hide helper text when drawing starts */
+    .signature-container.drawing::before {
+        display: none;
+    }
+
+    /* Mobile Optimization */
+    @media (max-width: 768px) {
+        .signature-modal .modal-header {
+            padding: 0.5rem 1rem;
+        }
+
+        .signature-modal .modal-footer {
+            padding: 0.5rem;
+        }
+
+        .signature-container {
+            height: calc(100vh - 100px);
+        }
+
+        .signature-modal .btn-lg {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+    }
+
+    /* Prevent body scrolling when modal is open */
+    body.modal-open {
+        position: fixed;
+        width: 100%;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        .signature-modal .modal-header {
+            background-color: #343a40;
+            border-bottom-color: #454d55;
+        }
+
+        .signature-modal .modal-content {
+            background-color: #2c3034;
+        }
+
+        .signature-container {
+            background-color: #fff; /* Keep canvas background white for signature */
+        }
+    }
 </style>
 @endpush
 
 @push('scripts')
+<!-- Add SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function showSection(sectionId) {
         // Update dropdown and add loading state
@@ -927,78 +1040,183 @@
 
         ctx = canvas.getContext('2d');
 
-        // Set up canvas drawing events
+        // Prevent scrolling on touch devices
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target === canvas) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Enhanced touch handling
+        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+        // Mouse events
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDrawing);
         canvas.addEventListener('mouseout', stopDrawing);
 
-        // Touch events
-        canvas.addEventListener('touchstart', handleTouch);
-        canvas.addEventListener('touchmove', handleTouch);
-        canvas.addEventListener('touchend', stopDrawing);
-
         // Resize handling
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        window.addEventListener('resize', debounce(resizeCanvas, 250));
+        
+        // Initialize canvas on modal show
+        $('#signatureModal').on('shown.bs.modal', function() {
+            resizeCanvas();
+            setTimeout(resizeCanvas, 100); // Additional resize after modal animation
+        });
 
-        // Modal event
-        $('#signatureModal').on('shown.bs.modal', resizeCanvas);
+        // Add this to your initializeSignatureCanvas function
+        canvas.addEventListener('mousedown', () => {
+            canvas.parentElement.classList.add('drawing');
+        });
+
+        canvas.addEventListener('touchstart', () => {
+            canvas.parentElement.classList.add('drawing');
+        });
     }
 
-    function startDrawing(e) {
+    function handleTouchStart(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
         isDrawing = true;
-        [lastX, lastY] = [e.offsetX, e.offsetY];
+        lastX = touch.clientX - rect.left;
+        lastY = touch.clientY - rect.top;
+
+        // Initial dot for better touch response
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, ctx.lineWidth / 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#000000';
+        ctx.fill();
     }
 
-    function draw(e) {
+    function handleTouchMove(e) {
+        e.preventDefault();
         if (!isDrawing) return;
+        
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const currentX = touch.clientX - rect.left;
+        const currentY = touch.clientY - rect.top;
 
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
-        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.lineTo(currentX, currentY);
         ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.stroke();
 
-        [lastX, lastY] = [e.offsetX, e.offsetY];
+        lastX = currentX;
+        lastY = currentY;
+    }
+
+    function handleTouchEnd(e) {
+        e.preventDefault();
+        isDrawing = false;
+    }
+
+    function startDrawing(e) {
+        isDrawing = true;
+        const rect = canvas.getBoundingClientRect();
+        lastX = e.clientX - rect.left;
+        lastY = e.clientY - rect.top;
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        const currentX = e.clientX - canvas.getBoundingClientRect().left;
+        const currentY = e.clientY - canvas.getBoundingClientRect().top;
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(currentX, currentY);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        lastX = currentX;
+        lastY = currentY;
     }
 
     function stopDrawing() {
         isDrawing = false;
     }
 
-    function handleTouch(e) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
+    // Debounce function for resize handling
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
 
-        const offsetX = (touch.clientX - rect.left) * scaleX;
-        const offsetY = (touch.clientY - rect.top) * scaleY;
+    function resizeCanvas() {
+        const container = canvas.parentElement;
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+        
+        // Maintain drawing settings after resize
+        ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
 
-        if (e.type === 'touchstart') {
-            isDrawing = true;
-            [lastX, lastY] = [offsetX, offsetY];
-        } else if (e.type === 'touchmove' && isDrawing) {
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(offsetX, offsetY);
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.stroke();
+        // Add light grid background for better visibility
+        drawGrid();
+    }
 
-            [lastX, lastY] = [offsetX, offsetY];
+    function drawGrid() {
+        const gridSize = 50;
+        const lightColor = '#f0f0f0';
+
+        ctx.beginPath();
+        ctx.strokeStyle = lightColor;
+        ctx.lineWidth = 0.5;
+
+        // Draw vertical lines
+        for (let x = 0; x <= canvas.width; x += gridSize) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
         }
+
+        // Draw horizontal lines
+        for (let y = 0; y <= canvas.height; y += gridSize) {
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+        }
+
+        ctx.stroke();
+
+        // Add a horizontal guide line in the middle
+        ctx.beginPath();
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 1;
+        ctx.moveTo(0, canvas.height / 2);
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.stroke();
+
+        // Reset context for signature drawing
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
     }
 
     function clearSignature() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawGrid();
+        canvas.parentElement.classList.remove('drawing'); // Show helper text again
     }
 
     function saveSignature() {
@@ -1105,32 +1323,6 @@
             saveButton.disabled = false;
         });
     }
-
-    // Make canvas responsive
-    function resizeCanvas() {
-        const canvas = document.getElementById('signatureCanvas');
-        if (canvas) {
-            const container = canvas.parentElement;
-            const width = container.offsetWidth;
-            const height = container.offsetHeight;
-            
-            canvas.width = width;
-            canvas.height = height;
-            
-            ctx = canvas.getContext('2d');
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-        }
-    }
-
-    // Handle window resize
-    window.addEventListener('resize', function() {
-        if ($('#signatureModal').hasClass('show')) {
-            resizeCanvas();
-        }
-    });
 
     function updateProfileImage() {
         const formData = new FormData(document.getElementById('profileImageForm'));

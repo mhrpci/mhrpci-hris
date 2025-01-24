@@ -736,7 +736,8 @@
                             <div class="card-body">
                                 <ol class="pl-3">
                                     <li>Click the "Apply for Leave" button on the main page</li>
-                                    <li>Select your leave type (Leave or Undertime)</li>
+                                    <li>Ensure that you already update you employee profile where you can add an signature</li>
+                                    <li>Select your leave type (Leave, Halfday, Undertime)</li>
                                     <li>Choose the appropriate dates</li>
                                     <li>Select the type of leave from the dropdown</li>
                                     <li>Provide a clear reason for your leave</li>
@@ -770,10 +771,6 @@
                                         <strong class="text-success">Emergency Leave:</strong>
                                         <p class="text-muted mb-0">For urgent personal or family matters.</p>
                                     </li>
-                                    <li>
-                                        <strong class="text-success">Undertime:</strong>
-                                        <p class="text-muted mb-0">For leaving work earlier than scheduled hours.</p>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -784,19 +781,37 @@
                         <div class="card-header bg-light" id="notesHeading">
                             <h2 class="mb-0">
                                 <button class="btn btn-link btn-block text-left collapsed text-success" type="button" data-toggle="collapse" data-target="#notesCollapse">
-                                    <i class="fas fa-exclamation-circle mr-2"></i> Important Notes
+                                    <i class="fas fa-exclamation-circle mr-2"></i> Leave Application Guidelines
                                 </button>
                             </h2>
                         </div>
                         <div id="notesCollapse" class="collapse" data-parent="#leaveHelpAccordion">
                             <div class="card-body">
                                 <div class="alert alert-info">
-                                    <ul class="mb-0">
-                                        <li>Submit your leave application at least 3 days in advance (except for emergencies)</li>
-                                        <li>Ensure you have sufficient leave credits before applying</li>
-                                        <li>Attach supporting documents if required (for sick leave or emergency leave)</li>
-                                        <li>Keep track of your leave balance regularly</li>
+                                    <h6 class="font-weight-bold mb-3">Application Timeline Requirements:</h6>
+                                    <ul class="mb-3">
+                                        <li class="mb-2"><strong>Vacation Leave:</strong> Must be submitted at least 2 weeks (14 working days) prior to the intended leave date to ensure proper work delegation and coverage.</li>
+                                        <li class="mb-2"><strong>Sick Leave:</strong> Must be filed on the same day or within 24 hours of returning to work. A medical certificate is required for sick leaves exceeding 2 consecutive days.</li>
+                                        <li class="mb-2"><strong>Emergency Leave:</strong> Must be reported to immediate supervisor through call/message on the same day and formally applied within 24 hours of the incident.</li>
                                     </ul>
+                                    
+                                    <h6 class="font-weight-bold mb-3">Important Reminders:</h6>
+                                    <ul class="mb-0">
+                                        <li class="mb-2">Verify your leave credit balance before applying</li>
+                                        <li class="mb-2">Required Supporting Documents:
+                                            <ul>
+                                                <li>Sick Leave: Medical certificate for 2+ days of absence</li>
+                                                <li>Emergency Leave: Relevant documentation (if applicable)</li>
+                                            </ul>
+                                        </li>
+                                        <li class="mb-2">Leave applications outside these guidelines may be denied or subject to disciplinary action</li>
+                                        <li>Managers reserve the right to deny leave requests based on operational requirements</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <strong>Note:</strong> Failure to comply with these guidelines may result in unauthorized absence (AWOL) and corresponding sanctions as per company policy.
                                 </div>
                             </div>
                         </div>
@@ -807,24 +822,41 @@
                         <div class="card-header bg-light" id="contactHeading">
                             <h2 class="mb-0">
                                 <button class="btn btn-link btn-block text-left collapsed text-success" type="button" data-toggle="collapse" data-target="#contactCollapse">
-                                    <i class="fas fa-phone-alt mr-2"></i> Contact HR Department
+                                    <i class="fas fa-phone-alt mr-2"></i> HR Department Contact Information
                                 </button>
                             </h2>
                         </div>
                         <div id="contactCollapse" class="collapse" data-parent="#leaveHelpAccordion">
                             <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="fas fa-envelope text-success fa-2x mr-3"></i>
-                                    <div>
-                                        <h6 class="mb-0">Email</h6>
-                                        <p class="mb-0">hr@company.com</p>
+                                <div class="alert alert-light border">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-envelope text-success fa-2x mr-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">Email Support</h6>
+                                            <p class="mb-0">hr@company.com</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-phone-alt text-success fa-2x mr-3"></i>
-                                    <div>
-                                        <h6 class="mb-0">Phone</h6>
-                                        <p class="mb-0">+1 234 567 890</p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-phone-alt text-success fa-2x mr-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">Phone Support</h6>
+                                            <p class="mb-0">+1 234 567 890</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fab fa-telegram text-success fa-2x mr-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">Telegram</h6>
+                                            <p class="mb-0"><a href="https://t.me/MhrHrDepartment" target="_blank" class="text-primary font-weight-bold">HR Department</a></p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-clock text-success fa-2x mr-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">HR Office Hours</h6>
+                                            <p class="mb-0">Monday - Friday: 8:00 AM - 5:00 PM</p>
+                                            <p class="mb-0">Closed on Weekends and Holidays</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -353,6 +353,211 @@
                 margin-bottom: 2rem;
             }
         }
+
+        /* Terms Checkbox Styles */
+        .terms-checkbox-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .terms-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .terms-label input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .terms-text {
+            line-height: 1.4;
+        }
+
+        .terms-text a {
+            color: #0066ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .terms-text a:hover {
+            color: #0052cc;
+            text-decoration: underline;
+        }
+
+        /* Terms Modal Styles */
+        .terms-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .terms-modal-content {
+            position: relative;
+            background: white;
+            margin: 5% auto;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .terms-content {
+            margin: 1.5rem 0;
+            color: #333;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .terms-content .terms-intro {
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+            text-align: justify;
+        }
+
+        .terms-content h3 {
+            color: #0066ff;
+            margin: 2rem 0 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .terms-content ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .terms-content li {
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        .terms-content .contact-info {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            font-style: italic;
+            color: #666;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .accept-terms-btn {
+            background: linear-gradient(45deg, #0066ff, #0052cc);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .accept-terms-btn:hover {
+            background: linear-gradient(45deg, #0052cc, #003d99);
+            transform: translateY(-2px);
+        }
+
+        /* Scrollbar Styling */
+        .terms-modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terms-modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .terms-modal-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .terms-modal-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+
+        /* Loader Button Styles */
+        #submit-btn {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            min-height: 48px;  /* Ensure consistent height */
+        }
+
+        #submit-btn:disabled {
+            background: linear-gradient(45deg, #999, #777);
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .button-loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .button-text {
+            transition: opacity 0.2s ease;
+        }
+
+        /* Loading state styles */
+        #submit-btn.loading .button-text {
+            opacity: 0.7;
+        }
+
+        #submit-btn.loading .button-loader {
+            display: inline-block;
+        }
+
+        /* Disable Accept Button */
+        .accept-terms-btn:disabled {
+            background: linear-gradient(45deg, #999, #777);
+            cursor: not-allowed;
+            transform: none !important;
+        }
     </style>
 </head>
 <body>
@@ -378,10 +583,17 @@
                         <i class="fas fa-eye" id="toggleIcon"></i>
                     </span>
                 </div>
-                <div style="margin-bottom: 20px;">
-                    <a href="{{ route('password.request') }}" style="color: #0066ff; text-decoration: none;">Forgot password?</a>
+                <div class="terms-checkbox-container">
+                    <label class="terms-label">
+                        <input type="checkbox" id="terms-checkbox" required>
+                        <span class="checkmark"></span>
+                        <span class="terms-text">I agree to the <a href="#" id="terms-link">Terms and Conditions</a></span>
+                    </label>
                 </div>
-                <button type="submit">Sign In</button>
+                <button type="submit" id="submit-btn">
+                    <span class="button-text">Sign In</span>
+                    <span class="button-loader"></span>
+                </button>
             </form>
         </div>
     </div>
@@ -398,9 +610,99 @@
 
     <div id="notification" class="notification"></div>
 
+    <div id="terms-modal" class="terms-modal">
+        <div class="terms-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>HRIS Terms and Conditions</h2>
+            <div class="terms-content">
+                <p class="terms-intro">
+                    Welcome to the Human Resource Information System (HRIS). This platform is designed to help you manage and access important work-related information such as Payroll, Attendance, Leaves, Loans, Employee Information, and Contributions. By using this system, you agree to follow these guidelines to ensure its secure and proper use.
+                </p>
+
+                <h3>1. Purpose of the HRIS</h3>
+                <p>The HRIS is provided to facilitate employee access to:</p>
+                <ul>
+                    <li>Payroll and payslips</li>
+                    <li>Attendance records and schedules</li>
+                    <li>Leave balances and applications</li>
+                    <li>Loan applications and tracking</li>
+                    <li>Personal and employment information</li>
+                    <li>Government contributions (e.g., SSS, PhilHealth, Pag-IBIG)</li>
+                </ul>
+                <p>Use the system responsibly and only for its intended purposes.</p>
+
+                <h3>2. Access and Security</h3>
+                <ul>
+                    <li>Authorized Access Only: Access is granted to employees for official use. Unauthorized access is strictly prohibited.</li>
+                    <li>Protect Your Login: Do not share your username or password with anyone. You are responsible for all activities under your account.</li>
+                    <li>Secure Your Session: Always log out after using the HRIS, especially on shared or public devices.</li>
+                    <li>Report Issues: Notify HR or IT immediately if you notice suspicious activity or unauthorized access.</li>
+                </ul>
+
+                <h3>3. Data Privacy and Confidentiality</h3>
+                <ul>
+                    <li>Protect Personal Data: The HRIS contains confidential information. Do not download, share, or copy data unless authorized.</li>
+                    <li>Work-Related Use Only: Use the HRIS exclusively for work-related tasks. Personal or inappropriate use is not allowed.</li>
+                    <li>Follow Privacy Laws: Comply with the Data Privacy Act of 2012 and company policies regarding the handling of sensitive information.</li>
+                </ul>
+
+                <h3>4. Information Accuracy</h3>
+                <ul>
+                    <li>Provide Accurate Information: Ensure that all data you input, such as leave applications, attendance logs, or personal details, is accurate and truthful.</li>
+                    <li>Avoid Falsification: Deliberately providing false information is a serious violation and may result in disciplinary action.</li>
+                </ul>
+
+                <h3>5. Prohibited Actions</h3>
+                <p>To maintain the integrity of the HRIS, the following actions are not allowed:</p>
+                <ul>
+                    <li>Sharing payroll or employee data with unauthorized individuals.</li>
+                    <li>Altering or tampering with attendance, payroll, or leave records.</li>
+                    <li>Using the HRIS for personal gain, inappropriate activities, or illegal purposes.</li>
+                    <li>Uploading, installing, or introducing unauthorized files or programs into the system.</li>
+                </ul>
+
+                <h3>6. System Monitoring and Maintenance</h3>
+                <ul>
+                    <li>Activity Monitoring: Your use of the HRIS is monitored to ensure compliance with these terms.</li>
+                    <li>Maintenance Downtime: The HRIS may occasionally be unavailable for updates or repairs. Whenever possible, you will be informed in advance.</li>
+                </ul>
+
+                <h3>7. Non-Compliance and Consequences</h3>
+                <ul>
+                    <li>Disciplinary Action: Misuse of the HRIS or failure to follow these guidelines may result in warnings, access restrictions, or termination of employment.</li>
+                    <li>Legal Action: Violations of data privacy laws may lead to criminal or civil liability.</li>
+                </ul>
+
+                <h3>8. Updates to Terms</h3>
+                <p>The company may update these Terms and Conditions as necessary. You will be notified of any changes, and continued use of the HRIS indicates your acceptance of the updated terms.</p>
+
+                <h3>9. Acceptance of Terms</h3>
+                <p>By logging into and using the HRIS, you confirm that you have read, understood, and agreed to these Terms and Conditions.</p>
+                
+                <p class="contact-info">For questions or concerns, please contact the HR Department or IT Support.</p>
+            </div>
+            <button id="accept-terms" class="accept-terms-btn">I Accept</button>
+        </div>
+    </div>
+
     <script>
         document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
+
+            if (!termsCheckbox.checked) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terms & Conditions Required',
+                    text: 'Please read and accept the Terms and Conditions to continue.',
+                    confirmButtonColor: '#0066ff'
+                });
+                return;
+            }
+
+            // Show loader
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
 
             let form = event.target;
             let formData = new FormData(form);
@@ -424,6 +726,10 @@
                         window.location.href = data.redirect;
                     }, 1500);
                 } else {
+                    // Reset button state
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+
                     let errorMessage = data.message === 'Your account is disabled.' ? 'Your account is disabled.' :
                                        data.field === 'email' ? 'Invalid email address' : 'Invalid password';
                     notification.className = 'notification error';
@@ -435,6 +741,10 @@
                 }
             })
             .catch(error => {
+                // Reset button state
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+
                 const notification = document.getElementById('notification');
                 notification.className = 'notification error';
                 notification.innerHTML = 'Something went wrong. Please try again later.';
@@ -490,6 +800,65 @@
         window.addEventListener('load', function() {
             checkForLogoutMessage();
             // ... your existing load event listener content ...
+        });
+
+        // Terms and Conditions Modal
+        const termsModal = document.getElementById('terms-modal');
+        const termsLink = document.getElementById('terms-link');
+        const closeModal = document.querySelector('.close-modal');
+        const acceptTermsBtn = document.getElementById('accept-terms');
+        const termsCheckbox = document.getElementById('terms-checkbox');
+        const submitBtn = document.getElementById('submit-btn');
+        const termsContent = document.querySelector('.terms-modal-content');
+
+        // Disable accept button initially
+        acceptTermsBtn.disabled = true;
+
+        // Handle checkbox click
+        termsCheckbox.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent direct checkbox checking
+            termsModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Track scrolling in terms modal
+        termsContent.addEventListener('scroll', function() {
+            const scrollPercentage = (termsContent.scrollTop / (termsContent.scrollHeight - termsContent.clientHeight)) * 100;
+            
+            // Enable accept button when scrolled to bottom (95% threshold)
+            if (scrollPercentage > 95) {
+                acceptTermsBtn.disabled = false;
+            }
+        });
+
+        closeModal.addEventListener('click', function() {
+            if (!termsCheckbox.checked) {
+                termsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        acceptTermsBtn.addEventListener('click', function() {
+            termsCheckbox.checked = true;
+            termsModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        // Prevent closing modal by clicking outside if not accepted
+        window.addEventListener('click', function(e) {
+            if (e.target === termsModal && !termsCheckbox.checked) {
+                termsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Reset scroll position when opening modal
+        termsLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            termsModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            termsContent.scrollTop = 0;
+            acceptTermsBtn.disabled = true;
         });
     </script>
 </body>

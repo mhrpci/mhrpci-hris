@@ -69,6 +69,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            text-align: justify;
         }
         .policy-content p,
         .policy-content li {
@@ -281,7 +282,6 @@
             <img src="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}" alt="Company Logo" class="company-logo">
             <h1>Terms of Use and Privacy Policy</h1>
             <div class="policy-meta">
-                <span><i class="fas fa-calendar-alt me-2"></i> Last Updated: {{ date('F d, Y') }}</span>
                 <span><i class="fas fa-file-alt me-2"></i> Document Version: 1.0</span>
             </div>
         </div>
@@ -368,11 +368,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('keydown', function(event) {
-            if (event.keyCode === 44) {
-                event.preventDefault();
-                return false;
-            }
-            
             if ((event.ctrlKey && event.shiftKey && (event.keyCode === 73 || event.keyCode === 74 || event.keyCode === 67)) ||
                 (event.ctrlKey && event.keyCode === 80) ||
                 (event.ctrlKey && event.shiftKey && event.keyCode === 83)) {
@@ -424,63 +419,6 @@
                 }
             }, 500);
         })();
-
-        const canvas = document.getElementById('dynamic-bg');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        function drawPattern() {
-            resizeCanvas();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const timestamp = new Date().getTime();
-            const text = `DO NOT COPY ${timestamp}`;
-            
-            ctx.font = '14px Arial';
-            ctx.rotate(-15 * Math.PI / 180);
-            
-            for(let i = -100; i < canvas.width + 100; i += 100) {
-                for(let j = -100; j < canvas.height + 100; j += 40) {
-                    ctx.fillText(text, i, j);
-                }
-            }
-        }
-
-        setInterval(drawPattern, 1000);
-        window.addEventListener('resize', drawPattern);
-
-        document.addEventListener('keyup', function(e) {
-            if (e.key === 'PrintScreen' || e.key === 'Snapshot') {
-                navigator.clipboard.writeText('');
-                alert('Screenshots are not allowed!');
-            }
-        });
-
-        let blurTimeout;
-        window.addEventListener('blur', function() {
-            blurTimeout = setTimeout(function() {
-                alert('Screen capture detected! This action is not allowed.');
-            }, 100);
-        });
-
-        window.addEventListener('focus', function() {
-            clearTimeout(blurTimeout);
-        });
-
-        function protectScreen() {
-            if (window.outerWidth - window.innerWidth > 160 || 
-                window.outerHeight - window.innerHeight > 160) {
-                document.documentElement.style.display = 'none';
-                alert('Screen capture detected! This action is not allowed.');
-                location.reload();
-            }
-        }
-
-        setInterval(protectScreen, 100);
     </script>
 </body>
 </html>

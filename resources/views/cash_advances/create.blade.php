@@ -65,21 +65,32 @@
                             </div>
                         </div>
                     @else
-                        <form action="{{ route('cash_advances.store') }}" method="POST" id="cashAdvanceForm">
+                        <form action="{{ config('app.env') === 'local' ? url(route('cash_advances.store', [], false)) : secure_url(route('cash_advances.store', [], false)) }}" method="POST" id="cashAdvanceForm" autocomplete="off">
                             @csrf
+                            {{-- Add CSRF token and nonce for additional security --}}
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="nonce" value="{{ Str::random(32) }}">
+                            
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="employee_id">Employee <span class="text-danger">*</span></label>
-                                        <select name="employee_id" id="employee_id" class="form-control select2 @error('employee_id') is-invalid @enderror" required>
+                                        <select name="employee_id" id="employee_id" 
+                                            class="form-control select2 @error('employee_id') is-invalid @enderror" 
+                                            required 
+                                            {{-- Prevent XSS by escaping all values --}}
+                                            data-placeholder="{{ e('Select Employee') }}">
                                             <option value="" selected disabled>Select Employee</option>
                                             @foreach ($employees as $employee)
-                                                <option value="{{ $employee->id }}">{{ $employee->company_id }} {{ $employee->last_name }} {{ $employee->first_name }}, {{ $employee->middle_name ?? '' }} {{ $employee->suffix ?? '' }}</option>
+                                                <option value="{{ e($employee->id) }}">
+                                                    {{ e($employee->company_id) }} {{ e($employee->last_name) }} {{ e($employee->first_name) }}, 
+                                                    {{ e($employee->middle_name ?? '') }} {{ e($employee->suffix ?? '') }}
+                                                </option>
                                             @endforeach
                                         </select>
                                         @error('employee_id')
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
+                                                <strong>{{ e($message) }}</strong>
                                             </span>
                                         @enderror
                                     </div>
@@ -87,10 +98,21 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="cash_advance_amount">Amount (PHP) <span class="text-danger">*</span></label>
-                                        <input type="number" name="cash_advance_amount" id="cash_advance_amount" class="form-control @error('cash_advance_amount') is-invalid @enderror" required>
+                                        <input type="number" 
+                                            name="cash_advance_amount" 
+                                            id="cash_advance_amount" 
+                                            class="form-control @error('cash_advance_amount') is-invalid @enderror" 
+                                            required
+                                            {{-- Add input validation constraints --}}
+                                            min="1"
+                                            max="999999999"
+                                            step="0.01"
+                                            pattern="[0-9]*"
+                                            {{-- Sanitize input --}}
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                         @error('cash_advance_amount')
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
+                                                <strong>{{ e($message) }}</strong>
                                             </span>
                                         @enderror
                                     </div>
@@ -100,10 +122,21 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="repayment_term">Repayment Term (Months) <span class="text-danger">*</span></label>
-                                        <input type="number" name="repayment_term" id="repayment_term" class="form-control @error('repayment_term') is-invalid @enderror" min="1" max="24" required>
+                                        <input type="number" 
+                                            name="repayment_term" 
+                                            id="repayment_term" 
+                                            class="form-control @error('repayment_term') is-invalid @enderror" 
+                                            required
+                                            {{-- Add strict input validation --}}
+                                            min="1"
+                                            max="24"
+                                            step="1"
+                                            pattern="\d*"
+                                            {{-- Sanitize input --}}
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                         @error('repayment_term')
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
+                                                <strong>{{ e($message) }}</strong>
                                             </span>
                                         @enderror
                                     </div>
@@ -111,7 +144,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="monthly_repayment">Estimated Monthly Repayment (PHP)</label>
-                                        <input type="text" id="monthly_repayment" class="form-control" readonly>
+                                        <input type="text" 
+                                            id="monthly_repayment" 
+                                            class="form-control" 
+                                            readonly 
+                                            {{-- Prevent tampering --}}
+                                            tabindex="-1">
                                     </div>
                                 </div>
                             </div>
