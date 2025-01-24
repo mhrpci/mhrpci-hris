@@ -44,6 +44,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmployeeBirthdayController;
 use App\Http\Controllers\ControllerAnalysisController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\UserActivityController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -325,6 +326,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/employee/profile', [EmployeeController::class, 'updateProfile'])
         ->name('employee.profile.update')
         ->middleware(['auth', 'verified']);
+
+    Route::get('/user-departmental-activity', [UserActivityController::class, 'index'])->name('user-activity.index');
 
 });
 

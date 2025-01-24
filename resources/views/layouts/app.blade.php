@@ -1892,11 +1892,17 @@
                             <i class="fas fa-user-cog mr-2"></i> User Management
                         </a>
                         @endcanany
+                        @canany(['super-admin', 'supervisor'])
+                        <a href="{{ route('user-activity.index') }}" class="dropdown-item">
+                            <i class="fas fa-history mr-2"></i> Departmental User Activity
+                        </a>
+                        @endcanany
                         @can('super-admin')
                         <a href="{{ url('/user-activity') }}" class="dropdown-item">
-                            <i class="fas fa-history mr-2"></i> User Logs
+                            <i class="fas fa-history mr-2"></i> User General Logs
                         </a>
                         @endcan
+                        
                     </div>
                 </li>
                 @endcanany
