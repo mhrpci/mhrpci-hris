@@ -880,13 +880,11 @@
     });
 
     function printLeaveForm() {
-        const printWindow = window.open('', '_blank');
-
         const printStyles = `
             <style>
                 @page {
                     size: 8.5in 11in;
-                    margin: 0.5in;
+                    margin: 0 0.25in 0.25in 0.25in; /* Top: 0, Right/Bottom/Left: 0.25in */
                 }
 
                 body {
@@ -896,13 +894,13 @@
                 }
 
                 .page-container {
-                    width: 7.5in;
-                    margin: 0 auto;
+                    width: 8in;
+                    margin: 0 auto; /* Removed top margin */
                 }
 
                 .leave-form {
-                    padding: 13px;
-                    transform: scale(0.83);
+                    padding: 0 10px 10px 10px; /* Removed top padding */
+                    transform: scale(0.88);
                     transform-origin: top center;
                 }
 
@@ -1141,6 +1139,7 @@
         });
 
         // Write the content to the new window
+        const printWindow = window.open('', '_blank');
         printWindow.document.write(`
             <!DOCTYPE html>
             <html>
