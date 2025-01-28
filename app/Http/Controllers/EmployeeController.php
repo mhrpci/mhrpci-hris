@@ -192,8 +192,15 @@ public function store(Request $request): RedirectResponse
             // Commit transaction
             DB::commit();
 
+            // Check which button was clicked
+            if ($request->input('action') === 'save_and_create') {
+                return redirect()->route('employees.create')
+                    ->with('success', 'Employee created successfully. You can now create another.');
+            }
+            
+            // Default action (just save)
             return redirect()->route('employees.show', $employee->slug)
-                ->with('success', 'Employee created successfully');
+                ->with('success', 'Employee created successfully.');
 
         } catch (\Exception $e) {
             // Rollback transaction

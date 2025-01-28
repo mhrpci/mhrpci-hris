@@ -2,8 +2,14 @@
 
 @section('content')
     <div class="container-fluid">
-                <!-- Step Indicators -->
-                <div class="step-indicator-container">
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success">{{ $message }}</div>
+        @endif
+        @if ($message = Session::get('error'))
+            <div class="alert alert-danger">{{ $message }}</div>
+        @endif
+        <!-- Step Indicators -->
+        <div class="step-indicator-container">
         <ul class="step-indicator">
             <div class="progress-bar"></div>
             <li class="step-item">
@@ -32,24 +38,6 @@
             </li>
         </ul>
     </div>
-        @if ($message = Session::get('success'))
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: '{{ $message }}',
-                });
-            </script>
-        @endif
-        @if ($message = Session::get('error'))
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: '{{ $message }}',
-                });
-            </script>
-        @endif
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -561,7 +549,8 @@
                                     <!-- Your identification card numbers fields -->
                                 </div>
                                 <button type="button" class="btn btn-secondary prevBtn">Previous</button>
-                                <button type="submit" class="btn btn-primary">Create</button>
+                                <button type="submit" class="btn btn-primary" name="action" value="save">Create</button>
+                                <button type="submit" class="btn btn-success" name="action" value="save_and_create">Save & Create Another</button>
                             </div>
                         </form>
                     </div>

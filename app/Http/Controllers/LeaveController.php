@@ -151,8 +151,8 @@ class LeaveController extends Controller
             }
             // Calculate leave balances up to this leave ID
             $vacationTaken = $this->calculateLeaveTaken($leave->employee->id, 1, $id);
-            $sickTaken = $this->calculateLeaveTaken($leave->employee->id, 2, $id);
-            $emergencyTaken = $this->calculateLeaveTaken($leave->employee->id, 3, $id);
+            $emergencyTaken = $this->calculateLeaveTaken($leave->employee->id, 2, $id);
+            $sickTaken = $this->calculateLeaveTaken($leave->employee->id, 3, $id);
 
             // Calculate current leave days
             $currentLeaveDays = $this->calculateCurrentLeaveDays($leave);
@@ -161,8 +161,8 @@ class LeaveController extends Controller
             if ($leave->employee->employment_status === 'REGULAR') {
                 $isWithinLimits = match($leave->type_id) {
                     1 => $vacationTaken <= $leave->employee->vacation_leave,
-                    2 => $sickTaken <= $leave->employee->sick_leave,
-                    3 => $emergencyTaken <= $leave->employee->emergency_leave,
+                    2 => $emergencyTaken <= $leave->employee->emergency_leave,
+                    3 => $sickTaken <= $leave->employee->sick_leave,
                     default => false
                 };
 
@@ -181,8 +181,8 @@ class LeaveController extends Controller
 
             // Calculate balances
             $vacationBalance = max(0, 5 - $vacationTaken);
-            $sickBalance = max(0, 7 - $sickTaken);
             $emergencyBalance = max(0, 3 - $emergencyTaken);
+            $sickBalance = max(0, 7 - $sickTaken);
 
             $diff = $this->calculateCurrentLeaveDays($leave);
             $approvedByUser = $leave->approvedByUser;
@@ -301,6 +301,7 @@ class LeaveController extends Controller
 
         // Find the leave request
         $leave = Leave::findOrFail($id);
+        $employee = $leave->employee;
 
         try {
             // Process approved_by signature
@@ -321,19 +322,52 @@ class LeaveController extends Controller
                 $leave->rejected_at = null;
                 $leave->rejection_reason = null;
                 
-                // Calculate and set payment status
-                $takenDays = $this->calculateLeaveTaken($leave->employee->id, $leave->type_id, $leave->id);
-                $isWithPay = false;
-                if ($leave->employee->employment_status === 'REGULAR') {
-                    $maxDays = match($leave->type_id) {
-                        1 => $leave->employee->vacation_leave,
-                        2 => $leave->employee->sick_leave,
-                        3 => $leave->employee->emergency_leave,
-                        default => 0
-                    };
-                    $isWithPay = $takenDays <= $maxDays;
+                // Calculate hours to deduct
+                $dateFrom = \Carbon\Carbon::parse($leave->date_from);
+                $dateTo = \Carbon\Carbon::parse($leave->date_to);
+                $diffInMinutes = $dateFrom->diffInMinutes($dateTo);
+                $hoursToDeduct = $diffInMinutes / 60; // Convert minutes to hours
+
+                // Deduct leave hours based on type
+                if ($employee->employment_status === 'REGULAR') {
+                    switch ($leave->type_id) {
+                        case 1: // Vacation Leave
+                            if ($employee->vacation_leave >= $hoursToDeduct) {
+                                $employee->vacation_leave -= $hoursToDeduct;
+                                $leave->payment_status = 'With Pay';
+                            } else {
+                                $leave->payment_status = 'Without Pay';
+                            }
+                            break;
+
+                        case 2: // Emergency Leave
+                            if ($employee->emergency_leave >= $hoursToDeduct) {
+                                $employee->emergency_leave -= $hoursToDeduct;
+                                $leave->payment_status = 'With Pay';
+                            } else {
+                                $leave->payment_status = 'Without Pay';
+                            }
+                            break;
+
+                        case 3: // Sick Leave
+                            if ($employee->sick_leave >= $hoursToDeduct) {
+                                $employee->sick_leave -= $hoursToDeduct;
+                                $leave->payment_status = 'With Pay';
+                            } else {
+                                $leave->payment_status = 'Without Pay';
+                            }
+                            break;
+
+                        default:
+                            $leave->payment_status = 'Without Pay';
+                    }
+
+                    // Save the updated employee leave balances
+                    $employee->save();
+                } else {
+                    // For non-regular employees
+                    $leave->payment_status = 'Without Pay';
                 }
-                $leave->payment_status = $isWithPay ? 'With Pay' : 'Without Pay';
                 
             } elseif ($validatedData['status'] === 'rejected') {
                 $leave->rejected_by = Auth::id();
@@ -346,9 +380,24 @@ class LeaveController extends Controller
 
             $leave->save();
 
+            // Prepare success message
             $message = $validatedData['status'] === 'approved' 
-                ? 'Leave request has been approved successfully.'
+                ? 'Leave request has been approved successfully. Leave balances have been updated.'
                 : 'Leave request has been rejected successfully.';
+
+            // Log the leave balance update
+            if ($validatedData['status'] === 'approved') {
+                \Log::info('Leave balance update for Employee #' . $employee->id, [
+                    'leave_id' => $leave->id,
+                    'type' => $leave->type->name,
+                    'hours_deducted' => $hoursToDeduct,
+                    'new_balance' => [
+                        'vacation_leave' => $employee->vacation_leave,
+                        'emergency_leave' => $employee->emergency_leave,
+                        'sick_leave' => $employee->sick_leave,
+                    ]
+                ]);
+            }
 
             return redirect()->route('leaves.show', $id)
                 ->with('success', $message);
