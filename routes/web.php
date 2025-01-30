@@ -46,6 +46,7 @@ use App\Http\Controllers\ControllerAnalysisController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserActivityController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -332,3 +333,5 @@ Route::middleware('auth')->group(function () {
 });
 
     Auth::routes();
+
+Route::post('/contact', [ContactController::class, 'sendEmail'])->name('contact.send');

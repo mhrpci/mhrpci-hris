@@ -3,548 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MHRHCI - Medical & Hospital Resources Health Care, Inc.</title>
+    <title>Medical & Hospital Resources Health Care, Inc.</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center space-x-3">
+                        <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="MHRHCI Logo" class="h-12 w-auto hover:opacity-90 transition-opacity duration-300">
+                        <span class="font-bold text-2xl text-blue-600 hover:text-blue-700 transition-colors duration-300">MHRHCI</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#home" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>Home</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                        <a href="#products" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>Products</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                        <a href="#about" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>About</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                        <a href="#contact" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>Contact</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition duration-300 flex items-center">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Request Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div id="home" class="pt-16">
+        <div class="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h1 class="text-4xl md:text-5xl font-bold mb-6">Medical & Hospital Resources Health Care, Inc.</h1>
+                        <p class="text-xl mb-8">A leading distributor of medical and hospital supplies across the Philippines, serving healthcare facilities in Cebu, Bicol, Iloilo, and Manila.</p>
+                        <div class="flex space-x-4">
+                            <button class="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                                View Catalog
+                            </button>
+                            <button onclick="openModal()" class="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300">
+                                Learn More
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                        <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment">
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-white opacity-20"></div>
+        </div>
+    </div>
+
+    <!-- Featured Products Section -->
+    <section id="products" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-4">Featured Products</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">Discover our comprehensive range of medical equipment and supplies, designed to meet the highest standards of quality and performance.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                    <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Medical Equipment</h3>
+                        <p class="text-gray-600 mb-4">Premium quality medical equipment that helps in the healthcare industry and environmental friendly.</p>
+                        <a href="https://ourproducts-mhrhci.netlify.app/" target="_blank" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
+                            Learn More →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                    <img src="/api/placeholder/400/300" alt="Medical Supplies" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Medical Supplies</h3>
+                        <p class="text-gray-600 mb-4">Essential medical supplies including PPE, wound care products, and disposable medical items.</p>
+                        <button class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300">
+                            Learn More →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">Why Choose MHRHCI?</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <i class="fas fa-check-circle text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold mb-2">Nationwide Network</h3>
+                                <p class="text-gray-600">Extensive coverage across the Philippines with presence in Cebu, Bicol, Iloilo, and Manila.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <i class="fas fa-warehouse text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold mb-2">Modern Facilities</h3>
+                                <p class="text-gray-600">State-of-the-art warehousing facilities ensuring product quality and efficient distribution.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <i class="fas fa-heart text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold mb-2">Dedicated Service</h3>
+                                <p class="text-gray-600">Committed team providing excellent service to healthcare institutions nationwide.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="{{ asset('vendor/adminlte/dist/img/frontmhrhci.jpg') }}" alt="Medical Facility" class="rounded-lg shadow-lg">
+                    <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment" class="rounded-lg shadow-lg mt-8">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="grid md:grid-cols-2">
+                    <div class="bg-blue-600 text-white p-12">
+                        <h2 class="text-3xl font-bold mb-6">Get in Touch</h2>
+                        <p class="mb-8">Need assistance with medical equipment or supplies? Our team is here to help.</p>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt w-6"></i>
+                                <span class="ml-4">MHR Building: Jose L. Briones St., NRA, Cebu City, Philippines, 6000</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-phone w-6"></i>
+                                <span class="ml-4">+63 32 234 5678</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope w-6"></i>
+                                <span class="ml-4">csr.mhrhealthcare@gmail.com</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-12">
+                        @if(session('success'))
+                            <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+                        @if(session('error'))
+                            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
+                        @if($errors->any())
+                            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form class="space-y-6" method="POST" action="{{ route('contact.send') }}" id="contactForm">
+                            @csrf
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">Name</label>
+                                <input type="text" name="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Your name">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">Email</label>
+                                <input type="email" name="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Your email">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">Message</label>
+                                <textarea name="message" required class="w-full p-3 border border-gray-300 rounded-lg h-32 focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Your message"></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+                                    <i class="fas fa-paper-plane mr-2"></i>
+                                    Send Message
+                                </button>
+                                <button type="reset" class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition duration-300">
+                                    Reset Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">About Us</h3>
+                    <p class="text-gray-400">Leading provider of medical equipment and supplies, serving healthcare facilities worldwide.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#products" class="hover:text-white">Products</a></li>
+                        <li><a href="#about" class="hover:text-white">About Us</a></li>
+                        <li><a href="#contact" class="hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Products</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="https://ourproducts-mhrhci.netlify.app/" target="_blank" class="hover:text-white">Medical Equipment</a></li>
+                        <li><a href="#" class="hover:text-white">Medical Supplies</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/mhrhci" target="_blank" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; {{ date('Y') }} Medical & Hospital Resources Health Care, Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add this script at the end of the body tag -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all navigation links
+        const navLinks = document.querySelectorAll('nav a');
+        
+        // Add click handler for smooth scrolling
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Highlight active section on scroll
+        window.addEventListener('scroll', function() {
+            let current = '';
+            const sections = document.querySelectorAll('section, #home');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = '#' + section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-blue-600');
+                if (link.getAttribute('href') === current) {
+                    link.classList.add('text-blue-600');
+                }
+            });
+        });
+    });
+    </script>
+
+    <!-- Modal -->
+    <div id="learnMoreModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <!-- Modal backdrop -->
+            <div class="fixed inset-0 bg-black opacity-50" onclick="closeModal()"></div>
+            
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 animate-modal">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900">About MHRHCI</h2>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p class="text-gray-600 leading-relaxed mb-4">
+                            Medical & Hospital Resources Health Care, Inc. (MHRHCI) is a leading distributor of medical and hospital supplies in the Philippines. With our extensive network spanning Cebu, Bicol, Iloilo, and Manila, we serve healthcare facilities across the nation with high-quality medical products and equipment.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed mb-4">
+                            Since our establishment, we have grown into a reliable partner in the healthcare industry, serving hospitals, clinics, and medical facilities. Our commitment to quality and reliability has made us the preferred choice for healthcare institutions seeking dependable medical supply solutions.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed">
+                            With our modern warehousing facilities and dedicated team, we maintain the highest standards of product quality and service excellence. Our passion for healthcare and commitment to patient care has helped us build a strong reputation in the medical supply industry.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 rounded-b-lg">
+                    <button onclick="closeModal()" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+        .animate-modal {
+            animation: modalFade 0.3s ease-out;
         }
-
-        :root {
-            --primary: #0052CC;
-            --secondary: #2684FF;
-            --accent: #4C9AFF;
-            --background: #F5F9FF;
-            --text: #172B4D;
-            --white: #ffffff;
-            --gray-light: #F4F5F7;
-            --shadow: 0 8px 30px rgba(0, 82, 204, 0.12);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        body {
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            z-index: 9999;
-        }
-
-        .nav-container {
-            position: static;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            background: none;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .logo img {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-            margin-left: auto;
-        }
-
-        .nav-link {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            font-family: 'Montserrat', sans-serif;
-            padding: 0.5rem 0;
-            position: relative;
-        }
-
-        .nav-link:hover {
-            color: var(--primary);
-            border-bottom: 2px solid var(--secondary);
-        }
-
-        .nav-link i {
-            margin-right: 1rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 0;
-            padding-top: 80px;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 60vh;
-            background: linear-gradient(rgba(0, 82, 204, 0.9), rgba(38, 132, 255, 0.8)),
-                        url('{{ asset('vendor/adminlte/dist/img/frontmhrhci.jpg') }}') center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--light-text);
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            animation: fadeIn 1.5s ease-out;
-            color: var(--white);
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Sections */
-        .section {
-            padding: 5rem 2rem;
-        }
-
-        .section-light {
-            background-color: var(--light-bg);
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            color: var(--primary);
-        }
-
-        /* About Section */
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .about-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--accent);
-        }
-
-        .about-card i {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        /* Services Section */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .service-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--accent);
-        }
-
-        .service-card i {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        /* Location Section */
-        .location-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .location-info {
-            padding: 2rem;
-        }
-
-        .location-map {
-            background-color: #ddd;
-            min-height: 400px;
-            border-radius: 10px;
-        }
-
-        /* Footer */
-        footer {
-            background: linear-gradient(135deg, #0052CC, #2684FF);
-            color: var(--white);
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                width: 80px;
+        
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-1rem);
             }
-
-            .main-content {
-                margin-left: 80px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-
-            .logo img {
-                width: 60px;
-                height: 60px;
-            }
-
-            .nav-link span {
-                display: none;
-            }
-
-            .location-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-        }
-
-        /* Add these new animation keyframes */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .mobile-menu-btn span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: var(--primary);
-            transition: var(--transition);
-        }
-
-        /* Updated Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                padding: 0.5rem 1rem;
-            }
-
-            .location-container {
-                grid-template-columns: 1fr;
-            }
-
-            .about-grid, .services-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                padding: 0 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: flex;
-            }
-
-            .nav-menu {
-                display: none;
-                position: fixed;
-                top: 80px;
-                left: 0;
-                right: 0;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(20px);
-                flex-direction: column;
-                padding: 2rem;
-                gap: 1.5rem;
-                box-shadow: var(--shadow);
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .section {
-                padding: 3rem 1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 1.5rem;
-            }
-
-            .logo img {
-                width: 40px;
-                height: 40px;
-            }
-
-            .hero h1 {
-                font-size: 1.75rem;
-            }
-
-            .about-card, .service-card {
-                padding: 1.5rem;
-            }
-        }
-
-        /* Add these utility classes */
-        .no-scroll {
-            overflow: hidden;
-        }
-
-        /* Add smooth transitions */
-        .nav-menu, .hero-content, .about-card, .service-card {
-            transition: var(--transition);
         }
     </style>
-</head>
-<body>
-    <header class="header">
-        <nav class="nav-container">
-            <div class="logo">
-                <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="MHRHCI Logo">
-                <h1>MHRHCI</h1>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="{{route('welcome')}}" class="nav-link">Home</a></li>
-                <li><a href="#who-we-are" class="nav-link">Who We Are</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#location" class="nav-link">Location</a></li>
-            </ul>
-            <div class="mobile-menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </nav>
-    </header>
 
-    <main class="main-content">
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1>Welcome to MHRHCI</h1>
-                <p>Your trusted partner in medical and hospital supplies distribution</p>
-            </div>
-        </section>
-
-        <section id="who-we-are" class="section section-light">
-            <h2 class="section-title">Who We Are</h2>
-            <div style="max-width: 1000px; margin: 0 auto; text-align: justify; padding: 0 2rem;" data-aos="fade-up">
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    Medical & Hospital Resources Health Care, Inc. (MHRHCI) is a leading distributor of medical and hospital supplies in the Philippines. With our extensive network spanning Cebu, Bicol, Iloilo, and Manila, we serve healthcare facilities across the nation with high-quality medical products and equipment.
-                </p>
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    Since our establishment, we have grown into a reliable partner in the healthcare industry, serving hospitals, clinics, and medical facilities. Our commitment to quality and reliability has made us the preferred choice for healthcare institutions seeking dependable medical supply solutions.
-                </p>
-                <p style="font-size: 1.1rem;">
-                    With our modern warehousing facilities and dedicated team, we maintain the highest standards of product quality and service excellence. Our passion for healthcare and commitment to patient care has helped us build a strong reputation in the medical supply industry.
-                </p>
-            </div>
-        </section>
-        <section id="about" class="section">
-            <h2 class="section-title">About Us</h2>
-            <div class="about-grid">
-                <div class="about-card" data-aos="fade-up">
-                    <i class="fas fa-box-open"></i>
-                    <h3>Our Products</h3>
-                    <p>Comprehensive range of high-quality medical supplies and equipment sourced from trusted manufacturers worldwide.</p>
-                </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-users"></i>
-                    <h3>Our Team</h3>
-                    <p>Experienced healthcare professionals and logistics experts dedicated to ensuring timely delivery of medical supplies.</p>
-                </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-star"></i>
-                    <h3>Excellence</h3>
-                    <p>Known for our commitment to quality, reliability, and exceptional service in the medical supply industry.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="services" class="section section-light">
-            <h2 class="section-title">Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card" data-aos="fade-up">
-                    <i class="fas fa-hospital-user"></i>
-                    <h3>Hospital Supplies</h3>
-                    <p>Complete range of hospital equipment and supplies</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-truck-loading"></i>
-                    <h3>Distribution</h3>
-                    <p>Nationwide distribution network covering key regions</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-boxes"></i>
-                    <h3>Supply Management</h3>
-                    <p>Efficient inventory and supply chain solutions</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-                    <i class="fas fa-clock"></i>
-                    <h3>24/7 Support</h3>
-                    <p>Round-the-clock customer service and support</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="location" class="section">
-            <h2 class="section-title">Our Location</h2>
-            <div class="location-container">
-                <div class="location-info" data-aos="fade-right">
-                    <h3>Find Us Here</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> MHR Building - Jose L. Briones St., NRA, Cebu City, Philippines 6000</p>
-                    <p><i class="fas fa-phone"></i> Contact Number: (032) 238-1887</p>
-                    <p><i class="fas fa-envelope"></i> Email: mhrhci@mhrpci.ph</p>
-                </div>
-                <div class="location-map" data-aos="fade-left">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.5387498183766!2d123.91307217489656!3d10.307817389484169!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9996ee62ab953%3A0x940c202ffc675cc3!2sMHR%20Health%20Care%2C%20Co.!5e0!3m2!1sen!2sph!4v1710830058813!5m2!1sen!2sph"
-                        width="100%"
-                        height="100%"
-                        style="border:0; border-radius: 10px;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        sandbox="allow-scripts allow-same-origin allow-popups">
-                    </iframe>
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            <p>&copy; 2024 MHRHCI (Medical & Hospital Resources Health Care, Inc.). All rights reserved.</p>
-            <p>A subsidiary of MHR Properties Conglomerate, Inc.</p>
-        </footer>
-    </main>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
-        });
+        function openModal() {
+            document.getElementById('learnMoreModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
 
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+        function closeModal() {
+            document.getElementById('learnMoreModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
 
-        // Add VHI's mobile menu toggle code
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const navMenu = document.querySelector('.nav-menu');
-        const body = document.body;
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenuBtn.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            body.classList.toggle('no-scroll');
-        });
-
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
-            });
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
+        // Close modal when clicking escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
             }
         });
     </script>

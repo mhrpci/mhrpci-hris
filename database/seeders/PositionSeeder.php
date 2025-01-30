@@ -48,6 +48,9 @@ class PositionSeeder extends Seeder
             ['name' => 'WAREHOUSE & LOGISTIC STAFF', 'department_id' => '5'],
             ['name' => 'OFFICER IN-CHARGE', 'department_id' => '5'],
             ['name' => 'PROCUREMENT OFFICER', 'department_id' => '5'],
+            ['name' => 'CASHIER', 'department_id' => '7'],
+            ['name' => 'PUMP ATTENDANT', 'department_id' => '7'],
+            ['name' => 'STAFF', 'department_id' => '6'],
         ]);
     }
 }
