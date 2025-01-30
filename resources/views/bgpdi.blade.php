@@ -3,549 +3,494 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BGPDI Gas Station</title>
+    <title>Bay Gas Petroleum Distribution Inc.</title>
+    <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/bgpdi.png') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        :root {
-            --primary: #0047AB;
-            --secondary: #FFD700;
-            --accent: #1E90FF;
-            --background: #f5f6fa;
-            --text: #2d3436;
-            --white: #ffffff;
-            --gray-light: #f4f6f8;
-            --shadow: 0 8px 30px rgba(0,0,0,0.12);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        body {
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            z-index: 9999;
-        }
-
-        .nav-container {
-            position: static;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            background: none;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .logo img {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-            margin-left: auto;
-        }
-
-        .nav-link {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            font-family: 'Montserrat', sans-serif;
-            padding: 0.5rem 0;
-            position: relative;
-        }
-
-        .nav-link:hover {
-            color: var(--primary);
-            border-bottom: 2px solid var(--secondary);
-        }
-
-        .nav-link i {
-            margin-right: 1rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 0;
-            padding-top: 80px;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 60vh;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                        url('{{ asset('vendor/adminlte/dist/img/baygas.jpg') }}') center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--light-text);
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            animation: fadeIn 1.5s ease-out;
-            color: var(--white);
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Sections */
-        .section {
-            padding: 5rem 2rem;
-        }
-
-        .section-light {
-            background-color: var(--light-bg);
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            color: var(--primary);
-        }
-
-        /* About Section */
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .about-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--secondary);
-        }
-
-        .about-card i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        /* Services Section */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .service-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--secondary);
-        }
-
-        .service-card i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        /* Location Section */
-        .location-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .location-info {
-            padding: 2rem;
-        }
-
-        .location-map {
-            background-color: #ddd;
-            min-height: 400px;
-            border-radius: 10px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                width: 80px;
-            }
-
-            .main-content {
-                margin-left: 80px;
-            }
-
-            .logo img {
-                width: 60px;
-                height: 60px;
-            }
-
-            .nav-link span {
-                display: none;
-            }
-
-            .location-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-        }
-
-        /* Add these new animation keyframes */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .mobile-menu-btn span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: var(--primary);
-            transition: var(--transition);
-        }
-
-        /* Updated Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                padding: 0.5rem 1rem;
-            }
-
-            .location-container {
-                grid-template-columns: 1fr;
-            }
-
-            .about-grid, .services-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                padding: 0 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: flex;
-            }
-
-            .nav-menu {
-                display: none;
-                position: fixed;
-                top: 80px;
-                left: 0;
-                right: 0;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(20px);
-                flex-direction: column;
-                padding: 2rem;
-                gap: 1.5rem;
-                box-shadow: var(--shadow);
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .section {
-                padding: 3rem 1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 1.5rem;
-            }
-
-            .logo img {
-                width: 40px;
-                height: 40px;
-            }
-
-            .hero h1 {
-                font-size: 1.75rem;
-            }
-
-            .about-card, .service-card {
-                padding: 1.5rem;
-            }
-        }
-
-        /* Add these utility classes */
-        .no-scroll {
-            overflow: hidden;
-        }
-
-        /* Add smooth transitions */
-        .nav-menu, .hero-content, .about-card, .service-card {
-            transition: var(--transition);
-        }
-    </style>
 </head>
-<body>
-    <header class="header">
-        <nav class="nav-container">
-            <div class="logo">
-                <img src="{{ asset('vendor/adminlte/dist/img/baygas.jpg') }}" alt="BGPDI Logo">
-                <h1>BGPDI</h1>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center space-x-3">
+                        <img src="{{ asset('vendor/adminlte/dist/img/bgpdi.png') }}" alt="BGPDI Logo" class="h-12 w-auto hover:opacity-90 transition-opacity duration-300">
+                        <span class="font-bold text-2xl text-blue-600 hover:text-blue-700 transition-colors duration-300">BGPDI</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#home" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>Home</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                        <a href="#products" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>Products</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                        <a href="#about" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>About</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                        <a href="#contact" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>Contact</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-600">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
-            <ul class="nav-menu">
-                <li><a href="{{route('welcome')}}" class="nav-link">Home</a></li>
-                <li><a href="#who-we-are" class="nav-link">Who We Are</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#location" class="nav-link">Location</a></li>
-            </ul>
-            <div class="mobile-menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </nav>
-    </header>
+        </div>
 
-    <main class="main-content">
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1>Welcome to BGPDI Gas Station</h1>
-                <p>Your trusted partner in fuel and petroleum products serving Consolacion, Cebu</p>
+        <!-- Mobile menu -->
+        <div class="md:hidden hidden" id="mobileMenu">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Home</a>
+                <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Products</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">About</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Contact</a>
             </div>
-        </section>
+        </div>
+    </nav>
 
-        <section id="who-we-are" class="section section-light">
-            <h2 class="section-title">Who We Are</h2>
-            <div style="max-width: 1000px; margin: 0 auto; text-align: justify; padding: 0 2rem;" data-aos="fade-up">
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    Bay Gas Petroleum Distribution Inc. (BGPDI) is a prominent fuel station located in Brgy. Cansaga, Consolacion, Cebu. As part of the MHR Properties Conglomerate, Inc., we have established ourselves as a reliable provider of high-quality fuel and petroleum products in the region.
-                </p>
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    Since our establishment in 2015, we have grown from a small fuel distribution business to a key player in the local petroleum industry. Our strategic location and commitment to service excellence have made us the preferred choice for both private and commercial customers.
-                </p>
-                <p style="font-size: 1.1rem;">
-                    With our team of six dedicated local staff members, we maintain 24/7 operations to serve various sectors including private vehicle owners, public transport operators, and government agencies. Our commitment to quality service and reliability has helped us maintain a strong presence in the community.
-                </p>
-            </div>
-        </section>
-        <section id="about" class="section">
-            <h2 class="section-title">About Us</h2>
-            <div class="about-grid">
-                <div class="about-card" data-aos="fade-up">
-                    <i class="fas fa-building"></i>
-                    <h3>Our Company</h3>
-                    <p>Part of MHR Properties Conglomerate, Inc., BGPDI is a leading fuel station in Brgy. Cansaga, Consolacion, Cebu, serving both private and commercial customers.</p>
-                </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-users"></i>
-                    <h3>Our Team</h3>
-                    <p>With six dedicated local staff members, we ensure efficient and professional service to all our customers.</p>
-                </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Market Leadership</h3>
-                    <p>We hold a dominant market share in the community, serving private vehicle owners, companies, public transport operators, and government agencies.</p>
+    <!-- Hero Section -->
+    <div id="home" class="pt-16">
+        <div class="relative bg-gradient-to-r from-blue-600 to-yellow-300 text-white py-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h1 class="text-4xl md:text-5xl font-bold mb-6">Bay Gas Petroleum Distribution Inc.</h1>
+                        <p class="text-xl mb-8">Your trusted fuel station in Brgy. Cansaga, Consolacion, Cebu. Providing quality petroleum products and convenience store services 24/7.</p>
+                        <div class="flex space-x-4">
+                            <button onclick="openModal()" class="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300">
+                                Learn More
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:block relative h-96">
+                        <!-- Background overlay image -->
+                        <img src="{{ asset('vendor/adminlte/dist/img/bgpdi.png') }}" alt="Background Overlay" class="absolute w-full h-full object-contain opacity-10 z-0 transform scale-100">
+                        <!-- Slideshow images -->
+                        <img src="{{ asset('vendor/adminlte/dist/img/bgpdi/station.jpg') }}" alt="Gas Station" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/bgpdi/store.jpg') }}" alt="My Store" class="slideshow-image absolute w-full h-full object-contain opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/bgpdi/pumps.jpg') }}" alt="Fuel Pumps" class="slideshow-image absolute w-full h-full object-contain opacity-0 transition-opacity duration-1000 z-10">
+                    </div>
                 </div>
             </div>
-        </section>
+            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-white opacity-20"></div>
+        </div>
+    </div>
 
-        <section id="services" class="section section-light">
-            <h2 class="section-title">Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card" data-aos="fade-up">
-                    <i class="fas fa-gas-pump"></i>
-                    <h3>Fuel Services</h3>
-                    <p>High-quality fuel products for all vehicle types</p>
+    <!-- Featured Services Section -->
+    <section id="products" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-4">Our Services</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">Quality fuel products and convenient store services to meet all your needs.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                    <img src="{{ asset('vendor/adminlte/dist/img/bgpdi/fuel.jpg') }}" alt="Fuel Services" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Fuel Services</h3>
+                        <p class="text-gray-600 mb-4">High-quality petroleum products for both private and commercial vehicles. 24/7 availability.</p>
+                        <!-- <button class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300">
+                            View Products →
+                        </button> -->
+                    </div>
                 </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-oil-can"></i>
-                    <h3>Petroleum Products</h3>
-                    <p>Wide range of petroleum products for various needs</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-truck"></i>
-                    <h3>Commercial Services</h3>
-                    <p>Specialized services for business and government clients</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-                    <i class="fas fa-store"></i>
-                    <h3>Retail Services</h3>
-                    <p>Convenient retail services for private vehicle owners</p>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                    <img src="{{ asset('vendor/adminlte/dist/img/bgpdi/store.jpg') }}" alt="My Store" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">My Store</h3>
+                        <p class="text-gray-600 mb-4">Your one-stop convenience store for snacks, beverages, and essential items.</p>
+                        <!-- <button class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300">
+                            Visit Store →
+                        </button> -->
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="location" class="section">
-            <h2 class="section-title">Our Location</h2>
-            <div class="location-container">
-                <div class="location-info" data-aos="fade-right">
-                    <h3>Find Us Here</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> National Rd. Cansaga, Consolacion, Cebu</p>
-                    <p><i class="fas fa-phone"></i> Contact Number: (032) 238-1887</p>
-                    <p><i class="fas fa-clock"></i> Operating Hours: 24/7</p>
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-yellow-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">Why Choose BGPDI?</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <i class="fas fa-gas-pump text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold mb-2">Quality Fuel Products</h3>
+                                <p class="text-gray-600">We provide high-grade petroleum products ensuring optimal performance for your vehicles.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <i class="fas fa-clock text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold mb-2">24/7 Service</h3>
+                                <p class="text-gray-600">Our station operates round-the-clock to serve your fuel and convenience store needs anytime.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <i class="fas fa-store text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold mb-2">Complete Convenience</h3>
+                                <p class="text-gray-600">My Store offers a wide selection of snacks, beverages, and essential items for your convenience.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="location-map" data-aos="fade-left">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.8961246876434!2d123.96145421475498!3d10.378576892605444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9a2b07fd8a64f%3A0x99917bdaf36b746e!2sBay%20Gas%20%26%20Petroleum%20Distribution%2C%20Inc.!5e0!3m2!1sen!2sph!4v1650000000000!5m2!1sen!2sph"
-                        width="100%"
-                        height="100%"
-                        style="border:0; border-radius: 10px;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="{{ asset('vendor/adminlte/dist/img/bgpdi/station-front.jpg') }}" alt="BGPDI Station" class="rounded-lg shadow-lg">
+                    <img src="{{ asset('vendor/adminlte/dist/img/bgpdi/store-inside.jpg') }}" alt="My Store Interior" class="rounded-lg shadow-lg mt-8">
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <footer>
-            <p>&copy; {{ date('Y') }} BGPDI Gas Station. All rights reserved.</p>
-            <p>A subsidiary of MHR Properties Conglomerate, Inc.</p>
-        </footer>
-    </main>
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="grid md:grid-cols-2">
+                    <div class="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-12">
+                        <h2 class="text-3xl font-bold mb-6">Get in Touch</h2>
+                        <p class="mb-8">Have questions about our fuel products or convenience store? Our team is here to assist you 24/7.</p>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt w-6"></i>
+                                <span class="ml-4">Brgy. Cansaga, Consolacion, Cebu, Philippines</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-phone w-6"></i>
+                                <span class="ml-4">(032) 419 1014</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope w-6"></i>
+                                <span class="ml-4">baygaspdi@mhrpci.ph</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-clock w-6"></i>
+                                <span class="ml-4">Open 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-12">
+                        @if(session('success'))
+                            <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                                {{ session('success') }}
+                            </div>
+                        @endif
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+                        @if(session('error'))
+                            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
+                        @if($errors->any())
+                            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form class="space-y-6" method="POST" action="{{ route('contact.sendbgpdi') }}" id="contactForm">
+                            @csrf
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">Name</label>
+                                <input type="text" name="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Your name">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">Email</label>
+                                <input type="email" name="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Your email">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">Message</label>
+                                <textarea name="message" required class="w-full p-3 border border-gray-300 rounded-lg h-32 focus:ring-2 focus:ring-blue-600 focus:border-transparent" placeholder="Your message"></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+                                    <i class="fas fa-paper-plane mr-2"></i>
+                                    Send Message
+                                </button>
+                                <button type="reset" class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition duration-300">
+                                    Reset Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">About Us</h3>
+                    <p class="text-gray-400">Leading provider of fuel and convenience store, serving the community.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#products" class="hover:text-white">Products</a></li>
+                        <li><a href="#about" class="hover:text-white">About Us</a></li>
+                        <li><a href="#contact" class="hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Products</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Fuel</a></li>
+                        <li><a href="#" class="hover:text-white">Convenience Store</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/bgpdiofficial" target="_blank" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; {{ date('Y') }} Bay Gas Petroleum Distribution Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add this script at the end of the body tag -->
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
-        });
-
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all navigation links
+        const navLinks = document.querySelectorAll('nav a');
+        
+        // Add click handler for smooth scrolling
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
 
-        // Add VHI's mobile menu toggle code
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const navMenu = document.querySelector('.nav-menu');
-        const body = document.body;
+        // Highlight active section on scroll
+        window.addEventListener('scroll', function() {
+            let current = '';
+            const sections = document.querySelectorAll('section, #home');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = '#' + section.getAttribute('id');
+                }
+            });
 
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenuBtn.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            body.classList.toggle('no-scroll');
+            navLinks.forEach(link => {
+                link.classList.remove('text-blue-600');
+                if (link.getAttribute('href') === current) {
+                    link.classList.add('text-blue-600');
+                }
+            });
         });
 
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-link').forEach(link => {
+        // Add reveal on scroll functionality
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        // Add reveal class to sections you want to animate
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('reveal');
+        });
+
+        // Listen for scroll events
+        window.addEventListener('scroll', reveal);
+        
+        // Trigger initial reveal
+        reveal();
+    });
+    </script>
+
+    <!-- Modal -->
+    <div id="learnMoreModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <!-- Modal backdrop -->
+            <div class="fixed inset-0 bg-black opacity-50" onclick="closeModal()"></div>
+            
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 animate-modal">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900">About MHRHCI</h2>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p class="text-gray-600 leading-relaxed mb-4">
+                            Bay Gas Petroleum Distribution Inc. (BGPDI) is a prominent fuel station located in Brgy. Cansaga, Consolacion, Cebu. As part of the MHR Properties Conglomerate, Inc., we have established ourselves as a reliable provider of high-quality fuel and petroleum products in the region.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed mb-4">
+                            Since our establishment in 2015, we have grown from a small fuel distribution business to a key player in the local petroleum industry. Our strategic location and commitment to service excellence have made us the preferred choice for both private and commercial customers.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed">
+                            With our team of six dedicated local staff members, we maintain 24/7 operations to serve various sectors including private vehicle owners, public transport operators, and government agencies. Our commitment to quality service and reliability has helped us maintain a strong presence in the community.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 rounded-b-lg">
+                    <button onclick="closeModal()" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .animate-modal {
+            animation: modalFade 0.3s ease-out;
+        }
+        
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-1rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Add new scroll reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Add new slideshow styles */
+        .slideshow-image {
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .slideshow-image.active {
+            opacity: 1;
+        }
+    </style>
+
+    <script>
+        function openModal() {
+            document.getElementById('learnMoreModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('learnMoreModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
+                document.getElementById('mobileMenu').classList.add('hidden');
             });
         });
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const hamburgerButton = document.querySelector('button[onclick="toggleMobileMenu()"]');
+            
+            if (!mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
             }
         });
+
+        function startSlideshow() {
+            const images = document.querySelectorAll('.slideshow-image');
+            let currentImageIndex = 0;
+            
+            // Show first image immediately
+            images[0].classList.add('active');
+
+            setInterval(() => {
+                // Remove active class from current image
+                images[currentImageIndex].classList.remove('active');
+                
+                // Move to next image
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                
+                // Add active class to next image
+                images[currentImageIndex].classList.add('active');
+            }, 5000); // Change image every 5 seconds to allow for smooth transitions
+        }
+
+        // Start the slideshow when the page loads
+        document.addEventListener('DOMContentLoaded', startSlideshow);
     </script>
 </body>
 </html>

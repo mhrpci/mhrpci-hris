@@ -85,6 +85,7 @@ Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->
 Route::get('/mhrpropertyconglomeratesinc', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
 Route::get('/baygaspetroleumdistributioninc', [WelcomeController::class, 'showBgpdi'])->name('bgpdi');
 Route::get('/mhrhealthcareinc', [WelcomeController::class, 'showMhrhci'])->name('mhrhci');
+Route::get('/medical_equipment', [WelcomeController::class, 'showMedicalEquipment'])->name('medical_equipment');
 Route::get('/cebicindustries', [WelcomeController::class, 'showCio'])->name('cio');
 Route::get('/verbenahotelinc', [WelcomeController::class, 'showVhi'])->name('vhi');
 Route::get('/maximumhandlingresources', [WelcomeController::class, 'showMax'])->name('max');
@@ -334,4 +335,5 @@ Route::middleware('auth')->group(function () {
 
     Auth::routes();
 
-Route::post('/contact', [ContactController::class, 'sendEmail'])->name('contact.send');
+Route::post('/contactmhrhci', [ContactController::class, 'sendEmailMhrhci'])->name('contact.sendmhrhci');
+Route::post('/contactbgpdi', [ContactController::class, 'sendEmailBgpdi'])->name('contact.sendbgpdi');

@@ -78,4 +78,9 @@ class WelcomeController extends Controller
     {
         return view('mhrcons');
     }
+
+    public function showMedicalEquipment()
+    {
+        return view('medical_equipment');
+    }
 }

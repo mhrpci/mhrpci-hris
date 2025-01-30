@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical & Hospital Resources Health Care, Inc.</title>
+    <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -36,12 +37,22 @@
                         </a>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition duration-300 flex items-center">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        Request Quote
+                <div class="md:hidden flex items-center">
+                    <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-600">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="md:hidden hidden" id="mobileMenu">
+            <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Home</a>
+                <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Products</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">About</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Contact</a>
             </div>
         </div>
     </nav>
@@ -55,16 +66,19 @@
                         <h1 class="text-4xl md:text-5xl font-bold mb-6">Medical & Hospital Resources Health Care, Inc.</h1>
                         <p class="text-xl mb-8">A leading distributor of medical and hospital supplies across the Philippines, serving healthcare facilities in Cebu, Bicol, Iloilo, and Manila.</p>
                         <div class="flex space-x-4">
-                            <button class="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition duration-300">
-                                View Catalog
-                            </button>
                             <button onclick="openModal()" class="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300">
                                 Learn More
                             </button>
                         </div>
                     </div>
-                    <div class="hidden md:block">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment">
+                    <div class="hidden md:block relative h-96">
+                        <!-- Background overlay image -->
+                        <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="Background Overlay" class="absolute w-full h-full object-cover opacity-10 z-0">
+                        <!-- Slideshow images -->
+                        <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw100.png') }}" alt="Sterilwave 100" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw250.png') }}" alt="Sterilwave 250" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw440.png') }}" alt="Sterilwave 440" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
                     </div>
                 </div>
             </div>
@@ -84,7 +98,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Medical Equipment</h3>
                         <p class="text-gray-600 mb-4">Premium quality medical equipment that helps in the healthcare industry and environmental friendly.</p>
-                        <a href="https://ourproducts-mhrhci.netlify.app/" target="_blank" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
+                        <a href="{{ route('medical_equipment') }}" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
                             Learn More →
                         </a>
                     </div>
@@ -193,7 +207,7 @@
                                 </ul>
                             </div>
                         @endif
-                        <form class="space-y-6" method="POST" action="{{ route('contact.send') }}" id="contactForm">
+                        <form class="space-y-6" method="POST" action="{{ route('contact.sendmhrhci') }}" id="contactForm">
                             @csrf
                             <div>
                                 <label class="block text-gray-700 mb-2 font-medium">Name</label>
@@ -242,7 +256,7 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Products</h3>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="https://ourproducts-mhrhci.netlify.app/" target="_blank" class="hover:text-white">Medical Equipment</a></li>
+                        <li><a href="{{ route('medical_equipment') }}" class="hover:text-white">Medical Equipment</a></li>
                         <li><a href="#" class="hover:text-white">Medical Supplies</a></li>
                     </ul>
                 </div>
@@ -301,6 +315,32 @@
                 }
             });
         });
+
+        // Add reveal on scroll functionality
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        // Add reveal class to sections you want to animate
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('reveal');
+        });
+
+        // Listen for scroll events
+        window.addEventListener('scroll', reveal);
+        
+        // Trigger initial reveal
+        reveal();
     });
     </script>
 
@@ -355,6 +395,36 @@
                 transform: translateY(0);
             }
         }
+
+        /* Add new scroll reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Add new slideshow styles */
+        .slideshow-image {
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .slideshow-image.active {
+            opacity: 1;
+        }
     </style>
 
     <script>
@@ -374,6 +444,50 @@
                 closeModal();
             }
         });
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const hamburgerButton = document.querySelector('button[onclick="toggleMobileMenu()"]');
+            
+            if (!mobileMenu.contains(e.target) && !hamburgerButton.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        function startSlideshow() {
+            const images = document.querySelectorAll('.slideshow-image');
+            let currentImageIndex = 0;
+            
+            // Show first image immediately
+            images[0].classList.add('active');
+
+            setInterval(() => {
+                // Remove active class from current image
+                images[currentImageIndex].classList.remove('active');
+                
+                // Move to next image
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                
+                // Add active class to next image
+                images[currentImageIndex].classList.add('active');
+            }, 5000); // Change image every 5 seconds to allow for smooth transitions
+        }
+
+        // Start the slideshow when the page loads
+        document.addEventListener('DOMContentLoaded', startSlideshow);
     </script>
 </body>
 </html>
