@@ -3,6 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="MHR Property Conglomerates, Inc. (MHRPCI) is a leading conglomerate in the Philippines, specializing in healthcare, real estate, construction, logistics, and more. Founded in 2000, MHRPCI has grown from a medical supplies trading company to a diverse business group with multiple subsidiaries.">
+    <meta name="keywords" content="MHR, MHRPCI, MHR Property Conglomerates Inc, Medical & Hospital Resources, healthcare solutions, property development, construction, logistics, Philippine conglomerate, Cebu business">
+    <meta name="author" content="MHR Property Conglomerates, Inc.">
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="MHR Property Conglomerates, Inc. - Revolutionize Your Business">
+    <meta property="og:description" content="MHR Property Conglomerates, Inc. (MHRPCI) is a leading conglomerate in the Philippines, offering comprehensive solutions in healthcare, real estate, construction, and logistics.">
+    <meta property="og:image" content="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}">
+    <meta property="og:url" content="{{ url('/') }}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MHR Property Conglomerates, Inc. - Revolutionize Your Business">
+    <meta name="twitter:description" content="MHR Property Conglomerates, Inc. (MHRPCI) is a leading conglomerate in the Philippines, offering comprehensive solutions in healthcare, real estate, construction, and logistics.">
+    <meta name="twitter:image" content="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}">
+    
     <title>MHR Property Conglomerates, Inc. - Revolutionize Your Business</title>
     <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">

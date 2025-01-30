@@ -70,10 +70,10 @@
                         <!-- Background overlay image -->
                         <img src="{{ asset('vendor/adminlte/dist/img/cebic.png') }}" alt="Background Overlay" class="absolute w-full h-full object-cover opacity-10 z-0">
                         <!-- Slideshow images -->
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw100.png') }}" alt="Sterilwave 100" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw250.png') }}" alt="Sterilwave 250" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw440.png') }}" alt="Sterilwave 440" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/cio/medicalequipment1.png') }}" alt="Medical Equipment" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/cio/sw100.png') }}" alt="Sterilwave 100" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/cio/sw250.png') }}" alt="Sterilwave 250" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/cio/sw440.png') }}" alt="Sterilwave 440" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
                     </div>
                 </div>
             </div>
