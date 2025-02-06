@@ -167,6 +167,7 @@ Route::middleware('auth')->group(function () {
     Route::get('attendances/import', [AttendanceController::class, 'showImportForm'])->name('attendances.import.form');
     Route::post('attendances/import', [AttendanceController::class, 'import'])->name('attendances.import');
     Route::get('attendances/export', [AttendanceController::class, 'export'])->name('attendances.export');
+    Route::get('/attendance', [AttendanceController::class, 'attendance'])->name('attendances.attendance');
 
     // User Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -354,4 +354,9 @@ public function printAttendance(Request $request)
     {
         return Excel::download(new AttendanceExport, 'attendances.xlsx');
     }
+
+    public function attendance()
+    {
+        return view('attendances.attendance');
+    }
 }

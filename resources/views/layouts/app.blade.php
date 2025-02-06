@@ -2,12 +2,234 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>MHR Property Conglomerates, Inc.</title>
     <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}">
-<style>
-      /* Loader */
-      .loader {
+    <style>
+    /* Global Responsive Styles */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-size: 16px;
+        line-height: 1.5;
+        overflow-x: hidden;
+    }
+
+    /* Responsive Typography */
+    @media (max-width: 1200px) {
+        body {
+            font-size: 15px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        body {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body {
+            font-size: 13px;
+        }
+    }
+
+    /* Responsive Container */
+    .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    @media (min-width: 576px) {
+        .container {
+            max-width: 540px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .container {
+            max-width: 720px;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .container {
+            max-width: 960px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .container {
+            max-width: 1140px;
+        }
+    }
+
+    /* Responsive Navigation */
+    .contribution-nav {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .contribution-nav {
+            gap: 5px;
+        }
+
+        .contribution-link {
+            width: calc(50% - 5px);
+            padding: 8px;
+        }
+
+        .contribution-link .icon-wrapper {
+            width: 30px;
+            height: 30px;
+        }
+
+        .contribution-link .title {
+            font-size: 0.9rem;
+        }
+
+        .contribution-link .description {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .contribution-link {
+            width: 100%;
+        }
+    }
+
+    /* Responsive Images */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .profile-img {
+        width: 150px;
+        height: 150px;
+    }
+
+    @media (max-width: 768px) {
+        .profile-img {
+            width: 120px;
+            height: 120px;
+        }
+    }
+
+    /* Responsive Tables */
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Responsive Forms */
+    input, select, textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    /* Responsive Sidebar */
+    @media (max-width: 992px) {
+        .control-sidebar {
+            width: 200px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .control-sidebar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1050;
+        }
+    }
+
+    /* Toast Responsive Positioning */
+    @media (max-width: 576px) {
+        .toast-container {
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: 0.5rem;
+        }
+    }
+
+    /* Loader Responsive Adjustments */
+    @media (max-width: 576px) {
+        .mhr-loader {
+            width: 80px;
+            height: 80px;
+        }
+
+        .mhr-text {
+            font-size: 18px;
+        }
+    }
+
+    /* Card and Panel Responsive Design */
+    .card, .panel {
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .card, .panel {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    /* Button Responsive Styles */
+    .btn {
+        padding: 0.375rem 0.75rem;
+    }
+
+    @media (max-width: 576px) {
+        .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    }
+
+    /* Grid System */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    [class*="col-"] {
+        position: relative;
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    @media (max-width: 768px) {
+        [class*="col-"] {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+    }
+
+    /* Loader */
+    .loader {
         position: fixed;
         top: 0;
         left: 0;
@@ -1668,7 +1890,7 @@
 .quick-actions-button i {
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
-</style>
+    </style>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
     <!-- Font Awesome -->
@@ -1810,16 +2032,17 @@
                 <!-- Add more nav items here -->
             </ul>
 
-            <!-- Right navbar links -->
+            <!-- Right navbar links --> 
             <ul class="navbar-nav ml-auto">
                 <!-- Add the tour guide button before notifications -->
+                 @if(!auth()->user()->hasRole('Employee'))
                 <li class="nav-item">
                     <button id="startTour" class="nav-link btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Start App Tour">
                         <i class="fas fa-route"></i>
                         <span class="d-none d-md-inline ml-1">Tour Guide</span>
                     </button>
                 </li>
-
+                @endif
                 <!-- Existing notifications and other items -->
                 @auth
                 <li class="nav-item dropdown">
@@ -1830,7 +2053,7 @@
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notification-list">
                         <div class="dropdown-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h6 class="m-0">Notifications</h6>
-                            <a href="{{ url('/all-notifications') }}" class="text-white small">
+                            <a href="{{ route('notifications.all') }}" class="text-white small">
                                 <i class="fas fa-external-link-alt"></i>
                             </a>
                         </div>
@@ -2032,7 +2255,13 @@
                                 </li>
                                 @endcanany
                                 @auth
-                                    @if(auth()->user()->hasRole('Employee'))
+                                @if(auth()->user()->hasRole('Employee'))
+                                <li class="nav-item">
+                                    <a href="{{ route('attendances.attendance') }}" class="nav-link {{ Request::is('attendance') ? 'active' : '' }}">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <p>Clock In/Out</p>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a href="{{ url('/my-timesheet') }}" class="nav-link {{ Request::is('my-timesheet') ? 'active' : '' }}">
                                         <i class="fas fa-user-clock nav-icon"></i>

@@ -153,18 +153,168 @@
                             <h5 class="mb-0"><i class="fas fa-id-card mr-2"></i>Government IDs</h5>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-3 mb-2">
-                                    <strong>TIN:</strong> {{ $employee->tin_no ?? 'N/A' }}
+                            <div class="row g-4">
+                                <!-- TIN ID Card -->
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="gov-id-card tin-card">
+                                        <div class="id-header">
+                                            <img src="{{ asset('vendor/adminlte/dist/img/tin.png') }}" alt="BIR Logo" class="gov-logo">
+                                            <div class="header-text">
+                                                <h6 class="mb-0">Republic of the Philippines</h6>
+                                                <small>Bureau of Internal Revenue</small>
+                                            </div>
+                                        </div>
+                                        <div class="id-body">
+                                            <h5 class="id-title">TAX IDENTIFICATION NUMBER</h5>
+                                            <div class="id-number">
+                                                @if($employee->tin_no)
+                                                    @php
+                                                        // TIN Format: XXX-XXX-XXX-XXX (e.g., 111-111-111-111)
+                                                        // Total length should be 15 characters including hyphens
+                                                        // Each part: 3 digits separated by hyphens
+                                                        
+                                                        // Remove any existing hyphens or spaces
+                                                        $clean_tin = preg_replace('/[^0-9]/', '', $employee->tin_no);
+                                                        
+                                                        // Pad the number to 12 digits (excluding hyphens)
+                                                        $tin = str_pad($clean_tin, 12, '0', STR_PAD_LEFT);
+                                                        
+                                                        // Format: XXX-XXX-XXX-XXX
+                                                        $formatted_tin = substr($tin, 0, 3) . '-' . 
+                                                                       substr($tin, 3, 3) . '-' . 
+                                                                       substr($tin, 6, 3) . '-' . 
+                                                                       substr($tin, 9, 3);
+                                                    @endphp
+                                                    {{ $formatted_tin }}
+                                                @else
+                                                    <span class="text-muted">Not Available</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <strong>SSS:</strong> {{ $employee->sss_no ?? 'N/A' }}
+
+                                <!-- SSS ID Card -->
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="gov-id-card sss-card">
+                                        <div class="id-header">
+                                            <img src="{{ asset('vendor/adminlte/dist/img/sss.png') }}" alt="SSS Logo" class="gov-logo">
+                                            <div class="header-text">
+                                                <h6 class="mb-0">Social Security System</h6>
+                                                <small>Republic of the Philippines</small>
+                                            </div>
+                                        </div>
+                                        <div class="id-body">
+                                            <h5 class="id-title">SSS NUMBER</h5>
+                                            <div class="id-number">
+                                                @php
+                                                    // SSS Format: XX-XXXXXXX-X (e.g., 06-4657542-3)
+                                                    // Total length should be 12 characters including hyphens
+                                                    // First part: 2 digits
+                                                    // Middle part: 7 digits
+                                                    // Last part: 1 digit
+                                                    
+                                                    if ($employee->sss_no) {
+                                                        // Remove any existing hyphens or spaces
+                                                        $clean_sss = preg_replace('/[^0-9]/', '', $employee->sss_no);
+                                                        
+                                                        // Pad the number to 10 digits (excluding hyphens)
+                                                        $sss = str_pad($clean_sss, 10, '0', STR_PAD_LEFT);
+                                                        
+                                                        // Format: XX-XXXXXXX-X
+                                                        $formatted_sss = substr($sss, 0, 2) . '-' . 
+                                                                       substr($sss, 2, 7) . '-' . 
+                                                                       substr($sss, 9, 1);
+                                                    } else {
+                                                        $formatted_sss = 'Not Available';
+                                                    }
+                                                @endphp
+                                                {{ $formatted_sss }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <strong>PAGIBIG:</strong> {{ $employee->pagibig_no ?? 'N/A' }}
+
+                                <!-- PAGIBIG ID Card -->
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="gov-id-card pagibig-card">
+                                        <div class="id-header">
+                                            <img src="{{ asset('vendor/adminlte/dist/img/pagibig.png') }}" alt="PAGIBIG Logo" class="gov-logo">
+                                            <div class="header-text">
+                                                <h6 class="mb-0">Home Development Mutual Fund</h6>
+                                                <small>Pag-IBIG Fund</small>
+                                            </div>
+                                        </div>
+                                        <div class="id-body">
+                                            <h5 class="id-title">PAGIBIG MID NUMBER</h5>
+                                            <div class="id-number">
+                                                @if($employee->pagibig_no)
+                                                    @php
+                                                        // PAGIBIG Format: XXXX-XXXX-XXXX (e.g., 1213-2765-6903)
+                                                        // Total length should be 14 characters including hyphens
+                                                        // First part: 4 digits
+                                                        // Middle part: 4 digits
+                                                        // Last part: 4 digits
+                                                        
+                                                        // Remove any existing hyphens or spaces
+                                                        $clean_pagibig = preg_replace('/[^0-9]/', '', $employee->pagibig_no);
+                                                        
+                                                        // Pad the number to 12 digits (excluding hyphens)
+                                                        $pagibig = str_pad($clean_pagibig, 12, '0', STR_PAD_LEFT);
+                                                        
+                                                        // Format: XXXX-XXXX-XXXX
+                                                        $formatted_pagibig = substr($pagibig, 0, 4) . '-' . 
+                                                                          substr($pagibig, 4, 4) . '-' . 
+                                                                          substr($pagibig, 8, 4);
+                                                    @endphp
+                                                    {{ $formatted_pagibig }}
+                                                @else
+                                                    <span class="text-muted">Not Available</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <strong>PHILHEALTH:</strong> {{ $employee->philhealth_no ?? 'N/A' }}
+
+                                <!-- PHILHEALTH ID Card -->
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="gov-id-card philhealth-card">
+                                        <div class="id-header">
+                                            <img src="{{ asset('vendor/adminlte/dist/img/philhealth.png') }}" alt="PhilHealth Logo" class="gov-logo">
+                                            <div class="header-text">
+                                                <h6 class="mb-0">Philippine Health Insurance</h6>
+                                                <small>PhilHealth</small>
+                                            </div>
+                                        </div>
+                                        <div class="id-body">
+                                            <h5 class="id-title">PHILHEALTH NUMBER</h5>
+                                            <div class="id-number">
+                                                @if($employee->philhealth_no)
+                                                    @php
+                                                        // PhilHealth Format: XX-XXXXXXXXX-X (e.g., 12-026167194-3)
+                                                        // Total length should be 14 characters including hyphens
+                                                        // First part: 2 digits
+                                                        // Middle part: 9 digits
+                                                        // Last part: 1 digit
+                                                        
+                                                        // Remove any existing hyphens or spaces
+                                                        $clean_philhealth = preg_replace('/[^0-9]/', '', $employee->philhealth_no);
+                                                        
+                                                        // Pad the number to 12 digits (excluding hyphens)
+                                                        $philhealth = str_pad($clean_philhealth, 12, '0', STR_PAD_LEFT);
+                                                        
+                                                        // Format: XX-XXXXXXXXX-X
+                                                        $formatted_philhealth = substr($philhealth, 0, 2) . '-' . 
+                                                                             substr($philhealth, 2, 9) . '-' . 
+                                                                             substr($philhealth, 11, 1);
+                                                    @endphp
+                                                    {{ $formatted_philhealth }}
+                                                @else
+                                                    <span class="text-muted">Not Available</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -973,6 +1123,112 @@
 
         .signature-container {
             background-color: #fff; /* Keep canvas background white for signature */
+        }
+    }
+
+    /* Government ID Cards Styling */
+    .gov-id-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        height: 100%;
+        transition: transform 0.2s ease;
+        border: 1px solid #dee2e6;
+    }
+
+    .gov-id-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .id-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .gov-logo {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        margin-right: 0.75rem;
+    }
+
+    .header-text {
+        flex: 1;
+    }
+
+    .header-text h6 {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #333;
+        line-height: 1.2;
+    }
+
+    .header-text small {
+        font-size: 0.7rem;
+        color: #666;
+    }
+
+    .id-body {
+        text-align: center;
+    }
+
+    .id-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+    }
+
+    .id-number {
+        font-family: 'Courier New', monospace;
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #212529;
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border: 1px dashed #dee2e6;
+    }
+
+    /* Specific card styling */
+    .tin-card {
+        border-top: 4px solid #28a745;
+    }
+
+    .sss-card {
+        border-top: 4px solid #007bff;
+    }
+
+    .pagibig-card {
+        border-top: 4px solid #dc3545;
+    }
+
+    .philhealth-card {
+        border-top: 4px solid #17a2b8;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .gov-id-card {
+            margin-bottom: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .id-number {
+            font-size: 1rem;
+        }
+        
+        .gov-logo {
+            width: 30px;
+            height: 30px;
         }
     }
 </style>

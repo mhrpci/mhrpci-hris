@@ -40,15 +40,15 @@
                                 @csrf
                                 <button type="submit" class="btn btn-secondary btn-sm rounded-pill">Export Employees <i class="fas fa-file-export"></i></button>
                             </form>
-                            @endif
-                            @if(Auth::user()->hasRole(['Super Admin', 'Admin', 'HR Compliance']))
+                            @endcan
+                            @canany(['super-admin', 'admin', 'hrcompliance'])
                             <form action="{{ route('employees.createBulkUsers') }}" method="POST" class="d-inline mr-2 mb-2">
                                     @csrf
                                     <button type="submit" class="btn btn-info btn-sm rounded-pill create-bulk-users-btn">
                                         Create All User Accounts <i class="fas fa-users"></i>
                                     </button>
                             </form>
-                            @endif
+                            @endcan
                             <div class="dropdown mr-2 mb-2">
                                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Filter <i class="fas fa-filter"></i>

@@ -589,6 +589,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="rank">Rank</label>
+                            @if(Auth::user()->hasRole(['Super Admin', 'Admin', 'Finance']) || $employee->rank != 'Managerial')
                                 <select class="form-control select2 @error('rank') is-invalid @enderror" id="rank" name="rank" required>
                                     <option value="Rank File" {{ old('rank', $employee->rank) == 'Rank File' ? 'selected' : '' }}>Rank and File</option>
                                     <option value="Managerial" {{ old('rank', $employee->rank) == 'Managerial' ? 'selected' : '' }}>Managerial</option>
@@ -598,6 +599,12 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            @else
+                                <div class="form-control bg-light text-muted">
+                                    <i class="fas fa-lock mr-2"></i>Only Admin, Super Admin, and Finance can change this
+                                </div>
+                                <input type="hidden" name="rank" value="Managerial">
+                            @endif
                             </div>
                         </div>
                     </div>

@@ -191,22 +191,61 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 2rem;
                 padding: 2rem;
+                max-width: 95%;
             }
         }
 
         @media screen and (max-width: 968px) {
+            body {
+                padding: 1rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
             .container {
                 grid-template-columns: 1fr;
-                max-width: 90%;
+                gap: 1rem;
+                padding: 1.5rem;
+                max-width: 500px;
+                margin: 0 auto;
             }
 
             .text-content {
-                text-align: center;
-                padding: 1rem;
+                display: none; /* Hide the text content on mobile */
             }
 
-            .text-content .logo {
-                margin: 0 auto 2rem;
+            .mobile-heading {
+                display: block;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .mobile-heading h2 {
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: #ffffff;
+                margin-bottom: 0.5rem;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .mobile-heading p {
+                font-size: 1rem;
+                color: rgba(255, 255, 255, 0.9);
+                font-weight: 300;
+            }
+
+            .form-card {
+                padding: 2rem;
+                width: 100%;
+                margin: 0 auto;
+                background: rgba(255, 255, 255, 0.98);
+            }
+
+            .form-card h1 {
+                text-align: center;
+                margin-bottom: 2rem;
             }
 
             .form-card h1::after {
@@ -214,26 +253,74 @@
                 transform: translateX(-50%);
             }
 
-            .form-card {
-                padding: 2rem;
+            .input-group {
+                margin-bottom: 1.25rem;
+            }
+
+            input {
+                padding: 0.875rem 1rem;
+                font-size: 1rem;
+            }
+
+            .terms-checkbox-container {
+                margin-bottom: 1.25rem;
+            }
+
+            .terms-label {
+                font-size: 0.85rem;
+            }
+
+            button {
+                padding: 0.875rem;
+                font-size: 1rem;
             }
         }
 
         @media screen and (max-width: 480px) {
             body {
-                padding: 1rem;
+                padding: 0.75rem;
             }
 
             .container {
-                padding: 1.5rem;
-            }
-
-            .text-content h2 {
-                font-size: 1.5rem;
+                padding: 1rem;
+                max-width: 100%;
             }
 
             .form-card {
                 padding: 1.5rem;
+                border-radius: 16px;
+            }
+
+            .form-card h1 {
+                font-size: 1.75rem;
+            }
+
+            .input-group {
+                margin-bottom: 1rem;
+            }
+
+            input {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+
+            .terms-modal-content {
+                padding: 1.5rem;
+                margin: 2% auto;
+                max-height: 90vh;
+            }
+
+            .terms-content {
+                font-size: 0.9rem;
+            }
+
+            .notification {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+                padding: 0.875rem 1.5rem;
+                font-size: 0.9rem;
+                text-align: center;
             }
         }
 
@@ -298,59 +385,10 @@
             font-weight: 400;
         }
 
-        @media screen and (max-width: 768px) {
+        /* Update footer responsive styles */
+        @media screen and (max-width: 968px) {
             .footer {
-                padding: 1rem;
-            }
-            
-            .footer p {
-                font-size: 0.85rem;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
-            }
-            
-            .contact {
-                flex-direction: column;
-                gap: 0.3rem;
-            }
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .address {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.95rem;
-            font-weight: 300;
-        }
-
-        .contact {
-            display: flex;
-            gap: 1.5rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.95rem;
-            font-weight: 300;
-        }
-
-        /* Update media queries for footer */
-        @media screen and (max-width: 1024px) {  /* Standard laptop breakpoint */
-            .footer {
-                display: none;  /* Hide footer for screens smaller than laptop */
-            }
-            
-            /* Adjust container bottom padding when footer is hidden */
-            .container {
-                margin-bottom: 2rem;
+                display: none; /* Hide footer on mobile */
             }
         }
 
@@ -558,6 +596,35 @@
             cursor: not-allowed;
             transform: none !important;
         }
+
+        /* Terms Modal Responsive Updates */
+        @media screen and (max-width: 968px) {
+            .terms-modal-content {
+                width: 95%;
+                margin: 2.5% auto;
+                padding: 1.75rem;
+            }
+
+            .terms-content h3 {
+                font-size: 1.1rem;
+                margin: 1.5rem 0 0.75rem;
+            }
+
+            .terms-content ul {
+                margin-left: 1.25rem;
+            }
+
+            .accept-terms-btn {
+                width: 100%;
+                margin-top: 0.75rem;
+                padding: 0.75rem;
+            }
+
+            .close-modal {
+                right: 1rem;
+                top: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -568,6 +635,11 @@
             </div>
             <h2 class="company-title">{{ config('app.company_name') }}</h2>
             <p class="welcome-text">Welcome to our secure portal. Please sign in to access your account.</p>
+        </div>
+
+        <div class="mobile-heading">
+            <h2>{{ config('app.company_name') }}</h2>
+            <p>Welcome to our secure portal</p>
         </div>
 
         <div class="form-card">
