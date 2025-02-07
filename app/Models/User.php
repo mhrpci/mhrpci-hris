@@ -62,6 +62,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /**
+     * Get the linked accounts for the user.
+     */
+    public function linkedAccounts()
+    {
+        return $this->hasMany(LinkedAccount::class);
+    }
 
     public function adminlte_image()
     {

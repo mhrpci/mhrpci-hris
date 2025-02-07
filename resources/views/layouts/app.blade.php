@@ -1959,6 +1959,10 @@
 
     <!-- Add this in the head section after other CSS links -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/10.0.1/css/shepherd.css"/>
+
+    <!-- Add SweetAlert2 CSS and JS in the head section -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Preloader -->
@@ -2170,6 +2174,150 @@
                                     <i class="fas fa-user"></i>
                                     My Profile
                                 </a>
+
+                                <!-- Account Management Section -->
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Account Management</h6>
+                                
+                                <!-- Linked Accounts -->
+                                <div class="linked-accounts px-3 py-2">
+                                    @foreach(Auth::user()->linkedAccounts as $linkedAccount)
+                                        <div class="linked-account d-flex align-items-center justify-content-between mb-2">
+                                            <div>
+                                                <i class="fas fa-user-circle"></i>
+                                                {{ $linkedAccount->email }}
+                                            </div>
+                                            <div class="btn-group">
+                                                <form action="{{ route('account.switch', $linkedAccount->id) }}" method="POST" class="d-inline switch-form">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-exchange-alt"></i>
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('account.unlink', $linkedAccount->id) }}" method="POST" class="d-inline unlink-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-sm btn-outline-danger unlink-btn">
+                                                        <i class="fas fa-unlink"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <script>
+                                    $(document).ready(function() {
+                                        // Handle unlink button click
+                                        $('.unlink-btn').on('click', function(e) {
+                                            e.preventDefault();
+                                            const $form = $(this).closest('form');
+                                            const email = $(this).closest('.linked-account').find('.email-text').text().trim();
+
+                                            Swal.fire({
+                                                title: 'Are you sure?',
+                                                text: "This will unlink the account. This action cannot be undone!",
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#dc3545',
+                                                cancelButtonColor: '#6c757d',
+                                                confirmButtonText: 'Yes, unlink it!',
+                                                cancelButtonText: 'Cancel',
+                                                customClass: {
+                                                    popup: 'animated fadeInDown faster'
+                                                }
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    $.ajax({
+                                                        url: $form.attr('action'),
+                                                        method: 'POST',
+                                                        data: $form.serialize(),
+                                                        success: function(response) {
+                                                            // Show success Swal
+                                                            Swal.fire({
+                                                                title: 'Unlinked!',
+                                                                text: 'The account has been unlinked successfully.',
+                                                                icon: 'success',
+                                                                timer: 2000,
+                                                                timerProgressBar: true,
+                                                                showConfirmButton: false,
+                                                                customClass: {
+                                                                    popup: 'animated fadeInDown faster'
+                                                                }
+                                                            });
+
+                                                            // Show success toast
+                                                            const toast = `
+                                                                <div class="toast success" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                                                                    <div class="toast-header bg-success text-white">
+                                                                        <i class="fas fa-check-circle mr-2"></i>
+                                                                        <strong class="mr-auto">Success</strong>
+                                                                        <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="toast-body">
+                                                                        Account unlinked successfully!
+                                                                    </div>
+                                                                    <div class="toast-progress"></div>
+                                                                </div>
+                                                            `;
+                                                            
+                                                            $('.toast-container').append(toast);
+                                                            $('.toast').toast('show');
+
+                                                            // Reload page after short delay
+                                                            setTimeout(() => {
+                                                                window.location.reload();
+                                                            }, 2000);
+                                                        },
+                                                        error: function(xhr) {
+                                                            const message = xhr.responseJSON?.message || 'An error occurred while unlinking the account.';
+                                                            
+                                                            // Show error Swal
+                                                            Swal.fire({
+                                                                title: 'Error!',
+                                                                text: message,
+                                                                icon: 'error',
+                                                                confirmButtonText: 'OK',
+                                                                customClass: {
+                                                                    popup: 'animated shake faster'
+                                                                }
+                                                            });
+
+                                                            // Show error toast
+                                                            const toast = `
+                                                                <div class="toast error" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                                                                    <div class="toast-header bg-danger text-white">
+                                                                        <i class="fas fa-exclamation-circle mr-2"></i>
+                                                                        <strong class="mr-auto">Error</strong>
+                                                                        <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="toast-body">
+                                                                        ${message}
+                                                                    </div>
+                                                                    <div class="toast-progress"></div>
+                                                                </div>
+                                                            `;
+                                                            
+                                                            $('.toast-container').append(toast);
+                                                            $('.toast').toast('show');
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    });
+                                </script>
+
+                                <!-- Link New Account -->
+                                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#linkAccountModal">
+                                    <i class="fas fa-link"></i>
+                                    Link Another Account
+                                </a>
+
                                 <div class="dropdown-divider"></div>
                                 
                                 <form action="{{ route('logout') }}" method="POST">
@@ -3349,6 +3497,236 @@
             font-size: 0.9rem !important;
         }
     }
+    </style>
+
+    <!-- Link Account Modal -->
+    <div class="modal fade" id="linkAccountModal" tabindex="-1" role="dialog" aria-labelledby="linkAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="linkAccountModalLabel">Link Another Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="linkAccountForm" action="{{ route('account.link') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="alert alert-danger" id="linkAccountError" style="display: none;"></div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="linkAccountBtn">
+                            <span class="normal-text">Link Account</span>
+                            <span class="loading-text" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i> Linking...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Handle link account form submission
+            $('#linkAccountForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const $form = $(this);
+                const $submitBtn = $('#linkAccountBtn');
+                const $error = $('#linkAccountError');
+                
+                // Show loading state
+                $submitBtn.prop('disabled', true);
+                $submitBtn.find('.normal-text').hide();
+                $submitBtn.find('.loading-text').show();
+                $error.hide();
+
+                $.ajax({
+                    url: $form.attr('action'),
+                    method: 'POST',
+                    data: $form.serialize(),
+                    success: function(response) {
+                        // Hide modal
+                        $('#linkAccountModal').modal('hide');
+                        
+                        // Show success Swal
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Account linked successfully!',
+                            icon: 'success',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            customClass: {
+                                popup: 'animated fadeInDown faster'
+                            }
+                        });
+                        
+                        // Show success toast
+                        const toast = `
+                            <div class="toast success" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                                <div class="toast-header bg-success text-white">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <strong class="mr-auto">Success</strong>
+                                    <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="toast-body">
+                                    Account linked successfully!
+                                </div>
+                                <div class="toast-progress"></div>
+                            </div>
+                        `;
+                        
+                        $('.toast-container').append(toast);
+                        $('.toast').toast('show');
+                        
+                        // Reload page after short delay
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    },
+                    error: function(xhr) {
+                        // Show error message
+                        const message = xhr.responseJSON?.message || 'An error occurred while linking the account.';
+                        $error.html(message).show();
+                        
+                        // Show error Swal
+                        Swal.fire({
+                            title: 'Error!',
+                            text: message,
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                popup: 'animated shake faster'
+                            }
+                        });
+                        
+                        // Show error toast
+                        const toast = `
+                            <div class="toast error" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                                <div class="toast-header bg-danger text-white">
+                                    <i class="fas fa-exclamation-circle mr-2"></i>
+                                    <strong class="mr-auto">Error</strong>
+                                    <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="toast-body">
+                                    ${message}
+                                </div>
+                                <div class="toast-progress"></div>
+                            </div>
+                        `;
+                        
+                        $('.toast-container').append(toast);
+                        $('.toast').toast('show');
+                    },
+                    complete: function() {
+                        // Reset button state
+                        $submitBtn.prop('disabled', false);
+                        $submitBtn.find('.loading-text').hide();
+                        $submitBtn.find('.normal-text').show();
+                    }
+                });
+            });
+
+            // Remove toasts when hidden
+            $(document).on('hidden.bs.toast', '.toast', function() {
+                $(this).remove();
+            });
+
+            // Reset form when modal is closed
+            $('#linkAccountModal').on('hidden.bs.modal', function() {
+                $('#linkAccountForm')[0].reset();
+                $('#linkAccountError').hide();
+            });
+        });
+    </script>
+
+    <style>
+        /* Link Account Modal Styles */
+        #linkAccountError {
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        #linkAccountBtn {
+            min-width: 120px;
+            position: relative;
+        }
+
+        #linkAccountBtn:disabled {
+            cursor: not-allowed;
+        }
+
+        .loading-text i {
+            margin-right: 0.5rem;
+        }
+
+        /* Toast Enhancements */
+        .toast {
+            min-width: 300px;
+            backdrop-filter: blur(10px);
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .toast .close {
+            text-shadow: none;
+            opacity: 0.8;
+        }
+
+        .toast .close:hover {
+            opacity: 1;
+        }
+
+        .toast-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toast-body {
+            padding: 1rem;
+            font-size: 0.95rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.show {
+            animation: slideIn 0.3s ease-out;
+        }
     </style>
 </body>
 </html>

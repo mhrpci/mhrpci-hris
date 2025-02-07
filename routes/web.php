@@ -47,6 +47,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserActivityController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -332,6 +333,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/user-departmental-activity', [UserActivityController::class, 'index'])->name('user-activity.index');
 
+    // Account Management Routes
+    Route::post('/account/link', [AccountController::class, 'link'])->name('account.link');
+    Route::post('/account/switch/{linkedAccount}', [AccountController::class, 'switch'])->name('account.switch');
+    Route::delete('/account/unlink/{linkedAccount}', [AccountController::class, 'unlink'])->name('account.unlink');
 });
 
     Auth::routes();
