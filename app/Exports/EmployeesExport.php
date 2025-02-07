@@ -46,6 +46,7 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping, With
         'emergency_no',
         'employment_status',  // Added employment_status
         'employee_status',    // Added employee_status
+        'rank',  // Added rank
     ];
 
     /**
@@ -98,6 +99,7 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping, With
             'emergency_no',
             'employment_status',  // Added employment_status
             'employee_status',    // Added employee_status
+            'rank',  // Added rank
         ];
     }
 
@@ -126,8 +128,8 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping, With
      */
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:AB1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:AB1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF00'); // Yellow background
+        $sheet->getStyle('A1:AC1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:AC1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF00'); // Yellow background
         $sheet->getColumnDimension('A')->setWidth(10);
         $sheet->getColumnDimension('B')->setWidth(15);
         // Set additional column widths as needed

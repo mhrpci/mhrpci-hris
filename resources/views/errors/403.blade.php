@@ -120,7 +120,6 @@
             Sorry, you don't have permission to access this page.
             Please contact your administrator if you believe this is a mistake.
         </p>
-        <a href="{{ auth()->check() ? route('home') : '/' }}" class="back-button">Return Home</a>
     </div>
 </body>
 </html>

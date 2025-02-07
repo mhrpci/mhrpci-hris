@@ -107,7 +107,7 @@
                 width: 80px;
                 height: 80px;
             }
-        }
+        }   
     </style>
 </head>
 <body>
@@ -123,7 +123,6 @@
             Oops! Something went wrong on our servers.
             We're working to fix the issue. Please try again later.
         </p>
-        <a href="{{ auth()->check() ? route('home') : '/' }}" class="back-button">Return Home</a>
     </div>
 </body>
 </html>

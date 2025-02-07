@@ -49,8 +49,10 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
             'emergency_no'   => $row['emergency_no'],
             'employment_status' => $row['employment_status'] ?? null, // Added
             'employee_status' => $row['employee_status'] ?? null, // Added
+            'rank' => $row['rank'] ?? null, // Added
         ]);
     }
+
 
     /**
      * @return array
@@ -76,6 +78,7 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
             'emergency_no' => 'required|numeric',
             'employment_status' => 'nullable', // Added
             'employee_status' => 'nullable', // Added
+            'rank' => 'nullable', // Added
         ];
     }
 }

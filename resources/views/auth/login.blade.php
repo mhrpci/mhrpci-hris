@@ -7,331 +7,272 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login-{{ env('APP_NAME') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}">
-    <!-- SweetAlert2 CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --background-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --error: #ef4444;
+            --success: #22c55e;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                        url('vendor/adminlte/dist/img/frontmhrhci.jpg') no-repeat center center fixed;
-            background-size: cover;
             min-height: 100vh;
-            display: grid;
-            place-items: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
+                        url('vendor/adminlte/dist/img/frontmhrhci.jpg') center/cover no-repeat fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 2rem;
         }
 
-        .container {
+        .login-container {
             width: 100%;
             max-width: 1400px;
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 4rem;
-            align-items: center;
-            border-radius: 24px;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
-        }
-
-        .text-content {
-            text-align: left;
-            padding: 2.5rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .text-content:hover {
-            transform: translateY(-5px);
-        }
-
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-
-        .text-content .logo {
-            width: 220px;
-            height: 180px;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        .text-content .logo:hover {
-            transform: scale(1.02);
-            filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.2));
-        }
-
-        .company-title {
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-            background: linear-gradient(45deg, #ffffff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .welcome-text {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            line-height: 1.6;
-            margin-top: 1rem;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        .form-card {
+            grid-template-columns: 1fr 1fr;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
-            padding: clamp(2rem, 5vw, 3rem);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
+            -webkit-backdrop-filter: blur(10px);
         }
 
-        .form-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .form-card h1 {
-            font-size: clamp(1.8rem, 3vw, 2.2rem);
-            margin-bottom: 2rem;
-            color: #1a1a1a;
+        .login-image {
             position: relative;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.97), rgba(29, 78, 216, 0.95));
+            padding: 3.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
         }
 
-        .form-card h1::after {
+        .login-image::before {
             content: '';
             position: absolute;
+            top: 0;
             left: 0;
-            bottom: -10px;
-            width: 60px;
-            height: 4px;
-            background: #0066ff;
-            border-radius: 2px;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="30" fill="none"/><circle cx="3" cy="3" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
         }
 
-        .input-group {
+        .brand-logo {
+            width: 150px;
+            height: auto;
+            filter: brightness(0) invert(1);
+            position: relative;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .brand-logo:hover {
+            transform: translateY(-3px);
+        }
+
+        .brand-message {
+            position: relative;
+            margin-top: auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-message h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-message p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .login-form-container {
+            padding: 3rem;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+        }
+
+        .form-group {
             margin-bottom: 1.5rem;
             position: relative;
         }
 
-        input {
-            width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
         }
 
-        input:focus {
-            border-color: #0066ff;
-            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+            background: var(--background-light);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
             outline: none;
         }
 
         .password-toggle {
             position: absolute;
             right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 2.5rem;
+            color: var(--secondary-color);
             cursor: pointer;
-            color: #666;
             transition: color 0.3s ease;
         }
 
         .password-toggle:hover {
-            color: #0066ff;
+            color: var(--text-dark);
         }
 
-        button {
+        .terms-container {
+            margin: 1.5rem 0;
+        }
+
+        .terms-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .terms-label input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 4px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .terms-label a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms-label a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(45deg, #0066ff, #0052cc);
-            color: white;
+            background: var(--primary-color);
+            color: var(--white);
             border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            border-radius: 10px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        button:hover {
-            background: linear-gradient(45deg, #0052cc, #003d99);
+        .submit-btn:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
-        /* Responsive Design */
-        @media screen and (max-width: 1200px) {
-            .container {
-                grid-template-columns: 1fr 1fr;
-                gap: 2rem;
-                padding: 2rem;
-                max-width: 95%;
-            }
+        .submit-btn:disabled {
+            background: var(--secondary-color);
+            cursor: not-allowed;
+            transform: none;
         }
 
-        @media screen and (max-width: 968px) {
-            body {
-                padding: 1rem;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .container {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-                padding: 1.5rem;
-                max-width: 500px;
-                margin: 0 auto;
-            }
-
-            .text-content {
-                display: none; /* Hide the text content on mobile */
-            }
-
-            .mobile-heading {
-                display: block;
-                text-align: center;
-                margin-bottom: 2rem;
-            }
-
-            .mobile-heading h2 {
-                font-size: 1.8rem;
-                font-weight: 600;
-                color: #ffffff;
-                margin-bottom: 0.5rem;
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            }
-
-            .mobile-heading p {
-                font-size: 1rem;
-                color: rgba(255, 255, 255, 0.9);
-                font-weight: 300;
-            }
-
-            .form-card {
-                padding: 2rem;
-                width: 100%;
-                margin: 0 auto;
-                background: rgba(255, 255, 255, 0.98);
-            }
-
-            .form-card h1 {
-                text-align: center;
-                margin-bottom: 2rem;
-            }
-
-            .form-card h1::after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-
-            .input-group {
-                margin-bottom: 1.25rem;
-            }
-
-            input {
-                padding: 0.875rem 1rem;
-                font-size: 1rem;
-            }
-
-            .terms-checkbox-container {
-                margin-bottom: 1.25rem;
-            }
-
-            .terms-label {
-                font-size: 0.85rem;
-            }
-
-            button {
-                padding: 0.875rem;
-                font-size: 1rem;
-            }
+        .button-loader {
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 0.8s linear infinite;
+            opacity: 0;
+            position: absolute;
+            right: 1.5rem;
+            transition: opacity 0.2s ease;
         }
 
-        @media screen and (max-width: 480px) {
-            body {
-                padding: 0.75rem;
-            }
-
-            .container {
-                padding: 1rem;
-                max-width: 100%;
-            }
-
-            .form-card {
-                padding: 1.5rem;
-                border-radius: 16px;
-            }
-
-            .form-card h1 {
-                font-size: 1.75rem;
-            }
-
-            .input-group {
-                margin-bottom: 1rem;
-            }
-
-            input {
-                padding: 0.75rem 1rem;
-                font-size: 0.95rem;
-            }
-
-            .terms-modal-content {
-                padding: 1.5rem;
-                margin: 2% auto;
-                max-height: 90vh;
-            }
-
-            .terms-content {
-                font-size: 0.9rem;
-            }
-
-            .notification {
-                bottom: 1rem;
-                right: 1rem;
-                left: 1rem;
-                padding: 0.875rem 1.5rem;
-                font-size: 0.9rem;
-                text-align: center;
-            }
+        .submit-btn.loading .button-text {
+            transform: translateX(-10px);
         }
 
-        /* Notification Styles */
+        .submit-btn.loading .button-loader {
+            opacity: 1;
+        }
+
+        .button-text {
+            transition: transform 0.3s ease;
+        }
+
         .notification {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
             padding: 1rem 2rem;
-            border-radius: 12px;
-            color: white;
+            border-radius: 10px;
+            color: var(--white);
             font-weight: 500;
             display: none;
             animation: slideIn 0.3s ease;
@@ -339,13 +280,90 @@
         }
 
         .notification.success {
-            background: linear-gradient(45deg, #28a745, #218838);
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+            background: var(--success);
         }
 
         .notification.error {
-            background: linear-gradient(45deg, #dc3545, #c82333);
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+            background: var(--error);
+        }
+
+        /* Terms Modal Styles */
+        .terms-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+        }
+
+        .terms-modal-content {
+            background: var(--white);
+            margin: 2rem auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .terms-content {
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .terms-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .terms-content h3 {
+            color: var(--text-dark);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.2rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-dark);
+        }
+
+        .accept-terms-btn {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+
+        .accept-terms-btn:disabled {
+            background: var(--secondary-color);
+            cursor: not-allowed;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @keyframes slideIn {
@@ -359,333 +377,93 @@
             }
         }
 
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        @media (max-width: 1024px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 1rem;
+            }
 
-        .footer p {
-            margin: 0.5rem 0;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-            line-height: 1.6;
-            font-weight: 300;
-        }
+            .login-image {
+                display: none;
+            }
 
-        .footer p:first-child {
-            font-weight: 400;
-        }
-
-        /* Update footer responsive styles */
-        @media screen and (max-width: 968px) {
-            .footer {
-                display: none; /* Hide footer on mobile */
+            .login-form-container {
+                padding: 2.5rem;
             }
         }
 
-        /* Terms Checkbox Styles */
-        .terms-checkbox-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .terms-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .terms-label input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .terms-text {
-            line-height: 1.4;
-        }
-
-        .terms-text a {
-            color: #0066ff;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .terms-text a:hover {
-            color: #0052cc;
-            text-decoration: underline;
-        }
-
-        /* Terms Modal Styles */
-        .terms-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .terms-modal-content {
-            position: relative;
-            background: white;
-            margin: 5% auto;
-            padding: 2.5rem;
-            width: 90%;
-            max-width: 800px;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .terms-content {
-            margin: 1.5rem 0;
-            color: #333;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            text-align: justify;
-        }
-
-        .terms-content .terms-intro {
-            font-weight: 500;
-            margin-bottom: 2rem;
-            color: #1a1a1a;
-            text-align: justify;
-        }
-
-        .terms-content h3 {
-            color: #0066ff;
-            margin: 2rem 0 1rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .terms-content ul {
-            list-style-type: disc;
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .terms-content li {
-            margin-bottom: 0.5rem;
-            color: #444;
-        }
-
-        .terms-content .contact-info {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-            font-style: italic;
-            color: #666;
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 1.5rem;
-            top: 1.5rem;
-            font-size: 1.5rem;
-            color: #666;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .close-modal:hover {
-            color: #333;
-        }
-
-        .accept-terms-btn {
-            background: linear-gradient(45deg, #0066ff, #0052cc);
-            color: white;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .accept-terms-btn:hover {
-            background: linear-gradient(45deg, #0052cc, #003d99);
-            transform: translateY(-2px);
-        }
-
-        /* Scrollbar Styling */
-        .terms-modal-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .terms-modal-content::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .terms-modal-content::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-
-        .terms-modal-content::-webkit-scrollbar-thumb:hover {
-            background: #666;
-        }
-
-        /* Loader Button Styles */
-        #submit-btn {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            min-height: 48px;  /* Ensure consistent height */
-        }
-
-        #submit-btn:disabled {
-            background: linear-gradient(45deg, #999, #777);
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-
-        .button-loader {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 0.8s linear infinite;
-            margin-left: 8px;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
             }
-        }
 
-        .button-text {
-            transition: opacity 0.2s ease;
-        }
+            .login-form-container {
+                padding: 1.5rem;
+            }
 
-        /* Loading state styles */
-        #submit-btn.loading .button-text {
-            opacity: 0.7;
-        }
+            .login-header h1 {
+                font-size: 1.75rem;
+            }
 
-        #submit-btn.loading .button-loader {
-            display: inline-block;
-        }
-
-        /* Disable Accept Button */
-        .accept-terms-btn:disabled {
-            background: linear-gradient(45deg, #999, #777);
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* Terms Modal Responsive Updates */
-        @media screen and (max-width: 968px) {
             .terms-modal-content {
-                width: 95%;
-                margin: 2.5% auto;
-                padding: 1.75rem;
-            }
-
-            .terms-content h3 {
-                font-size: 1.1rem;
-                margin: 1.5rem 0 0.75rem;
-            }
-
-            .terms-content ul {
-                margin-left: 1.25rem;
-            }
-
-            .accept-terms-btn {
-                width: 100%;
-                margin-top: 0.75rem;
-                padding: 0.75rem;
-            }
-
-            .close-modal {
-                right: 1rem;
-                top: 1rem;
+                margin: 1rem;
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="text-content">
-            <div class="logo-container">
-                <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Company Logo" class="logo">
+    <div class="login-container">
+        <div class="login-image">
+            <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Company Logo" class="brand-logo">
+            <div class="brand-message">
+                <h2>{{ config('app.company_name') }}</h2>
+                <p>Access your employee portal to manage your work-related information efficiently and securely.</p>
             </div>
-            <h2 class="company-title">{{ config('app.company_name') }}</h2>
-            <p class="welcome-text">Welcome to our secure portal. Please sign in to access your account.</p>
         </div>
 
-        <div class="mobile-heading">
-            <h2>{{ config('app.company_name') }}</h2>
-            <p>Welcome to our secure portal</p>
-        </div>
+        <div class="login-form-container">
+            <div class="login-header">
+                <h1>Welcome back</h1>
+                <p>Please sign in to access your account</p>
+            </div>
 
-        <div class="form-card">
-            <h1>Sign in</h1>
             <form id="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
-                <div class="input-group">
-                    <input type="email" name="email" placeholder="Email" required />
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" name="email" class="form-input" required placeholder="Enter your email">
                 </div>
-                <div class="input-group">
-                    <input type="password" name="password" id="password" placeholder="Password" required />
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required placeholder="Enter your password">
                     <span class="password-toggle" onclick="togglePassword()">
                         <i class="fas fa-eye" id="toggleIcon"></i>
                     </span>
                 </div>
-                <div class="terms-checkbox-container">
+
+                <div class="terms-container">
                     <label class="terms-label">
                         <input type="checkbox" id="terms-checkbox" required>
-                        <span class="checkmark"></span>
-                        <span class="terms-text">I agree to the <a href="#" id="terms-link">Terms and Conditions</a></span>
+                        <span>I agree to the <a href="#" id="terms-link">Terms and Conditions</a></span>
                     </label>
                 </div>
-                <button type="submit" id="submit-btn">
-                    <span class="button-text">Sign In</span>
+
+                <button type="submit" id="submit-btn" class="submit-btn">
+                    <span class="button-text">Sign in to your account</span>
                     <span class="button-loader"></span>
                 </button>
             </form>
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="address">{{ config('app.company_address') }} {{ config('app.company_city') }} {{ config('app.company_zip') }}</div>
-            <div class="contact">
-                <span>Phone: {{ config('app.company_phone') }}</span>
-                <span>Email: {{ config('app.company_email') }}</span>
-            </div>
-        </div>
-    </footer>
-
     <div id="notification" class="notification"></div>
 
     <div id="terms-modal" class="terms-modal">
         <div class="terms-modal-content">
             <span class="close-modal">&times;</span>
-            <h2>HRIS Terms and Conditions</h2>
             <div class="terms-content">
                 <p class="terms-intro">
                     Welcome to the Human Resource Information System (HRIS). This platform is designed to help you manage and access important work-related information such as Payroll, Attendance, Leaves, Loans, Employee Information, and Contributions. By using this system, you agree to follow these guidelines to ensure its secure and proper use.
@@ -753,7 +531,7 @@
                 
                 <p class="contact-info">For questions or concerns, please contact the HR Department or IT Support.</p>
             </div>
-            <button id="accept-terms" class="accept-terms-btn">I Accept</button>
+            <button id="accept-terms" class="accept-terms-btn">Accept Terms & Conditions</button>
         </div>
     </div>
 

@@ -17,11 +17,12 @@ class DepartmentSeeder extends Seeder
         DB::table('departments')->insert([
             ['name' => 'Human Resources Department', 'head_name' => 'Nikkei Tingson'],
             ['name' => 'Finance and Accounting Department', 'head_name' => 'Janet R. Refugio'],
-            ['name' => 'ADMIN DEPARTMENT', 'head_name' => 'Michael Amus H. Refugio'],
-            ['name' => 'MHRHCI', 'head_name' => 'Alayza Cali-at'],
-            ['name' => 'SUPPLY CHAIN DEPARTMENT', 'head_name' => 'Michael Amus H. Refugio'],
+            ['name' => 'Admin Department', 'head_name' => 'Michael Amus H. Refugio'],
+            ['name' => 'Marketing Department', 'head_name' => 'Alayza Cali-at'],
+            ['name' => 'Supply Chain Department', 'head_name' => 'Michael Amus H. Refugio'],
             ['name' => 'VHI', 'head_name' => 'Michael Amus H. Refugio'],
             ['name' => 'BGPDI', 'head_name' => 'Michael Amus H. Refugio'],
+            ['name' => 'Technical Department', 'head_name' => 'Oniebie B. Tabacon'],
         ]);
     }
 }
