@@ -39,6 +39,7 @@
             justify-content: center;
             align-items: center;
             padding: 2rem;
+            overflow: hidden;
         }
 
         .login-container {
@@ -426,9 +427,144 @@
                 padding: 1.5rem;
             }
         }
+
+        /* Preloader Styles */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .preloader-content {
+            text-align: center;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .preloader-logo {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-text {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            opacity: 0.8;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 10px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            background: var(--primary-color);
+            border-radius: 10px;
+            animation: loading 1.5s ease-in-out infinite;
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: dot-pulse 1s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes dot-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Add Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <img src="vendor/adminlte/dist/img/ICON_APP.png" alt="MHRIS Logo" class="preloader-logo">
+            <div class="loading-text">Loading MHRIS</div>
+            <div class="loading-bar"></div>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="login-container">
         <div class="login-image">
             <div style="display: flex; align-items: center; gap: 1rem;">
@@ -627,13 +763,14 @@
         });
 
         window.addEventListener('load', function() {
-            const loader = document.getElementById('loader');
+            const preloader = document.getElementById('preloader');
             setTimeout(function() {
-                loader.style.opacity = '0';
+                preloader.style.opacity = '0';
+                document.body.style.overflow = 'auto';
                 setTimeout(function() {
-                    loader.style.display = 'none';
+                    preloader.style.display = 'none';
                 }, 500);
-            }, 1000);
+            }, 2000); // Show preloader for 2 seconds
         });
 
         function togglePassword() {
