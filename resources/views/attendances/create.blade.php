@@ -112,9 +112,9 @@
                                             <input type="file" id="time_stamp2" name="time_stamp2" class="form-control" accept="image/*">
                                         </div>
                                     </div>
-                                    @else
+                                    else
                                     <!-- Enhanced Employee Interface (Mobile App Version) -->
-                                    <div class="col-md-6 col-sm-12 mx-auto">
+                                    <div cl@ass="col-md-6 col-sm-12 mx-auto">
                                         <input type="hidden" id="employee_id" name="employee_id" value="{{ $employees->where('first_name', Auth::user()->first_name)->first()->id }}">
                                         <input type="hidden" id="date_attended" name="date_attended" value="{{ date('Y-m-d') }}">
 

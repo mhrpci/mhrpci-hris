@@ -9,13 +9,13 @@
                     <div class="card-header">
                     @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin'))
                         <h3 class="card-title">Create New Leave</h3>
-                        @elseif(Auth::user()->hasRole('Employee'))
+                        @elseif(Auth::user()->hasRole('Employee') || Auth::user()->hasRole('Supervisor'))
                         <h3 class="card-title">Apply New Leave</h3>
                         @endif
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        @if(Auth::user()->hasRole('Employee'))
+                        @if(Auth::user()->hasRole('Employee') || Auth::user()->hasRole('Supervisor'))
                             <!-- Employee View - Modern Card Layout -->
                             <div class="row justify-content-center">
                                 <div class="col-md-8">

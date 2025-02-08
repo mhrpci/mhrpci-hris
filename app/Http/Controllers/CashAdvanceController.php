@@ -25,7 +25,7 @@ class CashAdvanceController extends Controller
         $oneYearAgo = now()->subYear();
 
         // Check if the authenticated user has the role of 'employee'
-        if (auth()->user()->hasRole('Employee')) {
+        if (auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor')) {
             // Get the employee with the same email address as the authenticated user
             $employees = Employee::where('email_address', auth()->user()->email)
                 ->where('date_hired', '<=', $oneYearAgo)
@@ -112,7 +112,7 @@ class CashAdvanceController extends Controller
                 'signature' => $signatureFileName
             ]);
 
-            if (auth()->user()->hasRole('Employee')) {
+            if (auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor')) {
                 return redirect()->route('cash_advances.create')
                     ->with('success', 'Cash advance application submitted successfully.');
             } else {
@@ -133,7 +133,7 @@ class CashAdvanceController extends Controller
     public function show($id)
     {
         $cashAdvance = CashAdvance::findOrFail($id);
-        if (!Auth::user()->hasRole('Employee')) {
+        if (!Auth::user()->hasRole('Employee') || !Auth::user()->hasRole('Supervisor')) {
             $this->markAsRead($cashAdvance);
         } else {
             $this->markAsViewed($cashAdvance);
@@ -223,7 +223,7 @@ class CashAdvanceController extends Controller
         $cashAdvance = CashAdvance::with(['employee', 'payments'])->findOrFail($id);
 
         // Check if user has Employee role and if the cash advance belongs to them
-        if (auth()->user()->hasRole('Employee')) {
+        if (auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor')) {
             $employee = Employee::where('email_address', auth()->user()->email)->first();
 
             if (!$employee || $cashAdvance->employee_id !== $employee->id) {

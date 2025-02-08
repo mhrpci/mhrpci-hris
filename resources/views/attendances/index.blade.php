@@ -15,7 +15,7 @@
                 <small class="description">Attendance List</small>
             </div>
         </a>
-        @can('attendance-create')
+        @canany(['hrcomben', 'admin', 'super-admin'])
         <a href="{{ route('attendances.create') }}" class="contribution-link {{ request()->routeIs('attendances.create') ? 'active' : '' }}">
             <div class="icon-wrapper">
                 <i class="fas fa-sign-in-alt"></i>
@@ -25,7 +25,7 @@
                 <small class="description">Attendance Create</small>
             </div>
         </a>
-        @endcan
+        @endcanany
         @canany(['hrcomben', 'admin', 'super-admin'])
         <a href="{{ url('/timesheets') }}" class="contribution-link {{ request()->routeIs('attendances.timesheets') ? 'active' : '' }}">
             <div class="icon-wrapper">

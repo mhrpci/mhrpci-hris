@@ -12,8 +12,7 @@ use Illuminate\Support\Str;
 
 class Employee extends Model
 {
-    use HasFactory, Notifiable;
-    use Loggable;
+    use HasFactory, Notifiable, Loggable;
 
     protected $fillable = [
         'company_id',
@@ -50,6 +49,7 @@ class Employee extends Model
         'employee_status',
         'signature',
         'profile_updated_at',
+        'rank',
     ];
 
     protected $dates = [

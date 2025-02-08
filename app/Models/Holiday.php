@@ -8,8 +8,7 @@ use Haruncpi\LaravelUserActivity\Traits\Loggable;
 
 class Holiday extends Model
 {
-    use HasFactory;
-    use Loggable;
+    use HasFactory, Loggable;
 
     const TYPE_REGULAR = 'Regular Holiday';
     const TYPE_SPECIAL = 'Special Non-Working Holiday';

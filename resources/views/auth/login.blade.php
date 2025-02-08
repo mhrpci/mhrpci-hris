@@ -20,8 +20,8 @@
         }
 
         :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1d4ed8;
+            --primary-color:rgb(124, 18, 196);
+            --primary-dark: rgb(68, 7, 109);
             --secondary-color: #64748b;
             --background-light: #f8fafc;
             --text-dark: #0f172a;
@@ -56,7 +56,7 @@
 
         .login-image {
             position: relative;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.97), rgba(29, 78, 216, 0.95));
+            background: linear-gradient(135deg, rgba(88, 3, 145, 0.97), rgba(12, 50, 156, 0.95));
             padding: 3.5rem;
             display: flex;
             flex-direction: column;
@@ -314,8 +314,23 @@
         }
 
         .terms-content {
+            position: relative;
             color: var(--text-dark);
             line-height: 1.6;
+            z-index: 1;
+        }
+
+        .terms-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            opacity: 0.20;
+            pointer-events: none;
+            z-index: 0;
+            background: url('../vendor/adminlte/dist/img/ICON_APP.png') center/contain no-repeat;
         }
 
         .terms-content h2 {
@@ -416,7 +431,9 @@
 <body>
     <div class="login-container">
         <div class="login-image">
-            <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Company Logo" class="brand-logo">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="vendor/adminlte/dist/img/whiteLOGO4.png" alt="Company Logo" class="brand-logo" style="margin-bottom: 0; width: 250px;">
+            </div>
             <div class="brand-message">
                 <h2>{{ config('app.company_name') }}</h2>
                 <p>Access your employee portal to manage your work-related information efficiently and securely.</p>
@@ -424,9 +441,12 @@
         </div>
 
         <div class="login-form-container">
-            <div class="login-header">
-                <h1>Welcome back</h1>
-                <p>Please sign in to access your account</p>
+            <div class="login-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Welcome back</h1>
+                    <p>Please sign in to access your account</p>
+                </div>
+                <img src="vendor/adminlte/dist/img/ICON_APP.png" alt="App Icon" style="width: 100px; height: auto;">
             </div>
 
             <form id="login-form" method="POST" action="{{ route('login') }}">
@@ -464,6 +484,7 @@
     <div id="terms-modal" class="terms-modal">
         <div class="terms-modal-content">
             <span class="close-modal">&times;</span>
+            <div class="terms-watermark"></div>
             <div class="terms-content">
                 <p class="terms-intro">
                     Welcome to the Human Resource Information System (HRIS). This platform is designed to help you manage and access important work-related information such as Payroll, Attendance, Leaves, Loans, Employee Information, and Contributions. By using this system, you agree to follow these guidelines to ensure its secure and proper use.

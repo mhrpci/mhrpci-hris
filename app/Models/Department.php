@@ -9,8 +9,7 @@ use Haruncpi\LaravelUserActivity\Traits\Loggable;
 
 class Department extends Model
 {
-    use HasFactory;
-    use Loggable;
+    use HasFactory, Loggable;
 
     protected $fillable = [
         'name',

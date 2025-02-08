@@ -147,7 +147,9 @@ class RoleSeeder extends Seeder
 
         $superVisor->givePermissionTo([
             'attendance-list',
+            'attendance-create',
             'leave-list',
+            'leave-create',
             'leave-edit',
             'supervisor',
         ]);

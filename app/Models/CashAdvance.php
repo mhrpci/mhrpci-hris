@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CashAdvanceNotification;
+use Haruncpi\LaravelUserActivity\Traits\Loggable;
 
 class CashAdvance extends Model
 {
-    use HasFactory;
+    use HasFactory, Loggable;
 
     protected $fillable = [
         'employee_id',

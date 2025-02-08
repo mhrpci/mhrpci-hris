@@ -161,7 +161,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="btn-group" role="group" aria-label="Button group">
-                                        @if(auth()->user()->hasRole('Employee'))
+                                        @if(auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor'))
                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agreementModal">Submit Application</button>
                                         @else
                                             <button type="submit" class="btn btn-primary">Submit Application</button>
@@ -590,8 +590,8 @@
                     $('#reference_number').val(referenceNumber);
                 }
 
-                $('#agreementCheckbox').prop('checked', false);
-                $('#confirmSubmit').prop('disabled', true);
+                $('#agreementCheckbox').prop('checked', true);
+                $('#confirmSubmit').prop('disabled', false);
             });
         });
     </script>
@@ -763,7 +763,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="agreementCheckbox">
+                                <input class="form-check-input" type="checkbox" id="agreementCheckbox" hidden>
                                 <label class="form-check-label" for="agreementCheckbox">
                                     I, <span id="modal-employee-name-confirm">-</span>, hereby acknowledge that I have read,
                                     understood, and agree to be bound by the terms and conditions of this cash advance agreement.

@@ -50,7 +50,7 @@ class LeaveController extends Controller
     public function create()
     {
         // Check if the authenticated user has the 'Employee' role
-        if (auth()->user()->hasRole('Employee')) {
+        if (auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor')) {
             // Retrieve only the employee with the same email address as the authenticated user
             $employees = Employee::where('email_address', auth()->user()->email)
                                  ->where('employee_status', 'Active')
@@ -127,9 +127,14 @@ class LeaveController extends Controller
             if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Admin')) {
                 return redirect()->route('leaves.create')
                     ->with('success', 'Leave request created successfully.');
-            } else {
+            }
+            elseif (auth()->user()->hasRole('Supervisor')) {
                 return redirect()->route('leaves.create')
                     ->with('success', 'Leave request sent successfully. Wait for the Admin confirmation.');
+            }
+            else {
+                return redirect()->route('leaves.create')
+                    ->with('success', 'Leave request sent successfully. Wait for the Supervisor confirmation.');
             }
 
         } catch (\Exception $e) {

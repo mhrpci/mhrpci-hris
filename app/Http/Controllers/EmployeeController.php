@@ -359,8 +359,14 @@ public function update(Request $request, $slug): RedirectResponse
                              ->with('error', 'User already exists for this employee.');
         }
 
-        // Get the Employee role
-        $employeeRole = Role::where('name', 'Employee')->first();
+        // Get the appropriate role based on employee rank
+        $roleName = $employee->rank === 'Rank File' ? 'Employee' : 'Supervisor';
+        $role = Role::where('name', $roleName)->first();
+
+        if (!$role) {
+            return redirect()->route('employees.index')
+                             ->with('error', "Role '{$roleName}' not found.");
+        }
 
         // Create a user for the employee
         $userData = [
@@ -386,14 +392,14 @@ public function update(Request $request, $slug): RedirectResponse
 
         $user = User::create($userData);
 
-        // Assign the Employee role to the user
-        $user->assignRole($employeeRole);
+        // Assign the appropriate role to the user
+        $user->assignRole($role);
 
         // Send notification email to the employee
         $user->notify(new EmployeeAccountActivated($employee));
 
         return redirect()->route('employees.index')
-                         ->with('success', 'User created successfully for the employee.'); // Ensure the message is about user creation
+                         ->with('success', "User created successfully with {$roleName} role.");
     }
 
     /**
@@ -518,7 +524,7 @@ public function update(Request $request, $slug): RedirectResponse
         $user = $request->user();
 
         // Check if the user has the 'Employee' role
-        if (!$user->hasRole('Employee')) {
+        if (!$user->hasRole('Employee') && !$user->hasRole('Supervisor')) {
             return redirect()->route('home')->with('error', 'You do not have permission to view this page.');
         }
 

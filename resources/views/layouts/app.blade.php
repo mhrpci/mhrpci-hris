@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>MHR Property Conglomerates, Inc.</title>
-    <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/LOGO4.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/ICON_APP.png') }}">
     <style>
     /* Global Responsive Styles */
     * {
@@ -2185,7 +2185,7 @@
                                         <div class="linked-account d-flex align-items-center justify-content-between mb-2">
                                             <div>
                                                 <i class="fas fa-user-circle"></i>
-                                                {{ $linkedAccount->email }}
+                                                {{ Str::limit($linkedAccount->email, 15) }}
                                             </div>
                                             <div class="btn-group">
                                                 <form action="{{ route('account.switch', $linkedAccount->id) }}" method="POST" class="d-inline switch-form">
@@ -2339,7 +2339,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ url('/home') }}" class="brand-link">
-                <img src="{{ asset('vendor/adminlte/dist/img/whiteLOGO4.png') }}" alt="Task List Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="{{ asset('vendor/adminlte/dist/img/whiteICON_APP.png') }}" alt="Task List Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">MHRPCI-HRIS</span>
             </a>
 
@@ -2385,8 +2385,8 @@
                         @endif
                       @endauth
                         @canany(['admin', 'super-admin', 'hrcomben', 'normal-employee','supervisor'])
-                        <li class="nav-item has-treeview {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Request::is('attendances*', 'timesheets*', 'my-timesheet') ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ Request::is('attendances*', 'timesheets*', 'my-timesheet', 'attendance') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ Request::is('attendances*', 'timesheets*', 'my-timesheet', 'attendance') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-clock"></i>
                                 <p>
                                     Attendance
@@ -2403,7 +2403,7 @@
                                 </li>
                                 @endcanany
                                 @auth
-                                @if(auth()->user()->hasRole('Employee'))
+                                @if(auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor'))
                                 <li class="nav-item">
                                     <a href="{{ route('attendances.attendance') }}" class="nav-link {{ Request::is('attendance') ? 'active' : '' }}">
                                         <i class="fas fa-clock nav-icon"></i>
@@ -2440,7 +2440,7 @@
                                 </li>
                                 @endcanany
                                 @auth
-                                    @if(auth()->user()->hasRole('Employee'))
+                                    @if(auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor'))
                                 <li class="nav-item">
                                     <a href="{{ url('/leaves/create') }}" class="nav-link {{ Request::is('leaves/create') ? 'active' : '' }}">
                                         <i class="fas fa-calendar-check nav-icon"></i>
@@ -2458,7 +2458,7 @@
                                 </li>
                                 @endcanany
                                 @auth
-                                    @if(auth()->user()->hasRole('Employee'))
+                                    @if(auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor'))
                                 <li class="nav-item">
                                     <a href="{{ route('leaves.my_leave_sheet') }}" class="nav-link {{ request()->routeIs('leaves.my_leave_sheet') || request()->routeIs('leaves.myLeaveDetail') ? 'active' : '' }}">
                                         <i class="fas fa-print nav-icon"></i>
@@ -2501,7 +2501,7 @@
                             </ul>
                         </li>
                         @endcanany
-                        @canany(['admin', 'super-admin', 'hrcomben', 'finance', 'normal-employee'])
+                        @canany(['admin', 'super-admin', 'hrcomben', 'finance', 'normal-employee', 'supervisor'])
                         <li class="nav-item has-treeview {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*','loan_pagibig*', 'cash_advances*', 'my-contributions*', 'my-loans*', 'contributions-employees-list*', 'loans-employees-list*') ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ Request::is('sss*', 'philhealth*', 'pagibig*', 'loan_sss*', 'loan_pagibig*', 'cash_advances*', 'my-contributions*', 'my-loans*', 'contributions-employees-list*', 'loans-employees-list*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hands-helping"></i>
@@ -2526,7 +2526,7 @@
                                 </li>
                                 @endcanany
                                 @auth
-                                    @if(auth()->user()->hasRole('Employee'))
+                                    @if(auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor'))
                                     <li class="nav-item">
                                         <a href="{{ route('cash_advances.create') }}" class="nav-link {{ Request::is('cash_advances/create') ? 'active' : '' }}">
                                             <i class="fas fa-money-bill-wave nav-icon"></i>
@@ -2605,7 +2605,7 @@
                         </li>
                         @endcanany
                         @auth
-                            @if(auth()->user()->hasRole('Employee'))
+                            @if(auth()->user()->hasRole('Employee') || auth()->user()->hasRole('Supervisor'))
                         <li class="nav-item">
                             <a href="{{ url('/my-profile') }}" class="nav-link {{ Request::is('my-profile*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-user"></i>
@@ -2998,7 +2998,7 @@
                 <i class="fas fa-bolt"></i>
                 <span>Quick Actions</span>
             </div>
-        @if(Auth::user()->hasRole('Employee'))
+        @if(Auth::user()->hasRole('Employee') || Auth::user()->hasRole('Supervisor'))
             <div class="quick-actions-content">
                 <a href="{{ route('leaves.create') }}" class="quick-action-item">
                     <div class="quick-action-icon bg-success">
@@ -3515,11 +3515,18 @@
                         <div class="alert alert-danger" id="linkAccountError" style="display: none;"></div>
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email Address" required>
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -3726,6 +3733,49 @@
 
         .toast.show {
             animation: slideIn 0.3s ease-out;
+        }
+    </style>
+
+    <!-- Add this JavaScript after the existing Link Account Modal script -->
+    <script>
+        $(document).ready(function() {
+            // Password toggle functionality
+            $('#togglePassword').click(function() {
+                const passwordInput = $('#password');
+                const icon = $(this).find('i');
+                
+                // Toggle password visibility
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            // Reset password visibility when modal is closed
+            $('#linkAccountModal').on('hidden.bs.modal', function() {
+                $('#password').attr('type', 'password');
+                $('#togglePassword i').removeClass('fa-eye-slash').addClass('fa-eye');
+            });
+        });
+    </script>
+
+    <!-- Add these styles -->
+    <style>
+        #togglePassword {
+            cursor: pointer;
+        }
+        
+        #togglePassword:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        
+        .input-group-append .btn {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
         }
     </style>
 </body>

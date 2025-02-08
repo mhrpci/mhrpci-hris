@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
+use Haruncpi\LaravelUserActivity\Traits\Loggable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Sss extends Model
 {
+    use HasFactory, Loggable;
+
     protected $table = 'ssses';
 
     protected $fillable = [

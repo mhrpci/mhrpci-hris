@@ -61,7 +61,7 @@ class Attendance extends Model
         $isHoliday = Holiday::whereDate('date', $dateAttended)->exists();
         $leave = Leave::where('employee_id', $this->employee_id)
                       ->whereDate('date_from', '<=', $dateAttended)
-                      ->whereDate('date_to', '>=', $dateAttended)
+                      ->whereDate('date_to', '>', $dateAttended)
                       ->where('status', 'approved')
                       ->first();
 

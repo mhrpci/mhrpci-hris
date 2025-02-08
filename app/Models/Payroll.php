@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use Haruncpi\LaravelUserActivity\Traits\Loggable;
 
 class Payroll extends Model
 {
-    use HasFactory;
+    use HasFactory, Loggable;
   protected $fillable = [
         'employee_id',
         'start_date',

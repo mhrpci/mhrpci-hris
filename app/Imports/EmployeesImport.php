@@ -47,9 +47,9 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
             'tertiary'       => $row['tertiary'] ?? null,
             'emergency_name' => $row['emergency_name'],
             'emergency_no'   => $row['emergency_no'],
-            'employment_status' => $row['employment_status'] ?? null, // Added
-            'employee_status' => $row['employee_status'] ?? null, // Added
-            'rank' => $row['rank'] ?? null, // Added
+            'employment_status' => $row['employment_status'] ?? null,
+            'employee_status' => $row['employee_status'] ?? null,
+            'rank' => $row['rank'] ?? null,
         ]);
     }
 
@@ -76,9 +76,9 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
             'date_hired' => 'nullable|date',
             'emergency_name' => 'required',
             'emergency_no' => 'required|numeric',
-            'employment_status' => 'nullable', // Added
-            'employee_status' => 'nullable', // Added
-            'rank' => 'nullable', // Added
+            'employment_status' => 'nullable|string',
+            'employee_status' => 'nullable|string',
+            'rank' => 'nullable|string',
         ];
     }
 }

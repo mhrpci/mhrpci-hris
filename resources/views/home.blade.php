@@ -1892,7 +1892,7 @@
 </style>
 <div class="container-fluid">
     <!-- Signature Reminder Alert - Moved to top and enhanced styling -->
-    @if(Auth::user()->hasRole('Employee'))
+    @if(Auth::user()->hasRole('Employee') || Auth::user()->hasRole('Supervisor'))
         @if(!$employees->first()->signature)
             <div class="col-md-12 mb-4">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert" 

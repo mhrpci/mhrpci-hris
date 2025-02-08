@@ -8,8 +8,7 @@ use Haruncpi\LaravelUserActivity\Traits\Loggable;
 
 class Gender extends Model
 {
-    use HasFactory;
-    use Loggable;
+    use HasFactory, Loggable;
 
     protected $fillable = [
         'name'

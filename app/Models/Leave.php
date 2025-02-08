@@ -12,8 +12,7 @@ use App\Notifications\LeaveRequestNotification;
 
 class Leave extends Model
 {
-    use HasFactory;
-    use Loggable;
+    use HasFactory, Loggable;
 
     protected $fillable = [
         'employee_id',

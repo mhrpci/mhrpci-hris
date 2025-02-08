@@ -201,7 +201,7 @@ public function employeeContributions(Request $request, $employee_id)
         $user = Auth::user();
 
         // Ensure the user is authenticated and has the role 'Employee'
-        if ($user && $user->hasRole('Employee')) {
+        if ($user && ($user->hasRole('Employee') || $user->hasRole('Supervisor'))) {
             $employee = Employee::where('email_address', $user->email)->firstOrFail();
 
             $ssscontributions = SssContribution::where('employee_id', $employee->id)
