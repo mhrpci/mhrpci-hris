@@ -8,7 +8,7 @@ use App\Models\CashAdvance;
 use Illuminate\Support\Facades\Auth;
 use App\Events\NewNotification;
 use Illuminate\Support\Facades\Log;
-
+use Carbon\Carbon;
 
 class NotificationsController extends Controller
 {
@@ -67,7 +67,8 @@ class NotificationsController extends Controller
 
     private function generateLeaveRequestNotifications()
     {
-        if (Auth::user()->hasRole(['Super Admin', 'Admin'])) {
+        $user = Auth::user();
+        if ($user && $user->hasAnyRole(['Super Admin', 'Admin'])) {
             $leaves = Leave::with('employee')
                 ->where('status', 'pending')
                 ->where('is_read', false)
@@ -88,8 +89,8 @@ class NotificationsController extends Controller
                     ]
                 ];
             }
-        } elseif (Auth::user()->hasRole('Supervisor')) {
-            $supervisorDepartmentId = Auth::user()->department_id;
+        } elseif ($user && $user->hasRole('Supervisor')) {
+            $supervisorDepartmentId = $user->department_id;
             
             $leaves = Leave::with('employee')
                 ->whereHas('employee', function($query) use ($supervisorDepartmentId) {
@@ -119,7 +120,8 @@ class NotificationsController extends Controller
 
     private function generateCashAdvanceRequestNotifications()
     {
-        if (Auth::user()->hasRole(['Super Admin', 'Admin'])) {
+        $user = Auth::user();
+        if ($user && $user->hasAnyRole(['Super Admin', 'Admin'])) {
             $advances = CashAdvance::with('employee')
                 ->where('status', 'pending')
                 ->where('is_read', false)
@@ -145,7 +147,8 @@ class NotificationsController extends Controller
 
     private function generateLeaveApprovedNotification()
     {
-        if (Auth::user()->hasRole(['HR ComBen', 'Admin', 'Super Admin'])) {
+        $user = Auth::user();
+        if ($user && $user->hasAnyRole(['HR ComBen', 'Admin', 'Super Admin'])) {
             $leaves = Leave::with(['employee', 'approvedByUser'])
                 ->where('status', 'approved')
                 ->where('validated_by_signature', null)
@@ -177,13 +180,14 @@ class NotificationsController extends Controller
 
     private function generateLeaveValidatedNotification()
     {
-        if (Auth::user()->hasRole('Employee')) {
+        $user = Auth::user();
+        if ($user && $user->hasRole('Employee')) {
             $leaves = Leave::with(['employee', 'approvedByUser'])
                 ->where('status', 'approved')
                 ->where('is_view', false)
                 ->where('validated_by_signature', '!=', null)
-                ->whereHas('employee', function($query) {
-                    $query->where('email_address', Auth::user()->email);
+                ->whereHas('employee', function($query) use ($user) {
+                    $query->where('email_address', $user->email);
                 })
                 ->get();
 
@@ -213,12 +217,13 @@ class NotificationsController extends Controller
 
     private function generateLeaveRejectedNotification()
     {
-        if (Auth::user()->hasRole('Employee')) {
+        $user = Auth::user();
+        if ($user && $user->hasRole('Employee')) {
             $leaves = Leave::with(['employee', 'rejectedByUser'])
                 ->where('status', 'rejected')
                 ->where('is_view', false)
-                ->whereHas('employee', function($query) {
-                    $query->where('email_address', Auth::user()->email);
+                ->whereHas('employee', function($query) use ($user) {
+                    $query->where('email_address', $user->email);
                 })
                 ->get();
 
@@ -248,12 +253,13 @@ class NotificationsController extends Controller
 
     private function generateCashAdvanceActiveNotification()
     {
-        if (Auth::user()->hasRole('Employee')) {
+        $user = Auth::user();
+        if ($user && $user->hasRole('Employee')) {
             $advances = CashAdvance::with(['employee', 'approvedByUser'])
                 ->where('status', 'active')
                 ->where('is_view', false)
-                ->whereHas('employee', function($query) {
-                    $query->where('email_address', Auth::user()->email);
+                ->whereHas('employee', function($query) use ($user) {
+                    $query->where('email_address', $user->email);
                 })
                 ->get();
 
@@ -280,12 +286,13 @@ class NotificationsController extends Controller
 
     private function generateCashAdvanceDeclinedNotification()
     {
-        if (Auth::user()->hasRole('Employee')) {
+        $user = Auth::user();
+        if ($user && $user->hasRole('Employee')) {
             $advances = CashAdvance::with(['employee', 'rejectedByUser'])
                 ->where('status', 'declined')
                 ->where('is_view', false)
-                ->whereHas('employee', function($query) {
-                    $query->where('email_address', Auth::user()->email);
+                ->whereHas('employee', function($query) use ($user) {
+                    $query->where('email_address', $user->email);
                 })
                 ->get();
 
@@ -433,10 +440,10 @@ class NotificationsController extends Controller
                 ->where('created_at', '>=', $sevenDaysAgo);
 
             // Apply role-based restrictions
-            if ($user->hasRole(['Super Admin', 'Admin'])) {
+            if ($user && $user->hasAnyRole(['Super Admin', 'Admin'])) {
                 // Super Admin and Admin can see all leave notifications and cash advances
                 // No additional restrictions needed
-            } elseif ($user->hasRole('Supervisor')) {
+            } elseif ($user && $user->hasRole('Supervisor')) {
                 // Supervisors can only see leave notifications from their department
                 $supervisorDepartmentId = $user->department_id;
                 
@@ -446,14 +453,14 @@ class NotificationsController extends Controller
                 
                 // Set advances query to return no results for supervisors
                 $advancesQuery->where('id', 0);
-            } elseif ($user->hasRole('HR ComBen')) {
+            } elseif ($user && $user->hasRole('HR ComBen')) {
                 // HR ComBen can only see approved leaves that need validation
                 $leavesQuery->where('status', 'approved')
                            ->whereNull('validated_by_signature');
                 
                 // HR ComBen cannot see cash advances
                 $advancesQuery->where('id', 0);
-            } elseif ($user->hasRole('Employee')) {
+            } elseif ($user && $user->hasRole('Employee')) {
                 // Regular employees can only see their own validated leave notifications
                 $leavesQuery->where('status', 'approved')
                            ->whereNotNull('validated_by_signature')
@@ -473,9 +480,9 @@ class NotificationsController extends Controller
             $leaves = $leavesQuery->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($leave) {
-                    $dateFrom = $leave->date_from ? \Carbon\Carbon::parse($leave->date_from) : null;
-                    $dateTo = $leave->date_to ? \Carbon\Carbon::parse($leave->date_to) : null;
-                    $createdAt = $leave->created_at ? \Carbon\Carbon::parse($leave->created_at) : now();
+                    $dateFrom = $leave->date_from ? Carbon::parse($leave->date_from) : null;
+                    $dateTo = $leave->date_to ? Carbon::parse($leave->date_to) : null;
+                    $createdAt = $leave->created_at ? Carbon::parse($leave->created_at) : now();
 
                     return [
                         'type' => 'leave',
@@ -509,7 +516,7 @@ class NotificationsController extends Controller
             $advances = $advancesQuery->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($advance) {
-                    $createdAt = $advance->created_at ? \Carbon\Carbon::parse($advance->created_at) : now();
+                    $createdAt = $advance->created_at ? Carbon::parse($advance->created_at) : now();
                     $remainingBalance = $advance->remainingBalance();
 
                     return [
@@ -534,7 +541,7 @@ class NotificationsController extends Controller
                             'Applied On' => $createdAt->format('M d, Y h:i A'),
                             'Total Payments Made' => $advance->payments->count(),
                             'Last Payment Date' => $advance->payments->last() ? 
-                                Carbon\Carbon::parse($advance->payments->last()->payment_date)->format('M d, Y') : 'No payments yet'
+                                Carbon::parse($advance->payments->last()->payment_date)->format('M d, Y') : 'No payments yet'
                         ]
                     ];
                 });

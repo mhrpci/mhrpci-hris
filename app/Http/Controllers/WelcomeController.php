@@ -83,4 +83,13 @@ class WelcomeController extends Controller
     {
         return view('medical_equipment');
     }
+
+    public function allSubsidiaries()
+    {
+        return view('all_subsidiaries');
+    }
+    public function showMedicalProducts()
+    {
+        return view('medical_products');
+    }
 }

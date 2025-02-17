@@ -1,5 +1,6 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
+import axios from 'axios';
 
 window.Pusher = Pusher;
 
@@ -189,5 +190,154 @@ function showDesktopNotification(notification) {
     };
 
     new Notification(notification.title, options);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize notification system
+    initializeNotifications();
+
+    // Set up polling for notifications
+    setInterval(fetchNotifications, 30000); // Poll every 30 seconds
+});
+
+function initializeNotifications() {
+    // Set up CSRF token for AJAX requests
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+
+    // Initialize Pusher
+    const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
+        cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+        encrypted: true
+    });
+
+    // Subscribe to the notifications channel
+    const channel = pusher.subscribe('notifications');
+    
+    // Listen for new notifications
+    channel.bind('new-notification', function(data) {
+        updateNotificationUI(data);
+        playNotificationSound();
+    });
+}
+
+function fetchNotifications() {
+    axios.get('/notifications/data')
+        .then(response => {
+            updateNotificationUI(response.data);
+        })
+        .catch(error => {
+            console.error('Error fetching notifications:', error);
+        });
+}
+
+function updateNotificationUI(data) {
+    // Update notification counter
+    const counter = document.getElementById('notification-counter');
+    if (counter) {
+        counter.textContent = data.count;
+        counter.style.display = data.count > 0 ? 'inline-block' : 'none';
+    }
+
+    // Update notification dropdown
+    const dropdown = document.getElementById('notification-dropdown');
+    if (dropdown) {
+        dropdown.innerHTML = data.notifications;
+    }
+
+    // Show toast notification if there's a new notification
+    if (data.toast && data.toast.message) {
+        showToast(data.toast);
+    }
+}
+
+function showToast(toast) {
+    // Create toast element
+    const toastElement = document.createElement('div');
+    toastElement.className = 'toast';
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
+    
+    toastElement.innerHTML = `
+        <div class="toast-header">
+            <i class="${toast.icon} mr-2"></i>
+            <strong class="mr-auto">${toast.title}</strong>
+            <small class="text-muted">just now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            ${toast.message}
+        </div>
+    `;
+
+    // Add toast to container
+    const toastContainer = document.querySelector('.toast-container');
+    if (toastContainer) {
+        toastContainer.appendChild(toastElement);
+        
+        // Initialize Bootstrap toast
+        const bsToast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 5000
+        });
+        
+        bsToast.show();
+
+        // Remove toast after it's hidden
+        toastElement.addEventListener('hidden.bs.toast', function() {
+            toastElement.remove();
+        });
+    }
+}
+
+function playNotificationSound() {
+    const audio = new Audio('/notification-sound.mp3');
+    audio.play().catch(error => {
+        console.error('Error playing notification sound:', error);
+    });
+}
+
+// Mark notification as read
+function markAsRead(notificationId) {
+    axios.post(`/notifications/${notificationId}/read`)
+        .then(response => {
+            // Update UI to reflect the read status
+            const notificationElement = document.querySelector(`[data-notification-id="${notificationId}"]`);
+            if (notificationElement) {
+                notificationElement.classList.remove('unread');
+            }
+        })
+        .catch(error => {
+            console.error('Error marking notification as read:', error);
+        });
+}
+
+// Clear all notifications
+function clearAllNotifications() {
+    axios.post('/notifications/clear-all')
+        .then(response => {
+            // Update UI to show no notifications
+            const dropdown = document.getElementById('notification-dropdown');
+            if (dropdown) {
+                dropdown.innerHTML = `
+                    <div class="empty-notifications">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>No new notifications</p>
+                    </div>
+                `;
+            }
+            
+            // Hide the counter
+            const counter = document.getElementById('notification-counter');
+            if (counter) {
+                counter.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error clearing notifications:', error);
+        });
 }
 

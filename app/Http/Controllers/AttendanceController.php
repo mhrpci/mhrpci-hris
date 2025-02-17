@@ -357,6 +357,12 @@ public function printAttendance(Request $request)
 
     public function attendance()
     {
+        $user = Auth::user();
+        
+        if (!$user->hasRole(['Employee', 'Supervisor'])) {
+            abort(403, 'Unauthorized access.');
+        }
+
         return view('attendances.attendance');
     }
 }

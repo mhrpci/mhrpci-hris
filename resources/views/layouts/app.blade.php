@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>MHR Property Conglomerates, Inc.</title>
     <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/ICON_APP.png') }}">
+    @yield('styles')
     <style>
     /* Global Responsive Styles */
     * {
@@ -1976,6 +1977,25 @@
         </div>
     </div>
 
+    <!-- Account Switch Toast Container -->
+    <div class="toast-container">
+        @if(session('toast'))
+            <div class="toast account-switch-toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                <div class="toast-header bg-primary text-white">
+                    <i class="fas fa-exchange-alt mr-2"></i>
+                    <strong class="mr-auto">{{ session('toast')['title'] }}</strong>
+                    <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    Switched from <strong>{{ session('toast')['from'] }}</strong> to <strong>{{ session('toast')['to'] }}</strong>
+                </div>
+                <div class="toast-progress"></div>
+            </div>
+        @endif
+    </div>
+
     <div class="wrapper">
 
         <!-- Control Sidebar -->
@@ -2119,11 +2139,11 @@
                             <i class="fas fa-user-cog mr-2"></i> User Management
                         </a>
                         @endcanany
-                        @canany(['super-admin', 'supervisor'])
-                        <a href="{{ route('user-activity.index') }}" class="dropdown-item">
+                        @if(auth()->user()->hasRole('Supervisor'))
+                        <a href="{{ route('activity-logs.index') }}" class="dropdown-item">
                             <i class="fas fa-history mr-2"></i> Departmental User Activity
                         </a>
-                        @endcanany
+                        @endif
                         @can('super-admin')
                         <a href="{{ url('/user-activity') }}" class="dropdown-item">
                             <i class="fas fa-history mr-2"></i> User General Logs
@@ -3778,5 +3798,61 @@
             border-bottom-right-radius: 4px;
         }
     </style>
+
+    <style>
+        /* Account Switch Toast Specific Styles */
+        .account-switch-toast {
+            min-width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 1;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #e9ecef;
+        }
+
+        .toast-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: #007bff;
+            animation: progress 5s linear forwards;
+        }
+
+        @keyframes progress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        @media (max-width: 576px) {
+            .account-switch-toast {
+                min-width: auto;
+                width: calc(100vw - 2rem);
+                margin: 0 1rem;
+            }
+        }
+    </style>
+
+    @yield('scripts')
+
+    <!-- Add this script section -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const accountSwitchToast = document.querySelector('.account-switch-toast');
+            if (accountSwitchToast) {
+                $(accountSwitchToast).toast('show');
+            }
+        });
+    </script>
 </body>
 </html>

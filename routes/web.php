@@ -48,6 +48,7 @@ use App\Http\Controllers\UserActivityController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,16 +84,21 @@ Route::post('auth/google/logout', [GoogleAuthController::class, 'logout'])->name
 Route::get('/related-jobs/{hiring}', [HiringController::class, 'relatedJobs'])->name('related.jobs');
 
 // Welcome routes
+Route::get('/subsidiaries', [WelcomeController::class, 'allSubsidiaries'])->name('all_subsidiaries');
 Route::get('/mhrpropertyconglomeratesinc', [WelcomeController::class, 'showMhrpci'])->name('mhrpci');
 Route::get('/baygaspetroleumdistributioninc', [WelcomeController::class, 'showBgpdi'])->name('bgpdi');
 Route::get('/mhrhealthcareinc', [WelcomeController::class, 'showMhrhci'])->name('mhrhci');
 Route::get('/medical_equipment', [WelcomeController::class, 'showMedicalEquipment'])->name('medical_equipment');
+Route::get('/medical_products', [WelcomeController::class, 'showMedicalProducts'])->name('medical_products');
 Route::get('/cebicindustries', [WelcomeController::class, 'showCio'])->name('cio');
 Route::get('/verbenahotelinc', [WelcomeController::class, 'showVhi'])->name('vhi');
 Route::get('/maximumhandlingresources', [WelcomeController::class, 'showMax'])->name('max');
 Route::get('/lusciousco', [WelcomeController::class, 'showLus'])->name('lus');
 Route::get('/mhrconstruction', [WelcomeController::class, 'showMhrcons'])->name('mhrcons');
 Route::get('/rcgpharmaceutical', [WelcomeController::class, 'showRcg'])->name('rcg');
+
+Route::post('/contactmhrhci', [ContactController::class, 'sendEmailMhrhci'])->name('contact.sendmhrhci');
+Route::post('/contactbgpdi', [ContactController::class, 'sendEmailBgpdi'])->name('contact.sendbgpdi');
 
    // Terms and Privacy routes
    Route::get('/terms', function () {
@@ -269,9 +275,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/overtime-hours/{employeeId}', [OverTimePayController::class, 'getOvertimeHours'])->name('overtime.hours');
 
     // Notifications routes
-    Route::get('/notifications/get', [NotificationsController::class, 'getNotificationsData']);
-    Route::post('/notifications/mark-as-read', [NotificationsController::class, 'markAsRead']);
-    Route::delete('/notifications/clear', [NotificationsController::class, 'clearAll']);
+    Route::get('/notifications/data', [NotificationsController::class, 'getNotificationsData'])->name('notifications.data');
+    Route::get('/notifications', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
+    Route::post('/notifications/{id}/read', [NotificationsController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/clear-all', [NotificationsController::class, 'clearAll'])->name('notifications.clear');
+    Route::post('/notifications/mark-all-as-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 
     // Report routes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -287,15 +295,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/server-time', function() {
         return response()->json(['server_time' => now()->toIso8601String()]);
     });
-    Route::post('push-subscription', [NotificationsController::class, 'storePushSubscription'])
+    Route::post('/push-subscription', [NotificationsController::class, 'storePushSubscription'])
     ->name('push-subscription.store');
     Route::get('/birthdays', [EmployeeBirthdayController::class, 'index'])->name('birthdays');
     Route::put('/leaves/update-status/{id}', [LeaveController::class, 'updateStatus'])->name('leaves.update-status');
     Route::put('/leaves/{id}/update-validation', [LeaveController::class, 'updateValidation'])->name('leaves.update-validation');
-    Route::post('/push/subscribe', [App\Http\Controllers\PushNotificationController::class, 'store'])->name('push.subscribe');
-    Route::get('/push/vapid-public-key', [App\Http\Controllers\PushNotificationController::class, 'getVapidPublicKey'])->name('push.key');
-    Route::get('/test-notification', [App\Http\Controllers\PushNotificationController::class, 'testNotification'])
-        ->name('test.notification');
     Route::post('/employee/signature', [EmployeeController::class, 'updateSignature'])
         ->name('employee.signature.update')
         ->middleware(['auth', 'verified']);
@@ -337,9 +341,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/account/link', [AccountController::class, 'link'])->name('account.link');
     Route::post('/account/switch/{linkedAccount}', [AccountController::class, 'switch'])->name('account.switch');
     Route::delete('/account/unlink/{linkedAccount}', [AccountController::class, 'unlink'])->name('account.unlink');
+
+    // Activity Logs routes
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
-
-    Auth::routes();
-
-Route::post('/contactmhrhci', [ContactController::class, 'sendEmailMhrhci'])->name('contact.sendmhrhci');
-Route::post('/contactbgpdi', [ContactController::class, 'sendEmailBgpdi'])->name('contact.sendbgpdi');
+Auth::routes();

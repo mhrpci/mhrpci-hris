@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Showcase - Categories</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -358,6 +359,201 @@
             font-weight: 500;
         }
 
+        /* Search bar styles */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            padding: 0 1rem;
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+            color: #4a5568;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2c5282;
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: none;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        .clear-search:hover {
+            color: #2c5282;
+            background-color: #f7fafc;
+        }
+
+        .clear-search.visible {
+            display: block;
+        }
+
+        .search-input:focus + .search-icon {
+            color: #2c5282;
+        }
+
+        .search-stats {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .search-stats.visible {
+            opacity: 1;
+        }
+
+        .no-results-global {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #4a5568;
+            font-size: 1.2rem;
+            background: white;
+            border-radius: 8px;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .no-results-global.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .no-results-global svg {
+            width: 64px;
+            height: 64px;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+        }
+
+        .no-results-global h3 {
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-results-global p {
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+
+        .no-results-global .suggestions {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .no-results-global .suggestions ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0;
+        }
+
+        .no-results-global .suggestions li {
+            margin: 0.25rem 0;
+            color: #718096;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                position: sticky;
+                top: 0;
+                background: #f5f5f5;
+                padding: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .search-input {
+                font-size: 16px; /* Prevent zoom on mobile */
+                padding: 0.875rem 2.5rem;
+            }
+
+            .search-icon, .clear-search {
+                width: 18px;
+                height: 18px;
+            }
+
+            .search-stats {
+                font-size: 0.8rem;
+            }
+        }
+
+        .product-card {
+            transition: all 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .product-card.hidden {
+            display: none;
+        }
+
+        .product-card.filtered {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .category-section {
+            transition: opacity 0.3s ease;
+        }
+
+        .category-section.filtered {
+            animation: fadeIn 0.3s ease;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -372,8 +568,42 @@
     </div>
 
     <div class="header">
-        <button onclick="window.location.href='/mhrhealthcareinc'" class="back-button">← Back</button>
+        <button onclick="window.location.href='/cebicindustries'" class="back-button"><i class="fas fa-arrow-left"></i> Back</button>
         <h1>Our Products</h1>
+    </div>
+
+    <!-- Add search bar -->
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text" class="search-input" placeholder="Search products by name, description..." id="searchInput" autocomplete="off">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.5 3C11.5376 3 14 5.46243 14 8.5C14 9.83879 13.5217 11.0659 12.7266 12.0196L16.8536 16.1464C17.0488 16.3417 17.0488 16.6583 16.8536 16.8536C16.6583 17.0488 16.3417 17.0488 16.1464 16.8536L12.0196 12.7266C11.0659 13.5217 9.83879 14 8.5 14C5.46243 14 3 11.5376 3 8.5C3 5.46243 5.46243 3 8.5 3ZM8.5 4C6.01472 4 4 6.01472 4 8.5C4 10.9853 6.01472 13 8.5 13C10.9853 13 13 10.9853 13 8.5C13 6.01472 10.9853 4 8.5 4Z" fill="currentColor"/>
+            </svg>
+            <button class="clear-search" id="clearSearch" title="Clear search">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2ZM7.70711 7.70711C7.31658 7.31658 6.68342 7.31658 6.29289 7.70711C5.90237 8.09763 5.90237 8.73079 6.29289 9.12132L7.17157 10L6.29289 10.8787C5.90237 11.2692 5.90237 11.9024 6.29289 12.2929C6.68342 12.6834 7.31658 12.6834 7.70711 12.2929L8.58579 11.4142L9.46447 12.2929C9.85499 12.6834 10.4882 12.6834 10.8787 12.2929C11.2692 11.9024 11.2692 11.2692 10.8787 10.8787L10 10L10.8787 9.12132C11.2692 8.73079 11.2692 8.09763 10.8787 7.70711C10.4882 7.31658 9.85499 7.31658 9.46447 7.70711L8.58579 8.58579L7.70711 7.70711Z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+        <div class="search-stats" id="searchStats"></div>
+    </div>
+
+    <!-- Add global no results message -->
+    <div class="no-results-global" id="noResultsGlobal">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>No Products Found</h3>
+        <p>We couldn't find any medical equipment matching your search criteria.</p>
+        <div class="suggestions">
+            <strong>Suggestions:</strong>
+            <ul>
+                <li>Check for spelling errors</li>
+                <li>Try using more general terms</li>
+                <li>Try searching by product category</li>
+                <li>Remove filters to broaden your search</li>
+            </ul>
+        </div>
     </div>
 
     <div id="sterilewaves" class="category-section">
@@ -713,6 +943,116 @@
         window.addEventListener('scroll', handleScrollAnimation);
         // Trigger initial check
         handleScrollAnimation();
+
+        // Add search functionality
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const noResultsGlobal = document.getElementById('noResultsGlobal');
+        const searchStats = document.getElementById('searchStats');
+        
+        function clearSearch() {
+            searchInput.value = '';
+            clearSearchBtn.classList.remove('visible');
+            noResultsGlobal.classList.remove('visible');
+            searchStats.classList.remove('visible');
+            filterProducts('');
+            searchInput.focus();
+        }
+
+        function updateSearchStats(totalProducts, visibleProducts, searchTerm) {
+            if (searchTerm.length === 0) {
+                searchStats.classList.remove('visible');
+                return;
+            }
+
+            const stats = searchTerm.length > 0
+                ? `Found ${visibleProducts} out of ${totalProducts} products`
+                : '';
+            
+            searchStats.textContent = stats;
+            searchStats.classList.add('visible');
+        }
+
+        function filterProducts(searchTerm) {
+            const productCards = document.querySelectorAll('.product-card');
+            let totalVisibleProducts = 0;
+            const totalProducts = productCards.length;
+            
+            productCards.forEach(card => {
+                const title = card.querySelector('.product-title').textContent.toLowerCase();
+                const description = card.querySelector('.product-description').textContent.toLowerCase();
+                const category = card.closest('.category-section').querySelector('.category-title').textContent.toLowerCase();
+                const details = card.querySelector('.product-details') ? card.querySelector('.product-details').textContent.toLowerCase() : '';
+                
+                const isMatch = title.includes(searchTerm) || 
+                              description.includes(searchTerm) || 
+                              category.includes(searchTerm) ||
+                              details.includes(searchTerm);
+                
+                if (isMatch) {
+                    card.classList.remove('hidden');
+                    card.classList.add('filtered');
+                    totalVisibleProducts++;
+                } else {
+                    card.classList.add('hidden');
+                    card.classList.remove('filtered');
+                }
+            });
+
+            // Show/hide clear search button
+            if (searchTerm.length > 0) {
+                clearSearchBtn.classList.add('visible');
+            } else {
+                clearSearchBtn.classList.remove('visible');
+            }
+
+            // Show/hide categories and update their appearance
+            document.querySelectorAll('.category-section').forEach(section => {
+                const visibleProducts = section.querySelectorAll('.product-card:not(.hidden)').length;
+                if (visibleProducts === 0) {
+                    section.style.display = 'none';
+                    section.classList.remove('filtered');
+                } else {
+                    section.style.display = 'block';
+                    section.classList.add('filtered');
+                }
+            });
+
+            // Update search stats
+            updateSearchStats(totalProducts, totalVisibleProducts, searchTerm);
+
+            // Show/hide global no results message
+            if (totalVisibleProducts === 0 && searchTerm.length > 0) {
+                noResultsGlobal.classList.add('visible');
+            } else {
+                noResultsGlobal.classList.remove('visible');
+            }
+        }
+
+        // Clear search button click handler
+        clearSearchBtn.addEventListener('click', clearSearch);
+
+        // Search input event handlers
+        let debounceTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                filterProducts(searchTerm);
+            }, 300);
+        });
+
+        // Handle escape key to clear search
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                clearSearch();
+            }
+        });
+
+        // Handle initial load animation
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.classList.add('filtered');
+        });
     </script>
 </body>
 </html>

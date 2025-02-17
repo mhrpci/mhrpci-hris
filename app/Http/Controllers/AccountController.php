@@ -53,11 +53,25 @@ class AccountController extends Controller
         $linkedAccount = Auth::user()->linkedAccounts()->findOrFail($linkedAccountId);
         $userToSwitchTo = User::findOrFail($linkedAccount->linked_user_id);
 
-        // Log out current user and login as linked user
+        // Store current user info for toast
+        $fromName = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+        $toName = $userToSwitchTo->first_name . ' ' . $userToSwitchTo->last_name;
+
+        // Log out current user
         Auth::logout();
+        
+        // Regenerate session
+        session()->invalidate();
+        session()->regenerateToken();
+
+        // Login as linked user
         Auth::login($userToSwitchTo);
 
-        return redirect()->route('home')->with('success', 'Switched to linked account successfully.');
+        return redirect()->route('home')->with('toast', [
+            'title' => 'Account Switched',
+            'from' => $fromName,
+            'to' => $toName
+        ]);
     }
 
     /**

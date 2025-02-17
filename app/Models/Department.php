@@ -24,4 +24,8 @@ class Department extends Model
     {
         return $this->hasMany(Position::class);
     }
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 }

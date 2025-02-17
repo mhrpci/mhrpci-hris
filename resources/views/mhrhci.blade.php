@@ -75,10 +75,11 @@
                         <!-- Background overlay image -->
                         <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="Background Overlay" class="absolute w-full h-full object-cover opacity-10 z-0">
                         <!-- Slideshow images -->
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw100.png') }}" alt="Sterilwave 100" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw250.png') }}" alt="Sterilwave 250" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/img/sw440.png') }}" alt="Sterilwave 440" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/hci/corescrub.png') }}" alt="Corescrub" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/hci/abri-soft.png') }}" alt="Abri-Soft" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/hci/sebs-resuscitor.png') }}" alt="Sebs-Resuscitor" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/hci/kidney-basin.png') }}" alt="Kidney-Basin" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        <img src="{{ asset('vendor/adminlte/dist/img/hci/infafast-clasp.png') }}" alt="Infa-Fast" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
                     </div>
                 </div>
             </div>
@@ -94,24 +95,13 @@
             
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
-                    <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Medical Equipment</h3>
-                        <p class="text-gray-600 mb-4">Premium quality medical equipment that helps in the healthcare industry and environmental friendly.</p>
-                        <a href="{{ route('medical_equipment') }}" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
-                            Learn More →
-                        </a>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
-                    <img src="/api/placeholder/400/300" alt="Medical Supplies" class="w-full h-48 object-cover">
+                    <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalproducts1.png') }}" alt="Medical Supplies" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2">Medical Supplies</h3>
                         <p class="text-gray-600 mb-4">Essential medical supplies including PPE, wound care products, and disposable medical items.</p>
-                        <button class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300">
+                        <a href="{{ route('medical_products') }}" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
                             Learn More →
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -256,8 +246,7 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Products</h3>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="{{ route('medical_equipment') }}" class="hover:text-white">Medical Equipment</a></li>
-                        <li><a href="#" class="hover:text-white">Medical Supplies</a></li>
+                        <li><a href="{{ route('medical_products') }}" class="hover:text-white">Medical Supplies</a></li>
                     </ul>
                 </div>
                 <div>

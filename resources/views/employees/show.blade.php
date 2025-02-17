@@ -8,13 +8,19 @@
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
         });
 
         Toast.fire({
             icon: '{{ Session::has("success") ? "success" : "error" }}',
-            title: '{{ $message }}'
+            title: '{{ $message }}',
+            text: '{{ Session::get("details") }}',
+            padding: '1em'
         });
     </script>
 @endif

@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 use App\Models\Department;
+use App\Models\PushSubscription;
+use App\Models\Notification;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions, HasRoles;
-    use Loggable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPushSubscriptions, Loggable;
 
     /**
      * The attributes that are mass assignable.
@@ -141,4 +142,8 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 }
