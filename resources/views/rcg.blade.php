@@ -3,512 +3,498 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCG - Pharmaceutical</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>RCG Investment - Strategic Asset Management</title>
+    <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #1a3b5c;
+            --secondary-color: #2c5282;
+            --accent-color: #f6ad55;
+            --text-color: #2d3748;
+            --light-bg: #f7fafc;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        :root {
-            --primary: #0052CC;
-            --secondary: #2684FF;
-            --accent: #4C9AFF;
-            --background: #F5F9FF;
-            --text: #172B4D;
-            --white: #ffffff;
-            --gray-light: #F4F5F7;
-            --shadow: 0 8px 30px rgba(0, 82, 204, 0.12);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
+            color: var(--text-color);
         }
 
-        /* Navigation */
-        .header {
+        .navbar {
             position: fixed;
             top: 0;
-            left: 0;
-            right: 0;
             width: 100%;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
-        .nav-container {
-            position: static;
-            max-width: 1400px;
+        .navbar-container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0.5rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 100%;
-            background: none;
+            padding: 0 2rem;
         }
 
         .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .nav-links {
             display: flex;
-            align-items: center;
-            gap: 1.5rem;
+            gap: 2rem;
+            transition: all 0.3s ease;
         }
 
-        .logo img {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-            margin-left: auto;
-        }
-
-        .nav-link {
-            color: var(--text);
+        .nav-links a {
             text-decoration: none;
+            color: var(--text-color);
             font-weight: 500;
-            font-family: 'Montserrat', sans-serif;
-            padding: 0.5rem 0;
-            position: relative;
+            transition: color 0.3s ease;
         }
 
-        .nav-link:hover {
-            color: var(--primary);
-            border-bottom: 2px solid var(--secondary);
+        .nav-links a:hover {
+            color: var(--accent-color);
         }
 
-        .nav-link i {
-            margin-right: 1rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 0;
-            padding-top: 80px;
-        }
-
-        /* Hero Section */
         .hero {
-            height: 60vh;
-            background: linear-gradient(rgba(0, 82, 204, 0.8), rgba(38, 132, 255, 0.8)),
-                        url('{{ asset('vendor/adminlte/dist/img/rcg.png') }}') center/cover;
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3');
+            background-size: cover;
+            background-position: center;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--light-text);
             text-align: center;
-            padding: 2rem;
+            color: white;
         }
 
         .hero-content {
             max-width: 800px;
-            animation: fadeIn 1.5s ease-out;
-            color: var(--white);
+            margin: 0 auto;
+            padding: 2rem;
         }
 
-        .hero h1 {
+        .hero-title {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
+            font-weight: 700;
         }
 
-        .hero p {
-            font-size: 1.2rem;
+        .hero-subtitle {
+            font-size: 1.5rem;
             margin-bottom: 2rem;
+            opacity: 0.9;
         }
 
-        /* Sections */
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+        }
+
         .section {
-            padding: 5rem 2rem;
+            padding: 6rem 2rem;
         }
 
-        .section-light {
+        .about-section {
             background-color: var(--light-bg);
         }
 
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            color: var(--primary);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* About Section */
-        .about-grid {
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin-top: 3rem;
         }
 
-        .about-card {
-            background-color: white;
+        .feature-card {
+            background: white;
             padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.1);
         }
 
-        .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--accent);
-        }
-
-        .about-card i {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        /* Services Section */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .service-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .service-card:hover {
+        .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--accent);
         }
 
-        .service-card i {
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
             font-size: 2.5rem;
-            color: var(--secondary);
+            color: var(--accent-color);
             margin-bottom: 1rem;
         }
 
-        /* Location Section */
-        .location-container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .feature-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
-        }
-
-        .location-info {
-            padding: 2rem;
-        }
-
-        .location-map {
-            background-color: #ddd;
-            min-height: 400px;
-            border-radius: 10px;
-        }
-
-        /* Footer */
-        footer {
-            background: linear-gradient(135deg, #0052CC, #2684FF);
-            color: var(--white);
-            padding: 3rem 2rem;
             text-align: center;
         }
 
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                width: 80px;
-            }
-
-            .main-content {
-                margin-left: 80px;
-            }
-
-            .logo img {
-                width: 60px;
-                height: 60px;
-            }
-
-            .nav-link span {
-                display: none;
-            }
-
-            .location-container {
-                grid-template-columns: 1fr;
-            }
+        .stat-item h3 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-menu {
-                display: none;
-            }
+        .contact-section {
+            background-color: white;
         }
 
-        /* Add these new animation keyframes */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 4rem;
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none;
+        .contact-info {
+            display: flex;
             flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            padding: 10px;
+            gap: 1.5rem;
         }
 
-        .mobile-menu-btn span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: var(--primary);
-            transition: var(--transition);
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        /* Updated Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                padding: 0.5rem 1rem;
-            }
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
 
-            .location-container {
-                grid-template-columns: 1fr;
-            }
-
-            .about-grid, .services-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                padding: 0 1rem;
-            }
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
         }
 
         @media (max-width: 768px) {
             .mobile-menu-btn {
-                display: flex;
+                display: block;
             }
 
-            .nav-menu {
-                display: none;
+            .nav-links {
                 position: fixed;
-                top: 80px;
-                left: 0;
-                right: 0;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(20px);
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: auto;
                 flex-direction: column;
+                background: white;
                 padding: 2rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                text-align: center;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
                 gap: 1.5rem;
-                box-shadow: var(--shadow);
             }
 
-            .nav-menu.active {
-                display: flex;
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
             }
 
-            .hero h1 {
-                font-size: 2rem;
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
+        }
 
-            .hero p {
-                font-size: 1rem;
-            }
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-            .section {
-                padding: 3rem 1rem;
-            }
+        .subsidiary-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
 
-            .section-title {
-                font-size: 2rem;
-            }
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
 
         @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 1.5rem;
+            .hero-title {
+                font-size: 2rem;
             }
-
-            .logo img {
-                width: 40px;
-                height: 40px;
+            
+            .section {
+                padding: 4rem 1rem;
             }
-
-            .hero h1 {
-                font-size: 1.75rem;
-            }
-
-            .about-card, .service-card {
-                padding: 1.5rem;
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* Add these utility classes */
-        .no-scroll {
-            overflow: hidden;
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
 
-        /* Add smooth transitions */
-        .nav-menu, .hero-content, .about-card, .service-card {
-            transition: var(--transition);
+        /* Add these styles before the media queries */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid var(--primary-color);
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .nav-contact-btn {
+            padding: 0.5rem 1.5rem;
+            background-color: var(--accent-color);
+            color: white !important;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-contact-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <nav class="nav-container">
-            <div class="logo">
-                <img src="{{ asset('vendor/adminlte/dist/img/rcg.png') }}" alt="RCG Logo">
-                <h1>RCG</h1>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="{{route('welcome')}}" class="nav-link">Home</a></li>
-                <li><a href="#who-we-are" class="nav-link">Who We Are</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#location" class="nav-link">Location</a></li>
-            </ul>
+    <!-- Add Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">RCG Investment</div>
             <div class="mobile-menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
+                <i class="fas fa-bars"></i>
             </div>
-        </nav>
-    </header>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#services">Our Services</a>
+            </div>
+        </div>
+    </nav>
 
-    <main class="main-content">
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1>Welcome to RCG Pharmaceutical</h1>
-                <p>Strategic Investment Management for Sustainable Growth and Value Creation</p>
-            </div>
-        </section>
+    <section id="home" class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1 class="hero-title">Strategic Asset Management Excellence</h1>
+            <p class="hero-subtitle">Your trusted partner in building sustainable wealth through strategic investments</p>
+            <a href="#contact" class="cta-button">Get Started</a>
+        </div>
+    </section>
 
-        <section id="who-we-are" class="section section-light">
-            <h2 class="section-title">Who We Are</h2>
-            <div style="max-width: 1000px; margin: 0 auto; text-align: justify; padding: 0 2rem;" data-aos="fade-up">
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    RCG Investment is the dedicated investment arm of MHR Properties Conglomerate, Inc. (MHRPCI), specializing in strategic asset management and business development. We focus on identifying, acquiring, and managing high-potential investments across diverse industries.
-                </p>
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    As stewards of MHRPCI's financial assets, we employ sophisticated investment strategies to maximize returns while maintaining prudent risk management. Our expertise spans various sectors, allowing us to build a robust and diversified investment portfolio.
-                </p>
-                <p style="font-size: 1.1rem;">
-                    Through strategic partnerships and careful market analysis, we continue to expand our investment horizon, creating sustainable value for our stakeholders and contributing to the group's long-term growth.
-                </p>
-            </div>
-        </section>
-        <section id="about" class="section">
-            <h2 class="section-title">About Us</h2>
-            <div class="about-grid">
-                <div class="about-card" data-aos="fade-up">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Investment Expertise</h3>
-                    <p>Professional team of financial analysts and investment specialists with proven track record.</p>
+    <section id="about" class="section about-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">About RCG Investment</h2>
+            <p data-aos="fade-up" style="text-align: center; max-width: 800px; margin: 0 auto; margin-bottom: 3rem;">
+                RCG Investment is the dedicated investment arm of MHR Properties Conglomerate, Inc. (MHRPCI), specializing in strategic asset management and business development. We focus on identifying, acquiring, and managing high-potential investments across diverse industries.
+            </p>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3 class="feature-title">Strategic Investment</h3>
+                    <p>Expert analysis and strategic planning for optimal investment outcomes</p>
                 </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-handshake"></i>
-                    <h3>Strategic Partnerships</h3>
-                    <p>Strong network of business relationships and strategic alliances across industries.</p>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h3 class="feature-title">Risk Management</h3>
+                    <p>Sophisticated risk assessment and mitigation strategies</p>
                 </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>Risk Management</h3>
-                    <p>Robust risk assessment and management frameworks ensuring sustainable returns.</p>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-handshake feature-icon"></i>
+                    <h3 class="feature-title">Partnership Growth</h3>
+                    <p>Building strong relationships for sustainable business development</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="services" class="section section-light">
-            <h2 class="section-title">Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card" data-aos="fade-up">
-                    <i class="fas fa-coins"></i>
-                    <h3>Asset Management</h3>
-                    <p>Professional management of financial assets and investment portfolios</p>
+    <section id="services" class="section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Our Services</h2>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-money-bill-trend-up feature-icon"></i>
+                    <h3 class="feature-title">Asset Management</h3>
+                    <p>Professional management of investment portfolios and assets</p>
                 </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-search-dollar"></i>
-                    <h3>Investment Advisory</h3>
-                    <p>Strategic investment consulting and market analysis</p>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-building feature-icon"></i>
+                    <h3 class="feature-title">Real Estate Investment</h3>
+                    <p>Strategic property acquisition and development</p>
                 </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-business-time"></i>
-                    <h3>Business Development</h3>
-                    <p>Identifying and developing new business opportunities</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-                    <i class="fas fa-chart-pie"></i>
-                    <h3>Portfolio Management</h3>
-                    <p>Diversified portfolio strategy and optimization</p>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-chart-pie feature-icon"></i>
+                    <h3 class="feature-title">Portfolio Management</h3>
+                    <p>Diversified investment strategies for optimal returns</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- <section id="location" class="section">
-            <h2 class="section-title">Our Location</h2>
-            <div class="location-container">
-                <div class="location-info" data-aos="fade-right">
-                    <h3>Find Us Here</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> National Rd. Cansaga, Consolacion, Cebu</p>
-                    <p><i class="fas fa-phone"></i> Contact Number: (032) 238-1887</p>
-                    <p><i class="fas fa-clock"></i> Operating Hours: 24/7</p>
-                </div>
-                <div class="location-map" data-aos="fade-left">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.8961246876434!2d123.96145421475498!3d10.378576892605444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9a2b07fd8a64f%3A0x99917bdaf36b746e!2sBay%20Gas%20%26%20Petroleum%20Distribution%2C%20Inc.!5e0!3m2!1sen!2sph!4v1650000000000!5m2!1sen!2sph"
-                        width="100%"
-                        height="100%"
-                        style="border:0; border-radius: 10px;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
-            </div>
-        </section> -->
+    <footer>
+        <div class="footer-content">
+            <p class="subsidiary-text">A subsidiary of MHR Properties Conglomerate, Inc.</p>
+            <p class="copyright">&copy; {{ date('Y') }} RCG Investment. All rights reserved.</p>
+        </div>
+    </footer>
 
-        <footer>
-            <p>&copy; {{ date('Y') }} RCG Pharmaceutical. All rights reserved.</p>
-            <p>A subsidiary of MHR Properties Conglomerate, Inc.</p>
-        </footer>
-    </main>
-
+    <!-- AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Initialize AOS
         AOS.init({
             duration: 1000,
-            once: true,
-            offset: 100
+            once: true
         });
 
-        // Smooth scrolling
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.padding = '0.5rem 0';
+                navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.padding = '1rem 0';
+                navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -518,33 +504,77 @@
             });
         });
 
-        // Add VHI's mobile menu toggle code
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const navMenu = document.querySelector('.nav-menu');
-        const body = document.body;
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenuBtn.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            body.classList.toggle('no-scroll');
+        // Loading Screen
+        window.addEventListener('load', function() {
+            const loader = document.querySelector('.loading-overlay');
+            loader.style.display = 'none';
         });
 
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
-            });
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
         });
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
+            if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                navLinks.classList.remove('active');
             }
+        });
+
+        // Counter Animation
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200;
+
+        const animateCounter = () => {
+            counters.forEach(counter => {
+                const target = +counter.dataset.target;
+                const count = +counter.innerText;
+                const increment = target / speed;
+
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(animateCounter, 1);
+                } else {
+                    counter.innerText = target;
+                }
+            });
+        }
+
+        // Intersection Observer for counter animation
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelector('.stats-grid').forEach(stat => observer.observe(stat));
+
+        // Scroll to Top Button
+        const scrollBtn = document.querySelector('.scroll-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
     </script>
 </body>

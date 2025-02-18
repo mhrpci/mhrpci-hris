@@ -3,512 +3,892 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MHR - Construction</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <title>MHR Construction - Building Excellence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         :root {
-            --primary: #0052CC;
-            --secondary: #2684FF;
-            --accent: #4C9AFF;
-            --background: #F5F9FF;
-            --text: #172B4D;
+            --primary-color: #1a4d7c;
+            --primary-dark: #153d63;
+            --secondary-color: #e67e22;
+            --secondary-light: #f39c12;
+            --accent-color: #2ecc71;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+            --gray-bg: #f4f6f8;
             --white: #ffffff;
-            --gray-light: #F4F5F7;
-            --shadow: 0 8px 30px rgba(0, 82, 204, 0.12);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --box-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --container-width: 1400px;
+            --section-spacing: 8rem;
         }
 
         body {
-            line-height: 1.6;
+            line-height: 1.8;
+            color: var(--text-color);
+            scroll-behavior: smooth;
+            background-color: var(--white);
         }
 
-        /* Navigation */
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header Styles */
         .header {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
             width: 100%;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow);
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.04);
             transition: var(--transition);
-            z-index: 9999;
+        }
+
+        .header.scrolled {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--box-shadow);
         }
 
         .nav-container {
-            position: static;
-            max-width: 1400px;
+            max-width: var(--container-width);
             margin: 0 auto;
-            padding: 0.5rem 2rem;
+            padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 100%;
-            background: none;
         }
 
         .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: -1px;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 0.5rem;
         }
 
-        .logo img {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .logo i {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
         }
 
-        .nav-menu {
+        .nav-links {
             display: flex;
-            gap: 2.5rem;
-            list-style: none;
-            margin-left: auto;
+            gap: 3.5rem;
         }
 
-        .nav-link {
-            color: var(--text);
+        .nav-links a {
             text-decoration: none;
+            color: var(--text-color);
             font-weight: 500;
-            font-family: 'Montserrat', sans-serif;
-            padding: 0.5rem 0;
+            font-size: 1.1rem;
+            transition: var(--transition);
             position: relative;
+            padding: 0.5rem 0;
         }
 
-        .nav-link:hover {
-            color: var(--primary);
-            border-bottom: 2px solid var(--secondary);
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--secondary-color), var(--secondary-light));
+            transition: var(--transition);
+            border-radius: 2px;
         }
 
-        .nav-link i {
-            margin-right: 1rem;
+        .nav-links a:hover {
+            color: var(--secondary-color);
         }
 
-        /* Main Content */
-        .main-content {
-            margin-left: 0;
-            padding-top: 80px;
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* Hero Section */
         .hero {
-            height: 60vh;
-            background: linear-gradient(rgba(0, 82, 204, 0.8), rgba(38, 132, 255, 0.8)),
-                        url('{{ asset('vendor/adminlte/dist/img/mhrconstruction.jpg') }}') center/cover;
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3') center/cover fixed;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--light-text);
             text-align: center;
-            padding: 2rem;
+            color: var(--white);
+            padding: 0 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
 
         .hero-content {
-            max-width: 800px;
-            animation: fadeIn 1.5s ease-out;
-            color: var(--white);
+            max-width: 1000px;
+            margin: 0 auto;
+            z-index: 1;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 4.5rem;
             margin-bottom: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, var(--white), #f8f9fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Sections */
-        .section {
-            padding: 5rem 2rem;
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3.5rem;
+            background: linear-gradient(45deg, var(--secondary-color), var(--secondary-light));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
         }
 
-        .section-light {
-            background-color: var(--light-bg);
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: var(--transition);
         }
 
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            color: var(--primary);
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow-hover);
         }
 
-        /* About Section */
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .about-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--accent);
-        }
-
-        .about-card i {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
+        .cta-button:hover::before {
+            left: 100%;
         }
 
         /* Services Section */
+        .services {
+            padding: var(--section-spacing) 2rem;
+            background-color: var(--light-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 49.5%, var(--gray-bg) 49.5%, var(--gray-bg) 50.5%, transparent 50.5%);
+            background-size: 20px 20px;
+            opacity: 0.5;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--secondary-color), var(--secondary-light));
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        .section-title h2 {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: var(--container-width);
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .service-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius-lg);
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--secondary-color), var(--secondary-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
         }
 
         .service-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--accent);
+            box-shadow: var(--box-shadow-hover);
         }
 
         .service-card i {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        /* Location Section */
-        .location-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .location-info {
-            padding: 2rem;
-        }
-
-        .location-map {
-            background-color: #ddd;
-            min-height: 400px;
-            border-radius: 10px;
-        }
-
-        /* Footer */
-        footer {
-            background: linear-gradient(135deg, #0052CC, #2684FF);
-            color: var(--white);
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                width: 80px;
-            }
-
-            .main-content {
-                margin-left: 80px;
-            }
-
-            .logo img {
-                width: 60px;
-                height: 60px;
-            }
-
-            .nav-link span {
-                display: none;
-            }
-
-            .location-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-        }
-
-        /* Add these new animation keyframes */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .mobile-menu-btn span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: var(--primary);
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            display: inline-block;
             transition: var(--transition);
         }
 
-        /* Updated Responsive Design */
-        @media (max-width: 1024px) {
-            .nav-container {
-                padding: 0.5rem 1rem;
+        .service-card:hover i {
+            transform: rotateY(360deg);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .service-card p {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* About Section */
+        .about {
+            padding: var(--section-spacing) 2rem;
+            position: relative;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4rem;
+            align-items: center;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .about-content {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .about-content h3 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .about-content p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            transition: var(--transition);
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            padding: var(--section-spacing) 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: 20px 20px;
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 3.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-hover);
+            margin-top: 3rem;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray-bg);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(26, 77, 124, 0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            width: 100%;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(45deg, var(--secondary-color), var(--secondary-light));
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--dark-bg);
+            color: var(--white);
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--secondary-color), var(--secondary-light));
+        }
+
+        .footer-content {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .footer-section h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--secondary-color);
+        }
+
+        .footer-section p {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --section-spacing: 6rem;
             }
 
-            .location-container {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .about-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .about-grid, .services-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                padding: 0 1rem;
             }
         }
 
         @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: flex;
-            }
-
-            .nav-menu {
+            .nav-links {
                 display: none;
-                position: fixed;
-                top: 80px;
+                position: absolute;
+                top: 100%;
                 left: 0;
                 right: 0;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(20px);
+                background: var(--white);
                 flex-direction: column;
                 padding: 2rem;
-                gap: 1.5rem;
-                box-shadow: var(--shadow);
+                text-align: center;
+                box-shadow: var(--box-shadow);
             }
 
-            .nav-menu.active {
+            .nav-links.active {
                 display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
             }
 
             .hero h1 {
-                font-size: 2rem;
+                font-size: 2.8rem;
             }
 
             .hero p {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
 
-            .section {
-                padding: 3rem 1rem;
+            .services-grid {
+                grid-template-columns: 1fr;
             }
 
-            .section-title {
-                font-size: 2rem;
+            .contact-form {
+                padding: 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 1.5rem;
-            }
-
-            .logo img {
-                width: 40px;
-                height: 40px;
-            }
-
             .hero h1 {
-                font-size: 1.75rem;
+                font-size: 2.3rem;
             }
 
-            .about-card, .service-card {
-                padding: 1.5rem;
+            .section-title h2 {
+                font-size: 2.2rem;
             }
         }
 
-        /* Add these utility classes */
-        .no-scroll {
-            overflow: hidden;
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
-        /* Add smooth transitions */
-        .nav-menu, .hero-content, .about-card, .service-card {
-            transition: var(--transition);
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate {
+            opacity: 0;
+        }
+
+        .animate.fade-in {
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .animate.slide-left {
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        .animate.slide-right {
+            animation: slideInRight 1s ease forwards;
+        }
+
+        .animate.scale-in {
+            animation: scaleIn 1s ease forwards;
+        }
+        
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <nav class="nav-container">
-            <div class="logo">
-                <img src="{{ asset('vendor/adminlte/dist/img/mhrconstruction.jpg') }}" alt="MHRCONS Logo">
-                <h1>MHRCONS</h1>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="{{route('welcome')}}" class="nav-link">Home</a></li>
-                <li><a href="#who-we-are" class="nav-link">Who We Are</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#location" class="nav-link">Location</a></li>
-            </ul>
+            <a href="#" class="logo">MHRCONS</a>
             <div class="mobile-menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
             </div>
         </nav>
     </header>
 
-    <main class="main-content">
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1>Welcome to MHR Construction</h1>
-                <p>Building the future through excellence in infrastructure and development</p>
-            </div>
-        </section>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Building the Future Through Excellence</h1>
+            <p>Leading construction company specializing in commercial, residential, and industrial property development</p>
+            <a href="#services" class="cta-button">Learn More</a>
+        </div>
+    </section>
 
-        <section id="who-we-are" class="section section-light">
-            <h2 class="section-title">Who We Are</h2>
-            <div style="max-width: 1000px; margin: 0 auto; text-align: justify; padding: 0 2rem;" data-aos="fade-up">
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    MHR Construction is a leading construction company specializing in commercial, residential, and industrial property development. As part of the MHR Properties Conglomerate, we bring decades of expertise to every project we undertake.
-                </p>
-                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                    Our company has been instrumental in shaping the urban landscape of key cities across the Philippines through innovative construction solutions and sustainable development practices. We handle both internal expansion projects and external client requirements with the same level of dedication and excellence.
-                </p>
-                <p style="font-size: 1.1rem;">
-                    With our skilled workforce and commitment to quality, we continue to set new standards in the construction industry, delivering projects that stand the test of time.
-                </p>
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="section-title animate">
+            <h2>Our Services</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card animate">
+                <i class="fas fa-building"></i>
+                <h3>Commercial Construction</h3>
+                <p>Development of office buildings, retail spaces, and commercial complexes</p>
             </div>
-        </section>
-        <section id="about" class="section">
-            <h2 class="section-title">About Us</h2>
+            <div class="service-card animate">
+                <i class="fas fa-home"></i>
+                <h3>Residential Projects</h3>
+                <p>Construction of housing developments and residential complexes</p>
+            </div>
+            <div class="service-card animate">
+                <i class="fas fa-industry"></i>
+                <h3>Industrial Development</h3>
+                <p>Building industrial facilities and manufacturing plants</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>About Us</h2>
+                <p>Building Excellence, Delivering Results</p>
+            </div>
             <div class="about-grid">
-                <div class="about-card" data-aos="fade-up">
-                    <i class="fas fa-hard-hat"></i>
-                    <h3>Expert Team</h3>
-                    <p>Highly skilled engineers, architects, and construction professionals dedicated to excellence.</p>
+                <div class="about-content animate slide-left">
+                    <h3>Leading the Way in Construction Excellence</h3>
+                    <p>MHR Construction is a leading construction company specializing in commercial, residential, and industrial property development. As part of the MHR Properties Conglomerate, we bring decades of expertise to every project we undertake.</p>
+                    <p>Our company has been instrumental in shaping the urban landscape of key cities across the Philippines through innovative construction solutions and sustainable development practices.</p>
+                    <p>With our skilled workforce and commitment to quality, we continue to set new standards in the construction industry, delivering projects that stand the test of time.</p>
                 </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-building"></i>
-                    <h3>Project Portfolio</h3>
-                    <p>Diverse range of successful projects across commercial, residential, and industrial sectors.</p>
-                </div>
-                <div class="about-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-certificate"></i>
-                    <h3>Quality Assurance</h3>
-                    <p>Commitment to the highest standards of construction and safety in every project.</p>
+                <div class="about-image animate slide-right">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3" alt="Construction Site">
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="services" class="section section-light">
-            <h2 class="section-title">Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card" data-aos="fade-up">
-                    <i class="fas fa-building"></i>
-                    <h3>Commercial Construction</h3>
-                    <p>Development of office buildings, retail spaces, and commercial complexes</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-home"></i>
-                    <h3>Residential Projects</h3>
-                    <p>Construction of housing developments and residential complexes</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-industry"></i>
-                    <h3>Industrial Development</h3>
-                    <p>Building industrial facilities and manufacturing plants</p>
-                </div>
-                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-                    <i class="fas fa-tools"></i>
-                    <h3>Project Management</h3>
-                    <p>Comprehensive oversight of construction projects from start to finish</p>
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title animate">
+                <h2 style="color: white;">Contact Us</h2>
+                <p>Get in touch with us for your construction needs</p>
+            </div>
+            <div class="contact-content">
+                <form class="contact-form animate scale-in">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Tell us about your project" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>MHR Construction is a leading construction company specializing in commercial, residential, and industrial property development.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +63 123 456 7890</li>
+                    <li><i class="fas fa-envelope"></i> info@mhrcons.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Manila, Philippines</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
-        </section>
-
-        <!-- <section id="location" class="section">
-            <h2 class="section-title">Our Location</h2>
-            <div class="location-container">
-                <div class="location-info" data-aos="fade-right">
-                    <h3>Find Us Here</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> National Rd. Cansaga, Consolacion, Cebu</p>
-                    <p><i class="fas fa-phone"></i> Contact Number: (032) 238-1887</p>
-                    <p><i class="fas fa-clock"></i> Operating Hours: 24/7</p>
-                </div>
-                <div class="location-map" data-aos="fade-left">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.8961246876434!2d123.96145421475498!3d10.378576892605444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9a2b07fd8a64f%3A0x99917bdaf36b746e!2sBay%20Gas%20%26%20Petroleum%20Distribution%2C%20Inc.!5e0!3m2!1sen!2sph!4v1650000000000!5m2!1sen!2sph"
-                        width="100%"
-                        height="100%"
-                        style="border:0; border-radius: 10px;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
-            </div>
-        </section> -->
-
-        <footer>
-            <p>&copy; {{ date('Y') }} MHR Construction. All rights reserved.</p>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MHR Construction. All rights reserved.</p>
             <p>A subsidiary of MHR Properties Conglomerate, Inc.</p>
-        </footer>
-    </main>
+        </div>
+    </footer>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
         });
 
-        // Smooth scrolling
+        // Smooth Scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -518,33 +898,49 @@
             });
         });
 
-        // Add VHI's mobile menu toggle code
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const navMenu = document.querySelector('.nav-menu');
-        const body = document.body;
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenuBtn.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            body.classList.toggle('no-scroll');
-        });
-
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
-            });
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                body.classList.remove('no-scroll');
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            } else {
+                header.style.background = 'white';
             }
+        });
+
+        // Scroll Animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('service-card')) {
+                        entry.target.classList.add('fade-in');
+                        entry.target.style.animationDelay = `${entry.target.dataset.delay || 0}s`;
+                    } else {
+                        entry.target.classList.add(
+                            entry.target.classList.contains('slide-left') ? 'slide-left' :
+                            entry.target.classList.contains('slide-right') ? 'slide-right' :
+                            entry.target.classList.contains('scale-in') ? 'scale-in' : 'fade-in'
+                        );
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Add animation delays to service cards
+        document.querySelectorAll('.service-card').forEach((card, index) => {
+            card.dataset.delay = (index * 0.2).toString();
+        });
+
+        // Observe all animate elements
+        document.querySelectorAll('.animate').forEach(element => {
+            observer.observe(element);
         });
     </script>
 </body>

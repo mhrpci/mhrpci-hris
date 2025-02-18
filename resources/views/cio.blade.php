@@ -27,6 +27,10 @@
                             <span>Services</span>
                             <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                         </a>
+                        <a href="#products" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
+                            <span>Products</span>
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        </a>
                         <a href="#about" class="group relative inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors duration-300">
                             <span>About</span>
                             <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
@@ -47,6 +51,7 @@
             <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
                 <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Home</a>
                 <a href="#services" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Services</a>
+                <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Products</a>
                 <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">About</a>
             </div>
         </div>
@@ -58,7 +63,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h1 class="text-4xl md:text-5xl font-bold mb-6">Welcome to Cebic Trading</h1>
+                        <h1 class="text-4xl md:text-5xl font-bold mb-6">Welcome to Cebic Industries</h1>
                         <p class="text-xl mb-8">Your trusted partner in medical supplies and healthcare solutions since 1995.</p>
                         <div class="flex space-x-4">
                             <button onclick="openModal()" class="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300">
@@ -90,16 +95,8 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105">
                     <div class="p-6">
                         <i class="fas fa-hospital text-blue-600 text-3xl mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Hospital Supplies</h3>
-                        <p class="text-gray-600">Comprehensive range of hospital equipment and supplies.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105">
-                    <div class="p-6">
-                        <i class="fas fa-briefcase-medical text-blue-600 text-3xl mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Medical Office Supplies</h3>
-                        <p class="text-gray-600">Essential supplies for medical offices and clinics.</p>
+                        <h3 class="text-xl font-semibold mb-2">Medical Equipment</h3>
+                        <p class="text-gray-600">Comprehensive range of medical equipment.</p>
                     </div>
                 </div>
 
@@ -115,7 +112,28 @@
                     <div class="p-6">
                         <i class="fas fa-comments text-blue-600 text-3xl mb-4"></i>
                         <h3 class="text-xl font-semibold mb-2">Consultation Services</h3>
-                        <p class="text-gray-600">Expert guidance on medical supply solutions.</p>
+                        <p class="text-gray-600">Expert guidance on medical equipment solutions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Featured Products Section -->
+<section id="products" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-4">Featured Products</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">Discover our comprehensive range of medical equipment and supplies, designed to meet the highest standards of quality and performance.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                    <img src="{{ asset('vendor/adminlte/dist/img/cio/medicalequipment1.png') }}" alt="Medical Supplies" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Medical Equipment</h3>
+                        <p class="text-gray-600 mb-4">Comprehensive range of medical equipment and supplies.</p>
+                        <a href="{{ route('medical_equipment') }}" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
+                            Learn More →
+                        </a>
                     </div>
                 </div>
             </div>
@@ -135,8 +153,8 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <img src="{{ asset('vendor/adminlte/dist/img/cio/facility.jpg') }}" alt="Our Facility" class="rounded-lg shadow-lg">
-                    <img src="{{ asset('vendor/adminlte/dist/img/cio/warehouse.jpg') }}" alt="Our Warehouse" class="rounded-lg shadow-lg mt-8">
+                    <img src="{{ asset('vendor/adminlte/dist/img/frontmhrhci.jpg') }}" alt="Our Facility" class="rounded-lg shadow-lg">
+                    <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Our Warehouse" class="rounded-lg shadow-lg mt-8">
                 </div>
             </div>
         </div>
@@ -168,6 +186,7 @@
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
                 <p>&copy; {{ date('Y') }} Cebic Industries. All rights reserved.</p>
+                <p class="mt-2 text-sm">A subsidiary of MHR Properties Conglomerate, Inc.</p>
             </div>
         </div>
     </footer>

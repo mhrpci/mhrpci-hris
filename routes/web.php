@@ -344,5 +344,11 @@ Route::middleware('auth')->group(function () {
 
     // Activity Logs routes
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+    // New holiday calendar route
+    Route::get('/holidays-calendar', [HolidayController::class, 'holidayCalendar'])->name('holidays.calendar');
+
+    // New holiday events route
+    Route::get('/holidays/events', [HolidayController::class, 'getEvents'])->name('holidays.events');
 });
 Auth::routes();

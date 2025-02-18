@@ -2640,6 +2640,12 @@
                                 <p>Birthdays</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('holidays.calendar') }}" class="nav-link {{ Request::is('holidays-calendar') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-calendar-alt"></i>
+                                <p>MHR Calendar</p>
+                            </a>
+                        </li>
                         @can('super-admin')
                         <li class="nav-item">
                             <a href="{{ url('/reports') }}" class="nav-link {{ Request::is('reports*') ? 'active' : '' }}">

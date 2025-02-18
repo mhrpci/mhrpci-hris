@@ -172,4 +172,9 @@ class HolidayController extends Controller
             ];
         }
     }
+    public function holidayCalendar()
+    {
+        $holidays = Holiday::all();
+        return view('holidays.calendar', compact('holidays'));
+    }
 }

@@ -782,7 +782,7 @@
                 <p>In 2003, MHRPCI expanded its operations in Cebu by forming Medical & Hospital Resources Health Care, Inc. (MHRHCI) to focus on medical supplies and forge international partnerships. Over the years, MHRPCI has continued to grow, spreading its wings to various regions and industries, acquiring businesses in hospitality, pharmaceuticals, hauling, and more, eventually becoming a conglomerate with 10 companies working in synergy.</p>
             </div>
             <div class="about-image">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c" alt="Team collaboration" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <img src="/vendor/adminlte/dist/img/LOGO4.png" alt="Team collaboration" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             </div>
         </div>
     </div>
@@ -826,7 +826,7 @@
         
         <div class="subsidiaries-grid">
             <div class="subsidiary-card animate-slide-in delay-1">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab" alt="Cebic Industries" class="subsidiary-image">
+                <img src="/vendor/adminlte/dist/img/cebic.png" alt="Cebic Industries" class="subsidiary-image">
                 <div class="subsidiary-content">
                     <h3 class="subsidiary-title">Cebic Industries OPC</h3>
                     <div class="subsidiary-location">
@@ -838,7 +838,7 @@
             </div>
 
             <div class="subsidiary-card animate-slide-in delay-2">
-                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" alt="MHRHCI" class="subsidiary-image">
+                <img src="/vendor/adminlte/dist/img/mhrhci.png" alt="MHRHCI" class="subsidiary-image">
                 <div class="subsidiary-content">
                     <h3 class="subsidiary-title">MHRHCI</h3>
                     <div class="subsidiary-location">
@@ -850,7 +850,7 @@
             </div>
 
             <div class="subsidiary-card animate-slide-in delay-3">
-                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c" alt="BGPDI" class="subsidiary-image">
+                <img src="/vendor/adminlte/dist/img/bgpdi.png" alt="BGPDI" class="subsidiary-image">
                 <div class="subsidiary-content">
                     <h3 class="subsidiary-title">BGPDI</h3>
                     <div class="subsidiary-location">

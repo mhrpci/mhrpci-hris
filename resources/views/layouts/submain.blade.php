@@ -762,9 +762,88 @@
     .see-all-link svg {
         transition: transform 0.3s ease;
     }
+
+    /* Add preloader styles at the beginning of the style block */
+    .preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .preloader.fade-out {
+        opacity: 0;
+    }
+
+    .loader {
+        width: 80px;
+        height: 80px;
+        position: relative;
+    }
+
+    .loader-circle {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid transparent;
+        border-radius: 50%;
+        border-top-color: var(--purple-primary);
+        animation: spin 1s linear infinite;
+    }
+
+    .loader-circle:nth-child(2) {
+        border-top-color: var(--purple-secondary);
+        animation-delay: 0.2s;
+        scale: 0.8;
+    }
+
+    .loader-circle:nth-child(3) {
+        border-top-color: var(--purple-light);
+        animation-delay: 0.4s;
+        scale: 0.6;
+    }
+
+    .loader-text {
+        position: absolute;
+        top: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--purple-primary);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    body.loading {
+        overflow: hidden;
+    }
 </style>
 </head>
-<body>
+<body class="loading">
+    <div class="preloader">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-text">MHRPCI</div>
+        </div>
+    </div>
+
     <nav class="nav" aria-label="Main navigation">
         <div class="nav-overlay"></div>
         <div class="nav-container">
@@ -855,6 +934,21 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Add preloader functionality at the beginning of the script
+        const preloader = document.querySelector('.preloader');
+        const body = document.body;
+
+        // Ensure all content is loaded
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.classList.add('fade-out');
+                body.classList.remove('loading');
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }, 500); // Show preloader for at least 500ms
+        });
+
         // Initialize Lucide icons
         lucide.createIcons();
         

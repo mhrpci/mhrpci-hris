@@ -95,10 +95,10 @@
             
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
-                    <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalproducts1.png') }}" alt="Medical Supplies" class="w-full h-48 object-cover">
+                    <img src="{{ asset('vendor/adminlte/dist/img/img/medicalproducts1.png') }}" alt="Medical Supplies" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Medical Supplies</h3>
-                        <p class="text-gray-600 mb-4">Essential medical supplies including PPE, wound care products, and disposable medical items.</p>
+                        <h3 class="text-xl font-semibold mb-2">Medical Products</h3>
+                        <p class="text-gray-600 mb-4">Essential medical products including PPE, wound care products, and disposable medical items.</p>
                         <a href="{{ route('medical_products') }}" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
                             Learn More →
                         </a>
@@ -146,7 +146,7 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <img src="{{ asset('vendor/adminlte/dist/img/frontmhrhci.jpg') }}" alt="Medical Facility" class="rounded-lg shadow-lg">
-                    <img src="{{ asset('vendor/adminlte/dist/img/hci/medicalequipment1.png') }}" alt="Medical Equipment" class="rounded-lg shadow-lg mt-8">
+                    <img src="{{ asset('vendor/adminlte/dist/img/img/medicalproducts1.png') }}" alt="Medical Products" class="rounded-lg shadow-lg mt-8">
                 </div>
             </div>
         </div>
