@@ -2648,6 +2648,12 @@
                         </li>
                         @can('super-admin')
                         <li class="nav-item">
+                            <a href="{{ route('news') }}" class="nav-link {{ Request::is('news*')? 'active' : '' }}">
+                                <i class="nav-icon fas fa-globe"></i>
+                                <p>Global News</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ url('/reports') }}" class="nav-link {{ Request::is('reports*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-chart-bar"></i>
                                 <p>Reports</p>

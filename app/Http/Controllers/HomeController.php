@@ -361,4 +361,8 @@ class HomeController extends Controller
             'analytics'
         ));
     }
+
+    public function news(){
+        return view('news');
+    }
 }

@@ -49,6 +49,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AiController;
+use App\Http\Controllers\MediaConverterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +62,13 @@ use App\Http\Controllers\ActivityLogController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/mhrpci-ai', [AiController::class, 'mhrpciAi'])->name('mhrpci-ai');
+Route::get('/image-generator', [AiController::class, 'imageGenerator'])->name('image-generator');
+Route::get('/text-analysis', [AiController::class, 'textAnalysis'])->name('text-analysis');
+Route::get('/document-scanner', [AiController::class, 'documentScanner'])->name('document-scanner');
+Route::get('/document-converter', [AiController::class, 'documentConverter'])->name('document-converter');
+Route::post('/media-converter/convert', [AiController::class, 'mediaConverter'])->name('media-converter');
+
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 // Careers routes
@@ -149,6 +158,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('sss', SssController::class)->except(['edit', 'update']);
     Route::resource('pagibig', PagibigController::class)->except(['edit', 'update']);
     Route::resource('philhealth', PhilhealthController::class)->except(['edit', 'update']);
+
+    // Calendar routes
+    Route::get('/news', [HomeController::class, 'news'])->name('news');
 
     // Employees routes
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');

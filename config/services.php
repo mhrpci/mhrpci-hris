@@ -50,4 +50,10 @@ return [
         'api_token' => env('INDEED_API_TOKEN'),
     ],
 
+    'youtube-dl' => [
+        'binary_path' => env('YOUTUBE_DL_BINARY', '/usr/local/bin/yt-dlp'),
+        'python_path' => env('YOUTUBE_DL_PYTHON', '/usr/bin/python3'),
+        'temp_path' => storage_path('app/public/temp'),
+    ],
+
 ];
