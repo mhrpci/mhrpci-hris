@@ -35,4 +35,17 @@ class AiController extends Controller
     {
         return view('media-converter');
     }
+
+    public function captionGenerator()
+    {
+        return view('caption-generator');
+    }
+
+    public function imageEnhancer()
+    {
+        return view('image-enhancer');
+    }
+    
+    
+
 }

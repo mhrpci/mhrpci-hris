@@ -774,7 +774,7 @@
 
 <section id="about" class="section" style="background: #f8fafc;">
     <div class="section-container">
-        <h2 class="section-title">About Us</h2>
+        <h2 class="section-title" style="text-align: left;">About Us</h2>
         <div class="about-content">
             <div class="about-text">
                 <p>MHR Property Conglomerate Inc. (MHRPCI) began in the year 2000 with the establishment of Cebic Trading, a single proprietorship that started with just a 20,000-peso capital, primarily dealing in hospital and office medical supplies.</p>
