@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use App\Models\LoginHistory;
+use Laravel\Sanctum\HasApiTokens;
 
 class LoginController extends Controller
 {
@@ -41,6 +43,15 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
+            // Log successful login
+            LoginHistory::create([
+                'user_id' => $user->id,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'login_at' => now(),
+                'login_successful' => true
+            ]);
+
             // Check if the user's status is disabled
             if ($user->status === 'disabled') {
                 Auth::logout(); // Log out the user if status is disabled
@@ -65,6 +76,17 @@ class LoginController extends Controller
 
         // Check if the email exists
         $user = User::where('email', $request->email)->first();
+
+        // Log failed login attempt
+        if ($user) {
+            LoginHistory::create([
+                'user_id' => $user->id,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'login_at' => now(),
+                'login_successful' => false
+            ]);
+        }
 
         if (!$user) {
             return response()->json([

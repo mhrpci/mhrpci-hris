@@ -50,7 +50,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AiController;
-use App\Http\Controllers\MediaConverterController;
+use App\Http\Controllers\LoginHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -362,5 +362,8 @@ Route::middleware('auth')->group(function () {
 
     // New holiday events route
     Route::get('/holidays/events', [HolidayController::class, 'getEvents'])->name('holidays.events');
+
+    // Login History route
+    Route::get('/login-history', [LoginHistoryController::class, 'index'])->name('login.history');
 });
 Auth::routes();
