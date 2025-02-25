@@ -2,7 +2,7 @@
 
 @section('content')
 <br>
-@if ($message = Session::get('success') || $message = Session::get('error'))
+@if (Session::has('success') || Session::has('error'))
     <script>
         const Toast = Swal.mixin({
             toast: true,
@@ -18,8 +18,7 @@
 
         Toast.fire({
             icon: '{{ Session::has("success") ? "success" : "error" }}',
-            title: '{{ $message }}',
-            text: '{{ Session::get("details") }}',
+            title: '{{ Session::has("success") ? Session::get("success") : Session::get("error") }}',
             padding: '1em'
         });
     </script>
