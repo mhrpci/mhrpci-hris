@@ -52,6 +52,9 @@
                                             <option value="{{ App\Models\Holiday::TYPE_SPECIAL }}" {{ old('type') == App\Models\Holiday::TYPE_SPECIAL ? 'selected' : '' }}>
                                                 Special Non-Working Holiday
                                             </option>
+                                            <option value="{{ App\Models\Holiday::TYPE_SPECIAL_WORKING }}" {{ old('type') == App\Models\Holiday::TYPE_SPECIAL_WORKING ? 'selected' : '' }}>
+                                                Special Working Holiday
+                                            </option>
                                         </select>
                                     </div>
                                 </div>

@@ -53,6 +53,12 @@
                                 <strong>Special Non-Working Holiday</strong>
                             </div>
                         </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-info me-2" style="width: 30px;">&nbsp;</span>&nbsp;&nbsp;
+                            <div>
+                                <strong>Special Working Holiday</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -83,7 +89,8 @@
                         <label for="type" class="form-label">Type</label>
                         <select class="form-select" id="type" name="type" required>
                             <option value="Regular Holiday">Regular Holiday</option>
-                            <option value="Special Non-Working">Special Non-Working</option>
+                            <option value="Special Non-Working Holiday">Special Non-Working Holiday</option>
+                            <option value="Special Working Holiday">Special Working Holiday</option>
                         </select>
                     </div>
                 </div>
@@ -127,6 +134,41 @@
         border-color: #ffc107 !important;
         color: #000 !important;
     }
+    .holiday-special-working {
+        background-color: #0dcaf0 !important;
+        border-color: #0dcaf0 !important;
+        color: #000 !important;
+    }
+    
+    /* Tooltip Styles */
+    .holiday-tooltip-inner {
+        max-width: 300px;
+        padding: 10px;
+        text-align: left;
+    }
+    
+    .holiday-tooltip .holiday-title {
+        font-size: 1.1em;
+        margin-bottom: 5px;
+    }
+    
+    .holiday-tooltip .holiday-type {
+        color: #6c757d;
+        font-size: 0.9em;
+        margin-bottom: 3px;
+    }
+    
+    .holiday-tooltip .holiday-date {
+        font-size: 0.9em;
+        color: #495057;
+    }
+    
+    .tooltip-inner.holiday-tooltip-inner {
+        background-color: white;
+        color: #212529;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 </style>
 @endpush
 
@@ -151,9 +193,27 @@
                 description: holiday.type
             })),
             eventRender: function(event, element) {
+                // Create a more detailed tooltip content
+                const tooltipContent = `
+                    <div class="holiday-tooltip">
+                        <div class="holiday-title"><strong>${event.title}</strong></div>
+                        <div class="holiday-type">${event.description}</div>
+                        <div class="holiday-date">${moment(event.start).format('MMMM D, YYYY')}</div>
+                    </div>
+                `;
+
+                // Add small text under the event title
                 element.find('.fc-title').append('<br/><small>' + event.description + '</small>');
-                element.attr('data-toggle', 'tooltip');
-                element.attr('title', event.title + ' (' + event.description + ')');
+                
+                // Initialize Bootstrap tooltip with enhanced options
+                element.tooltip({
+                    html: true,
+                    title: tooltipContent,
+                    placement: 'top',
+                    container: 'body',
+                    trigger: 'hover',
+                    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner holiday-tooltip-inner"></div></div>'
+                });
             },
             displayEventTime: false,
             firstDay: 0,
@@ -187,6 +247,8 @@
                     return 'holiday-regular';
                 case 'Special Non-Working Holiday':
                     return 'holiday-special';
+                case 'Special Working Holiday':
+                    return 'holiday-special-working';
                 default:
                     return 'holiday-regular';
             }
@@ -195,8 +257,8 @@
         // Initialize tooltips
         $('[data-toggle="tooltip"]').tooltip();
 
-        // Update the Add Holiday button click handler
-        document.querySelector('a[href="{{ route('holidays.store') }}"]').addEventListener('click', function(e) {
+        // Fix: Update the selector to use the correct route
+        document.querySelector('a[href="{{ route("holidays.create") }}"]').addEventListener('click', function(e) {
             e.preventDefault();
             const modal = new bootstrap.Modal(document.getElementById('addHolidayModal'));
             modal.show();

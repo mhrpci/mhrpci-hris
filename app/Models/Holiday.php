@@ -12,6 +12,7 @@ class Holiday extends Model
 
     const TYPE_REGULAR = 'Regular Holiday';
     const TYPE_SPECIAL = 'Special Non-Working Holiday';
+    const TYPE_SPECIAL_WORKING = 'Special Working Holiday';
 
     protected $fillable = [
         'title',
@@ -24,6 +25,7 @@ class Holiday extends Model
         return [
             self::TYPE_REGULAR,
             self::TYPE_SPECIAL,
+            self::TYPE_SPECIAL_WORKING,
         ];
     }
 }
