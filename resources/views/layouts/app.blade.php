@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>MHR Property Conglomerates, Inc.</title>
     <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/ICON_APP.png') }}">
+
+    <!-- PWA Manifest -->
+<link rel="manifest" href="{{ asset('manifest.json') }}">
+
+<!-- Service Worker Registration -->
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => console.log("Service Worker Registered"))
+            .catch(err => console.log("Service Worker Failed", err));
+    }
+</script>
+
+
     @yield('styles')
     <style>
     /* Global Responsive Styles */
