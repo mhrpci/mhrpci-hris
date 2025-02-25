@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee-profile')
 
 @section('content')
 <div class="container-fluid mt-4">
@@ -14,8 +14,8 @@
                              style="width: 180px; height: 180px; object-fit: cover;">
                         @if(auth()->user()->email === $employee->email_address)
                             <button class="btn btn-sm btn-primary position-absolute bottom-0 end-0 mb-3 me-2" 
-                                    data-toggle="modal" 
-                                    data-target="#updateProfileImageModal">
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#updateProfileImageModal">
                                 <i class="fas fa-camera"></i>
                             </button>
                         @endif
@@ -31,61 +31,6 @@
 
         <!-- Right column with detailed information -->
         <div class="col-lg-9">
-            <div class="mb-4">
-                <!-- Desktop Navigation Buttons -->
-                <div class="nav-buttons-wrapper d-none d-md-block overflow-auto">
-                    <div class="d-flex">
-                        <button class="btn btn-primary flex-shrink-0 mr-2 mb-2" onclick="showSection('personal')">
-                            <i class="fas fa-user mr-1"></i> Personal Info
-                        </button>
-                        <button class="btn btn-success flex-shrink-0 mr-2 mb-2" onclick="showSection('work')">
-                            <i class="fas fa-briefcase mr-1"></i> Work Details
-                        </button>
-                        <button class="btn btn-info flex-shrink-0 mr-2 mb-2" onclick="showSection('education')">
-                            <i class="fas fa-graduation-cap mr-1"></i> Education
-                        </button>
-                        <button class="btn btn-warning flex-shrink-0 mr-2 mb-2" onclick="showSection('address')">
-                            <i class="fas fa-home mr-1"></i> Address
-                        </button>
-                        <button class="btn btn-secondary flex-shrink-0 mr-2 mb-2" onclick="showSection('government')">
-                            <i class="fas fa-id-card mr-1"></i> Government IDs
-                        </button>
-                        <button class="btn btn-dark flex-shrink-0 mr-2 mb-2" onclick="showSection('signature')">
-                            <i class="fas fa-signature mr-1"></i> Signature
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mobile Dropdown Select -->
-                <div class="d-md-none">
-                    <div class="mobile-nav-wrapper">
-                        <select class="form-control custom-select" onchange="showSection(this.value)">
-                            <option value="personal" class="select-option">
-                                <span class="option-icon">📋</span> Personal Information
-                            </option>
-                            <option value="work" class="select-option">
-                                <span class="option-icon">💼</span> Work Details & Position
-                            </option>
-                            <option value="education" class="select-option">
-                                <span class="option-icon">🎓</span> Educational Background
-                            </option>
-                            <option value="address" class="select-option">
-                                <span class="option-icon">🏠</span> Current Address
-                            </option>
-                            <option value="government" class="select-option">
-                                <span class="option-icon">🪪</span> Government Credentials
-                            </option>
-                            <option value="signature" class="select-option">
-                                <span class="option-icon">✍️</span> Digital Signature
-                            </option>
-                        </select>
-                        <div class="select-arrow">
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div id="infoSections">
                 <!-- Personal Information -->
                 <div id="personal" class="info-section">
@@ -141,7 +86,10 @@
                             <h5 class="mb-0"><i class="fas fa-home mr-2"></i>Home Address</h5>
                         </div>
                         <div class="card-body">
-                            <p>{{ $employee->province->name}}, {{ $employee->city->name}}, {{ $employee->barangay->name}}, {{ $employee->zip_code}}</p>
+                            <p><strong>Province:</strong> {{ $employee->province->name }}</p>
+                            <p><strong>City:</strong> {{ $employee->city->name }}</p>
+                            <p><strong>Barangay:</strong> {{ $employee->barangay->name }}</p>
+                            <p><strong>Zip Code:</strong> {{ $employee->zip_code }}</p>
                         </div>
                     </div>
                 </div>
@@ -149,14 +97,14 @@
                 <!-- Government IDs -->
                 <div id="government" class="info-section">
                     <div class="card shadow-sm">
-                        <div class="card-header bg-secondary text-white">
-                            <h5 class="mb-0"><i class="fas fa-id-card mr-2"></i>Government IDs</h5>
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>Government IDs</h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-4">
                                 <!-- TIN ID Card -->
                                 <div class="col-md-6 col-lg-3">
-                                    <div class="gov-id-card tin-card">
+                                    <div class="gov-id-card tin-card h-100">
                                         <div class="id-header">
                                             <img src="{{ asset('vendor/adminlte/dist/img/tin.png') }}" alt="BIR Logo" class="gov-logo">
                                             <div class="header-text">
@@ -169,23 +117,14 @@
                                             <div class="id-number">
                                                 @if($employee->tin_no)
                                                     @php
-                                                        // TIN Format: XXX-XXX-XXX-XXX (e.g., 111-111-111-111)
-                                                        // Total length should be 15 characters including hyphens
-                                                        // Each part: 3 digits separated by hyphens
-                                                        
-                                                        // Remove any existing hyphens or spaces
                                                         $clean_tin = preg_replace('/[^0-9]/', '', $employee->tin_no);
-                                                        
-                                                        // Pad the number to 12 digits (excluding hyphens)
                                                         $tin = str_pad($clean_tin, 12, '0', STR_PAD_LEFT);
-                                                        
-                                                        // Format: XXX-XXX-XXX-XXX
                                                         $formatted_tin = substr($tin, 0, 3) . '-' . 
                                                                        substr($tin, 3, 3) . '-' . 
                                                                        substr($tin, 6, 3) . '-' . 
                                                                        substr($tin, 9, 3);
                                                     @endphp
-                                                    {{ $formatted_tin }}
+                                                    <span class="number">{{ $formatted_tin }}</span>
                                                 @else
                                                     <span class="text-muted">Not Available</span>
                                                 @endif
@@ -196,7 +135,7 @@
 
                                 <!-- SSS ID Card -->
                                 <div class="col-md-6 col-lg-3">
-                                    <div class="gov-id-card sss-card">
+                                    <div class="gov-id-card sss-card h-100">
                                         <div class="id-header">
                                             <img src="{{ asset('vendor/adminlte/dist/img/sss.png') }}" alt="SSS Logo" class="gov-logo">
                                             <div class="header-text">
@@ -208,20 +147,9 @@
                                             <h5 class="id-title">SSS NUMBER</h5>
                                             <div class="id-number">
                                                 @php
-                                                    // SSS Format: XX-XXXXXXX-X (e.g., 06-4657542-3)
-                                                    // Total length should be 12 characters including hyphens
-                                                    // First part: 2 digits
-                                                    // Middle part: 7 digits
-                                                    // Last part: 1 digit
-                                                    
                                                     if ($employee->sss_no) {
-                                                        // Remove any existing hyphens or spaces
                                                         $clean_sss = preg_replace('/[^0-9]/', '', $employee->sss_no);
-                                                        
-                                                        // Pad the number to 10 digits (excluding hyphens)
                                                         $sss = str_pad($clean_sss, 10, '0', STR_PAD_LEFT);
-                                                        
-                                                        // Format: XX-XXXXXXX-X
                                                         $formatted_sss = substr($sss, 0, 2) . '-' . 
                                                                        substr($sss, 2, 7) . '-' . 
                                                                        substr($sss, 9, 1);
@@ -229,7 +157,7 @@
                                                         $formatted_sss = 'Not Available';
                                                     }
                                                 @endphp
-                                                {{ $formatted_sss }}
+                                                <span class="number">{{ $formatted_sss }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -237,7 +165,7 @@
 
                                 <!-- PAGIBIG ID Card -->
                                 <div class="col-md-6 col-lg-3">
-                                    <div class="gov-id-card pagibig-card">
+                                    <div class="gov-id-card pagibig-card h-100">
                                         <div class="id-header">
                                             <img src="{{ asset('vendor/adminlte/dist/img/pagibig.png') }}" alt="PAGIBIG Logo" class="gov-logo">
                                             <div class="header-text">
@@ -250,24 +178,13 @@
                                             <div class="id-number">
                                                 @if($employee->pagibig_no)
                                                     @php
-                                                        // PAGIBIG Format: XXXX-XXXX-XXXX (e.g., 1213-2765-6903)
-                                                        // Total length should be 14 characters including hyphens
-                                                        // First part: 4 digits
-                                                        // Middle part: 4 digits
-                                                        // Last part: 4 digits
-                                                        
-                                                        // Remove any existing hyphens or spaces
                                                         $clean_pagibig = preg_replace('/[^0-9]/', '', $employee->pagibig_no);
-                                                        
-                                                        // Pad the number to 12 digits (excluding hyphens)
                                                         $pagibig = str_pad($clean_pagibig, 12, '0', STR_PAD_LEFT);
-                                                        
-                                                        // Format: XXXX-XXXX-XXXX
                                                         $formatted_pagibig = substr($pagibig, 0, 4) . '-' . 
                                                                           substr($pagibig, 4, 4) . '-' . 
                                                                           substr($pagibig, 8, 4);
                                                     @endphp
-                                                    {{ $formatted_pagibig }}
+                                                    <span class="number">{{ $formatted_pagibig }}</span>
                                                 @else
                                                     <span class="text-muted">Not Available</span>
                                                 @endif
@@ -278,7 +195,7 @@
 
                                 <!-- PHILHEALTH ID Card -->
                                 <div class="col-md-6 col-lg-3">
-                                    <div class="gov-id-card philhealth-card">
+                                    <div class="gov-id-card philhealth-card h-100">
                                         <div class="id-header">
                                             <img src="{{ asset('vendor/adminlte/dist/img/philhealth.png') }}" alt="PhilHealth Logo" class="gov-logo">
                                             <div class="header-text">
@@ -291,24 +208,13 @@
                                             <div class="id-number">
                                                 @if($employee->philhealth_no)
                                                     @php
-                                                        // PhilHealth Format: XX-XXXXXXXXX-X (e.g., 12-026167194-3)
-                                                        // Total length should be 14 characters including hyphens
-                                                        // First part: 2 digits
-                                                        // Middle part: 9 digits
-                                                        // Last part: 1 digit
-                                                        
-                                                        // Remove any existing hyphens or spaces
                                                         $clean_philhealth = preg_replace('/[^0-9]/', '', $employee->philhealth_no);
-                                                        
-                                                        // Pad the number to 12 digits (excluding hyphens)
                                                         $philhealth = str_pad($clean_philhealth, 12, '0', STR_PAD_LEFT);
-                                                        
-                                                        // Format: XX-XXXXXXXXX-X
                                                         $formatted_philhealth = substr($philhealth, 0, 2) . '-' . 
                                                                              substr($philhealth, 2, 9) . '-' . 
                                                                              substr($philhealth, 11, 1);
                                                     @endphp
-                                                    {{ $formatted_philhealth }}
+                                                    <span class="number">{{ $formatted_philhealth }}</span>
                                                 @else
                                                     <span class="text-muted">Not Available</span>
                                                 @endif
@@ -327,7 +233,7 @@
                         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0"><i class="fas fa-signature mr-2"></i>Digital Signature</h5>
                             @if(auth()->user()->email === $employee->email_address && !$employee->signature)
-                                <button class="btn btn-sm btn-light" data-toggle="modal" data-target="#signatureModal">
+                                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#signatureModal">
                                     <i class="fas fa-plus mr-1"></i> Add Signature
                                 </button>
                             @endif
@@ -348,8 +254,8 @@
                                         </small>
 
                                         @if(auth()->user()->email === $employee->email_address)
-                                            <button class="btn btn-outline-secondary mt-2" data-toggle="modal" data-target="#signatureModal">
-                                                <i class="fas fa-edit mr-1"></i> Update Signature
+                                            <button class="btn btn-outline-secondary mt-2" data-bs-toggle="modal" data-bs-target="#signatureModal">
+                                                <i class="fas fa-edit me-2"></i> Update Signature
                                             </button>
                                         @endif
                                     </div>
@@ -362,8 +268,8 @@
                                     </div>
 
                                     @if(auth()->user()->email === $employee->email_address)
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#signatureModal">
-                                            <i class="fas fa-plus mr-1"></i> Add Your Signature
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signatureModal">
+                                            <i class="fas fa-plus me-2"></i> Add Your Signature
                                         </button>
                                     @endif
                                 </div>
@@ -377,35 +283,36 @@
 </div>
 
 <!-- Signature Modal -->
-<div class="modal fade signature-modal" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen" role="document">
+<div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
-            <div class="modal-header py-2 px-3">
+            <div class="modal-header">
                 <h5 class="modal-title" id="signatureModalLabel">
-                    <i class="fas fa-signature mr-2"></i>
+                    <i class="fas fa-signature me-2"></i>
                     {{ $employee->signature ? 'Update Your Signature' : 'Add Your Signature' }}
                 </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body d-flex flex-column p-0">
+            <div class="modal-body p-0">
                 @if($employee->signature)
-                    <div class="alert alert-info m-2">
-                        <i class="fas fa-info-circle mr-1"></i>
+                    <div class="alert alert-info m-3">
+                        <i class="fas fa-info-circle me-2"></i>
                         Your existing signature will be replaced when you save a new one.
                     </div>
                 @endif
-                <div class="signature-container flex-grow-1 position-relative">
+                <div class="signature-container position-relative" style="height: calc(100vh - 180px);">
                     <canvas id="signatureCanvas" class="signature-canvas"></canvas>
+                    <div class="signature-helper-text position-absolute top-50 start-50 translate-middle text-muted">
+                        Sign here
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer py-2">
-                <button type="button" class="btn btn-lg btn-secondary" onclick="clearSignature()">
-                    <i class="fas fa-eraser mr-1"></i> Clear
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="clearSignature()">
+                    <i class="fas fa-eraser me-2"></i> Clear
                 </button>
-                <button type="button" class="btn btn-lg btn-primary" onclick="saveSignature()">
-                    <i class="fas fa-save mr-1"></i> 
+                <button type="button" class="btn btn-primary" onclick="saveSignature()">
+                    <i class="fas fa-save me-2"></i> 
                     {{ $employee->signature ? 'Update Signature' : 'Save Signature' }}
                 </button>
             </div>
@@ -419,11 +326,9 @@
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
                 <h5 class="modal-title h6 font-weight-bold" id="updateProfileImageModalLabel">
-                    <i class="fas fa-camera mr-2"></i>Update Profile Image
+                    <i class="fas fa-camera me-2"></i>Update Profile Image
                 </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4">
                 @if($employee->profile_updated_at && now()->diffInDays($employee->profile_updated_at) < 60)
@@ -432,7 +337,7 @@
                         $daysRemaining = now()->diffInDays($nextUpdateDate);
                     @endphp
                     <div class="alert alert-warning">
-                        <i class="fas fa-clock mr-2"></i>
+                        <i class="fas fa-clock me-2"></i>
                         <div class="d-flex flex-column">
                             <span class="font-weight-bold mb-2">Profile updates are limited to once every 60 days.</span>
                             <span>Next update available on: <strong>{{ $nextUpdateDate->format('F d, Y') }}</strong></span>
@@ -442,19 +347,19 @@
                 @else
                 <div class="alert alert-info mb-3">
                     <h5 class="font-weight-bold mb-3" style="font-size: 1.1rem; color: #1a3353;">
-                        <i class="fas fa-info-circle mr-2"></i>Photo Requirements:
+                        <i class="fas fa-info-circle me-2"></i>Photo Requirements:
                     </h5>
                     <ul class="list-unstyled mb-0" style="font-size: 1rem; line-height: 1.6;">
                         <li class="mb-2 d-flex align-items-center">
-                            <i class="fas fa-check-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                            <i class="fas fa-check-circle text-warning me-2" style="font-size: 1.2rem;"></i>
                             <span>Must be presentable</span>
                         </li>
                         <li class="mb-2 d-flex align-items-center">
-                            <i class="fas fa-check-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                            <i class="fas fa-check-circle text-warning me-2" style="font-size: 1.2rem;"></i>
                             <span>White background</span>
                         </li>
                         <li class="d-flex align-items-center">
-                            <i class="fas fa-check-circle text-warning mr-2" style="font-size: 1.2rem;"></i>
+                            <i class="fas fa-check-circle text-warning me-2" style="font-size: 1.2rem;"></i>
                             <span>Proper business attire</span>
                         </li>
                     </ul>
@@ -486,7 +391,7 @@
                 @endif
             </div>
             <div class="modal-footer border-top-0">
-                <button type="button" class="btn btn-light font-weight-bold" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-light font-weight-bold" data-bs-dismiss="modal">Cancel</button>
                 @if(!$employee->profile_updated_at || now()->diffInDays($employee->profile_updated_at) >= 60)
                     <button type="button" class="btn btn-primary font-weight-bold px-4" onclick="updateProfileImage()">
                         Save changes
@@ -1022,36 +927,28 @@
     }
 
     /* Signature Modal Specific Styles */
-    .signature-modal .modal-dialog.modal-fullscreen {
-        width: 100vw;
-        height: 100vh;
+    #signatureModal .modal-dialog {
         margin: 0;
         padding: 0;
-        max-width: none;
+        max-width: 100%;
     }
 
-    .signature-modal .modal-content {
-        height: 100vh;
-        border: none;
+    #signatureModal .modal-content {
         border-radius: 0;
+        min-height: 100vh;
     }
 
-    .signature-modal .modal-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .signature-modal .modal-body {
-        background-color: #ffffff;
-        overflow: hidden;
+    #signatureModal .modal-body {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
     }
 
     .signature-container {
+        flex: 1;
         width: 100%;
-        height: calc(100vh - 120px);
         background: #fff;
         position: relative;
-        border: 1px solid #dee2e6;
     }
 
     .signature-canvas {
@@ -1062,99 +959,77 @@
         height: 100%;
         touch-action: none;
         cursor: crosshair;
-        background-color: #ffffff;
     }
 
-    /* Add helper text */
-    .signature-container::before {
-        content: 'Sign here';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: #ccc;
+    .signature-helper-text {
         font-size: 2rem;
+        opacity: 0.3;
         pointer-events: none;
         z-index: 1;
-        opacity: 0.5;
     }
 
-    /* Hide helper text when drawing starts */
-    .signature-container.drawing::before {
+    .signature-container.drawing .signature-helper-text {
         display: none;
     }
 
-    /* Mobile Optimization */
-    @media (max-width: 768px) {
-        .signature-modal .modal-header {
-            padding: 0.5rem 1rem;
-        }
-
-        .signature-modal .modal-footer {
-            padding: 0.5rem;
-        }
-
-        .signature-container {
-            height: calc(100vh - 100px);
-        }
-
-        .signature-modal .btn-lg {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-        }
+    /* Modal footer positioning */
+    #signatureModal .modal-footer {
+        position: relative;
+        z-index: 2;
+        background: #fff;
     }
 
-    /* Prevent body scrolling when modal is open */
-    body.modal-open {
-        position: fixed;
-        width: 100%;
+    /* Ensure buttons are large enough for touch */
+    #signatureModal .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
     }
 
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-        .signature-modal .modal-header {
-            background-color: #343a40;
-            border-bottom-color: #454d55;
-        }
-
-        .signature-modal .modal-content {
-            background-color: #2c3034;
-        }
-
-        .signature-container {
-            background-color: #fff; /* Keep canvas background white for signature */
-        }
-    }
-
-    /* Government ID Cards Styling */
+    /* Government ID Cards */
     .gov-id-card {
         background: #fff;
-        border-radius: 10px;
-        padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        height: 100%;
-        transition: transform 0.2s ease;
-        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
+    .gov-id-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+    }
+
+    .tin-card::before { background: linear-gradient(to right, #2c3e50, #3498db); }
+    .sss-card::before { background: linear-gradient(to right, #e74c3c, #c0392b); }
+    .pagibig-card::before { background: linear-gradient(to right, #27ae60, #2ecc71); }
+    .philhealth-card::before { background: linear-gradient(to right, #8e44ad, #9b59b6); }
+
     .gov-id-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
     .id-header {
         display: flex;
         align-items: center;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid #eee;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
     }
 
     .gov-logo {
-        width: 40px;
-        height: 40px;
+        width: 48px;
+        height: 48px;
         object-fit: contain;
-        margin-right: 0.75rem;
     }
 
     .header-text {
@@ -1162,73 +1037,150 @@
     }
 
     .header-text h6 {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         font-weight: 600;
-        color: #333;
+        color: #2c3e50;
         line-height: 1.2;
     }
 
     .header-text small {
-        font-size: 0.7rem;
-        color: #666;
+        font-size: 0.75rem;
+        color: #7f8c8d;
     }
 
     .id-body {
-        text-align: center;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     .id-title {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
         font-weight: 600;
-        color: #495057;
-        margin-bottom: 0.5rem;
+        color: #7f8c8d;
+        margin-bottom: 1rem;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .id-number {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .id-number .number {
         font-family: 'Courier New', monospace;
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         font-weight: 600;
+        color: #2c3e50;
         letter-spacing: 1px;
-        color: #212529;
-        padding: 0.5rem;
-        background: #f8f9fa;
-        border-radius: 5px;
-        border: 1px dashed #dee2e6;
+        text-align: center;
+        background: rgba(0,0,0,0.03);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        width: 100%;
     }
 
-    /* Specific card styling */
-    .tin-card {
-        border-top: 4px solid #28a745;
+    .text-muted {
+        font-size: 0.9rem;
+        font-style: italic;
     }
 
-    .sss-card {
-        border-top: 4px solid #007bff;
+    /* Responsive Adjustments */
+    @media (max-width: 1200px) {
+        .gov-id-card {
+            padding: 1.25rem;
+        }
+
+        .id-number .number {
+            font-size: 1.1rem;
+            padding: 0.5rem 0.75rem;
+        }
     }
 
-    .pagibig-card {
-        border-top: 4px solid #dc3545;
-    }
-
-    .philhealth-card {
-        border-top: 4px solid #17a2b8;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 992px) {
+    @media (max-width: 991px) {
         .gov-id-card {
             margin-bottom: 1rem;
         }
+
+        .id-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .gov-logo {
+            width: 40px;
+            height: 40px;
+        }
     }
 
-    @media (max-width: 576px) {
-        .id-number {
-            font-size: 1rem;
+    @media (max-width: 767px) {
+        .gov-id-card {
+            padding: 1rem;
         }
-        
+
+        .header-text h6 {
+            font-size: 0.85rem;
+        }
+
+        .header-text small {
+            font-size: 0.7rem;
+        }
+
+        .id-title {
+            font-size: 0.8rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .id-number .number {
+            font-size: 1rem;
+            padding: 0.5rem;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .gov-id-card {
+            margin-bottom: 0.75rem;
+        }
+
+        .id-header {
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
         .gov-logo {
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
+        }
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+        .gov-id-card {
+            background: #1a202c;
+        }
+
+        .header-text h6 {
+            color: #e2e8f0;
+        }
+
+        .header-text small {
+            color: #a0aec0;
+        }
+
+        .id-title {
+            color: #a0aec0;
+        }
+
+        .id-number .number {
+            color: #e2e8f0;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .text-muted {
+            color: #a0aec0 !important;
         }
     }
 </style>
@@ -1238,19 +1190,68 @@
 <!-- Add SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show initial section
+        showSection('personal');
+        
+        // Initialize modals
+        const signatureModal = new bootstrap.Modal(document.getElementById('signatureModal'), {
+            keyboard: false,
+            backdrop: 'static'
+        });
+
+        // Initialize components
+        initializeSignatureCanvas();
+        initializeProfileUpload();
+        
+        // Update active state of navigation pills
+        const navLinks = document.querySelectorAll('#profileTabs .nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Handle signature modal events
+        const signatureModalEl = document.getElementById('signatureModal');
+        signatureModalEl.addEventListener('shown.bs.modal', function() {
+            resizeCanvas();
+            setTimeout(resizeCanvas, 100); // Additional resize after modal animation
+        });
+
+        signatureModalEl.addEventListener('hidden.bs.modal', function() {
+            clearSignature();
+        });
+
+        // Initialize Profile Image Modal
+        const profileImageModal = new bootstrap.Modal(document.getElementById('updateProfileImageModal'), {
+            keyboard: false
+        });
+
+        // Handle modal close event to reset form
+        const updateProfileImageModalEl = document.getElementById('updateProfileImageModal');
+        updateProfileImageModalEl.addEventListener('hidden.bs.modal', function () {
+            const form = document.getElementById('profileImageForm');
+            if (form) {
+                form.reset();
+                removeImage();
+            }
+        });
+    });
+
     function showSection(sectionId) {
-        // Update dropdown and add loading state
+        // Update mobile dropdown if it exists
         const mobileSelect = document.querySelector('.custom-select');
         if (mobileSelect) {
             mobileSelect.value = sectionId;
-            mobileSelect.disabled = true;
         }
 
         // Hide all sections with fade out
         const sections = document.querySelectorAll('.info-section');
         sections.forEach(section => {
             section.style.opacity = '0';
-            section.style.transform = 'translateX(20px)';
+            section.style.transform = 'translateY(20px)';
             setTimeout(() => {
                 section.style.display = 'none';
             }, 300);
@@ -1259,29 +1260,23 @@
         // Show selected section with fade in
         setTimeout(() => {
             const selectedSection = document.getElementById(sectionId);
-            selectedSection.style.display = 'block';
-            
-            // Trigger reflow
-            selectedSection.offsetHeight;
-
-            selectedSection.style.opacity = '1';
-            selectedSection.style.transform = 'translateX(0)';
-
-            // Re-enable select after transition
-            if (mobileSelect) {
-                setTimeout(() => {
-                    mobileSelect.disabled = false;
-                }, 300);
+            if (selectedSection) {
+                selectedSection.style.display = 'block';
+                selectedSection.offsetHeight; // Trigger reflow
+                selectedSection.style.opacity = '1';
+                selectedSection.style.transform = 'translateY(0)';
             }
         }, 300);
-    }
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        showSection('personal');
-        initializeSignatureCanvas();
-        initializeProfileUpload();
-    });
+        // Update navigation pills
+        const navLinks = document.querySelectorAll('#profileTabs .nav-link');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('onclick').includes(sectionId)) {
+                link.classList.add('active');
+            }
+        });
+    }
 
     let canvas = null;
     let ctx = null;
@@ -1318,12 +1313,15 @@
         window.addEventListener('resize', debounce(resizeCanvas, 250));
         
         // Initialize canvas on modal show
-        $('#signatureModal').on('shown.bs.modal', function() {
-            resizeCanvas();
-            setTimeout(resizeCanvas, 100); // Additional resize after modal animation
-        });
+        const signatureModal = document.getElementById('signatureModal');
+        if (signatureModal) {
+            signatureModal.addEventListener('shown.bs.modal', function() {
+                resizeCanvas();
+                setTimeout(resizeCanvas, 100); // Additional resize after modal animation
+            });
+        }
 
-        // Add this to your initializeSignatureCanvas function
+        // Add drawing class for helper text
         canvas.addEventListener('mousedown', () => {
             canvas.parentElement.classList.add('drawing');
         });
@@ -1405,7 +1403,6 @@
         isDrawing = false;
     }
 
-    // Debounce function for resize handling
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -1511,7 +1508,7 @@
         }
 
         // Confirm if updating existing signature
-        const hasExistingSignature = {{ $employee->signature ? 'true' : 'false' }};
+        const hasExistingSignature = Boolean('{{ $employee->signature }}');
         if (hasExistingSignature) {
             Swal.fire({
                 title: 'Update Signature?',
@@ -1541,9 +1538,6 @@
         saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
         saveButton.disabled = true;
 
-        // Add CSRF token to headers
-        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
         // Send AJAX request
         axios.post('/employee/signature', {
             signature: signatureData
@@ -1556,13 +1550,9 @@
                     text: 'Signature has been saved successfully.',
                     timer: 2000,
                     showConfirmButton: false
+                }).then(() => {
+                    location.reload();
                 });
-
-                // Close modal
-                $('#signatureModal').modal('hide');
-
-                // Refresh the page to update the UI
-                location.reload();
             }
         })
         .catch(error => {
@@ -1578,6 +1568,76 @@
             saveButton.innerHTML = originalText;
             saveButton.disabled = false;
         });
+    }
+
+    // Profile Upload Functions
+    function initializeProfileUpload() {
+        const uploadBox = document.querySelector('.upload-box');
+        if (!uploadBox) return;
+
+        const fileInput = document.getElementById('profile');
+        const defaultContent = document.getElementById('defaultUploadContent');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = imagePreview.querySelector('img');
+        const fileName = imagePreview.querySelector('.file-name');
+
+        // Drag and drop handlers
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        // Highlight effects
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, () => uploadBox.classList.add('dragover'));
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadBox.addEventListener(eventName, () => uploadBox.classList.remove('dragover'));
+        });
+
+        // File handling
+        uploadBox.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
+        fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+    }
+
+    function handleFile(file) {
+        if (!file) return;
+
+        const fileInput = document.getElementById('profile');
+        const defaultContent = document.getElementById('defaultUploadContent');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = imagePreview.querySelector('img');
+        const fileName = imagePreview.querySelector('.file-name');
+
+        if (['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImage.src = e.target.result;
+                fileName.textContent = file.name;
+                defaultContent.style.display = 'none';
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid File',
+                text: 'Please upload only JPG, JPEG, or PNG files.'
+            });
+        }
+    }
+
+    function removeImage() {
+        const fileInput = document.getElementById('profile');
+        const defaultContent = document.getElementById('defaultUploadContent');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        if (fileInput) fileInput.value = '';
+        if (defaultContent) defaultContent.style.display = 'block';
+        if (imagePreview) imagePreview.style.display = 'none';
     }
 
     function updateProfileImage() {
@@ -1625,70 +1685,6 @@
             saveButton.innerHTML = originalText;
             saveButton.disabled = false;
         });
-    }
-
-    // Profile Upload Functions
-    function initializeProfileUpload() {
-        const uploadBox = document.querySelector('.upload-box');
-        if (!uploadBox) return;
-
-        const fileInput = document.getElementById('profile');
-        const defaultContent = document.getElementById('defaultUploadContent');
-        const imagePreview = document.getElementById('imagePreview');
-        const previewImage = imagePreview.querySelector('img');
-        const fileName = imagePreview.querySelector('.file-name');
-
-        // Drag and drop handlers
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadBox.addEventListener(eventName, e => {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-        });
-
-        // Highlight effects
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadBox.addEventListener(eventName, () => uploadBox.classList.add('dragover'));
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadBox.addEventListener(eventName, () => uploadBox.classList.remove('dragover'));
-        });
-
-        // File handling
-        uploadBox.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
-        fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
-
-        function handleFile(file) {
-            if (!file) return;
-
-            if (['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    previewImage.src = e.target.result;
-                    fileName.textContent = file.name;
-                    defaultContent.style.display = 'none';
-                    imagePreview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid File',
-                    text: 'Please upload only JPG, JPEG, or PNG files.'
-                });
-            }
-        }
-    }
-
-    function removeImage() {
-        const fileInput = document.getElementById('profile');
-        const defaultContent = document.getElementById('defaultUploadContent');
-        const imagePreview = document.getElementById('imagePreview');
-        
-        fileInput.value = '';
-        defaultContent.style.display = 'block';
-        imagePreview.style.display = 'none';
     }
 </script>
 @endpush

@@ -1,193 +1,357 @@
-@extends('layouts.app')
+@extends('layouts.profile')
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+<style>
+    .profile-stepper {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .bs-stepper .line {
+        background-color: var(--border-color);
+    }
+
+    .bs-stepper-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem;
+    }
+
+    .step-trigger {
+        padding: 1rem !important;
+    }
+
+    .bs-stepper-circle {
+        width: 2.5rem;
+        height: 2.5rem;
+        background: var(--primary-light);
+        color: var(--primary-color);
+        font-weight: 600;
+        border: 2px solid var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .active .bs-stepper-circle {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .bs-stepper-label {
+        font-weight: 500;
+        margin-top: 0.5rem;
+        color: var(--text-muted);
+    }
+
+    .active .bs-stepper-label {
+        color: var(--primary-color);
+    }
+
+    .form-control, .form-select {
+        border-color: var(--border-color);
+        padding: 0.75rem 1rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem var(--primary-light);
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .password-toggle {
+        cursor: pointer;
+        padding: 0.75rem 1rem;
+        color: var(--text-muted);
+        transition: all var(--transition-speed);
+    }
+
+    .password-toggle:hover {
+        color: var(--primary-color);
+    }
+
+    .signature-preview {
+        max-width: 100%;
+        border: 2px dashed var(--border-color);
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        background: white;
+    }
+
+    .signature-actions {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+    .btn-nav {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+    }
+
+    .btn-nav i {
+        transition: transform var(--transition-speed);
+    }
+
+    .btn-nav:hover i.fa-arrow-right {
+        transform: translateX(4px);
+    }
+
+    .btn-nav:hover i.fa-arrow-left {
+        transform: translateX(-4px);
+    }
+
+    @media (max-width: 767.98px) {
+        .bs-stepper-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0.5rem;
+        }
+        
+        .step:not(:last-child) {
+            margin-bottom: 1rem;
+        }
+
+        .bs-stepper .line {
+            display: none;
+        }
+
+        .step-trigger {
+            padding: 0.5rem !important;
+        }
+    }
+</style>
+@endpush
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid fade-in">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-10">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Profile Update</h2>
-                </div>
-                <div class="card-body">
-                    <div id="stepper" class="bs-stepper">
-                        <div class="bs-stepper-header" role="tablist">
-                            <div class="step" data-target="#personal-info">
-                                <button type="button" class="step-trigger" role="tab" aria-controls="personal-info" id="personal-info-trigger">
-                                    <span class="bs-stepper-circle">1</span>
-                                    <span class="bs-stepper-label d-none d-sm-inline">Personal Info</span>
-                                </button>
-                            </div>
-                            <div class="line"></div>
-                            <div class="step" data-target="#account-info">
-                                <button type="button" class="step-trigger" role="tab" aria-controls="account-info" id="account-info-trigger">
-                                    <span class="bs-stepper-circle">2</span>
-                                    <span class="bs-stepper-label d-none d-sm-inline">Account Info</span>
-                                </button>
-                            </div>
-                            <div class="line"></div>
-                            <div class="step" data-target="#profile-image">
-                                <button type="button" class="step-trigger" role="tab" aria-controls="profile-image" id="profile-image-trigger">
-                                    <span class="bs-stepper-circle">3</span>
-                                    <span class="bs-stepper-label d-none d-sm-inline">Profile Image & Bio</span>
-                                </button>
-                            </div>
+        <div class="col-12 col-lg-10">
+            <div class="profile-stepper">
+                <div id="stepper" class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
+                        <div class="step" data-target="#personal-info">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="personal-info" id="personal-info-trigger">
+                                <span class="bs-stepper-circle">1</span>
+                                <span class="bs-stepper-label d-none d-sm-inline">Personal Info</span>
+                            </button>
                         </div>
-                        <div class="bs-stepper-content">
-                            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-                                @csrf
-                                @method('PATCH')
+                        <div class="line"></div>
+                        <div class="step" data-target="#account-info">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="account-info" id="account-info-trigger">
+                                <span class="bs-stepper-circle">2</span>
+                                <span class="bs-stepper-label d-none d-sm-inline">Account Info</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#profile-image">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="profile-image" id="profile-image-trigger">
+                                <span class="bs-stepper-circle">3</span>
+                                <span class="bs-stepper-label d-none d-sm-inline">Profile & Bio</span>
+                            </button>
+                        </div>
+                    </div>
 
-                                <div id="personal-info" class="content" role="tabpanel" aria-labelledby="personal-info-trigger">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="company_id">Company ID</label>
-                                                <input type="text" id="company_id" name="company_id" value="{{ old('company_id', $user->company_id) }}" class="form-control" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="first_name">First Name</label>
-                                                <input type="text" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}" class="form-control" placeholder="Enter first name" required>
-                                                @error('first_name')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="middle_name">Middle Name</label>
-                                                <input type="text" id="middle_name" name="middle_name" placeholder="Enter middle name (optional)" value="{{ old('middle_name', $user->middle_name) }}" class="form-control">
-                                                @error('middle_name')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="last_name">Last Name</label>
-                                                <input type="text" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}" class="form-control" placeholder="Enter last name" required>
-                                                @error('last_name')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="suffix">Suffix</label>
-                                                <input type="text" id="suffix" name="suffix" placeholder="Enter suffix (optional)" value="{{ old('suffix', $user->suffix) }}" class="form-control">
-                                                @error('suffix')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
+                    <div class="bs-stepper-content p-4">
+                        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                            @csrf
+                            @method('PATCH')
+
+                            <!-- Personal Info Step -->
+                            <div id="personal-info" class="content" role="tabpanel" aria-labelledby="personal-info-trigger">
+                                <h4 class="mb-4">Personal Information</h4>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="company_id">Company ID</label>
+                                            <input type="text" id="company_id" name="company_id" 
+                                                   value="{{ old('company_id', $user->company_id) }}" 
+                                                   class="form-control" readonly>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-primary float-right" onclick="stepper.next()">Next</button>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="first_name">First Name</label>
+                                            <input type="text" id="first_name" name="first_name" 
+                                                   value="{{ old('first_name', $user->first_name) }}" 
+                                                   class="form-control @error('first_name') is-invalid @enderror" 
+                                                   placeholder="Enter first name" required>
+                                            @error('first_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="middle_name">Middle Name</label>
+                                            <input type="text" id="middle_name" name="middle_name" 
+                                                   value="{{ old('middle_name', $user->middle_name) }}" 
+                                                   class="form-control @error('middle_name') is-invalid @enderror" 
+                                                   placeholder="Enter middle name (optional)">
+                                            @error('middle_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="last_name">Last Name</label>
+                                            <input type="text" id="last_name" name="last_name" 
+                                                   value="{{ old('last_name', $user->last_name) }}" 
+                                                   class="form-control @error('last_name') is-invalid @enderror" 
+                                                   placeholder="Enter last name" required>
+                                            @error('last_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="suffix">Suffix</label>
+                                            <input type="text" id="suffix" name="suffix" 
+                                                   value="{{ old('suffix', $user->suffix) }}" 
+                                                   class="form-control @error('suffix') is-invalid @enderror" 
+                                                   placeholder="Enter suffix (optional)">
+                                            @error('suffix')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div id="account-info" class="content" role="tabpanel" aria-labelledby="account-info-trigger">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="form-control" placeholder="Enter email address" required readonly>
-                                                @error('email')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="button" class="btn btn-primary btn-nav" onclick="stepper.next()">
+                                        Next <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Account Info Step -->
+                            <div id="account-info" class="content" role="tabpanel" aria-labelledby="account-info-trigger">
+                                <h4 class="mb-4">Account Information</h4>
+                                <div class="row g-4">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="form-label" for="email">Email Address</label>
+                                            <input type="email" id="email" name="email" 
+                                                   value="{{ old('email', $user->email) }}" 
+                                                   class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="password">New Password</label>
+                                            <div class="input-group">
+                                                <input type="password" id="password" name="password" 
+                                                       class="form-control @error('password') is-invalid @enderror" 
+                                                       placeholder="Enter new password (optional)">
+                                                <span class="input-group-text password-toggle" onclick="togglePasswordVisibility('password', this)">
+                                                    <i class="fas fa-eye"></i>
+                                                </span>
+                                            </div>
+                                            @error('password')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="password_confirmation">Confirm Password</label>
+                                            <div class="input-group">
+                                                <input type="password" id="password_confirmation" name="password_confirmation" 
+                                                       class="form-control" 
+                                                       placeholder="Confirm new password">
+                                                <span class="input-group-text password-toggle" onclick="togglePasswordVisibility('password_confirmation', this)">
+                                                    <i class="fas fa-eye"></i>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="password">Password</label>
-                                                <div class="input-group">
-                                                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter new password (optional)">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text" onclick="togglePasswordVisibility('password', this)">
-                                                            <i class="fas fa-eye"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                @error('password')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="password_confirmation">Confirm Password</label>
-                                                <div class="input-group">
-                                                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Enter confirm password (optional)">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text" onclick="togglePasswordVisibility('password_confirmation', this)">
-                                                            <i class="fas fa-eye"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <button type="button" class="btn btn-secondary" onclick="stepper.previous()">Previous</button>
-                                    <button type="button" class="btn btn-primary float-right" onclick="stepper.next()">Next</button>
                                 </div>
 
-                                <div id="profile-image" class="content" role="tabpanel" aria-labelledby="profile-image-trigger">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                @if (isset($user->profile_image))
-                                                    <img src="{{ asset('storage/' . $user->profile_image) }}" alt="Profile Image" class="img-fluid mb-2" style="max-width: 200px; border-radius: 50%;">
-                                                @endif
-                                                <br>
-                                                <strong>Profile Image:</strong>
-                                                <input type="file" name="profile_image" class="form-control-file">
-                                            </div>
-                                        </div>
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-outline-secondary btn-nav" onclick="stepper.previous()">
+                                        <i class="fas fa-arrow-left me-2"></i> Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-nav" onclick="stepper.next()">
+                                        Next <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-group">
-                                                <label for="bio">Bio</label>
-                                                <textarea id="bio" name="bio" class="form-control" rows="4">{{ old('bio', $user->bio) }}</textarea>
-                                                @error('bio')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
+                            <!-- Profile Image & Bio Step -->
+                            <div id="profile-image" class="content" role="tabpanel" aria-labelledby="profile-image-trigger">
+                                <h4 class="mb-4">Profile Image & Biography</h4>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Profile Image</label>
+                                            @if($user->profile_image)
+                                                <div class="position-relative mb-3">
+                                                    <img src="{{ Storage::url($user->profile_image) }}" 
+                                                         alt="Current Profile Image" 
+                                                         class="img-fluid rounded" 
+                                                         style="max-width: 200px;">
+                                                </div>
+                                            @endif
+                                            <input type="file" name="profile_image" 
+                                                   class="form-control @error('profile_image') is-invalid @enderror" 
+                                                   accept="image/*">
+                                            @error('profile_image')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
-                                    @if(!auth()->user()->hasRole('Employee'))
-                                    <div class="col-md-12 mb-3">
-                                        <div class="card shadow-sm">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="bio">Biography</label>
+                                            <textarea id="bio" name="bio" 
+                                                      class="form-control @error('bio') is-invalid @enderror" 
+                                                      rows="4" 
+                                                      placeholder="Tell us about yourself...">{{ old('bio', $user->bio) }}</textarea>
+                                            @error('bio')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if(!auth()->user()->hasRole('Employee'))
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="card">
                                             <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                                                <h5 class="mb-0"><i class="fas fa-signature mr-2"></i>Digital Signature</h5>
+                                                <h5 class="mb-0">
+                                                    <i class="fas fa-signature me-2"></i>Digital Signature
+                                                </h5>
                                                 @if(!$user->signature)
-                                                    <button type="button" class="btn btn-sm btn-light" data-toggle="modal" data-target="#signatureModal">
-                                                        <i class="fas fa-plus mr-1"></i> Add Signature
+                                                    <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#signatureModal">
+                                                        <i class="fas fa-plus me-1"></i> Add Signature
                                                     </button>
                                                 @endif
                                             </div>
                                             <div class="card-body">
                                                 @if($user->signature)
                                                     <div class="text-center">
-                                                        <div class="border rounded p-4 d-inline-block bg-white">
+                                                        <div class="signature-preview mb-3">
                                                             <img src="{{ Storage::url($user->signature) }}"
                                                                  alt="User Signature"
                                                                  class="img-fluid"
                                                                  style="max-height: 100px;">
                                                         </div>
-
-                                                        <div class="mt-3">
-                                                            <small class="text-muted d-block">
-                                                                Last updated: {{ \Carbon\Carbon::parse($user->updated_at)->format('F d, Y h:i A') }}
-                                                            </small>
-
-                                                            <button type="button" class="btn btn-outline-secondary mt-2" data-toggle="modal" data-target="#signatureModal">
-                                                                <i class="fas fa-edit mr-1"></i> Update Signature
-                                                            </button>
+                                                        <div class="text-muted small mb-3">
+                                                            Last updated: {{ \Carbon\Carbon::parse($user->updated_at)->format('F d, Y h:i A') }}
                                                         </div>
+                                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#signatureModal">
+                                                            <i class="fas fa-edit me-1"></i> Update Signature
+                                                        </button>
                                                     </div>
                                                 @else
                                                     <div class="text-center py-4">
@@ -195,25 +359,27 @@
                                                             <i class="fas fa-signature fa-2x"></i>
                                                             <p class="mt-2">No signature has been uploaded yet.</p>
                                                         </div>
-                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#signatureModal">
-                                                            <i class="fas fa-plus mr-1"></i> Add Your Signature
+                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signatureModal">
+                                                            <i class="fas fa-plus me-1"></i> Add Your Signature
                                                         </button>
                                                     </div>
                                                 @endif
                                             </div>
                                         </div>
-                                        </div>
-                                    @endif
-                                    <!-- Add navigation and submit buttons -->
-                                    <div class="mt-3">
-                                        <button type="button" class="btn btn-secondary" onclick="stepper.previous()">Previous</button>
-                                        <button type="submit" class="btn btn-success float-right">
-                                            <i class="fas fa-save mr-1"></i> Save Profile
-                                        </button>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                                @endif
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-outline-secondary btn-nav" onclick="stepper.previous()">
+                                        <i class="fas fa-arrow-left me-2"></i> Previous
+                                    </button>
+                                    <button type="submit" class="btn btn-success btn-nav">
+                                        <i class="fas fa-save me-2"></i> Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -221,30 +387,31 @@
     </div>
 </div>
 
-<!-- Add Signature Modal -->
-<div class="modal fade" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<!-- Signature Modal -->
+<div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="signatureModalLabel">
                     {{ $user->signature ? 'Update Your Signature' : 'Add Your Signature' }}
                 </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 @if($user->signature)
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle mr-1"></i>
+                        <i class="fas fa-info-circle me-2"></i>
                         Your existing signature will be replaced when you save a new one.
                     </div>
                 @endif
-                <canvas id="signatureCanvas" class="border rounded" width="700" height="200"></canvas>
+                <canvas id="signatureCanvas" class="border rounded w-100" height="200"></canvas>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="clearSignature()">Clear</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="clearSignature()">
+                    <i class="fas fa-eraser me-1"></i> Clear
+                </button>
                 <button type="button" class="btn btn-primary" onclick="saveSignature()">
+                    <i class="fas fa-save me-1"></i> 
                     {{ $user->signature ? 'Update Signature' : 'Save Signature' }}
                 </button>
             </div>
@@ -252,41 +419,6 @@
     </div>
 </div>
 @endsection
-
-@push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
-<style>
-    @media (max-width: 767.98px) {
-        .bs-stepper-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .bs-stepper .line {
-            display: none;
-        }
-        .bs-stepper-header .step {
-            margin-bottom: 10px;
-        }
-    }
-    #signatureCanvas {
-        cursor: crosshair;
-        background-color: #fff;
-    }
-    .signature-display {
-        display: none;
-    }
-    .signature-display img {
-        filter: brightness(1.1) contrast(1.2);
-    }
-    /* Toast styles */
-    .colored-toast.swal2-icon-success {
-        box-shadow: 0 0 12px rgba(40, 167, 69, 0.4) !important;
-    }
-    .colored-toast.swal2-icon-error {
-        box-shadow: 0 0 12px rgba(220, 53, 69, 0.4) !important;
-    }
-</style>
-@endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

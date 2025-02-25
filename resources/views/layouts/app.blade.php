@@ -2353,7 +2353,10 @@
                                 </a>
 
                                 <div class="dropdown-divider"></div>
-                                
+                                <a href="{{ route('login.history') }}" class="dropdown-item logout-item">
+                                    <i class="fas fa-history"></i>
+                                    Recent Logins
+                                </a>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="dropdown-item logout-item">
