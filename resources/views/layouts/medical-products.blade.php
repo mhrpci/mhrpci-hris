@@ -504,7 +504,7 @@
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
                 <i class="fas fa-bars"></i>
             </button>
-            <a class="navbar-brand" href="{{ route('medical-products.index') }}">
+            <a class="navbar-brand" href="{{ route('analytics.dashboard') }}">
                 <img src="{{ asset('/vendor/adminlte/dist/img/mhrhci.png') }}" alt="Medical Icon" class="me-2" style="width: 50px; height: 30px;">
                 Medical Products
             </a>

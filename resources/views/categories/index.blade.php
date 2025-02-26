@@ -28,7 +28,7 @@
                                     @endif
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $category->name }}</h5>
-                                        <p class="card-text">{{ $category->description }}</p>
+                                        <p class="card-text">{{ Str::limit($category->description, 100) }}</p>
                                         <div class="mt-auto">
                                             <div class="btn-group w-100" role="group">
                                                 <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-primary">View</a>

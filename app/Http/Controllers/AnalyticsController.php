@@ -24,13 +24,15 @@ class AnalyticsController extends Controller
         $topProducts = QuotationRequest::select('product_name', DB::raw('count(*) as total'))
             ->groupBy('product_name')
             ->orderBy('total', 'desc')
-            ->take(5)
+            ->take(3)
             ->get();
 
         // Get category-wise quotation counts
         $categoryAnalytics = Category::withCount(['products' => function($query) {
             $query->withCount('quotationRequests');
-        }])->get();
+        }])
+        ->take(3)
+        ->get();
 
         // Calculate quotation frequency levels
         $quotationLevels = $this->calculateQuotationLevels();
