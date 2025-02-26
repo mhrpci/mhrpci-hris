@@ -100,7 +100,7 @@
                         <h3 class="text-xl font-semibold mb-2">Medical Products</h3>
                         <p class="text-gray-600 mb-4">Essential medical products including PPE, wound care products, and disposable medical items.</p>
                         <a href="{{ route('medical_products') }}" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
-                            Learn More →
+                            View Products →
                         </a>
                     </div>
                 </div>

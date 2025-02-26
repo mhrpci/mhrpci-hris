@@ -14,7 +14,12 @@ class LoginHistoryController extends Controller
 
     public function index(Request $request)
     {
+        $user = auth()->user();
+        
         $loginHistory = LoginHistory::with('user')
+            ->whereHas('user', function($query) use ($user) {
+                $query->where('email', $user->email);
+            })
             ->orderBy('login_at', 'desc')
             ->paginate(15);
 

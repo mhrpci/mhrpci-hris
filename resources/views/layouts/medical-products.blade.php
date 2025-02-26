@@ -504,10 +504,17 @@
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
                 <i class="fas fa-bars"></i>
             </button>
+            @if(auth()->user()->hasRole('Super Admin'))
+            <a class="navbar-brand" href="{{ route('home') }}">
+                <img src="{{ asset('/vendor/adminlte/dist/img/mhrhci.png') }}" alt="Medical Icon" class="me-2" style="width: 50px; height: 30px;">
+                Medical Products
+            </a>
+            @else
             <a class="navbar-brand" href="{{ route('analytics.dashboard') }}">
                 <img src="{{ asset('/vendor/adminlte/dist/img/mhrhci.png') }}" alt="Medical Icon" class="me-2" style="width: 50px; height: 30px;">
                 Medical Products
             </a>
+            @endif
             <div class="d-flex align-items-center gap-2">
                 <span class="user-greeting d-none d-sm-inline-block text-truncate">
                     <script>
