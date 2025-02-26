@@ -62,6 +62,12 @@ class LoginController extends Controller
                 ]);
             }
 
+            // Set redirect path based on user role
+            $redirectTo = '/home'; // default path
+            if ($user->hasRole('Product Manager')) {
+                $redirectTo = '/analytics';
+            }
+
             // Generate a token (if using token-based authentication)
             $token = $user->createToken('YourAppName')->plainTextToken;
 
@@ -70,7 +76,7 @@ class LoginController extends Controller
                 'success' => true,
                 'token' => $token,
                 'user' => $user,
-                'redirect' => $this->redirectTo
+                'redirect' => $redirectTo
             ]);
         }
 

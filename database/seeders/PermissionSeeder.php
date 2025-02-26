@@ -113,6 +113,15 @@ class PermissionSeeder extends Seeder
             'normal-employee',
             'finance',
             'supervisor',
+            'product-manager',
+            'product-list',
+            'product-create',
+            'product-edit',
+            'product-delete',
+            'category-list',
+            'category-create',
+            'category-edit',
+            'category-delete',
          ];
 
           // Looping and Inserting Array's Permissions into Permission Table

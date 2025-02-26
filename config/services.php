@@ -56,4 +56,8 @@ return [
         'temp_path' => storage_path('app/public/temp'),
     ],
 
+    'newsapi' => [
+        'key' => env('NEWS_API_KEY'),
+    ],
+
 ];

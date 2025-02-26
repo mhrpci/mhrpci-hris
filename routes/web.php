@@ -51,6 +51,11 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\LoginHistoryController;
+use App\Http\Controllers\SystemUpdateController;
+use App\Http\Controllers\MedicalProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\AnalyticsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -159,8 +164,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('pagibig', PagibigController::class)->except(['edit', 'update']);
     Route::resource('philhealth', PhilhealthController::class)->except(['edit', 'update']);
 
-    // Calendar routes
-    Route::get('/news', [HomeController::class, 'news'])->name('news');
 
     // Employees routes
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
@@ -266,10 +269,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/holidays', [CalendarController::class, 'getHolidays'])->name('calendar.holidays');
 
-    // Open AI routes
-    Route::post('/generate-text', [OpenAIController::class, 'generateText']);
-    Route::post('/generate-image', [OpenAIController::class, 'generateImage']);
-
     // Home routes
     Route::get('/fetch-leaves', [HomeController::class, 'fetchLeavesByAuthUserFirstName']);
     Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -288,7 +287,7 @@ Route::middleware('auth')->group(function () {
 
     // Notifications routes
     Route::get('/notifications/data', [NotificationsController::class, 'getNotificationsData'])->name('notifications.data');
-    Route::get('/notifications', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
+    // Route::get('/notifications', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
     Route::post('/notifications/{id}/read', [NotificationsController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/clear-all', [NotificationsController::class, 'clearAll'])->name('notifications.clear');
     Route::post('/notifications/mark-all-as-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
@@ -365,5 +364,28 @@ Route::middleware('auth')->group(function () {
 
     // Login History route
     Route::get('/login-history', [LoginHistoryController::class, 'index'])->name('login.history');
+
+    // System Updates routes
+    Route::resource('system-updates', SystemUpdateController::class);
+
+    // Medical Products routes
+    Route::resource('medical-products', MedicalProductController::class)->parameters([
+        'medical-products' => 'product'
+    ]);
+
+    // Category routes
+    Route::resource('categories', CategoryController::class);
+
+    // Quotation routes
+    Route::post('/send-quotation-request', [QuotationController::class, 'sendRequest']);
+
+    // Quotation management routes
+    Route::get('/quotations', [QuotationController::class, 'index'])->name('quotations.index');
+    Route::put('/quotations/{id}', [QuotationController::class, 'update'])->name('quotations.update');
+
+    // Analytics routes
+    Route::get('/analytics', [AnalyticsController::class, 'dashboard'])->name('analytics.dashboard');
+    Route::get('/analytics/product/{productId}', [AnalyticsController::class, 'getProductAnalytics'])->name('analytics.product');
 });
 Auth::routes();
+

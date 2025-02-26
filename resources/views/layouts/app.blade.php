@@ -2058,7 +2058,7 @@
                 </li>
                 <!-- Our Policies link with larger text and icon -->
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ url('/policies-page') }}" class="nav-link" style="font-size: 1.2rem; font-weight: 200;">
+                    <a href="{{ url('/policies-page') }}" class="nav-link">
                         <i class="fas fa-file-alt mr-2"></i> Terms and Policy of Usage
                     </a>
                 </li>
@@ -2109,7 +2109,7 @@
                 
                 <li class="nav-item">
                     <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                        <i class="fas fa-cogs"></i>
+                        <i class="fas fa-table-columns"></i>
                     </a>
                 </li>
                 @canany(['admin', 'super-admin', 'hrcomben', 'hrcompliance', 'hrpolicy'])
@@ -2663,13 +2663,15 @@
                                 <p>MHR Calendar</p>
                             </a>
                         </li>
-                        @can('super-admin')
+                        @canany(['product-manager', 'super-admin'])
                         <li class="nav-item">
-                            <a href="{{ route('news') }}" class="nav-link {{ Request::is('news*')? 'active' : '' }}">
-                                <i class="nav-icon fas fa-globe"></i>
-                                <p>Global News</p>
+                            <a href="{{ route('medical-products.index') }}" class="nav-link {{ Request::is('medical-products*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-capsules"></i>
+                                <p>Medical Products</p>
                             </a>
                         </li>
+                        @endcanany
+                        @can('super-admin')
                         <li class="nav-item">
                             <a href="{{ url('/reports') }}" class="nav-link {{ Request::is('reports*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-chart-bar"></i>

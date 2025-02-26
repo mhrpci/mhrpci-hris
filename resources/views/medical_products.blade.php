@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Showcase - Brands</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         * {
             margin: 0;
@@ -176,17 +177,21 @@
             background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
             transition: all 0.3s ease;
             transform: translateY(0);
+            font-weight: 500;
+            font-size: 1rem;
+            margin-top: 1rem;
         }
 
         .product-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(44, 82, 130, 0.3);
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
         }
 
         .modal {
@@ -196,33 +201,33 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            padding: 1rem;
-            overflow-y: auto;
+            backdrop-filter: blur(5px);
         }
 
         .modal.active {
+            display: flex;
             opacity: 1;
             visibility: visible;
         }
 
         .modal-content {
             background-color: white;
-            padding: 3rem;
+            padding: 2.5rem;
             border-radius: 12px;
             max-width: 800px;
-            width: 100%;
+            width: 90%;
             position: relative;
             transform: translateY(-20px);
             transition: all 0.3s ease;
-            margin: auto;
-            max-height: 90vh;
+            margin: 2rem;
+            max-height: calc(100vh - 4rem);
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
@@ -231,80 +236,111 @@
             transform: translateY(0);
         }
 
-        .modal .product-title {
-            font-size: 2rem;
-            color: #2c5282;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .modal .product-description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #4a5568;
+        .product-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
             margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
         }
 
-        .modal pre {
+        .product-header .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #ebf4ff;
+            color: #2c5282;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            width: fit-content;
+        }
+
+        .modal-image-container {
+            position: relative;
+            margin: 2rem 0;
+            text-align: center;
             background-color: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modal-image-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-image-container:hover img {
+            transform: scale(1.02);
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
             padding: 1.5rem;
+            background-color: #f8fafc;
             border-radius: 8px;
             border: 1px solid #e2e8f0;
-            font-family: inherit;
-            margin-top: 2rem;
         }
 
-        .modal ul {
-            list-style: none;
-            padding: 0;
+        .info-section:last-child {
+            margin-bottom: 0;
         }
 
-        .modal ul li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #e2e8f0;
+        .info-section h3 {
             display: flex;
             align-items: center;
+            gap: 0.5rem;
+            color: #2c5282;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
         }
 
-        .modal ul li:before {
-            content: "•";
-            color: #2c5282;
-            font-weight: bold;
-            margin-right: 1rem;
+        .info-section .product-description,
+        .info-section .product-details {
+            color: #4a5568;
+            line-height: 1.8;
+            font-size: 1rem;
         }
 
         .close-modal {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            font-size: 1.5rem;
-            cursor: pointer;
+            top: 1.25rem;
+            right: 1.25rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #f7fafc;
             color: #a0aec0;
-            width: 40px;
-            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            background-color: #f7fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            outline: none;
+            z-index: 10;
         }
 
         .close-modal:hover {
             background-color: #e2e8f0;
             color: #2c5282;
+            transform: rotate(90deg);
         }
 
         @media (max-width: 768px) {
             .modal-content {
+                width: 95%;
+                margin: 1rem;
                 padding: 1.5rem;
-                max-height: 95vh;
             }
 
-            .close-modal {
-                top: 0.5rem;
-                right: 0.5rem;
+            .info-section {
+                padding: 1rem;
             }
         }
 
@@ -606,84 +642,47 @@
         </div>
     </div>
 
-    <div id="abena" class="category-section">
+    @foreach($categories as $category)
+    <div id="{{ Str::slug($category->name) }}" class="category-section">
         <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/abena.png" alt="Abena Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Abena</h2>
+            <img src="{{ asset('storage/' . $category->logo) }}" alt="{{ $category->name }} Icon" style="max-width: 100px; height: auto;">
+            <h2 class="category-title">{{ $category->name }}</h2>
         </div>
-        <p class="category-description">Advanced sterilization solutions for medical and professional environments.</p>
-        <div class="products-container" id="abenaContainer"></div>
+        <p class="category-description">{{ $category->description }}</p>
+        <div class="products-container" id="{{ Str::slug($category->name) }}Container">
+            @foreach($medicalProducts->where('category_id', $category->id) as $product)
+            <div class="product-card" data-product-id="{{ $product->id }}">
+                <div class="product-image">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                </div>
+                <h3 class="product-title">{{ $product->name }}</h3>
+                <p class="product-description">{{ Str::limit($product->description, 150) }}</p>
+                <button class="product-button" onclick="showProductDetails(this)" 
+                    data-id="{{ $product->id }}"
+                    data-name="{{ $product->name }}"
+                    data-image="{{ asset('storage/' . $product->image) }}"
+                    data-description="{{ $product->description }}"
+                    data-details="{{ $product->details }}"
+                    data-category="{{ $category->name }}">
+                    View Details
+                </button>
+            </div>
+            @endforeach
+        </div>
     </div>
+    @endforeach
 
-    <div id="brenmoor" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/brenmoor.png" alt="Brenmoor Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Brenmoor</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="brenmoorContainer"></div>
-    </div>
-    <div id="coremec" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/coremec.png" alt="Coremec Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Coremec</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="coremecContainer"></div>
-    </div>
-    <div id="hospimed" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/hospimed.png" alt="Hospimed Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Hospimed</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="hospimedContainer"></div>
-    </div>
-    <div id="hsiner" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/hsiner.png" alt="Hsiner Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Hsiner</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="hsinerContainer"></div>
-    </div>
-    <div id="intersurgical" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/intersurgical.png" alt="Intersurgical Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Intersurgical</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="intersurgicalContainer"></div>
-    </div>
-    <div id="l&bchemedsystems" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/l&bchemedsystems.png" alt="L&B Chemedsystems Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">L&B Chemed Sys.</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="l&bchemedsystemsContainer"></div>
-    </div>
-    <div id="thaitapes" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/thaitapes.png" alt="Thaitapes Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Thai Tapes</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="thaitapesContainer"></div>
-    </div>
-    <div id="yipak" class="category-section">
-        <div class="category-header">
-            <img src="/vendor/adminlte/dist/img/img/yipak.png" alt="Yipak Icon" style="max-width: 100px; height: auto;">
-            <h2 class="category-title">Yipak</h2>
-        </div>
-        <p class="category-description">High-quality ventilation and air management solutions.</p>
-        <div class="products-container" id="yipakContainer"></div>
-    </div>
     <div class="modal" id="productModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <span class="close-modal" onclick="closeModal()" title="Close">
+                <i class="fas fa-times"></i>
+            </span>
             <div id="modalContent"></div>
-            <button class="product-button" style="margin-top: 2rem;" onclick="showQuotationModal()">Request Quotation</button>
+            <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="product-button" onclick="showQuotationModal()" style="width: auto;">
+                    <i class="fas fa-file-invoice"></i> Request Quotation
+                </button>
+            </div>
         </div>
     </div>
 
@@ -699,8 +698,23 @@
                         style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px;">
                 </div>
                 <div style="margin-bottom: 1.5rem;">
-                    <label for="email" style="display: block; margin-bottom: 0.5rem; color: #2c5282;">Email Address</label>
-                    <input type="email" id="quotationEmail" required 
+                    <label for="quotationName" style="display: block; margin-bottom: 0.5rem; color: #2c5282;">Full Name</label>
+                    <input type="text" id="quotationName" name="name" placeholder="Enter your full name" required
+                        style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="quotationEmail" style="display: block; margin-bottom: 0.5rem; color: #2c5282;">Email Address</label>
+                    <input type="email" id="quotationEmail" name="email" placeholder="Enter your email address" required
+                        style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="quotationPhone" style="display: block; margin-bottom: 0.5rem; color: #2c5282;">Contact Number</label>
+                    <input type="tel" id="quotationPhone" name="phone" placeholder="Enter your contact number" required 
+                        style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="quotationHospital" style="display: block; margin-bottom: 0.5rem; color: #2c5282;">Hospital Name</label>
+                    <input type="text" id="quotationHospital" name="hospital_name" placeholder="Enter your hospital name" required 
                         style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px;">
                 </div>
                 <button type="submit" class="product-button">Send Request</button>
@@ -717,292 +731,289 @@
             }, 500);
         });
 
-        const products = {
-            abena: [
-                {
-                    id: 'ab1',
-                    name: "Abri-Soft",
-                    image: "/vendor/adminlte/dist/img/hci/abri-soft.png",
-                    description: "Abri-Soft Disposable Sheets are suitable for non-sterile procedures such as blood test sampling or wound dressings, maintain high levels of hygiene and prevent bacteria growth. Ideal for incontinence patients to prevent skin problems. Highly absorbent fluff core with rapid liquid absorption.",
-                    details: "<ul>\
-                        <li>Non-woven Top Layer - Ensures maximum dispersions of the Liquid absorbed and increase core strength.</li>\
-                        <li>Waterproof backing Sealed Edges - Ensures maximum dispersions of the Liquid absorbed and increase core strength.</li>\
-                        <li>Absorbent Core - Made from virgin pulp fibers for maximum absorbency and use and use in all environments.</li>\
-                        <li>Embossed Channel in Diamond Pattern - Ensures maximum dispersion of the liquid absorbed and increase core strength.</li>\
-                    </ul>"
-                },
-                {
-                    id: 'ab2',
-                    name: "Delta-Form",
-                    image: "/vendor/adminlte/dist/img/hci/delta-form.png",
-                    description: "Delta-Form is a brand of incontinence diaper pants and pads that are designed for men and women. They are designed to provide comfort, absorbency, and leakage protection. ",
-                    details: "<ul>\
-                        <li>Textile Backsheet - for better comfort. </li>\
-                        <li>Re-fasanable Adhesive Tape - The tape will not lose it adhesive for a long period of time until it will be dispose. </li>\
-                        <li>Soft and Reliable Leakage Barrier - for optimal leakage protection. </li>\
-                        <li>Long Cellulose Fibers - provides excellent absorption.</li>\
-                        <li>Pastel-colored back sheet - for easy product identification. </li>\
-                        <li>Yellow Line - serves as an External Wetness Indicator turns blue when wet making, it's easy to determine when to change. </li>\
-                    </ul>"
-                },
-            ],
-        };
+        // Initialize products data from PHP
+        const productsData = {!! 
+            json_encode(
+                $categories->mapWithKeys(function($category) use ($medicalProducts) {
+                    return [
+                        Str::slug($category->name) => $medicalProducts
+                            ->where('category_id', $category->id)
+                            ->map(function($product) {
+                                return [
+                                    'id' => $product->id,
+                                    'name' => $product->name,
+                                    'image' => asset('storage/' . $product->image),
+                                    'description' => $product->description,
+                                    'details' => $product->details
+                                ];
+                            })->values()->all()
+                    ];
+                })->all(), 
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+            ) 
+        !!};
+        const products = JSON.parse(JSON.stringify(productsData));
 
-        function createProductCards() {
-            Object.keys(products).forEach(category => {
-                const container = document.getElementById(`${category}Container`);
-                
-                products[category].forEach(product => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card scroll-animation';
-                    
-                    // Limit description to 100 characters and add ellipsis if needed
-                    const truncatedDescription = product.description.length > 100 
-                        ? product.description.substring(0, 100) + '...' 
-                        : product.description;
-                    
-                    card.innerHTML = `
-                        <div class="product-image">
-                            <img src="${product.image}" alt="${product.name}">
-                        </div>
-                        <h2 class="product-title">${product.name}</h2>
-                        <p class="product-description">${truncatedDescription}</p>
-                        <button class="product-button" onclick="showProductDetails('${product.id}')">View Details</button>
-                    `;
-                    
-                    container.appendChild(card);
-                });
-            });
-        }
+        let currentProduct = null;
 
-        function showProductDetails(productId) {
-            let product;
-            for (const category in products) {
-                product = products[category].find(p => p.id === productId);
-                if (product) break;
-            }
+        function showProductDetails(button) {
+            const product = {
+                id: button.dataset.id,
+                name: button.dataset.name,
+                image: button.dataset.image,
+                description: button.dataset.description,
+                details: button.dataset.details,
+                category: button.dataset.category
+            };
 
+            currentProduct = { id: product.id, name: product.name };
             const modal = document.getElementById('productModal');
             const modalContent = document.getElementById('modalContent');
             
-            // Store the current product name in a data attribute
-            modal.setAttribute('data-product-name', product.name);
-            
             modalContent.innerHTML = `
-                <h2 class="product-title">${product.name}</h2>
-                ${product.image ? `
-                    <div style="text-align: center; margin: 2rem 0;">
-                        <img src="${product.image}" alt="${product.name}" 
-                            style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    </div>` : ''
-                }
+                <div class="product-header">
+                    <div class="category-badge">
+                        <i class="fas fa-tag"></i>
+                        ${product.category}
+                    </div>
+                    <h2 class="product-title">${product.name}</h2>
+                </div>
+
+                <div class="modal-image-container">
+                    <img src="${product.image}" alt="${product.name}" loading="lazy">
+                </div>
+
                 <div class="product-info">
-                    <h3 style="color: #2c5282; margin-bottom: 1rem;">Product Description</h3>
-                    <p class="product-description">${product.description}</p>
+                    <div class="info-section">
+                        <h3>
+                            <i class="fas fa-info-circle"></i>
+                            Product Description
+                        </h3>
+                        <p class="product-description">${product.description}</p>
+                    </div>
                     
-                    <h3 style="color: #2c5282; margin: 2rem 0 1rem;">Technical Specifications</h3>
-                    <div class="product-details">
-                        ${product.details}
+                    <div class="info-section">
+                        <h3>
+                            <i class="fas fa-wrench"></i>
+                            Specifications
+                        </h3>
+                        <div class="product-details">
+                            ${product.details ? formatDetails(product.details) : '<p>No technical specifications available.</p>'}
+                        </div>
                     </div>
                 </div>
             `;
             
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('active'), 10);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Add zoom effect to modal image
+            const modalImage = modalContent.querySelector('.modal-image-container img');
+            if (modalImage) {
+                modalImage.addEventListener('load', () => {
+                    modalImage.style.opacity = '1';
+                });
+            }
         }
 
-        function showQuotationModal() {
-            const productModal = document.getElementById('productModal');
-            const quotationModal = document.getElementById('quotationModal');
-            const productName = productModal.getAttribute('data-product-name');
-            
-            // Set the product name in the quotation form
-            document.getElementById('quotationProductName').value = productName;
-            
-            // Hide product modal and show quotation modal
-            productModal.classList.remove('active');
-            setTimeout(() => {
-                productModal.style.display = 'none';
-                quotationModal.style.display = 'flex';
-                setTimeout(() => quotationModal.classList.add('active'), 10);
-            }, 300);
+        function formatDetails(details) {
+            // Check if details is already in HTML format
+            if (details.includes('<') && details.includes('>')) {
+                return details;
+            }
+
+            // Split by new lines and create a list
+            const lines = details.split('\n').filter(line => line.trim());
+            if (lines.length === 0) return '<p>No technical specifications available.</p>';
+
+            if (lines.length === 1) return `<p>${lines[0]}</p>`;
+
+            return `<ul style="list-style: none; padding: 0; margin: 0;">
+                ${lines.map(line => `
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center;">
+                        <i class="fas fa-check" style="color: #2c5282; margin-right: 0.75rem;"></i>
+                        ${line}
+                    </li>
+                `).join('')}
+            </ul>`;
         }
 
         function closeModal() {
             const modal = document.getElementById('productModal');
             modal.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Clear the modal content after animation
             setTimeout(() => {
-                modal.style.display = 'none';
+                document.getElementById('modalContent').innerHTML = '';
             }, 300);
         }
 
-        function closeQuotationModal() {
+        function showQuotationModal() {
+            if (!currentProduct) return;
+            
             const quotationModal = document.getElementById('quotationModal');
-            quotationModal.classList.remove('active');
-            setTimeout(() => {
-                quotationModal.style.display = 'none';
-            }, 300);
+            const productNameInput = document.getElementById('quotationProductName');
+            
+            productNameInput.value = currentProduct.name;
+            quotationModal.classList.add('active');
+            closeModal();
+        }
+
+        function closeQuotationModal() {
+            const modal = document.getElementById('quotationModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         function submitQuotation(event) {
             event.preventDefault();
+            const formData = {
+                product_name: document.getElementById('quotationProductName').value,
+                name: document.getElementById('quotationName').value,
+                email: document.getElementById('quotationEmail').value,
+                phone: document.getElementById('quotationPhone').value,
+                hospital_name: document.getElementById('quotationHospital').value,
+                product_id: currentProduct.id
+            };
             
-            const productName = document.getElementById('quotationProductName').value;
-            const email = document.getElementById('quotationEmail').value;
+            // Show loading state
+            const submitButton = event.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             
-            // Create mailto link with pre-filled subject and body
-            const subject = encodeURIComponent(`Quotation Request for ${productName}`);
-            const body = encodeURIComponent(`Hello,\n\nI would like to request a quotation for ${productName}.\n\nBest regards,\n${email}`);
-            const mailtoLink = `mailto:csr.mhrhealthcare@gmail.com?subject=${subject}&body=${body}`;
-            
-            // Open default email client
-            window.location.href = mailtoLink;
-            
-            // Close the quotation modal
-            closeQuotationModal();
-        }
-
-        // Update window click handler to handle both modals
-        window.onclick = function(event) {
-            const productModal = document.getElementById('productModal');
-            const quotationModal = document.getElementById('quotationModal');
-            if (event.target === productModal) {
-                closeModal();
-            }
-            if (event.target === quotationModal) {
-                closeQuotationModal();
-            }
-        }
-
-        // Add this new function for scroll animation
-        function handleScrollAnimation() {
-            const elements = document.querySelectorAll('.scroll-animation');
-            const windowHeight = window.innerHeight;
-
-            elements.forEach(element => {
-                const elementPosition = element.getBoundingClientRect().top;
-                if (elementPosition < windowHeight - 100) {
-                    element.classList.add('visible');
+            // Send AJAX request to server
+            fetch('/send-quotation-request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Your quotation request has been sent successfully! We will contact you soon.');
+                    // Reset form
+                    document.getElementById('quotationForm').reset();
+                } else {
+                    alert(data.message || 'There was an error sending your request. Please try again.');
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error sending your request. Please try again.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+                closeQuotationModal();
             });
         }
 
-        // Initialize the page
-        createProductCards();
-        
-        // Add scroll event listener
-        window.addEventListener('scroll', handleScrollAnimation);
-        // Trigger initial check
-        handleScrollAnimation();
-
-        // Add search functionality
+        // Search functionality
         const searchInput = document.getElementById('searchInput');
-        const clearSearchBtn = document.getElementById('clearSearch');
-        const noResultsGlobal = document.getElementById('noResultsGlobal');
+        const clearSearchButton = document.getElementById('clearSearch');
         const searchStats = document.getElementById('searchStats');
-        
-        function clearSearch() {
-            searchInput.value = '';
-            clearSearchBtn.classList.remove('visible');
-            noResultsGlobal.classList.remove('visible');
-            searchStats.classList.remove('visible');
-            filterProducts('');
-            searchInput.focus();
-        }
+        const noResultsGlobal = document.getElementById('noResultsGlobal');
 
-        function updateSearchStats(totalProducts, visibleProducts, searchTerm) {
-            if (searchTerm.length === 0) {
-                searchStats.classList.remove('visible');
-                return;
-            }
-
-            const stats = searchTerm.length > 0
-                ? `Found ${visibleProducts} out of ${totalProducts} products`
-                : '';
-            
-            searchStats.textContent = stats;
-            searchStats.classList.add('visible');
+        function updateSearchStats(visibleProducts) {
+            const total = document.querySelectorAll('.product-card').length;
+            searchStats.textContent = `Showing ${visibleProducts} of ${total} products`;
+            searchStats.classList.toggle('visible', searchInput.value.length > 0);
         }
 
         function filterProducts(searchTerm) {
-            const productCards = document.querySelectorAll('.product-card');
-            let totalVisibleProducts = 0;
-            const totalProducts = productCards.length;
+            searchTerm = searchTerm.toLowerCase();
+            let visibleProducts = 0;
+            let visibleCategories = 0;
+
+            Object.keys(products).forEach(categoryId => {
+                const categorySection = document.getElementById(categoryId);
+                let hasVisibleProducts = false;
+
+                const productCards = categorySection.querySelectorAll('.product-card');
+                productCards.forEach(card => {
+                    const name = card.querySelector('.product-title').textContent.toLowerCase();
+                    const description = card.querySelector('.product-description').textContent.toLowerCase();
+                    
+                    if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.classList.remove('hidden');
+                        card.classList.add('filtered');
+                        visibleProducts++;
+                        hasVisibleProducts = true;
+                    } else {
+                        card.classList.add('hidden');
+                        card.classList.remove('filtered');
+                    }
+                });
+
+                categorySection.style.display = hasVisibleProducts ? '' : 'none';
+                if (hasVisibleProducts) visibleCategories++;
+            });
+
+            updateSearchStats(visibleProducts);
+            noResultsGlobal.classList.toggle('visible', visibleProducts === 0);
             
-            productCards.forEach(card => {
-                const title = card.querySelector('.product-title').textContent.toLowerCase();
-                const description = card.querySelector('.product-description').textContent.toLowerCase();
-                const category = card.closest('.category-section').querySelector('.category-title').textContent.toLowerCase();
-                const details = card.querySelector('.product-details') ? card.querySelector('.product-details').textContent.toLowerCase() : '';
-                
-                const isMatch = title.includes(searchTerm) || 
-                              description.includes(searchTerm) || 
-                              category.includes(searchTerm) ||
-                              details.includes(searchTerm);
-                
-                if (isMatch) {
-                    card.classList.remove('hidden');
-                    card.classList.add('filtered');
-                    totalVisibleProducts++;
-                } else {
-                    card.classList.add('hidden');
-                    card.classList.remove('filtered');
-                }
-            });
-
-            // Show/hide clear search button
-            if (searchTerm.length > 0) {
-                clearSearchBtn.classList.add('visible');
-            } else {
-                clearSearchBtn.classList.remove('visible');
-            }
-
-            // Show/hide categories and update their appearance
-            document.querySelectorAll('.category-section').forEach(section => {
-                const visibleProducts = section.querySelectorAll('.product-card:not(.hidden)').length;
-                if (visibleProducts === 0) {
-                    section.style.display = 'none';
-                    section.classList.remove('filtered');
-                } else {
-                    section.style.display = 'block';
-                    section.classList.add('filtered');
-                }
-            });
-
-            // Update search stats
-            updateSearchStats(totalProducts, totalVisibleProducts, searchTerm);
-
-            // Show/hide global no results message
-            if (totalVisibleProducts === 0 && searchTerm.length > 0) {
-                noResultsGlobal.classList.add('visible');
-            } else {
-                noResultsGlobal.classList.remove('visible');
-            }
+            return visibleProducts;
         }
 
-        // Clear search button click handler
-        clearSearchBtn.addEventListener('click', clearSearch);
-
-        // Search input event handlers
-        let debounceTimeout;
         searchInput.addEventListener('input', (e) => {
-            clearTimeout(debounceTimeout);
-            debounceTimeout = setTimeout(() => {
-                const searchTerm = e.target.value.toLowerCase().trim();
-                filterProducts(searchTerm);
-            }, 300);
+            const searchTerm = e.target.value.trim();
+            clearSearchButton.classList.toggle('visible', searchTerm.length > 0);
+            filterProducts(searchTerm);
         });
 
-        // Handle escape key to clear search
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                clearSearch();
+        clearSearchButton.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearchButton.classList.remove('visible');
+            filterProducts('');
+            searchStats.classList.remove('visible');
+            noResultsGlobal.classList.remove('visible');
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            const productModal = document.getElementById('productModal');
+            const quotationModal = document.getElementById('quotationModal');
+            
+            if (e.target === productModal) {
+                closeModal();
+            } else if (e.target === quotationModal) {
+                closeQuotationModal();
             }
         });
 
-        // Handle initial load animation
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.classList.add('filtered');
+        // Handle escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeQuotationModal();
+            }
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.product-card, .category-section').forEach(el => {
+            el.classList.add('scroll-animation');
+            observer.observe(el);
         });
     </script>
 </body>

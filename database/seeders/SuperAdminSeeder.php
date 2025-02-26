@@ -189,5 +189,33 @@ class SuperAdminSeeder extends Seeder
             'department_id' => '3',
         ]);
         $adminSupervisor->assignRole('Supervisor');
+
+        // Creating Product Manager User
+        $productManager = User::create([
+            'first_name' => 'Product',
+            'middle_name' => ' ',
+            'last_name' => 'Specialist',
+            'suffix' => ' ',
+            'email' => 'mrkgasst.mhrpci@gmail.com',
+            'bio' => 'Product Manager',
+            'password' => Hash::make('Product@manager2024'),
+            'profile_image' => '',
+            'department_id' => '',
+        ]);
+        $productManager->assignRole('Product Manager');
+
+        // Creating Product Manager User
+        $productManager = User::create([
+            'first_name' => 'Marketing',
+            'middle_name' => ' ',
+            'last_name' => 'Assistant',
+            'suffix' => ' ',
+            'email' => 'csr.mhrhealthcare@gmail.com',
+            'bio' => 'Marketing Assistant',
+            'password' => Hash::make('Marketing@assistant2024'),
+            'profile_image' => '',
+            'department_id' => '',
+        ]);
+        $productManager->assignRole('Product Manager');
     }
 }

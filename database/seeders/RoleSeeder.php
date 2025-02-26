@@ -23,6 +23,7 @@ class RoleSeeder extends Seeder
         $hrhiring = Role::create(['name' => 'HR Hiring']);
         $financeHead = Role::create(['name' => 'Finance']);
         $superVisor = Role::create(['name' => 'Supervisor']);
+        $productManager = Role::create(['name' => 'Product Manager']);
 
         $admin->givePermissionTo([
             'user-list',
@@ -152,6 +153,17 @@ class RoleSeeder extends Seeder
             'leave-create',
             'leave-edit',
             'supervisor',
+        ]);
+        $productManager->givePermissionTo([
+            'product-list',
+            'product-create',
+            'product-edit',
+            'product-delete',
+            'category-list',
+            'category-create',
+            'category-edit',
+            'category-delete',
+            'product-manager',
         ]);
     }
 }

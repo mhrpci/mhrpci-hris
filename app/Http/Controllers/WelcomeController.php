@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Support\Carbon;
+use App\Models\MedicalProduct;
+use App\Models\Category;
 
 class WelcomeController extends Controller
 {
@@ -90,6 +92,8 @@ class WelcomeController extends Controller
     }
     public function showMedicalProducts()
     {
-        return view('medical_products');
+        $categories = Category::all();
+        $medicalProducts = MedicalProduct::orderBy('category_id')->get();
+        return view('medical_products', compact('categories', 'medicalProducts'));
     }
 }
