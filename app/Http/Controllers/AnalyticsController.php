@@ -100,6 +100,7 @@ class AnalyticsController extends Controller
                 ->select(DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'), DB::raw('count(*) as count'))
                 ->groupBy('month')
                 ->orderBy('month')
+                ->take(5)
                 ->get(),
         ];
 

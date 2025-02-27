@@ -6,6 +6,7 @@ use App\Models\Post;
 use Illuminate\Support\Carbon;
 use App\Models\MedicalProduct;
 use App\Models\Category;
+use App\Models\FeaturedImage;
 
 class WelcomeController extends Controller
 {
@@ -60,7 +61,10 @@ class WelcomeController extends Controller
 
     public function showMhrhci()
     {
-        return view('mhrhci');
+        $featuredImages = FeaturedImage::where('is_active', true)
+            ->orderBy('order')
+            ->get();
+        return view('mhrhci', compact('featuredImages'));
     }
     public function showMax()
     {

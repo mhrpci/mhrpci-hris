@@ -99,7 +99,7 @@ class QuotationController extends Controller
             ]);
 
             // Send email to company
-            Mail::to('edmarcrescencio856@gmail.com')
+            Mail::to('csr.mhrhealthcare@gmail.com')
                 ->send(new QuotationRequestMail($quotationRequest));
 
             // Send confirmation email to customer

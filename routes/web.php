@@ -164,7 +164,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('pagibig', PagibigController::class)->except(['edit', 'update']);
     Route::resource('philhealth', PhilhealthController::class)->except(['edit', 'update']);
 
-
     // Employees routes
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
     Route::post('/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
@@ -386,6 +385,9 @@ Route::middleware('auth')->group(function () {
     // Analytics routes
     Route::get('/analytics', [AnalyticsController::class, 'dashboard'])->name('analytics.dashboard');
     Route::get('/analytics/product/{productId}', [AnalyticsController::class, 'getProductAnalytics'])->name('analytics.product');
+
+    // Get active featured images for public view
+    Route::get('/api/featured-images', [FeaturedImageController::class, 'getActiveFeaturedImages']);
 });
 Auth::routes();
 
