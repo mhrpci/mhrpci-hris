@@ -50,7 +50,7 @@
                                 </div>
                                 <div class="card-body">
                                     <p><strong>Bio:</strong> {{ $user->bio }}</p>
-                                    <p><strong>Department:</strong> {{ $user->department->name }}</p>
+                                    <p><strong>Department:</strong> {{ $user->department->name ?? 'N/A' }}</p>
                                     </p>
                                 </div>
                             </div>
