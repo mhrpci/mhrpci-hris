@@ -38,13 +38,16 @@ class MedicalProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'details' => 'required|string',
-            'image' => 'nullable|image|max:10240'
+            'image' => 'nullable|image|max:10240',
+            'is_featured' => 'nullable|boolean'
         ]);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
             $validated['image'] = $path;
         }
+
+        $validated['is_featured'] = $request->has('is_featured');
 
         MedicalProduct::create($validated);
 
@@ -65,7 +68,8 @@ class MedicalProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'details' => 'required|string',
-            'image' => 'nullable|image|max:10240'
+            'image' => 'nullable|image|max:10240',
+            'is_featured' => 'nullable|boolean'
         ]);
 
         if ($request->hasFile('image')) {
@@ -75,6 +79,8 @@ class MedicalProductController extends Controller
             $path = $request->file('image')->store('products', 'public');
             $validated['image'] = $path;
         }
+
+        $validated['is_featured'] = $request->has('is_featured');
 
         $product->update($validated);
 

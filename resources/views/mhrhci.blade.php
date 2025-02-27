@@ -75,11 +75,12 @@
                         <!-- Background overlay image -->
                         <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="Background Overlay" class="absolute w-full h-full object-cover opacity-10 z-0">
                         <!-- Slideshow images -->
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/corescrub.png') }}" alt="Corescrub" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/abri-soft.png') }}" alt="Abri-Soft" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/sebs-resuscitor.png') }}" alt="Sebs-Resuscitor" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/kidney-basin.png') }}" alt="Kidney-Basin" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/infafast-clasp.png') }}" alt="Infa-Fast" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        @foreach($featuredProducts as $product)
+                            <img src="{{ Storage::url($product->image) }}" 
+                                 alt="{{ $product->name }}" 
+                                 class="slideshow-image absolute w-full h-full object-contain {{ $loop->first ? 'opacity-100' : 'opacity-0' }} transition-opacity duration-1000 z-10"
+                                 title="{{ $product->name }} - {{ $product->category->name }}">
+                        @endforeach
                     </div>
                 </div>
             </div>

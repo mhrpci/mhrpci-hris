@@ -18,6 +18,24 @@
             background-color: #f5f5f5;
             padding: 2rem;
             padding-top: 1rem;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Add overlay background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.1;
+            z-index: -1;
         }
 
         .header {
@@ -594,6 +612,182 @@
         .category-section.filtered {
             animation: fadeIn 0.3s ease;
         }
+
+        /* Enhanced responsive styles */
+        @media (max-width: 1200px) {
+            .products-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            body {
+                padding: 1.5rem;
+            }
+
+            .category-title {
+                font-size: 1.75rem;
+            }
+
+            .product-card {
+                padding: 1.25rem;
+            }
+
+            .product-image {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+
+            .category-logo {
+                margin: 0 auto;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .product-image {
+                height: 200px;
+            }
+
+            .search-container {
+                position: sticky;
+                top: 0;
+                padding: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .products-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .product-card {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                padding: 1rem;
+                margin: 0.5rem;
+            }
+
+            .info-section {
+                padding: 0.75rem;
+            }
+
+            .product-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .category-description {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .back-button {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .product-image {
+                height: 180px;
+            }
+
+            .product-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Add support for dark mode */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a202c;
+                color: #e2e8f0;
+            }
+
+            .product-card,
+            .modal-content,
+            .search-wrapper,
+            .search-input,
+            .no-results-global {
+                background-color: #2d3748;
+                color: #e2e8f0;
+            }
+
+            .product-title {
+                color: #e2e8f0;
+            }
+
+            .product-description,
+            .category-description {
+                color: #a0aec0;
+            }
+
+            .search-input {
+                border-color: #4a5568;
+                color: #e2e8f0;
+            }
+
+            .search-input:focus {
+                border-color: #4299e1;
+            }
+
+            .info-section {
+                background-color: #2d3748;
+                border-color: #4a5568;
+            }
+
+            .close-modal {
+                background-color: #4a5568;
+                color: #e2e8f0;
+            }
+
+            .close-modal:hover {
+                background-color: #2d3748;
+            }
+        }
+
+        /* Add smooth transitions for dark mode */
+        body,
+        .product-card,
+        .modal-content,
+        .search-wrapper,
+        .search-input,
+        .no-results-global,
+        .info-section,
+        .close-modal {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -718,6 +912,7 @@
                         style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px;">
                 </div>
                 <button type="submit" class="product-button">Send Request</button>
+                <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
             </form>
         </div>
     </div>
