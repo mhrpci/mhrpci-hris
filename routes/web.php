@@ -234,6 +234,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/loans-employees-list', [LoanController::class, 'allEmployeesLoan'])->name('loans.employees-list');
     Route::get('/my-loans', [LoanController::class, 'myLoans'])->name('loans.my-loans');
 
+    // Notification routes
+    Route::get('/notifications/data', [NotificationsController::class, 'getNotificationsData'])->name('notifications.data');
+    Route::get('/notifications', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
+    Route::post('/notifications/{type}/{id}/mark-as-read', [NotificationsController::class, 'markAsRead'])->name('notifications.mark-as-read');
+
     // Tasks routes
     Route::get('/tasks', [TaskController::class, 'checkUserAndShowTasks'])->name('checkUserAndShowTasks');
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
@@ -286,7 +291,7 @@ Route::middleware('auth')->group(function () {
 
     // Notifications routes
     Route::get('/notifications/data', [NotificationsController::class, 'getNotificationsData'])->name('notifications.data');
-    // Route::get('/notifications', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
+    Route::get('/notifications', [NotificationsController::class, 'showAllNotifications'])->name('notifications.all');
     Route::post('/notifications/{id}/read', [NotificationsController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/clear-all', [NotificationsController::class, 'clearAll'])->name('notifications.clear');
     Route::post('/notifications/mark-all-as-read', [NotificationsController::class, 'markAllAsRead'])->name('notifications.mark-all-read');

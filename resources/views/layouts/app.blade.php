@@ -5,19 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>MHR Property Conglomerates, Inc.</title>
     <link rel="icon" type="image/png" href="{{ asset('vendor/adminlte/dist/img/ICON_APP.png') }}">
+    
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- VAPID Public Key -->
+    <meta name="vapid-public-key" content="{{ config('webpush.vapid.public_key') }}">
 
     <!-- PWA Manifest -->
-<link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
-<!-- Service Worker Registration -->
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(reg => console.log("Service Worker Registered"))
-            .catch(err => console.log("Service Worker Failed", err));
-    }
-</script>
+    <!-- Web Push Notifications -->
+    <script src="{{ asset('js/push-notifications.js') }}"></script>
 
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 
     @yield('styles')
     <style>
