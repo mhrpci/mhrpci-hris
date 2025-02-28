@@ -386,8 +386,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'dashboard'])->name('analytics.dashboard');
     Route::get('/analytics/product/{productId}', [AnalyticsController::class, 'getProductAnalytics'])->name('analytics.product');
 
-    // Get active featured images for public view
-    Route::get('/api/featured-images', [FeaturedImageController::class, 'getActiveFeaturedImages']);
 });
 Auth::routes();
 
