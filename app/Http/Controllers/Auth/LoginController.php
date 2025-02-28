@@ -66,6 +66,11 @@ class LoginController extends Controller
             $redirectTo = '/home'; // default path
             if ($user->hasRole('Product Manager')) {
                 $redirectTo = '/analytics';
+                
+                // Force redirect to analytics if coming from login page
+                if (url()->previous() === url('/login')) {
+                    return redirect()->to('/analytics');
+                }
             }
 
             // Generate a token (if using token-based authentication)

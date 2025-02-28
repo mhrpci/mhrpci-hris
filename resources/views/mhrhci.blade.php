@@ -75,11 +75,12 @@
                         <!-- Background overlay image -->
                         <img src="{{ asset('vendor/adminlte/dist/img/mhrhci.png') }}" alt="Background Overlay" class="absolute w-full h-full object-cover opacity-10 z-0">
                         <!-- Slideshow images -->
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/corescrub.png') }}" alt="Corescrub" class="slideshow-image absolute w-full h-full object-contain opacity-100 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/abri-soft.png') }}" alt="Abri-Soft" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/sebs-resuscitor.png') }}" alt="Sebs-Resuscitor" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/kidney-basin.png') }}" alt="Kidney-Basin" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
-                        <img src="{{ asset('vendor/adminlte/dist/img/hci/infafast-clasp.png') }}" alt="Infa-Fast" class="slideshow-image absolute w-full h-full object-contain p-4 opacity-0 transition-opacity duration-1000 z-10">
+                        @foreach($featuredProducts as $product)
+                            <img src="{{ Storage::url($product->image) }}" 
+                                 alt="{{ $product->name }}" 
+                                 class="slideshow-image absolute w-full h-full object-contain {{ $loop->first ? 'opacity-100' : 'opacity-0' }} transition-opacity duration-1000 z-10"
+                                 title="{{ $product->name }} - {{ $product->category->name }}">
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -100,7 +101,7 @@
                         <h3 class="text-xl font-semibold mb-2">Medical Products</h3>
                         <p class="text-gray-600 mb-4">Essential medical products including PPE, wound care products, and disposable medical items.</p>
                         <a href="{{ route('medical_products') }}" class="mt-4 w-full bg-gray-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-600 hover:text-white transition duration-300 inline-block text-center">
-                            Learn More →
+                            View Products →
                         </a>
                     </div>
                 </div>

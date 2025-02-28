@@ -134,6 +134,26 @@
                             </div>
 
                             <div class="mb-4">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" 
+                                           name="is_featured" 
+                                           id="is_featured" 
+                                           class="form-check-input @error('is_featured') is-invalid @enderror"
+                                           value="1"
+                                           {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="is_featured">
+                                        <i class="fas fa-star text-warning me-1"></i>Feature this product
+                                    </label>
+                                    <div class="form-text">
+                                        Featured products will be highlighted and displayed prominently on the homepage
+                                    </div>
+                                    @error('is_featured')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
                                 <label for="image" class="form-label">Product Image</label>
                                 @if($product->image)
                                     <div class="mb-2">

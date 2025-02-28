@@ -53,6 +53,19 @@
                                     @endif
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $product->name }}</h5>
+                                        @if($product->is_featured)
+                                            <div class="mb-2">
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="fas fa-star me-1"></i>Featured
+                                                </span>
+                                            </div>
+                                        @else
+                                            <div class="mb-2">
+                                                <span class="badge bg-secondary">
+                                                    <i class="fas fa-star me-1"></i>Not Featured
+                                                </span>
+                                            </div>  
+                                        @endif
                                         <p class="card-text">{{ Str::limit($product->description, 100) }}</p>
                                     </div>
                                     <div class="card-footer bg-transparent border-top-0">

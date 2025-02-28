@@ -2025,13 +2025,13 @@
                         let emoji;
 
                         if (hours < 12) {
-                            greeting = "Good Morning";
+                            greeting = "Good Morning and Good Success!";
                             emoji = "☀️";
                         } else if (hours < 18) {
-                            greeting = "Good Afternoon";
+                            greeting = "Good Afternoon and Good Success!";
                             emoji = "🌤️";
                         } else {
-                            greeting = "Good Evening";
+                            greeting = "Good Evening and Good Success!";
                             emoji = "🌙";
                         }
 

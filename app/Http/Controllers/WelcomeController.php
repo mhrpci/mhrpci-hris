@@ -59,8 +59,14 @@ class WelcomeController extends Controller
     }
 
     public function showMhrhci()
-    {
-        return view('mhrhci');
+    {   
+        $featuredProducts = MedicalProduct::where('is_featured', true)
+            ->with('category')
+            ->latest()
+            ->take(5)
+            ->get();
+            
+        return view('mhrhci', compact('featuredProducts'));
     }
     public function showMax()
     {

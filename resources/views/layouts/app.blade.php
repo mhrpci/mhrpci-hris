@@ -2665,9 +2665,9 @@
                         </li>
                         @canany(['product-manager', 'super-admin'])
                         <li class="nav-item">
-                            <a href="{{ route('medical-products.index') }}" class="nav-link {{ Request::is('medical-products*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-capsules"></i>
-                                <p>Medical Products</p>
+                            <a href="{{ route('analytics.dashboard') }}" class="nav-link {{ Request::is('analytics*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-chart-bar"></i>
+                                <p>MHRHCI Management</p>
                             </a>
                         </li>
                         @endcanany

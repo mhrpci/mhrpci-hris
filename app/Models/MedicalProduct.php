@@ -4,17 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Haruncpi\LaravelUserActivity\Traits\Loggable;
 
 class MedicalProduct extends Model
 {
-    use HasFactory;
+    use HasFactory, Loggable;
 
     protected $fillable = [
         'category_id',
         'name',
         'image',
         'description',
-        'details'
+        'details',
+        'is_featured'
+    ];
+
+    protected $casts = [
+        'is_featured' => 'boolean'
     ];
 
     public function category()

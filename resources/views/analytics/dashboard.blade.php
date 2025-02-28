@@ -76,7 +76,7 @@
                             <tbody>
                                 @foreach($topProducts as $product)
                                 @php
-                                    $percentage = ($product->total / $totalQuotations) * 100;
+                                    $percentage = $totalQuotations > 0 ? ($product->total / $totalQuotations) * 100 : 0;
                                 @endphp
                                 <tr style="background: #fff; transition: all 0.3s ease;">
                                     <td style="padding: 1rem; border-bottom: 1px solid #eee;">
@@ -170,7 +170,8 @@
                                 @foreach($quotationLevels['high'] as $product)
                                 <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 0.5rem;">
                                     @php
-                                        $percentage = ($product['count'] / $products->max('quotation_requests_count')) * 100;
+                                        $maxQuotations = $products->max('quotation_requests_count');
+                                        $percentage = $maxQuotations > 0 ? ($product['count'] / $maxQuotations) * 100 : 0;
                                     @endphp
                                     <div style="font-weight: 500; margin-bottom: 0.5rem;">{{ $product['name'] }}</div>
                                     <div style="font-size: 0.9rem; opacity: 0.9;">{{ $product['count'] }} requests</div>
@@ -195,7 +196,8 @@
                                 @foreach($quotationLevels['mid'] as $product)
                                 <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 0.5rem;">
                                     @php
-                                        $percentage = ($product['count'] / $products->max('quotation_requests_count')) * 100;
+                                        $maxQuotations = $products->max('quotation_requests_count');
+                                        $percentage = $maxQuotations > 0 ? ($product['count'] / $maxQuotations) * 100 : 0;
                                     @endphp
                                     <div style="font-weight: 500; margin-bottom: 0.5rem;">{{ $product['name'] }}</div>
                                     <div style="font-size: 0.9rem; opacity: 0.9;">{{ $product['count'] }} requests</div>
@@ -220,7 +222,8 @@
                                 @foreach($quotationLevels['low'] as $product)
                                 <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 0.5rem;">
                                     @php
-                                        $percentage = ($product['count'] / $products->max('quotation_requests_count')) * 100;
+                                        $maxQuotations = $products->max('quotation_requests_count');
+                                        $percentage = $maxQuotations > 0 ? ($product['count'] / $maxQuotations) * 100 : 0;
                                     @endphp
                                     <div style="font-weight: 500; margin-bottom: 0.5rem;">{{ $product['name'] }}</div>
                                     <div style="font-size: 0.9rem; opacity: 0.9;">{{ $product['count'] }} requests</div>

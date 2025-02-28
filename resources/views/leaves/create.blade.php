@@ -499,6 +499,21 @@
         #leaveBalanceModal .fa-cog {
             filter: drop-shadow(0 0 10px rgba(54, 185, 204, 0.3));
         }
+
+        /* Toast error message styling */
+        .swal2-html-container {
+            margin: 0.5em !important;
+            font-size: 0.9em !important;
+        }
+        
+        .swal2-html-container p {
+            margin-bottom: 0.5em !important;
+            line-height: 1.4 !important;
+        }
+        
+        .swal2-html-container p:last-child {
+            margin-bottom: 0 !important;
+        }
     </style>
 @stop
 @section('js')
@@ -593,9 +608,16 @@
                     ...toastConfig,
                     icon: 'error',
                     title: 'Error',
-                    text: "There were some problems with your input",
+                    html: `<div class="text-left">
+                        @foreach($errors->all() as $error)
+                            <p class="mb-1">• {{ $error }}</p>
+                        @endforeach
+                    </div>`,
                     background: '#dc3545',
-                    color: '#fff'
+                    color: '#fff',
+                    timer: 5000, // Increased timer for longer messages
+                    width: 'auto',
+                    maxWidth: '400px'
                 });
             @endif
 
@@ -612,13 +634,14 @@
                 $('#leaveRequestModal select').val('').trigger('change');
             });
 
-            // Form validation before submit
+            // Form validation and submission handling
             $('#leaveRequestForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+
                 const dateFrom = new Date($('#date_from').val());
                 const dateTo = new Date($('#date_to').val());
 
                 if (dateFrom > dateTo) {
-                    e.preventDefault();
                     Swal.fire({
                         icon: 'error',
                         title: 'Invalid Dates',
@@ -634,17 +657,77 @@
                 submitBtn.find('.normal-text').addClass('d-none');
                 submitBtn.find('.loading-text').removeClass('d-none');
 
-                // Submit form normally
-                return true;
+                // Submit form using AJAX
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        // Close modal and show success message
+                        $('#leaveRequestModal').modal('hide');
+                        Swal.fire({
+                            ...toastConfig,
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message || 'Leave request submitted successfully',
+                            background: '#28a745',
+                            color: '#fff'
+                        });
+
+                        // Optional: Reload page after delay
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    },
+                    error: function(xhr) {
+                        // Reset button state
+                        submitBtn.prop('disabled', false);
+                        submitBtn.find('.normal-text').removeClass('d-none');
+                        submitBtn.find('.loading-text').addClass('d-none');
+
+                        // Display validation errors in the modal
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            let errorHtml = '<div class="alert alert-danger"><ul class="mb-0">';
+                            
+                            Object.keys(errors).forEach(function(key) {
+                                errors[key].forEach(function(error) {
+                                    errorHtml += `<li>${error}</li>`;
+                                });
+                            });
+                            
+                            errorHtml += '</ul></div>';
+
+                            // Insert error messages at the top of the form
+                            const existingAlert = $('#leaveRequestForm .alert-danger');
+                            if (existingAlert.length) {
+                                existingAlert.html(errorHtml);
+                            } else {
+                                $('#leaveRequestForm').prepend(errorHtml);
+                            }
+
+                            // Scroll to top of modal to show errors
+                            $('.modal-body').scrollTop(0);
+                        } else {
+                            // Handle other types of errors
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred while submitting your request',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        }
+                    }
+                });
             });
 
-            // Reset button state when modal is closed
+            // Clear error messages when modal is closed
             $('#leaveRequestModal').on('hidden.bs.modal', function () {
+                $('.alert-danger').remove();
                 const submitBtn = $('#submitBtn');
                 submitBtn.prop('disabled', false);
                 submitBtn.find('.normal-text').removeClass('d-none');
                 submitBtn.find('.loading-text').addClass('d-none');
-                // ... existing modal hidden code ...
             });
         });
     </script>
