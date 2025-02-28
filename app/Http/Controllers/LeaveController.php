@@ -84,27 +84,31 @@ class LeaveController extends Controller
             'signature' => 'required|string',
         ]);
 
-        // Add new validation for vacation leave (assuming type_id 1 is vacation leave)
+        // Add new validation for vacation leave
         if ($validatedData['leave_type'] === 'Leave' && $validatedData['type_id'] == 1) {
             $dateFrom = \Carbon\Carbon::parse($validatedData['date_from']);
             $twoWeeksFromNow = now()->addWeeks(2);
 
             if ($dateFrom->lessThan($twoWeeksFromNow)) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['date_from' => 'Vacation leave must be filed at least 2 weeks before the start date.']);
+                return response()->json([
+                    'errors' => [
+                        'date_from' => ['Vacation leave must be filed at least 2 weeks before the start date.']
+                    ]
+                ], 422);
             }
         }
 
-        // Get employee details first
-        $employee = Employee::findOrFail($validatedData['employee_id']);
-
         try {
+            // Get employee details first
+            $employee = Employee::findOrFail($validatedData['employee_id']);
+
             // Check if employee has a signature
             if (!$employee->signature) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['signature' => 'No signature found. Please update your signature in your profile.']);
+                return response()->json([
+                    'errors' => [
+                        'signature' => ['No signature found. Please update your signature in your profile.']
+                    ]
+                ], 422);
             }
 
             // Create leave record with employee's signature
@@ -125,22 +129,28 @@ class LeaveController extends Controller
 
             // Redirect with success message
             if (auth()->user()->hasRole('Super Admin') || auth()->user()->hasRole('Admin')) {
-                return redirect()->route('leaves.create')
-                    ->with('success', 'Leave request created successfully.');
+                return response()->json([
+                    'message' => 'Leave request created successfully',
+                    'status' => 'success'
+                ]);
             }
             elseif (auth()->user()->hasRole('Supervisor')) {
-                return redirect()->route('leaves.create')
-                    ->with('success', 'Leave request sent successfully. Wait for the Admin confirmation.');
+                return response()->json([
+                    'message' => 'Leave request sent successfully. Wait for the Admin confirmation.',
+                    'status' => 'success'
+                ]);
             }
             else {
-                return redirect()->route('leaves.create')
-                    ->with('success', 'Leave request sent successfully. Wait for the Supervisor confirmation.');
+                return response()->json([
+                    'message' => 'Leave request sent successfully. Wait for the Supervisor confirmation.',
+                    'status' => 'success'
+                ]);
             }
 
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors(['error' => 'Failed to create leave request: ' . $e->getMessage()]);
+            return response()->json([
+                'errors' => ['error' => ['Failed to create leave request: ' . $e->getMessage()]]
+            ], 422);
         }
     }
 

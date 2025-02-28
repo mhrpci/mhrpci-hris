@@ -6,10 +6,15 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@popperjs/core": "^2.11.6",
+        "@popperjs/core": "^2.11.8",
+        "@vitejs/plugin-vue": "^5.2.1",
+        "alpinejs": "^3.14.8",
         "axios": "^1.6.4",
-        "bootstrap": "^5.2.3",
+        "bootstrap": "^5.3.3",
+        "jquery": "^3.7.1",
+        "laravel-echo": "^2.0.2",
         "laravel-vite-plugin": "^1.0.0",
+        "pusher-js": "^8.4.0",
         "sass": "^1.56.1",
         "vite": "^5.0.0"
     },
@@ -18,9 +23,6 @@
         "@fullcalendar/daygrid": "^6.1.15",
         "bs-stepper": "^1.7.0",
         "interactjs": "^1.10.27",
-        "jquery": "^3.7.1",
-        "laravel-echo": "^1.17.0",
-        "pusher-js": "^8.4.0-rc2",
         "socket.io-client": "^4.8.1",
         "vercel": "^34.3.0",
         "vue": "^3.5.12",

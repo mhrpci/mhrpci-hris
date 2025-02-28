@@ -788,6 +788,50 @@
         .close-modal {
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        .no-products-message {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin: 2rem auto;
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        .no-products-message i {
+            font-size: 3rem;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+        }
+
+        .no-products-message p {
+            font-size: 1.2rem;
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .no-products-message span {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        /* Dark mode support for no-products-message */
+        @media (prefers-color-scheme: dark) {
+            .no-products-message {
+                background-color: #2d3748;
+            }
+
+            .no-products-message p {
+                color: #e2e8f0;
+            }
+
+            .no-products-message span {
+                color: #a0aec0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -844,7 +888,7 @@
         </div>
         <p class="category-description">{{ $category->description }}</p>
         <div class="products-container" id="{{ Str::slug($category->name) }}Container">
-            @foreach($medicalProducts->where('category_id', $category->id) as $product)
+            @forelse($medicalProducts->where('category_id', $category->id) as $product)
             <div class="product-card" data-product-id="{{ $product->id }}">
                 <div class="product-image">
                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
@@ -861,7 +905,13 @@
                     View Details
                 </button>
             </div>
-            @endforeach
+            @empty
+            <div class="no-products-message">
+                <i class="fas fa-box-open"></i>
+                <p>No products found in this category</p>
+                <span>Check back later for new additions</span>
+            </div>
+            @endforelse
         </div>
     </div>
     @endforeach
